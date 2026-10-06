@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import StudentDashboard from "./pages/student/StudentDashboard";
@@ -58,6 +59,15 @@ function App() {
         />
 
       </Routes>
+=======
+import { BrowserRouter } from "react-router-dom";
+import StudentManagement from "./pages/admin/StudentManagement";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <StudentManagement />
+>>>>>>> 6fcd94c (Update admin and college pages and routes)
     </BrowserRouter>
   );
 }
