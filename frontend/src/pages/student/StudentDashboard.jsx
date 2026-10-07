@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+<<<<<<< HEAD
 import dbData from "../../../../db.json"; // bundled by Vite, no server needed
+=======
+import dbData from "./db.json";
+>>>>>>> 85ad8fb46be37a7fbf43510d0d276345bb72ad49
 
 const API_ORIGIN = window.location.origin;
 
