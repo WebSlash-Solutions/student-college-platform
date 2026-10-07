@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const leads = [
   { id: "STU10234", name: "Keerthi", course: "B.Tech CSE", location: "Coimbatore", score: "82%", status: "New" },
@@ -52,6 +53,7 @@ function Icon({ name, size = 20 }) {
 }
 
 export default function CollegeDashboard() {
+  const routerNavigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Dashboard");
   const [search, setSearch] = useState("");
@@ -93,12 +95,38 @@ export default function CollegeDashboard() {
   };
 
   const navigate = (item) => {
-    setActive(item);
-    setMobileOpen(false);
-    if (item !== "Dashboard") {
-      notify(`${item} section selected`);
-    }
-  };
+  setActive(item);
+  setMobileOpen(false);
+
+  if (item === "College Profile") {
+    routerNavigate("/college/profile");
+    return;
+  }
+
+  if (item === "Student Leads") {
+    routerNavigate("/college/leads");
+    return;
+  }
+
+  if (item === "Courses") {
+    routerNavigate("/college/courses");
+    return;
+  }
+
+  if (item === "Purchased Profiles") {
+    routerNavigate("/college/purchased");
+    return;
+  }
+
+  if (item === "Transactions") {
+    routerNavigate("/college/transactions");
+    return;
+  }
+
+  if (item !== "Dashboard") {
+    notify(`${item} section selected`);
+  }
+};
 
   const menu = [
     ["Dashboard", "dashboard"],

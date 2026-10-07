@@ -3,13 +3,72 @@ import { useNavigate } from "react-router-dom";
 
 const STORAGE_KEY = "campusconnect_custom_colleges";
 
+const makeCollege = ({
+  id,
+  name,
+  category,
+  location,
+  district = "Coimbatore",
+  pincode = "641004",
+  established,
+  type = "Autonomous",
+  affiliation,
+  accreditation = "Verify with institution",
+  ranking = "Not available",
+  rankingLabel = "Recognition",
+  counsellingCode,
+  website = "",
+  hostel = "Available",
+  transportation = "Available",
+  placement = "Available",
+  counselling = "College Admission",
+  courses,
+  scholarships = [
+    "Government scholarships",
+    "Merit scholarships",
+    "Institutional financial assistance",
+  ],
+  placements = [
+    "Placement support",
+    "Career guidance",
+    "Industry interaction",
+  ],
+}) => ({
+  id,
+  name,
+  category,
+  location,
+  district,
+  pincode,
+  established,
+  type,
+  affiliation,
+  accreditation,
+  ranking,
+  rankingLabel,
+  ...(category === "Engineering" ? { counsellingCode } : {}),
+  website,
+  logo: website
+    ? `https://www.google.com/s2/favicons?domain=${website.replace(
+        /^https?:\/\//,
+        ""
+      )}&sz=128`
+    : "",
+  hostel,
+  transportation,
+  placement,
+  counselling,
+  courses,
+  scholarships,
+  placements,
+});
+
 const defaultColleges = [
-  {
+  makeCollege({
     id: 1,
     name: "PSG College of Technology",
     category: "Engineering",
     location: "Coimbatore, Tamil Nadu",
-    district: "Coimbatore",
     pincode: "641004",
     established: "1951",
     type: "Autonomous",
@@ -19,10 +78,6 @@ const defaultColleges = [
     rankingLabel: "NIRF Engineering 2025",
     counsellingCode: "2006",
     website: "https://www.psgtech.edu/",
-    logo: "https://www.google.com/s2/favicons?domain=psgtech.edu&sz=128",
-    hostel: "Available",
-    transportation: "Available",
-    placement: "Available",
     counselling: "TNEA Counselling",
     courses: [
       ["B.E / B.Tech Computer Science and Engineering", "4 Years", "₹70K–₹1L / year"],
@@ -46,13 +101,12 @@ const defaultColleges = [
       "Training and placement cell",
       "Internship opportunities",
     ],
-  },
-  {
+  }),
+  makeCollege({
     id: 2,
     name: "Coimbatore Institute of Technology",
     category: "Engineering",
     location: "Coimbatore, Tamil Nadu",
-    district: "Coimbatore",
     pincode: "641014",
     established: "1956",
     type: "Autonomous",
@@ -62,10 +116,6 @@ const defaultColleges = [
     rankingLabel: "NIRF Engineering 2025",
     counsellingCode: "2007",
     website: "https://cit.edu.in/",
-    logo: "https://www.google.com/s2/favicons?domain=cit.edu.in&sz=128",
-    hostel: "Available",
-    transportation: "Available",
-    placement: "Available",
     counselling: "TNEA Counselling",
     courses: [
       ["B.E Computer Science and Engineering", "4 Years", "₹33K–₹1L / year"],
@@ -89,13 +139,12 @@ const defaultColleges = [
       "Industry training",
       "Internship opportunities",
     ],
-  },
-  {
+  }),
+  makeCollege({
     id: 3,
     name: "Kumaraguru College of Technology",
     category: "Engineering",
     location: "Coimbatore, Tamil Nadu",
-    district: "Coimbatore",
     pincode: "641049",
     established: "1984",
     type: "Autonomous",
@@ -105,10 +154,6 @@ const defaultColleges = [
     rankingLabel: "NIRF Engineering 2025",
     counsellingCode: "Verify current TNEA code",
     website: "https://www.kct.ac.in/",
-    logo: "https://www.google.com/s2/favicons?domain=kct.ac.in&sz=128",
-    hostel: "Available",
-    transportation: "Available",
-    placement: "Available",
     counselling: "TNEA Counselling",
     courses: [
       ["B.E Computer Science and Engineering", "4 Years", "₹80K–₹1.5L / year"],
@@ -131,13 +176,12 @@ const defaultColleges = [
       "Industry collaborations",
       "Internship and training programs",
     ],
-  },
-  {
+  }),
+  makeCollege({
     id: 4,
     name: "PSG College of Arts and Science",
     category: "Arts & Science",
     location: "Coimbatore, Tamil Nadu",
-    district: "Coimbatore",
     pincode: "641014",
     established: "1947",
     type: "Autonomous",
@@ -146,11 +190,6 @@ const defaultColleges = [
     ranking: "#10",
     rankingLabel: "NIRF College 2025",
     website: "https://www.psgcas.ac.in/",
-    logo: "https://www.google.com/s2/favicons?domain=psgcas.ac.in&sz=128",
-    hostel: "Available",
-    transportation: "Available",
-    placement: "Available",
-    counselling: "College Admission",
     courses: [
       ["B.Sc Computer Science", "3 Years", "₹30K–₹1L / year"],
       ["BCA", "3 Years", "₹30K–₹1L / year"],
@@ -173,13 +212,12 @@ const defaultColleges = [
       "Career development programs",
       "Internship opportunities",
     ],
-  },
-  {
+  }),
+  makeCollege({
     id: 5,
     name: "PSGR Krishnammal College for Women",
     category: "Arts & Science",
     location: "Coimbatore, Tamil Nadu",
-    district: "Coimbatore",
     pincode: "641004",
     established: "1963",
     type: "Autonomous",
@@ -188,11 +226,6 @@ const defaultColleges = [
     ranking: "#9",
     rankingLabel: "NIRF College 2025",
     website: "https://www.psgrkcw.ac.in/",
-    logo: "https://www.google.com/s2/favicons?domain=psgrkcw.ac.in&sz=128",
-    hostel: "Available",
-    transportation: "Available",
-    placement: "Available",
-    counselling: "College Admission",
     courses: [
       ["B.Sc Computer Science", "3 Years", "₹30K–₹90K / year"],
       ["BCA", "3 Years", "₹30K–₹90K / year"],
@@ -213,7 +246,359 @@ const defaultColleges = [
       "Career guidance",
       "Internship support",
     ],
-  },
+  }),
+  makeCollege({
+    id: 6,
+    name: "Kongunadu Arts and Science College",
+    category: "Arts & Science",
+    location: "Coimbatore, Tamil Nadu",
+    pincode: "641029",
+    established: "1975",
+    type: "Autonomous",
+    affiliation: "Bharathiar University",
+    accreditation: "NAAC A+",
+    ranking: "151–200",
+    rankingLabel: "NIRF College 2025",
+    website: "https://www.kasc.ac.in/",
+    courses: [
+      ["B.Sc Computer Science", "3 Years", "₹30K–₹90K / year"],
+      ["BCA", "3 Years", "₹30K–₹90K / year"],
+      ["B.Com", "3 Years", "₹30K–₹90K / year"],
+      ["BBA", "3 Years", "₹30K–₹90K / year"],
+      ["B.Sc Mathematics", "3 Years", "₹30K–₹90K / year"],
+      ["B.A English Literature", "3 Years", "₹30K–₹90K / year"],
+    ],
+    scholarships: [
+      "Government scholarships",
+      "Merit scholarships",
+      "Institutional scholarships",
+      "Student financial support",
+    ],
+    placements: [
+      "Dedicated placement cell",
+      "Corporate recruitment drives",
+      "Career guidance",
+      "Internship support",
+    ],
+  }),
+];
+
+const additionalColleges = [
+  makeCollege({
+    id: 7,
+    name: "Sri Krishna College of Engineering and Technology",
+    category: "Engineering",
+    location: "Kuniyamuthur, Coimbatore, Tamil Nadu",
+    pincode: "641008",
+    established: "1998",
+    affiliation: "Anna University",
+    accreditation: "NAAC A++",
+    ranking: "101–150",
+    rankingLabel: "NIRF Engineering 2025",
+    counsellingCode: "Verify current TNEA code",
+    website: "https://www.skcet.ac.in/",
+    counselling: "TNEA Counselling",
+    courses: [
+      ["B.E Computer Science and Engineering", "4 Years", "₹80K–₹1.5L / year"],
+      ["B.Tech Information Technology", "4 Years", "₹80K–₹1.5L / year"],
+      ["B.Tech Artificial Intelligence & Data Science", "4 Years", "₹80K–₹1.5L / year"],
+      ["B.E Electronics & Communication", "4 Years", "₹80K–₹1.5L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 8,
+    name: "Sri Krishna Arts and Science College",
+    category: "Arts & Science",
+    location: "Kuniyamuthur, Coimbatore, Tamil Nadu",
+    pincode: "641008",
+    established: "1997",
+    affiliation: "Bharathiar University",
+    accreditation: "NAAC A++",
+    ranking: "151–200",
+    rankingLabel: "NIRF College 2025",
+    website: "https://www.skasc.ac.in/",
+    courses: [
+      ["B.Sc Computer Science", "3 Years", "₹35K–₹1L / year"],
+      ["BCA", "3 Years", "₹35K–₹1L / year"],
+      ["B.Com", "3 Years", "₹35K–₹1L / year"],
+      ["B.Sc Data Science", "3 Years", "₹35K–₹1L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 9,
+    name: "Dr. N.G.P. Institute of Technology",
+    category: "Engineering",
+    location: "Kalapatti, Coimbatore, Tamil Nadu",
+    pincode: "641048",
+    established: "2007",
+    affiliation: "Anna University",
+    accreditation: "NAAC A+",
+    ranking: "201–300",
+    rankingLabel: "NIRF Engineering 2025",
+    counsellingCode: "Verify current TNEA code",
+    website: "https://www.drp.in/",
+    counselling: "TNEA Counselling",
+    courses: [
+      ["B.E Computer Science and Engineering", "4 Years", "₹70K–₹1.3L / year"],
+      ["B.Tech Information Technology", "4 Years", "₹70K–₹1.3L / year"],
+      ["B.E Biomedical Engineering", "4 Years", "₹70K–₹1.3L / year"],
+      ["B.E Mechanical Engineering", "4 Years", "₹70K–₹1.3L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 10,
+    name: "Sri Ramakrishna Engineering College",
+    category: "Engineering",
+    location: "Vattamalaipalayam, Coimbatore, Tamil Nadu",
+    pincode: "641022",
+    established: "1994",
+    affiliation: "Anna University",
+    accreditation: "NAAC A+",
+    ranking: "201–300",
+    rankingLabel: "NIRF Engineering 2025",
+    counsellingCode: "Verify current TNEA code",
+    website: "https://www.srec.ac.in/",
+    counselling: "TNEA Counselling",
+    courses: [
+      ["B.E Computer Science and Engineering", "4 Years", "₹70K–₹1.2L / year"],
+      ["B.Tech Artificial Intelligence & Data Science", "4 Years", "₹70K–₹1.2L / year"],
+      ["B.E Electronics & Communication", "4 Years", "₹70K–₹1.2L / year"],
+      ["B.E Mechanical Engineering", "4 Years", "₹70K–₹1.2L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 11,
+    name: "Karpagam College of Engineering",
+    category: "Engineering",
+    location: "Othakkalmandapam, Coimbatore, Tamil Nadu",
+    pincode: "641032",
+    established: "2000",
+    affiliation: "Anna University",
+    accreditation: "NAAC A+",
+    ranking: "201–300",
+    rankingLabel: "NIRF Engineering 2025",
+    counsellingCode: "Verify current TNEA code",
+    website: "https://kce.ac.in/",
+    counselling: "TNEA Counselling",
+    courses: [
+      ["B.E Computer Science and Engineering", "4 Years", "₹75K–₹1.4L / year"],
+      ["B.Tech Information Technology", "4 Years", "₹75K–₹1.4L / year"],
+      ["B.Tech Cyber Security", "4 Years", "₹75K–₹1.4L / year"],
+      ["B.E Civil Engineering", "4 Years", "₹75K–₹1.4L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 12,
+    name: "Hindusthan College of Engineering and Technology",
+    category: "Engineering",
+    location: "Malumichampatti, Coimbatore, Tamil Nadu",
+    pincode: "641032",
+    established: "2000",
+    affiliation: "Anna University",
+    accreditation: "NAAC A++",
+    ranking: "201–300",
+    rankingLabel: "NIRF Engineering 2025",
+    counsellingCode: "Verify current TNEA code",
+    website: "https://hicet.ac.in/",
+    counselling: "TNEA Counselling",
+    courses: [
+      ["B.E Computer Science and Engineering", "4 Years", "₹70K–₹1.3L / year"],
+      ["B.Tech Artificial Intelligence & Data Science", "4 Years", "₹70K–₹1.3L / year"],
+      ["B.E Electronics & Communication", "4 Years", "₹70K–₹1.3L / year"],
+      ["B.E Mechanical Engineering", "4 Years", "₹70K–₹1.3L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 13,
+    name: "Government College of Technology",
+    category: "Engineering",
+    location: "Thadagam Road, Coimbatore, Tamil Nadu",
+    pincode: "641013",
+    established: "1945",
+    type: "Government",
+    affiliation: "Anna University",
+    accreditation: "NAAC A",
+    ranking: "101–150",
+    rankingLabel: "NIRF Engineering 2025",
+    counsellingCode: "Verify current TNEA code",
+    website: "https://www.gct.ac.in/",
+    counselling: "TNEA Counselling",
+    courses: [
+      ["B.E Computer Science and Engineering", "4 Years", "Government fee structure"],
+      ["B.E Electronics & Communication", "4 Years", "Government fee structure"],
+      ["B.E Mechanical Engineering", "4 Years", "Government fee structure"],
+      ["B.E Civil Engineering", "4 Years", "Government fee structure"],
+    ],
+  }),
+  makeCollege({
+    id: 14,
+    name: "PSG Institute of Technology and Applied Research",
+    category: "Engineering",
+    location: "Neelambur, Coimbatore, Tamil Nadu",
+    pincode: "641062",
+    established: "2014",
+    affiliation: "Anna University",
+    accreditation: "NAAC A",
+    ranking: "201–300",
+    rankingLabel: "NIRF Engineering 2025",
+    counsellingCode: "Verify current TNEA code",
+    website: "https://www.psgitech.ac.in/",
+    counselling: "TNEA Counselling",
+    courses: [
+      ["B.E Computer Science and Engineering", "4 Years", "₹80K–₹1.5L / year"],
+      ["B.Tech Artificial Intelligence & Data Science", "4 Years", "₹80K–₹1.5L / year"],
+      ["B.E Electronics & Communication", "4 Years", "₹80K–₹1.5L / year"],
+      ["B.E Mechanical Engineering", "4 Years", "₹80K–₹1.5L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 15,
+    name: "Amrita Vishwa Vidyapeetham, Coimbatore",
+    category: "Engineering",
+    location: "Ettimadai, Coimbatore, Tamil Nadu",
+    pincode: "641112",
+    established: "1994",
+    type: "Deemed University",
+    affiliation: "Amrita Vishwa Vidyapeetham",
+    accreditation: "NAAC A++",
+    ranking: "#23",
+    rankingLabel: "NIRF Engineering 2025",
+    website: "https://www.amrita.edu/campus/coimbatore/",
+    counselling: "University Admission",
+    courses: [
+      ["B.Tech Computer Science and Engineering", "4 Years", "₹2L–₹6L / year"],
+      ["B.Tech Artificial Intelligence", "4 Years", "₹2L–₹6L / year"],
+      ["B.Tech Electronics & Communication", "4 Years", "₹2L–₹6L / year"],
+      ["B.Tech Mechanical Engineering", "4 Years", "₹2L–₹6L / year"],
+    ],
+  }),
+  makeCollege({
+    id: 16,
+    name: "PSG Institute of Management",
+    category: "Management",
+    location: "Peelamedu, Coimbatore, Tamil Nadu",
+    pincode: "641004",
+    established: "1994",
+    affiliation: "Anna University",
+    accreditation: "NAAC A++",
+    ranking: "Recognized",
+    rankingLabel: "Management Institution",
+    website: "https://www.psgim.ac.in/",
+    counselling: "Management Admission",
+    courses: [
+      ["Master of Business Administration", "2 Years", "Verify with college"],
+      ["Executive Management Programs", "Varies", "Verify with college"],
+    ],
+  }),
+  makeCollege({
+    id: 17,
+    name: "Kumaraguru Institute of Agriculture",
+    category: "Other",
+    location: "Sakthinagar, Erode, Tamil Nadu",
+    district: "Erode",
+    pincode: "638315",
+    established: "2017",
+    type: "Private",
+    affiliation: "Tamil Nadu Agricultural University",
+    accreditation: "Verify with institution",
+    ranking: "Not available",
+    rankingLabel: "Institutional recognition",
+    website: "https://kiagri.ac.in/",
+    counselling: "University Admission",
+    courses: [
+      ["B.Sc Agriculture", "4 Years", "Verify with college"],
+      ["Agriculture and allied programs", "Varies", "Verify with college"],
+    ],
+  }),
+  makeCollege({
+    id: 18,
+    name: "Karpagam Academy of Higher Education",
+    category: "Engineering",
+    location: "Eachanari, Coimbatore, Tamil Nadu",
+    pincode: "641021",
+    established: "2008",
+    type: "Deemed University",
+    affiliation: "Karpagam Academy of Higher Education",
+    accreditation: "NAAC A+",
+    ranking: "Recognized",
+    rankingLabel: "University recognition",
+    website: "https://kahedu.edu.in/",
+    counselling: "University Admission",
+    courses: [
+      ["B.Tech Computer Science and Engineering", "4 Years", "Verify with university"],
+      ["B.Tech Information Technology", "4 Years", "Verify with university"],
+      ["B.Tech Electronics & Communication", "4 Years", "Verify with university"],
+    ],
+  }),
+  makeCollege({
+    id: 19,
+    name: "Avinashilingam Institute for Home Science and Higher Education for Women",
+    category: "Arts & Science",
+    location: "Bharathi Park Road, Coimbatore, Tamil Nadu",
+    pincode: "641043",
+    established: "1957",
+    type: "Deemed University",
+    affiliation: "Avinashilingam Institute",
+    accreditation: "NAAC A++",
+    ranking: "Recognized",
+    rankingLabel: "University recognition",
+    website: "https://avinuty.ac.in/",
+    counselling: "University Admission",
+    courses: [
+      ["B.Sc Computer Science", "3 Years", "Verify with university"],
+      ["B.Com", "3 Years", "Verify with university"],
+      ["B.Sc Nutrition and Dietetics", "3 Years", "Verify with university"],
+      ["B.A English", "3 Years", "Verify with university"],
+    ],
+  }),
+  makeCollege({
+    id: 20,
+    name: "Nehru Arts and Science College",
+    category: "Arts & Science",
+    location: "Thirumalayampalayam, Coimbatore, Tamil Nadu",
+    pincode: "641105",
+    established: "1998",
+    affiliation: "Bharathiar University",
+    accreditation: "NAAC A+",
+    ranking: "Not available",
+    rankingLabel: "Recognition",
+    website: "https://www.nehrucolleges.com/",
+    courses: [
+      ["B.Sc Computer Science", "3 Years", "₹30K–₹90K / year"],
+      ["BCA", "3 Years", "₹30K–₹90K / year"],
+      ["B.Com", "3 Years", "₹30K–₹90K / year"],
+      ["BBA", "3 Years", "₹30K–₹90K / year"],
+    ],
+  }),
+  makeCollege({
+    id: 21,
+    name: "CMS College of Science and Commerce",
+    category: "Arts & Science",
+    location: "Chinnavedampatti, Coimbatore, Tamil Nadu",
+    pincode: "641049",
+    established: "1988",
+    affiliation: "Bharathiar University",
+    accreditation: "NAAC A+",
+    ranking: "Not available",
+    rankingLabel: "Recognition",
+    website: "https://www.cmscollege.edu.in/",
+    courses: [
+      ["B.Sc Computer Science", "3 Years", "₹30K–₹1L / year"],
+      ["BCA", "3 Years", "₹30K–₹1L / year"],
+      ["B.Com", "3 Years", "₹30K–₹1L / year"],
+      ["B.Sc Psychology", "3 Years", "₹30K–₹1L / year"],
+    ],
+  }),
+];
+
+const orderedDefaultColleges = [
+  defaultColleges[0],
+  defaultColleges[1],
+  defaultColleges[2],
+  defaultColleges[4],
+  defaultColleges[3],
+  defaultColleges[5],
+  ...additionalColleges,
 ];
 
 const categories = [
@@ -230,7 +615,6 @@ function CampusLogo() {
     <div className="cp-brand-logo">
       <svg viewBox="0 0 48 48" aria-hidden="true">
         <rect x="2" y="2" width="44" height="44" rx="12" />
-
         <path
           d="M12 18.5 24 12l12 6.5-12 6.5-12-6.5Z"
           fill="none"
@@ -238,14 +622,12 @@ function CampusLogo() {
           strokeWidth="2"
           strokeLinejoin="round"
         />
-
         <path
           d="M16 22v6.5c0 2.5 3.6 4.8 8 4.8s8-2.3 8-4.8V22"
           fill="none"
           stroke="white"
           strokeWidth="2"
         />
-
         <path
           d="M36 19v8"
           stroke="white"
@@ -268,12 +650,13 @@ function DetailItem({ label, value }) {
 
 function CollegeProfile() {
   const navigate = useNavigate();
-
   const isAddPage = window.location.pathname.endsWith("/new");
 
-  const [colleges, setColleges] = useState(defaultColleges);
+  const [colleges, setColleges] = useState(orderedDefaultColleges);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCollege, setSelectedCollege] = useState(null);
+  const [showAllColleges, setShowAllColleges] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -298,23 +681,56 @@ function CollegeProfile() {
   });
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const validSaved = Array.isArray(saved)
+        ? saved.filter(
+            (college) =>
+              college?.name !== "Hindusthan College of Arts and Science" &&
+              !orderedDefaultColleges.some(
+                (defaultCollege) => defaultCollege.name === college?.name
+              )
+          )
+        : [];
 
-    if (Array.isArray(saved) && saved.length) {
-      setColleges([...saved, ...defaultColleges]);
+      setColleges([...validSaved, ...orderedDefaultColleges]);
+    } catch {
+      setColleges(orderedDefaultColleges);
     }
   }, []);
 
-  const filteredColleges =
-    activeCategory === "All"
-      ? colleges
-      : colleges.filter((college) => college.category === activeCategory);
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+
+  const filteredColleges = colleges.filter((college) => {
+    const matchesCategory =
+      activeCategory === "All" || college.category === activeCategory;
+
+    if (!normalizedSearch) return matchesCategory;
+
+    const searchableText = [
+      college.name,
+      college.location,
+      college.category,
+      college.affiliation,
+      college.district,
+      college.type,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return matchesCategory && searchableText.includes(normalizedSearch);
+  });
+
+  const shouldShowAll =
+    showAllColleges || Boolean(normalizedSearch) || activeCategory !== "All";
+
+  const visibleColleges = shouldShowAll
+    ? filteredColleges
+    : filteredColleges.slice(0, 9);
 
   const updateForm = (field, value) => {
-    setForm((previous) => ({
-      ...previous,
-      [field]: value,
-    }));
+    setForm((previous) => ({ ...previous, [field]: value }));
   };
 
   const saveCollege = (event) => {
@@ -342,9 +758,9 @@ function CollegeProfile() {
 
     const newCollege = {
       id: Date.now(),
-      name: form.name,
+      name: form.name.trim(),
       category: form.category,
-      location: form.location,
+      location: form.location.trim(),
       district: form.district,
       pincode: form.pincode,
       established: form.established,
@@ -352,7 +768,6 @@ function CollegeProfile() {
       affiliation: form.affiliation,
       accreditation: form.accreditation,
       ranking: form.ranking || "Not available",
-
       rankingLabel:
         form.rankingLabel ||
         (form.category === "Engineering"
@@ -360,37 +775,30 @@ function CollegeProfile() {
           : form.category === "Arts & Science"
           ? "NIRF College"
           : "Recognition"),
-
       counsellingCode:
         form.category === "Engineering"
           ? form.counsellingCode || "Not available"
           : "",
-
       website: form.website,
-
       logo: form.website
         ? `https://www.google.com/s2/favicons?domain=${form.website.replace(
             /^https?:\/\//,
             ""
           )}&sz=128`
         : "",
-
       hostel: form.hostel,
       transportation: form.transportation,
       placement: form.placement,
       counselling: form.counselling,
-
       courses:
         courseList.length > 0
           ? courseList
           : [["Course information not added", "-", form.fees || "Indicative"]],
-
       scholarships: [
         "Government scholarships",
         "Merit scholarships",
         "Institutional financial assistance",
       ],
-
       placements: [
         "Placement support",
         "Career guidance",
@@ -398,18 +806,26 @@ function CollegeProfile() {
       ],
     };
 
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const validSaved = Array.isArray(saved)
+        ? saved.filter(
+            (college) =>
+              college?.name !== "Hindusthan College of Arts and Science" &&
+              !orderedDefaultColleges.some(
+                (defaultCollege) => defaultCollege.name === college?.name
+              )
+          )
+        : [];
 
-    const updatedSaved = [newCollege, ...saved];
+      const updatedSaved = [newCollege, ...validSaved];
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(updatedSaved)
-    );
-
-    setColleges([...updatedSaved, ...defaultColleges]);
-
-    navigate("/college/profile");
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSaved));
+      setColleges([...updatedSaved, ...orderedDefaultColleges]);
+      navigate("/college/profile");
+    } catch {
+      alert("Could not save this college. Please check your browser storage.");
+    }
   };
 
   if (isAddPage) {
@@ -424,7 +840,6 @@ function CollegeProfile() {
               onClick={() => navigate("/college/profile")}
             >
               <CampusLogo />
-
               <div>
                 <strong>CampusConnect</strong>
                 <span>Student Leads · Better Admissions</span>
@@ -443,19 +858,14 @@ function CollegeProfile() {
         <main className="cp-add-page">
           <div className="cp-add-heading">
             <span>COLLEGE PORTAL</span>
-
             <h1>Add New College</h1>
-
-            <p>
-              Add complete institutional information to your college directory.
-            </p>
+            <p>Add complete institutional information to your college directory.</p>
           </div>
 
           <form className="cp-form" onSubmit={saveCollege}>
             <section className="cp-form-card">
               <div className="cp-form-title">
                 <div className="cp-number">01</div>
-
                 <div>
                   <h2>College Information</h2>
                   <p>Basic information about the institution</p>
@@ -465,24 +875,19 @@ function CollegeProfile() {
               <div className="cp-form-grid">
                 <label>
                   <span>College Name *</span>
-
                   <input
+                    required
                     value={form.name}
-                    onChange={(e) =>
-                      updateForm("name", e.target.value)
-                    }
+                    onChange={(e) => updateForm("name", e.target.value)}
                     placeholder="Enter college name"
                   />
                 </label>
 
                 <label>
                   <span>College Type</span>
-
                   <select
                     value={form.type}
-                    onChange={(e) =>
-                      updateForm("type", e.target.value)
-                    }
+                    onChange={(e) => updateForm("type", e.target.value)}
                   >
                     <option>Autonomous</option>
                     <option>Affiliated</option>
@@ -494,12 +899,9 @@ function CollegeProfile() {
 
                 <label>
                   <span>Category *</span>
-
                   <select
                     value={form.category}
-                    onChange={(e) =>
-                      updateForm("category", e.target.value)
-                    }
+                    onChange={(e) => updateForm("category", e.target.value)}
                   >
                     <option>Engineering</option>
                     <option>Arts & Science</option>
@@ -511,84 +913,65 @@ function CollegeProfile() {
 
                 <label>
                   <span>Affiliation</span>
-
                   <input
                     value={form.affiliation}
-                    onChange={(e) =>
-                      updateForm("affiliation", e.target.value)
-                    }
+                    onChange={(e) => updateForm("affiliation", e.target.value)}
                     placeholder="e.g. Anna University"
                   />
                 </label>
 
                 <label className="cp-full">
                   <span>Address / Location *</span>
-
                   <input
+                    required
                     value={form.location}
-                    onChange={(e) =>
-                      updateForm("location", e.target.value)
-                    }
+                    onChange={(e) => updateForm("location", e.target.value)}
                     placeholder="College address / city / state"
                   />
                 </label>
 
                 <label>
                   <span>District</span>
-
                   <input
                     value={form.district}
-                    onChange={(e) =>
-                      updateForm("district", e.target.value)
-                    }
+                    onChange={(e) => updateForm("district", e.target.value)}
                     placeholder="District"
                   />
                 </label>
 
                 <label>
                   <span>Pincode</span>
-
                   <input
                     value={form.pincode}
-                    onChange={(e) =>
-                      updateForm("pincode", e.target.value)
-                    }
+                    onChange={(e) => updateForm("pincode", e.target.value)}
                     placeholder="Pincode"
                   />
                 </label>
 
                 <label>
                   <span>Established Year</span>
-
                   <input
                     value={form.established}
-                    onChange={(e) =>
-                      updateForm("established", e.target.value)
-                    }
+                    onChange={(e) => updateForm("established", e.target.value)}
                     placeholder="e.g. 1951"
                   />
                 </label>
 
                 <label>
                   <span>Website</span>
-
                   <input
+                    type="url"
                     value={form.website}
-                    onChange={(e) =>
-                      updateForm("website", e.target.value)
-                    }
+                    onChange={(e) => updateForm("website", e.target.value)}
                     placeholder="https://example.edu"
                   />
                 </label>
 
                 <label>
                   <span>Accreditation</span>
-
                   <input
                     value={form.accreditation}
-                    onChange={(e) =>
-                      updateForm("accreditation", e.target.value)
-                    }
+                    onChange={(e) => updateForm("accreditation", e.target.value)}
                     placeholder="e.g. NAAC A++"
                   />
                 </label>
@@ -598,48 +981,34 @@ function CollegeProfile() {
             <section className="cp-form-card">
               <div className="cp-form-title">
                 <div className="cp-number">02</div>
-
                 <div>
                   <h2>Ranking & Admission</h2>
-
-                  <p>
-                    Add the ranking or recognition relevant to this college
-                    category.
-                  </p>
+                  <p>Add the ranking or recognition relevant to this college category.</p>
                 </div>
               </div>
 
               <div className="cp-info-note">
                 <strong>Important:</strong>
-
                 <span>
-                  Engineering colleges use NIRF Engineering. Arts & Science
-                  colleges can use NIRF College. Other categories should use
-                  their relevant ranking or recognition.
+                  Verify rankings and counselling information with official sources before publishing.
                 </span>
               </div>
 
               <div className="cp-form-grid">
                 <label>
                   <span>Ranking</span>
-
                   <input
                     value={form.ranking}
-                    onChange={(e) =>
-                      updateForm("ranking", e.target.value)
-                    }
+                    onChange={(e) => updateForm("ranking", e.target.value)}
                     placeholder="e.g. #67 / 101–150"
                   />
                 </label>
 
                 <label>
                   <span>Ranking Category</span>
-
                   <input
                     value={form.rankingLabel}
-                    onChange={(e) =>
-                      updateForm("rankingLabel", e.target.value)
-                    }
+                    onChange={(e) => updateForm("rankingLabel", e.target.value)}
                     placeholder="e.g. NIRF Engineering 2025"
                   />
                 </label>
@@ -647,14 +1016,10 @@ function CollegeProfile() {
                 {form.category === "Engineering" && (
                   <label>
                     <span>TNEA Counselling Code</span>
-
                     <input
                       value={form.counsellingCode}
                       onChange={(e) =>
-                        updateForm(
-                          "counsellingCode",
-                          e.target.value
-                        )
+                        updateForm("counsellingCode", e.target.value)
                       }
                       placeholder="Engineering only"
                     />
@@ -663,15 +1028,9 @@ function CollegeProfile() {
 
                 <label>
                   <span>Admission Process</span>
-
                   <select
                     value={form.counselling}
-                    onChange={(e) =>
-                      updateForm(
-                        "counselling",
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => updateForm("counselling", e.target.value)}
                   >
                     <option>College Admission</option>
                     <option>TNEA Counselling</option>
@@ -686,53 +1045,37 @@ function CollegeProfile() {
             <section className="cp-form-card">
               <div className="cp-form-title">
                 <div className="cp-number">03</div>
-
                 <div>
                   <h2>Courses & Fees</h2>
-
-                  <p>
-                    Add the main courses offered by the college.
-                  </p>
+                  <p>Add the main courses offered by the college.</p>
                 </div>
               </div>
 
               <div className="cp-form-grid">
                 <label className="cp-full">
                   <span>Courses</span>
-
                   <textarea
                     value={form.courses}
-                    onChange={(e) =>
-                      updateForm("courses", e.target.value)
-                    }
-                    placeholder="B.Tech CSE, B.Tech IT, B.Tech ECE, B.Tech AI & DS"
+                    onChange={(e) => updateForm("courses", e.target.value)}
+                    placeholder="B.Tech CSE, B.Tech IT, B.Tech ECE"
                   />
-
-                  <small>
-                    Separate course names using commas.
-                  </small>
+                  <small>Separate course names using commas.</small>
                 </label>
 
                 <label>
                   <span>Indicative Annual Fee</span>
-
                   <input
                     value={form.fees}
-                    onChange={(e) =>
-                      updateForm("fees", e.target.value)
-                    }
+                    onChange={(e) => updateForm("fees", e.target.value)}
                     placeholder="e.g. ₹80,000 – ₹1,20,000"
                   />
                 </label>
 
                 <label>
                   <span>Hostel</span>
-
                   <select
                     value={form.hostel}
-                    onChange={(e) =>
-                      updateForm("hostel", e.target.value)
-                    }
+                    onChange={(e) => updateForm("hostel", e.target.value)}
                   >
                     <option>Available</option>
                     <option>Not Available</option>
@@ -741,14 +1084,10 @@ function CollegeProfile() {
 
                 <label>
                   <span>Transportation</span>
-
                   <select
                     value={form.transportation}
                     onChange={(e) =>
-                      updateForm(
-                        "transportation",
-                        e.target.value
-                      )
+                      updateForm("transportation", e.target.value)
                     }
                   >
                     <option>Available</option>
@@ -758,15 +1097,9 @@ function CollegeProfile() {
 
                 <label>
                   <span>Placement</span>
-
                   <select
                     value={form.placement}
-                    onChange={(e) =>
-                      updateForm(
-                        "placement",
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => updateForm("placement", e.target.value)}
                   >
                     <option>Available</option>
                     <option>Not Available</option>
@@ -779,17 +1112,11 @@ function CollegeProfile() {
               <button
                 type="button"
                 className="cp-cancel-btn"
-                onClick={() =>
-                  navigate("/college/profile")
-                }
+                onClick={() => navigate("/college/profile")}
               >
                 Cancel
               </button>
-
-              <button
-                type="submit"
-                className="cp-primary-btn"
-              >
+              <button type="submit" className="cp-primary-btn">
                 + Register College
               </button>
             </div>
@@ -807,12 +1134,9 @@ function CollegeProfile() {
         <div className="cp-header-inner">
           <button
             className="cp-brand"
-            onClick={() =>
-              navigate("/college/dashboard")
-            }
+            onClick={() => navigate("/college/dashboard")}
           >
             <CampusLogo />
-
             <div>
               <strong>CampusConnect</strong>
               <span>Student Leads · Better Admissions</span>
@@ -821,9 +1145,7 @@ function CollegeProfile() {
 
           <button
             className="cp-primary-btn cp-add-btn"
-            onClick={() =>
-              navigate("/college/profile/new")
-            }
+            onClick={() => navigate("/college/register")}
           >
             + Add New College
           </button>
@@ -831,45 +1153,43 @@ function CollegeProfile() {
       </header>
 
       <main className="cp-main">
-        <section className="cp-page-heading">
-          <span>COLLEGE PORTAL</span>
-
-          <h1>College Profiles</h1>
-
-          <p>
-            Explore colleges, rankings and complete institutional
-            information.
-          </p>
-        </section>
-
         <section className="cp-saved-section">
           <div className="cp-section-heading">
             <div>
               <h2>Saved Colleges</h2>
-
-              <p>
-                Browse colleges by category and explore detailed
-                information.
-              </p>
+              <p>Browse colleges by category and explore detailed information.</p>
             </div>
+            <div className="cp-count">{filteredColleges.length} Colleges</div>
+          </div>
 
-            <div className="cp-count">
-              {filteredColleges.length} Colleges
-            </div>
+          <div className="cp-search-wrap">
+            <span className="cp-search-icon" aria-hidden="true">⌕</span>
+            <input
+              className="cp-search-input"
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search college name, location, category or affiliation..."
+              aria-label="Search colleges"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className="cp-search-clear"
+                onClick={() => setSearchTerm("")}
+                aria-label="Clear search"
+              >
+                ×
+              </button>
+            )}
           </div>
 
           <div className="cp-tabs">
             {categories.map((category) => (
               <button
                 key={category}
-                className={
-                  activeCategory === category
-                    ? "active"
-                    : ""
-                }
-                onClick={() =>
-                  setActiveCategory(category)
-                }
+                className={activeCategory === category ? "active" : ""}
+                onClick={() => setActiveCategory(category)}
               >
                 {category}
               </button>
@@ -877,107 +1197,109 @@ function CollegeProfile() {
           </div>
 
           <div className="cp-college-grid">
-            {filteredColleges.map((college) => (
-              <article
-                className="cp-college-card"
-                key={college.id}
-              >
-                <div className="cp-card-top">
-                  <div className="cp-college-logo">
-                    {college.logo ? (
-                      <img
-                        src={college.logo}
-                        alt={`${college.name} logo`}
-                        onError={(e) => {
-                          e.currentTarget.style.display =
-                            "none";
+            {visibleColleges.map((college) => {
+              const initials = college.name
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((word) => word[0])
+                .join("")
+                .toUpperCase();
 
-                          e.currentTarget.parentElement.classList.add(
-                            "fallback-logo"
-                          );
-                        }}
-                      />
-                    ) : (
-                      <span>
-                        {college.name.charAt(0)}
+              return (
+                <article className="cp-college-card" key={college.id}>
+                  <div className="cp-card-top">
+                    <div className="cp-college-logo">
+                      {college.logo ? (
+                        <img
+                          src={college.logo}
+                          alt={`${college.name} logo`}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                            const fallback = e.currentTarget.nextElementSibling;
+                            if (fallback) fallback.style.display = "flex";
+                          }}
+                        />
+                      ) : null}
+                      <span style={{ display: college.logo ? "none" : "flex" }}>
+                        {initials || "CL"}
                       </span>
-                    )}
+                    </div>
+
+                    <div className="cp-card-heading">
+                      <div className="cp-card-category-row">
+                        <span className="cp-category">{college.category}</span>
+                      </div>
+                      <h3>{college.name}</h3>
+                      <p className="cp-location">
+                        <span aria-hidden="true">♦</span>
+                        {college.location}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="cp-rank">
-                    {college.ranking || "N/A"}
+                  <div className="cp-card-divider" />
+
+                  <div className="cp-card-details">
+                    <DetailItem label="TYPE" value={college.type} />
+                    <DetailItem label="AFFILIATION" value={college.affiliation} />
+                    <DetailItem label="DISTRICT" value={college.district} />
+                    <DetailItem label="PINCODE" value={college.pincode} />
                   </div>
-                </div>
 
-                <span className="cp-category">
-                  {college.category}
-                </span>
-
-                <h3>{college.name}</h3>
-
-                <p className="cp-location">
-                  <span>◆</span>
-                  {college.location}
-                </p>
-
-                <div className="cp-card-details">
-                  <DetailItem
-                    label="TYPE"
-                    value={college.type}
-                  />
-
-                  <DetailItem
-                    label="AFFILIATION"
-                    value={college.affiliation}
-                  />
-
-                  <DetailItem
-                    label="DISTRICT"
-                    value={college.district}
-                  />
-
-                  <DetailItem
-                    label="PINCODE"
-                    value={college.pincode}
-                  />
-
-                  <DetailItem
-                    label="ESTABLISHED"
-                    value={college.established}
-                  />
-
-                  <DetailItem
-                    label="ACCREDITATION"
-                    value={college.accreditation}
-                  />
-                </div>
-
-                <button
-                  className="cp-learn-btn"
-                  onClick={() =>
-                    setSelectedCollege(college)
-                  }
-                >
-                  Learn More
-                  <span>→</span>
-                </button>
-              </article>
-            ))}
+                  <div className="cp-card-footer">
+                    <span className="cp-established">
+                      Est. {college.established || "—"}
+                    </span>
+                    <button
+                      type="button"
+                      className="cp-learn-btn"
+                      onClick={() => setSelectedCollege(college)}
+                    >
+                      Learn More <span>→</span>
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
+
+          {!shouldShowAll && filteredColleges.length > 9 && (
+            <div className="cp-explore-more-wrap">
+              <button
+                type="button"
+                className="cp-explore-more-btn"
+                onClick={() => setShowAllColleges(true)}
+              >
+                Explore More Colleges <span>→</span>
+              </button>
+              <p>Showing 9 colleges · Explore to view all colleges</p>
+            </div>
+          )}
+
+          {shouldShowAll &&
+            filteredColleges.length > 9 &&
+            !normalizedSearch &&
+            activeCategory === "All" && (
+              <div className="cp-explore-more-wrap">
+                <button
+                  type="button"
+                  className="cp-explore-more-btn secondary"
+                  onClick={() => setShowAllColleges(false)}
+                >
+                  Show Less <span>↑</span>
+                </button>
+              </div>
+            )}
 
           {filteredColleges.length === 0 && (
             <div className="cp-empty">
               <h3>No colleges found</h3>
-
-              <p>
-                There are no colleges in this category yet.
-              </p>
-
+              <p>There are no colleges matching your search or category.</p>
               <button
                 className="cp-primary-btn"
-                onClick={() =>
-                  navigate("/college/profile/new")
-                }
+                onClick={() => navigate("/college/register")}
               >
                 + Add New College
               </button>
@@ -989,21 +1311,13 @@ function CollegeProfile() {
       {selectedCollege && (
         <div
           className="cp-modal-overlay"
-          onClick={() =>
-            setSelectedCollege(null)
-          }
+          onClick={() => setSelectedCollege(null)}
         >
-          <div
-            className="cp-modal"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
+          <div className="cp-modal" onClick={(e) => e.stopPropagation()}>
             <button
               className="cp-modal-close"
-              onClick={() =>
-                setSelectedCollege(null)
-              }
+              onClick={() => setSelectedCollege(null)}
+              aria-label="Close details"
             >
               ×
             </button>
@@ -1015,111 +1329,77 @@ function CollegeProfile() {
                     src={selectedCollege.logo}
                     alt=""
                     onError={(e) => {
-                      e.currentTarget.style.display =
-                        "none";
+                      e.currentTarget.style.display = "none";
                     }}
                   />
                 ) : (
-                  <span>
-                    {selectedCollege.name.charAt(0)}
-                  </span>
+                  <span>{selectedCollege.name.slice(0, 2).toUpperCase()}</span>
                 )}
               </div>
 
-              <div>
-                <span className="cp-category">
-                  {selectedCollege.category}
-                </span>
-
+              <div className="cp-modal-title-wrap">
+                <span className="cp-category">{selectedCollege.category}</span>
                 <h2>{selectedCollege.name}</h2>
-
                 <p>
-                  {selectedCollege.location}
+                  <span aria-hidden="true">♦</span> {selectedCollege.location}
                 </p>
               </div>
             </div>
 
-            <div className="cp-detail-grid">
-              <DetailItem
-                label="RANKING"
-                value={selectedCollege.ranking}
-              />
+            <div className="cp-modal-summary">
+              <div>
+                <span>ESTABLISHED</span>
+                <strong>{selectedCollege.established || "—"}</strong>
+              </div>
+              <div>
+                <span>TYPE</span>
+                <strong>{selectedCollege.type || "—"}</strong>
+              </div>
+              <div>
+                <span>AFFILIATION</span>
+                <strong>{selectedCollege.affiliation || "—"}</strong>
+              </div>
+              <div>
+                <span>ADMISSION</span>
+                <strong>{selectedCollege.counselling || "—"}</strong>
+              </div>
+            </div>
 
+            <div className="cp-detail-grid">
+              <DetailItem label="RANKING" value={selectedCollege.ranking} />
               <DetailItem
                 label="RANKING CATEGORY"
                 value={selectedCollege.rankingLabel}
               />
-
-              {selectedCollege.category ===
-                "Engineering" && (
+              {selectedCollege.category === "Engineering" && (
                 <DetailItem
                   label="TNEA COUNSELLING CODE"
-                  value={
-                    selectedCollege.counsellingCode
-                  }
+                  value={selectedCollege.counsellingCode}
                 />
               )}
-
-              <DetailItem
-                label="AFFILIATION"
-                value={selectedCollege.affiliation}
-              />
-
+              <DetailItem label="AFFILIATION" value={selectedCollege.affiliation} />
               <DetailItem
                 label="ACCREDITATION"
-                value={
-                  selectedCollege.accreditation
-                }
+                value={selectedCollege.accreditation}
               />
-
-              <DetailItem
-                label="COLLEGE TYPE"
-                value={selectedCollege.type}
-              />
-
+              <DetailItem label="COLLEGE TYPE" value={selectedCollege.type} />
               <DetailItem
                 label="ESTABLISHED"
-                value={
-                  selectedCollege.established
-                }
+                value={selectedCollege.established}
               />
-
-              <DetailItem
-                label="DISTRICT"
-                value={selectedCollege.district}
-              />
-
-              <DetailItem
-                label="PINCODE"
-                value={selectedCollege.pincode}
-              />
-
-              <DetailItem
-                label="HOSTEL"
-                value={selectedCollege.hostel}
-              />
-
+              <DetailItem label="DISTRICT" value={selectedCollege.district} />
+              <DetailItem label="PINCODE" value={selectedCollege.pincode} />
+              <DetailItem label="HOSTEL" value={selectedCollege.hostel} />
               <DetailItem
                 label="TRANSPORTATION"
-                value={
-                  selectedCollege.transportation
-                }
+                value={selectedCollege.transportation}
               />
-
-              <DetailItem
-                label="PLACEMENT"
-                value={
-                  selectedCollege.placement
-                }
-              />
+              <DetailItem label="PLACEMENT" value={selectedCollege.placement} />
             </div>
 
             <section className="cp-modal-section">
               <div className="cp-modal-section-title">
-                <h3>
-                  Courses & Indicative Fees
-                </h3>
-
+                <h3>Courses & Indicative Fees</h3>
                 <span>Approximate</span>
               </div>
 
@@ -1130,67 +1410,43 @@ function CollegeProfile() {
                   <span>Annual Fee</span>
                 </div>
 
-                {selectedCollege.courses?.map(
-                  (course, index) => (
-                    <div
-                      className="cp-course-row"
-                      key={index}
-                    >
-                      <strong>
-                        {course[0]}
-                      </strong>
-
-                      <span>
-                        {course[1]}
-                      </span>
-
-                      <span>
-                        {course[2]}
-                      </span>
-                    </div>
-                  )
-                )}
+                {selectedCollege.courses?.map((course, index) => (
+                  <div className="cp-course-row" key={index}>
+                    <strong>{course[0]}</strong>
+                    <span>{course[1]}</span>
+                    <span>{course[2]}</span>
+                  </div>
+                ))}
               </div>
 
               <p className="cp-fee-note">
-                Fees shown here are indicative and
-                should be verified with the college
-                before admission.
+                Fees shown here are indicative and should be verified with the
+                college before admission.
               </p>
             </section>
 
             <div className="cp-info-columns">
               <section className="cp-info-box">
                 <h3>Scholarships</h3>
-
                 <ul>
-                  {selectedCollege.scholarships?.map(
-                    (item, index) => (
-                      <li key={index}>
-                        <span>✓</span>
-
-                        <p>{item}</p>
-                      </li>
-                    )
-                  )}
+                  {selectedCollege.scholarships?.map((item, index) => (
+                    <li key={index}>
+                      <span>✓</span>
+                      <p>{item}</p>
+                    </li>
+                  ))}
                 </ul>
               </section>
 
               <section className="cp-info-box">
-                <h3>
-                  Placement & Career
-                </h3>
-
+                <h3>Placement & Career</h3>
                 <ul>
-                  {selectedCollege.placements?.map(
-                    (item, index) => (
-                      <li key={index}>
-                        <span>✓</span>
-
-                        <p>{item}</p>
-                      </li>
-                    )
-                  )}
+                  {selectedCollege.placements?.map((item, index) => (
+                    <li key={index}>
+                      <span>✓</span>
+                      <p>{item}</p>
+                    </li>
+                  ))}
                 </ul>
               </section>
             </div>
@@ -1198,32 +1454,19 @@ function CollegeProfile() {
             <section className="cp-admission-box">
               <div>
                 <span>ADMISSION</span>
-
-                <h3>
-                  {selectedCollege.counselling}
-                </h3>
+                <h3>{selectedCollege.counselling || "—"}</h3>
               </div>
 
-              {selectedCollege.category ===
-                "Engineering" && (
+              {selectedCollege.category === "Engineering" && (
                 <div>
-                  <span>
-                    COUNSELLING CODE
-                  </span>
-
-                  <h3>
-                    {
-                      selectedCollege.counsellingCode
-                    }
-                  </h3>
+                  <span>COUNSELLING CODE</span>
+                  <h3>{selectedCollege.counsellingCode || "—"}</h3>
                 </div>
               )}
 
               {selectedCollege.website && (
                 <a
-                  href={
-                    selectedCollege.website
-                  }
+                  href={selectedCollege.website}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -1243,26 +1486,32 @@ const styles = `
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
 .cp-page {
-  width: 100vw;
-  max-width: none;
-  min-width: 100vw;
+  width: 100%;
   min-height: 100vh;
-  margin-left: calc(50% - 50vw);
-  margin-right: 0;
-  padding: 0;
-  position: relative;
   background: #f4f8fd;
   color: #12284a;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+  font-size: 16px;
 }
-
-/* header */
 
 .cp-header {
   width: 100%;
   height: 78px;
-  background: #ffffff;
+  background: #fff;
   border-bottom: 1px solid #e0e9f3;
   box-shadow: 0 4px 18px rgba(26, 65, 112, 0.07);
   position: sticky;
@@ -1272,14 +1521,11 @@ const styles = `
 
 .cp-header-inner {
   width: 100%;
-  max-width: none;
   height: 100%;
-  margin: 0;
   padding: 0 34px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-sizing: border-box;
 }
 
 .cp-brand {
@@ -1313,7 +1559,6 @@ const styles = `
   color: #173d6b;
   font-size: 19px;
   font-weight: 850;
-  letter-spacing: -0.3px;
 }
 
 .cp-brand span {
@@ -1322,7 +1567,6 @@ const styles = `
   color: #7890ad;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.2px;
 }
 
 .cp-primary-btn,
@@ -1339,13 +1583,8 @@ const styles = `
 }
 
 .cp-primary-btn {
-  color: #ffffff;
-  background: linear-gradient(
-    100deg,
-    #1458d8,
-    #1673e8,
-    #10a5df
-  );
+  color: #fff;
+  background: linear-gradient(100deg, #1458d8, #1673e8, #10a5df);
   box-shadow: 0 7px 18px rgba(22, 103, 224, 0.22);
 }
 
@@ -1368,102 +1607,130 @@ const styles = `
   min-width: 155px;
 }
 
-/* main */
-
 .cp-main {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 48px 34px 75px;
+  width: min(100% - 64px, 1600px);
+  margin: 0 auto;
+  padding: 28px 0 70px;
   min-height: calc(100vh - 78px);
-  box-sizing: border-box;
 }
-
-.cp-page-heading {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 42px;
-}
-
-.cp-page-heading span,
-.cp-add-heading > span {
-  color: #0878dc;
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 2px;
-}
-
-.cp-page-heading h1,
-.cp-add-heading h1 {
-  margin: 10px 0 9px;
-  color: #153b68;
-  font-size: 34px;
-  line-height: 1.15;
-  font-weight: 900;
-  letter-spacing: -1px;
-}
-
-.cp-page-heading p,
-.cp-add-heading p {
-  margin: 0;
-  color: #7086a2;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* section heading */
 
 .cp-saved-section {
   width: 100%;
+  padding: 28px;
+  background: #f8fbff;
+  border: 1px solid #e2eaf3;
+  border-radius: 22px;
+  box-shadow: 0 12px 35px rgba(31, 71, 116, 0.06);
 }
 
 .cp-section-heading {
-  width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 20px;
+  gap: 18px;
+  margin-bottom: 14px;
 }
 
 .cp-section-heading h2 {
-  margin: 0 0 6px;
-  color: #163c68;
-  font-size: 23px;
-  font-weight: 850;
+  margin: 0 0 5px;
+  color: #102b4d;
+  font-size: 27px;
+  line-height: 1.2;
+  font-weight: 900;
 }
 
 .cp-section-heading p {
   margin: 0;
   color: #7890aa;
-  font-size: 13px;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
 .cp-count {
-  padding: 11px 17px;
+  padding: 9px 14px;
   border-radius: 20px;
   background: #eaf3ff;
   color: #1169d0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 850;
+  white-space: nowrap;
 }
 
-/* tabs */
+.cp-search-wrap {
+  position: relative;
+  width: 100%;
+  min-height: 58px;
+  margin: 22px 0 16px;
+  border: 1px solid #cbd9e8;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 7px 20px rgba(38, 75, 113, 0.07);
+}
+
+.cp-search-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 52px 0 50px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: #173452;
+  outline: none;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cp-search-input:focus {
+  box-shadow: 0 0 0 3px rgba(47, 102, 208, 0.1);
+}
+
+.cp-search-input::placeholder {
+  color: #77869a;
+  font-size: 15px;
+}
+
+.cp-search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-52%);
+  font-size: 26px;
+  color: #66758b;
+  pointer-events: none;
+}
+
+.cp-search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: #eef3f9;
+  color: #42516a;
+  font-size: 22px;
+  cursor: pointer;
+}
 
 .cp-tabs {
+  width: 100%;
   display: flex;
+  justify-content: flex-end;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 7px;
+  margin: 0 0 20px;
 }
 
 .cp-tabs button {
-  min-height: 39px;
-  padding: 0 19px;
-  border-radius: 9px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
   border: 1px solid #d8e4f1;
-  background: #ffffff;
+  background: #fff;
   color: #526d8c;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   cursor: pointer;
   transition: 0.2s ease;
@@ -1475,732 +1742,796 @@ const styles = `
 }
 
 .cp-tabs button.active {
-  border-color: #1474df;
-  color: #ffffff;
-  background: linear-gradient(
-    100deg,
-    #135dd9,
-    #1596e4
-  );
+  border-color: #1767c9;
+  color: #fff;
+  background: #1767c9;
   box-shadow: 0 5px 13px rgba(21, 105, 221, 0.2);
 }
-
-/* college cards */
 
 .cp-college-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 22px;
 }
 
 .cp-college-card {
+  width: 100%;
   min-width: 0;
-  min-height: 455px;
-  background: #ffffff;
-  border: 1px solid #dfe8f2;
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 5px 20px rgba(42, 79, 119, 0.06);
+  min-height: 350px;
+  padding: 22px;
+  border-radius: 20px;
+  border: 1px solid #dce6f1;
+  box-shadow: 0 9px 25px rgba(34, 74, 117, 0.08);
+  background: #fff;
   display: flex;
   flex-direction: column;
-  transition: 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .cp-college-card:hover {
-  transform: translateY(-3px);
-  border-color: #c7ddf5;
-  box-shadow: 0 12px 30px rgba(42, 79, 119, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(34, 74, 117, 0.14);
+  border-color: #bcd5ee;
 }
 
 .cp-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  width: 100%;
+  min-height: 104px;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  column-gap: 16px;
+  align-items: start;
 }
 
 .cp-college-logo {
-  width: 62px;
-  height: 62px;
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  background: #f5f8fc;
   border: 1px solid #dce6f1;
-  background: #ffffff;
-  border-radius: 13px;
+  box-shadow: 0 7px 16px rgba(27, 66, 108, 0.09);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
 }
 
 .cp-college-logo img {
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
+  display: block;
 }
 
 .cp-college-logo span {
-  color: #176bd2;
-  font-size: 24px;
-  font-weight: 900;
-}
-
-.cp-college-logo.fallback-logo::after {
-  content: "C";
-  color: #176bd2;
-  font-size: 24px;
-  font-weight: 900;
-}
-
-.cp-rank {
-  min-width: 65px;
-  min-height: 38px;
-  padding: 0 10px;
-  border-radius: 9px;
-  background: #edf5ff;
-  color: #1267cf;
-  display: flex;
+  width: 100%;
+  height: 100%;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  color: #fff;
+  background: linear-gradient(145deg, #173d82, #2d63c2);
+  font-size: 20px;
   font-weight: 900;
-  text-align: center;
+}
+
+.cp-card-heading {
+  min-width: 0;
+  text-align: left;
+}
+
+.cp-card-category-row {
+  width: 100%;
+  min-height: 31px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
 }
 
 .cp-category {
   width: fit-content;
-  display: inline-flex;
-  align-items: center;
-  min-height: 29px;
+  min-height: 31px;
   padding: 0 11px;
   border-radius: 7px;
   background: #edf5ff;
-  color: #1467cb;
+  color: #2165b4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 10px;
   font-weight: 900;
-  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.cp-college-card h3 {
-  min-height: 48px;
-  margin: 0;
-  color: #123b69;
-  font-size: 17px;
-  line-height: 1.4;
-  font-weight: 850;
+.cp-card-heading h3 {
+  margin: 8px 0 0;
+  color: #122b4b;
+  text-align: left;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 900;
+  overflow-wrap: anywhere;
 }
 
 .cp-location {
-  min-height: 38px;
-  margin: 8px 0 15px;
-  color: #617b99;
-  font-size: 12px;
-  line-height: 1.5;
+  margin: 7px 0 0;
+  color: #667d98;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .cp-location span {
-  color: #176bd3;
   margin-right: 6px;
+  color: #617994;
   font-size: 8px;
 }
 
+.cp-card-divider {
+  width: 100%;
+  height: 1px;
+  flex: 0 0 auto;
+  background: #e8edf3;
+  margin: 0 0 17px;
+}
+
 .cp-card-details {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border: 1px solid #e1e9f2;
-  border-radius: 9px;
-  overflow: hidden;
-  flex: 1;
+  gap: 12px;
 }
 
-.cp-detail-item {
-  min-height: 75px;
-  padding: 12px;
-  background: #ffffff;
-  border-right: 1px solid #e1e9f2;
-  border-bottom: 1px solid #e1e9f2;
+.cp-card-details .cp-detail-item {
+  min-width: 0;
+  min-height: 70px;
+  padding: 12px 10px;
+  border: 1px solid #edf1f5;
+  border-radius: 10px;
+  background: #f7f9fc;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-}
-
-.cp-detail-item:nth-child(2n) {
-  border-right: 0;
-}
-
-.cp-detail-item:nth-last-child(-n + 2) {
-  border-bottom: 0;
+  text-align: center;
 }
 
 .cp-detail-item span {
-  color: #8196ae;
-  font-size: 9px;
-  line-height: 1.3;
+  display: block;
+  margin-bottom: 8px;
+  color: #7a8799;
+  font-size: 10px;
+  line-height: 1.2;
   font-weight: 900;
   letter-spacing: 0.7px;
-  margin-bottom: 6px;
 }
 
 .cp-detail-item strong {
-  color: #213f63;
-  font-size: 11px;
+  display: block;
+  max-width: 100%;
+  color: #1a304d;
+  font-size: 13px;
   line-height: 1.4;
   font-weight: 850;
-  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.cp-card-footer {
+  margin-top: auto;
+  padding-top: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cp-established {
+  min-width: 0;
+  color: #6f8195;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .cp-learn-btn {
-  width: 100%;
-  height: 44px;
-  margin-top: 15px;
-  border: 1px solid #d3e5fa;
-  border-radius: 9px;
-  background: #f3f8fe;
-  color: #1469cf;
-  font-size: 12px;
-  font-weight: 900;
+  min-height: 42px;
+  flex: 0 0 auto;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: #122a4a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 5px;
+  white-space: nowrap;
   transition: 0.2s ease;
-}
-
-.cp-learn-btn:hover {
-  background: #e7f2ff;
-  border-color: #bcd9f7;
 }
 
 .cp-learn-btn span {
   font-size: 17px;
+  line-height: 1;
 }
 
-/* empty */
+.cp-learn-btn:hover {
+  background: #1a4b87;
+  transform: translateY(-1px);
+}
 
 .cp-empty {
-  min-height: 260px;
-  border: 1px dashed #cbdceb;
-  border-radius: 14px;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding: 60px 20px;
   text-align: center;
 }
 
 .cp-empty h3 {
   margin: 0 0 8px;
-  color: #163c68;
-  font-size: 20px;
+  color: #173b65;
 }
 
 .cp-empty p {
   margin: 0 0 20px;
-  color: #7b90a8;
-  font-size: 13px;
+  color: #71859e;
 }
 
-/* modal */
+.cp-explore-more-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 30px 0 4px;
+}
 
+.cp-explore-more-btn {
+  min-height: 48px;
+  padding: 0 24px;
+  border: 1px solid #1767c9;
+  border-radius: 12px;
+  background: #1767c9;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 850;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 9px 20px rgba(23, 103, 201, 0.2);
+  transition: 0.2s ease;
+}
+
+.cp-explore-more-btn:hover {
+  transform: translateY(-2px);
+  background: #0f55ab;
+}
+
+.cp-explore-more-btn span {
+  font-size: 19px;
+}
+
+.cp-explore-more-btn.secondary {
+  background: #fff;
+  color: #1767c9;
+  box-shadow: none;
+}
+
+.cp-explore-more-wrap p {
+  margin: 0;
+  color: #70839a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Details modal */
 .cp-modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 500;
-  padding: 30px;
-  background: rgba(8, 24, 44, 0.68);
+  padding: 24px 16px;
+  background: rgba(8, 25, 48, 0.62);
   backdrop-filter: blur(5px);
   overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .cp-modal {
-  width: min(1200px, 100%);
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 19px;
-  box-shadow: 0 25px 70px rgba(4, 25, 50, 0.3);
-  padding: 32px;
+  width: min(100%, 980px);
+  margin: 12px auto;
   position: relative;
+  padding: 28px 30px 30px;
+  border: 1px solid #e1e8f0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.25);
+  color: #17314f;
 }
 
 .cp-modal-close {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 39px;
-  height: 39px;
-  border: 1px solid #dbe6f1;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dce6ef;
   border-radius: 50%;
-  background: #f5f8fc;
-  color: #49647f;
-  font-size: 25px;
+  background: #f5f8fb;
+  color: #34516f;
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
 }
 
 .cp-modal-head {
-  display: flex;
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 16px;
   align-items: center;
-  gap: 18px;
-  padding-right: 55px;
-  margin-bottom: 28px;
+  padding-right: 48px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8edf3;
 }
 
 .cp-modal-logo {
-  width: 78px;
-  height: 78px;
-  flex-shrink: 0;
-  border: 1px solid #dce7f1;
+  width: 70px;
+  height: 70px;
   border-radius: 15px;
+  background: linear-gradient(145deg, #173d82, #2d63c2);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 7px 16px rgba(23, 72, 145, 0.18);
 }
 
 .cp-modal-logo img {
-  width: 58px;
-  height: 58px;
+  width: 54px;
+  height: 54px;
   object-fit: contain;
 }
 
 .cp-modal-logo span {
-  color: #176bd3;
-  font-size: 29px;
+  color: #fff;
+  font-size: 21px;
   font-weight: 900;
 }
 
-.cp-modal-head .cp-category {
-  margin-bottom: 7px;
+.cp-modal-title-wrap {
+  min-width: 0;
+  text-align: left;
+}
+
+.cp-modal-title-wrap .cp-category {
+  margin-bottom: 5px;
 }
 
 .cp-modal-head h2 {
-  margin: 0 0 5px;
-  color: #143c69;
-  font-size: 25px;
-  line-height: 1.3;
+  margin: 0;
+  color: #122e51;
+  font-size: 27px;
+  line-height: 1.25;
+  font-weight: 900;
+  overflow-wrap: anywhere;
 }
 
 .cp-modal-head p {
-  margin: 0;
-  color: #7188a2;
-  font-size: 13px;
+  margin: 6px 0 0;
+  color: #71859d;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.cp-modal-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  margin: 18px 0 10px;
+}
+
+.cp-modal-summary > div {
+  min-width: 0;
+  min-height: 64px;
+  padding: 16px;
+  border: 1px solid #e5ebf1;
+  border-radius: 9px;
+  background: #f7f9fc;
+}
+
+.cp-modal-summary span {
+  display: block;
+  margin-bottom: 7px;
+  color: #7b8ba0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+}
+
+.cp-modal-summary strong {
+  display: block;
+  color: #203953;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 850;
+  overflow-wrap: anywhere;
 }
 
 .cp-detail-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border: 1px solid #e1e9f2;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin: 10px 0 24px;
 }
 
 .cp-detail-grid .cp-detail-item {
-  min-height: 88px;
-  border-right: 1px solid #e1e9f2;
-  border-bottom: 1px solid #e1e9f2;
+  min-width: 0;
+  min-height: 78px;
+  padding: 14px;
+  border: 1px solid #e5ebf1;
+  border-radius: 9px;
+  background: #fff;
+  text-align: left;
 }
 
-.cp-detail-grid .cp-detail-item:nth-child(2n) {
-  border-right: 1px solid #e1e9f2;
+.cp-detail-grid .cp-detail-item span {
+  font-size: 11px;
 }
 
-.cp-detail-grid .cp-detail-item:nth-child(4n) {
-  border-right: 0;
+.cp-detail-grid .cp-detail-item strong {
+  font-size: 15px;
 }
-
-/* courses */
 
 .cp-modal-section {
-  margin-bottom: 28px;
+  margin-top: 20px;
 }
 
 .cp-modal-section-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  gap: 15px;
+  margin-bottom: 10px;
 }
 
-.cp-modal-section-title h3 {
+.cp-modal-section-title h3,
+.cp-info-box h3 {
   margin: 0;
-  color: #173e69;
-  font-size: 18px;
+  color: #173b64;
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 900;
 }
 
 .cp-modal-section-title span {
-  color: #7b8fa8;
-  font-size: 11px;
-  font-weight: 700;
+  color: #71869f;
+  font-size: 12px;
 }
 
 .cp-course-table {
-  width: 100%;
-  border: 1px solid #e0e8f1;
-  border-radius: 9px;
   overflow: hidden;
+  border: 1px solid #e2e9f0;
+  border-radius: 10px;
 }
 
 .cp-course-head,
 .cp-course-row {
   display: grid;
-  grid-template-columns:
-    minmax(0, 1.8fr)
-    minmax(120px, 0.7fr)
-    minmax(160px, 0.8fr);
-  gap: 15px;
+  grid-template-columns: minmax(0, 2.2fr) 120px 150px;
+  gap: 14px;
+  padding: 11px 14px;
   align-items: center;
-  padding: 14px 16px;
+  text-align: left;
 }
 
 .cp-course-head {
-  background: #f1f6fc;
-  color: #637c98;
-  font-size: 10px;
+  background: #f3f7fb;
+  color: #6c7f95;
+  font-size: 14px;
   font-weight: 900;
-  letter-spacing: 0.7px;
   text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .cp-course-row {
-  border-top: 1px solid #e6edf4;
-  color: #617995;
-  font-size: 12px;
+  min-height: 48px;
+  border-top: 1px solid #e8eef4;
+  color: #526b84;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .cp-course-row strong {
-  color: #1d426a;
-  font-size: 12px;
+  color: #173b62;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 850;
+}
+
+.cp-course-row span {
+  font-size: 14px;
 }
 
 .cp-fee-note {
   margin: 9px 0 0;
-  color: #8394a9;
-  font-size: 10px;
+  color: #7a8da2;
+  font-size: 12px;
+  line-height: 1.45;
 }
-
-/* info */
 
 .cp-info-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 17px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .cp-info-box {
-  min-height: 190px;
-  padding: 20px;
-  border: 1px solid #e1e9f2;
-  border-radius: 11px;
-  background: #fbfdff;
-}
-
-.cp-info-box h3 {
-  margin: 0 0 16px;
-  color: #183e69;
-  font-size: 17px;
+  padding: 17px;
+  border: 1px solid #e2e9f0;
+  border-radius: 12px;
+  background: #f8fafc;
 }
 
 .cp-info-box ul {
-  list-style: none;
+  margin: 13px 0 0;
   padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  list-style: none;
 }
 
 .cp-info-box li {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  align-items: start;
-  gap: 7px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 9px;
+  color: #435d79;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .cp-info-box li span {
-  color: #1482dd;
-  font-size: 14px;
+  flex: 0 0 auto;
+  color: #1672d3;
   font-weight: 900;
-  line-height: 1.4;
 }
 
 .cp-info-box li p {
   margin: 0;
-  color: #607894;
-  font-size: 12px;
-  line-height: 1.55;
 }
 
-/* admission */
-
 .cp-admission-box {
-  min-height: 88px;
-  padding: 17px 20px;
-  border-radius: 11px;
-  background: linear-gradient(
-    100deg,
-    #eef6ff,
-    #f3faff
-  );
-  border: 1px solid #d7e8fa;
+  margin-top: 18px;
+  padding: 17px;
+  border-radius: 12px;
+  background: #102b4b;
+  color: #fff;
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 20px;
   align-items: center;
 }
 
 .cp-admission-box span {
-  color: #6d88a5;
-  display: block;
-  margin-bottom: 5px;
-  font-size: 9px;
+  color: #91b8e7;
+  font-size: 10px;
   font-weight: 900;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
 }
 
 .cp-admission-box h3 {
-  margin: 0;
-  color: #184576;
+  margin: 5px 0 0;
+  color: #fff;
   font-size: 14px;
+  line-height: 1.35;
 }
 
 .cp-admission-box a {
-  color: #ffffff;
-  background: #176bd7;
-  border-radius: 8px;
-  padding: 12px 17px;
-  font-size: 11px;
-  font-weight: 800;
+  color: #fff;
   text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
   white-space: nowrap;
 }
 
-/* add page */
-
+/* Add college form */
 .cp-add-page {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 48px 34px 75px;
-  min-height: calc(100vh - 78px);
-  box-sizing: border-box;
+  width: min(100%, 1050px);
+  margin: 0 auto;
+  padding: 42px 24px 70px;
 }
 
 .cp-add-heading {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 34px;
+  margin-bottom: 30px;
+}
+
+.cp-add-heading > span {
+  color: #1769d2;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.cp-add-heading h1 {
+  margin: 8px 0;
+  color: #173b65;
+  font-size: 36px;
+}
+
+.cp-add-heading p {
+  margin: 0;
+  color: #7890aa;
 }
 
 .cp-form {
-  width: 100%;
-  max-width: 1450px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .cp-form-card {
-  width: 100%;
-  padding: 28px;
-  margin-bottom: 19px;
-  border: 1px solid #dfe8f2;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 5px 20px rgba(42, 79, 119, 0.05);
+  padding: 24px;
+  border: 1px solid #dfe8f1;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 6px 22px rgba(42, 79, 119, 0.06);
 }
 
 .cp-form-title {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 25px;
+  gap: 13px;
+  margin-bottom: 22px;
 }
 
 .cp-number {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
+  background: #eaf3ff;
+  color: #1268cf;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #176bd5;
-  background: #eaf3ff;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 900;
 }
 
 .cp-form-title h2 {
   margin: 0 0 4px;
-  color: #183e69;
-  font-size: 19px;
+  color: #173b65;
+  font-size: 18px;
 }
 
 .cp-form-title p {
   margin: 0;
-  color: #8194ab;
-  font-size: 12px;
+  color: #7890aa;
+  font-size: 11px;
 }
 
 .cp-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 19px;
+  gap: 15px;
 }
 
 .cp-form-grid label {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 }
 
 .cp-form-grid label > span {
-  color: #294a6d;
-  font-size: 12px;
-  font-weight: 800;
+  color: #344f6d;
+  font-size: 11px;
+  font-weight: 850;
 }
 
 .cp-form-grid input,
 .cp-form-grid select,
 .cp-form-grid textarea {
   width: 100%;
-  border: 1px solid #d8e3ee;
+  border: 1px solid #d9e4ee;
   border-radius: 9px;
-  background: #f9fbfd;
-  color: #203f61;
+  background: #fbfdff;
+  color: #193653;
   outline: none;
-  font-family: inherit;
-  font-size: 13px;
-  transition: 0.2s ease;
+  font: inherit;
+  font-size: 12px;
+  padding: 11px 12px;
 }
 
 .cp-form-grid input,
 .cp-form-grid select {
-  height: 46px;
-  padding: 0 14px;
+  height: 43px;
 }
 
 .cp-form-grid textarea {
-  min-height: 110px;
-  padding: 13px 14px;
+  min-height: 105px;
   resize: vertical;
-}
-
-.cp-form-grid input::placeholder,
-.cp-form-grid textarea::placeholder {
-  color: #a0afc0;
 }
 
 .cp-form-grid input:focus,
 .cp-form-grid select:focus,
 .cp-form-grid textarea:focus {
-  border-color: #4d9bea;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(55, 143, 232, 0.1);
-}
-
-.cp-form-grid small {
-  color: #8a9caf;
-  font-size: 10px;
+  border-color: #6ba8e9;
+  box-shadow: 0 0 0 3px rgba(45, 126, 214, 0.1);
 }
 
 .cp-full {
   grid-column: 1 / -1;
 }
 
+.cp-form-grid small {
+  color: #8193a8;
+  font-size: 9px;
+}
+
 .cp-info-note {
   display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  padding: 14px 16px;
-  margin-bottom: 20px;
-  border: 1px solid #d6e8fb;
+  gap: 7px;
+  margin-bottom: 17px;
+  padding: 11px 13px;
   border-radius: 9px;
-  background: #f0f7ff;
-  color: #597591;
-  font-size: 11px;
-  line-height: 1.6;
+  background: #f2f7fd;
+  color: #607994;
+  font-size: 10px;
+  line-height: 1.5;
 }
 
 .cp-info-note strong {
-  color: #166bd2;
+  color: #185fae;
   white-space: nowrap;
 }
 
 .cp-form-actions {
-  width: 100%;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
+  gap: 10px;
+  margin-top: 2px;
 }
 
 .cp-cancel-btn {
-  color: #58718e;
-  background: #ffffff;
-  border: 1px solid #d6e2ee;
+  color: #526c87;
+  background: #fff;
+  border: 1px solid #d8e3ed;
 }
 
-.cp-cancel-btn:hover {
-  background: #f2f6fa;
-}
-
-/* responsive */
-
-@media (max-width: 1450px) {
-  .cp-college-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 1050px) {
-  .cp-header-inner {
-    padding: 0 24px;
+@media (max-width: 1100px) {
+  .cp-main {
+    width: calc(100% - 36px);
   }
 
-  .cp-main,
-  .cp-add-page {
-    padding-left: 24px;
-    padding-right: 24px;
+  .cp-saved-section {
+    padding: 24px;
   }
 
   .cp-college-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .cp-detail-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .cp-detail-grid .cp-detail-item:nth-child(4n) {
-    border-right: 1px solid #e1e9f2;
-  }
-
-  .cp-detail-grid .cp-detail-item:nth-child(2n) {
-    border-right: 0;
-  }
-
-  .cp-info-columns {
-    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 720px) {
   .cp-header {
-    height: 72px;
+    height: auto;
+    min-height: 70px;
   }
 
   .cp-header-inner {
-    padding: 0 16px;
-  }
-
-  .cp-brand {
-    gap: 10px;
+    min-height: 70px;
+    padding: 10px 16px;
+    gap: 12px;
   }
 
   .cp-brand-logo {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
   }
 
   .cp-brand strong {
@@ -2208,91 +2539,94 @@ const styles = `
   }
 
   .cp-brand span {
-    font-size: 7px;
+    display: none;
   }
 
   .cp-add-btn {
     min-width: auto;
-    padding: 0 13px;
-    font-size: 10px;
+    padding: 0 12px;
+    font-size: 11px;
   }
 
-  .cp-main,
-  .cp-add-page {
-    min-height: calc(100vh - 72px);
-    padding: 32px 16px 50px;
+  .cp-main {
+    width: calc(100% - 24px);
+    padding: 18px 0 45px;
   }
 
-  .cp-page-heading {
-    margin-bottom: 30px;
-  }
-
-  .cp-page-heading h1,
-  .cp-add-heading h1 {
-    font-size: 29px;
-  }
-
-  .cp-page-heading p,
-  .cp-add-heading p {
-    font-size: 12px;
+  .cp-saved-section {
+    padding: 18px;
+    border-radius: 17px;
   }
 
   .cp-section-heading {
     align-items: flex-start;
-    gap: 12px;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .cp-section-heading h2 {
-    font-size: 20px;
+    font-size: 23px;
   }
 
-  .cp-section-heading p {
-    font-size: 11px;
+  .cp-tabs {
+    justify-content: flex-start;
   }
 
   .cp-college-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 
   .cp-college-card {
-    min-height: auto;
+    min-height: 350px;
+    height: auto;
     padding: 19px;
   }
 
-  .cp-college-card h3 {
-    min-height: auto;
-    font-size: 17px;
-  }
-
-  .cp-tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 5px;
-  }
-
-  .cp-tabs button {
-    flex-shrink: 0;
+  .cp-card-heading h3 {
+    font-size: 19px;
   }
 
   .cp-modal-overlay {
-    padding: 12px;
+    padding: 10px;
   }
 
   .cp-modal {
-    padding: 23px 17px;
-    border-radius: 14px;
+    margin: 5px auto;
+    padding: 20px 16px 22px;
+    border-radius: 15px;
   }
 
   .cp-modal-head {
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 12px;
     align-items: flex-start;
+    padding-right: 38px;
+  }
+
+  .cp-modal-logo {
+    width: 58px;
+    height: 58px;
+    border-radius: 12px;
+  }
+
+  .cp-modal-logo img {
+    width: 45px;
+    height: 45px;
   }
 
   .cp-modal-head h2 {
-    font-size: 20px;
+    font-size: 21px;
   }
 
+  .cp-modal-summary,
   .cp-detail-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cp-info-columns,
+  .cp-admission-box {
+    grid-template-columns: 1fr;
   }
 
   .cp-course-table {
@@ -2301,19 +2635,15 @@ const styles = `
 
   .cp-course-head,
   .cp-course-row {
-    min-width: 680px;
+    min-width: 600px;
   }
 
-  .cp-admission-box {
-    grid-template-columns: 1fr;
-  }
-
-  .cp-admission-box a {
-    width: fit-content;
+  .cp-add-page {
+    padding: 28px 14px 50px;
   }
 
   .cp-form-card {
-    padding: 20px;
+    padding: 18px 15px;
   }
 
   .cp-form-grid {
@@ -2325,87 +2655,69 @@ const styles = `
   }
 
   .cp-form-actions {
-    justify-content: stretch;
+    flex-direction: column-reverse;
   }
 
   .cp-form-actions button {
-    flex: 1;
+    width: 100%;
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 430px) {
   .cp-header-inner {
-    gap: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .cp-brand {
-    min-width: 0;
-  }
-
-  .cp-brand > div:last-child {
-    min-width: 0;
+    gap: 8px;
   }
 
   .cp-brand strong {
     font-size: 14px;
   }
 
-  .cp-brand span {
-    display: none;
-  }
-
-  .cp-brand-logo {
-    width: 39px;
-    height: 39px;
-  }
-
   .cp-add-btn {
-    padding: 0 10px;
-    font-size: 9px;
+    padding: 0 9px;
   }
 
-  .cp-page-heading h1,
-  .cp-add-heading h1 {
-    font-size: 26px;
+  .cp-college-card {
+    padding: 15px;
   }
 
-  .cp-section-heading {
-    flex-direction: column;
+  .cp-card-top {
+    grid-template-columns: 58px minmax(0, 1fr);
+    column-gap: 12px;
   }
 
-  .cp-count {
-    align-self: flex-start;
+  .cp-college-logo {
+    width: 58px;
+    height: 58px;
   }
 
+  .cp-college-logo img {
+    width: 46px;
+    height: 46px;
+  }
+
+  .cp-card-footer {
+    gap: 8px;
+  }
+
+  .cp-learn-btn {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .cp-modal-summary,
   .cp-detail-grid {
     grid-template-columns: 1fr;
   }
 
-  .cp-detail-grid .cp-detail-item,
-  .cp-detail-grid .cp-detail-item:nth-child(2n),
-  .cp-detail-grid .cp-detail-item:nth-child(4n) {
-    border-right: 0;
-  }
-
-  .cp-info-columns {
-    gap: 11px;
-  }
-
-  .cp-info-box {
-    padding: 17px;
-  }
-
-  .cp-form-actions {
+  .cp-modal-section-title {
+    align-items: flex-start;
     flex-direction: column;
-  }
-
-  .cp-form-actions button {
-    width: 100%;
-  }
-
-  .cp-secondary-btn {
-    padding: 0 12px;
-    font-size: 10px;
+    gap: 5px;
   }
 }
 `;

@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import StudentManagement from "./StudentManagement";
+
 
 const adminStyles = String.raw`/* =========================================================
    GLOBAL ADMIN
@@ -1883,7 +1886,7 @@ function AdminLogin({ onLogin }) {
    ADMIN SIDEBAR
 ========================================================= */
 
-function AdminSidebar({ activePage, setActivePage, onLogout }) {
+function AdminSidebar({ activePage, setActivePage, onLogout, navigate }) {
   const menuItems = [
     { name: "Dashboard", icon: "⌂" },
     { name: "Students", icon: "♙" },
@@ -1921,7 +1924,15 @@ function AdminSidebar({ activePage, setActivePage, onLogout }) {
             className={`sidebar-item ${
               activePage === item.name ? "active" : ""
             }`}
-            onClick={() => setActivePage(item.name)}
+            onClick={() => {
+              if (item.name === "Students") {
+                navigate("/admin/students");
+              } else if (item.name === "Colleges") {
+                navigate("/admin/colleges");
+              } else {
+                setActivePage(item.name);
+              }
+            }}
           >
             <span className="sidebar-icon">{item.icon}</span>
 
@@ -2118,6 +2129,7 @@ function SearchResult({ item, onSelect }) {
 ========================================================= */
 
 function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage }) {
+  const navigate = useNavigate();
   const [showSearchResults, setShowSearchResults] = useState(false);
 
   const filteredResults = adminSearchData.filter((item) => {
@@ -2143,6 +2155,12 @@ function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage }) {
   const handleSearchSelect = (item) => {
     setSearchQuery(item.title);
     setShowSearchResults(false);
+
+    if (item.page === "Colleges") {
+      navigate("/admin/colleges");
+      return;
+    }
+
     setActivePage(item.page);
   };
 
@@ -2970,20 +2988,26 @@ function AdminSection({ title }) {
    MAIN ADMIN DASHBOARD
 ========================================================= */
 function AdminDashboard() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return sessionStorage.getItem("adminLoggedIn") === "true";
+  });
 
   const [activePage, setActivePage] = useState("Dashboard");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogin = () => {
-    localStorage.setItem("adminLoggedIn", "true");
+    sessionStorage.setItem("adminLoggedIn", "true");
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("adminLoggedIn");
+    sessionStorage.removeItem("adminLoggedIn");
     setIsLoggedIn(false);
     setActivePage("Dashboard");
+    setSearchQuery("");
+    navigate("/admin/dashboard", { replace: true });
   };
 
   if (!isLoggedIn) {
@@ -3003,6 +3027,7 @@ function AdminDashboard() {
           activePage={activePage}
           setActivePage={setActivePage}
           onLogout={handleLogout}
+          navigate={navigate}
         />
 
         <div className="admin-main">

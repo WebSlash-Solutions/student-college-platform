@@ -1,32 +1,36 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import StudentManagement from "../pages/admin/StudentManagement";
+import CollegeManagement from "../pages/admin/CollegeManagement";
+
+import StudentDashboard from "../pages/student/StudentDashboard";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* Public Pages */}
-        <Route path="/" element={<h1>Welcome to Student College Platform</h1>} />
-        <Route path="/about" element={<h1>About</h1>} />
-        <Route path="/contact" element={<h1>Contact</h1>} />
-        <Route path="/login" element={<h1>Login</h1>} />
-
-        {/* Student */}
+        {/* ADMIN */}
         <Route
-          path="/student"
-          element={<h1>Student Dashboard</h1>}
+          path="/admin/dashboard"
+          element={<AdminDashboard />}
         />
 
-        {/* College */}
         <Route
-          path="/college"
-          element={<h1>College Dashboard</h1>}
+          path="/admin/student-management"
+          element={<StudentManagement />}
         />
 
-        {/* Admin */}
         <Route
-          path="/admin"
-          element={<h1>Admin Dashboard</h1>}
+          path="/admin/college-management"
+          element={<CollegeManagement />}
+        />
+
+        {/* STUDENT */}
+        <Route
+          path="/student/dashboard"
+          element={<StudentDashboard />}
         />
 
       </Routes>

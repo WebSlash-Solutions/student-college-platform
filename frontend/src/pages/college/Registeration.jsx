@@ -1,6 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const PENDING_COLLEGE_KEY = "campusconnect_pending_college_registration";
+const COLLEGE_ACCOUNTS_KEY = "campusconnect_college_accounts";
+const COLLEGE_SAVED_KEY = "campusconnect_custom_colleges";
+const COLLEGE_LOGIN_KEY = "campusconnect_college_session";
+
+const hashPassword = async (password) => {
+  const data = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+};
+
 /* =========================
    INDIAN STATES
 ========================= */
@@ -1009,6 +1022,9 @@ function Registeration() {
     affiliation: "",
     accreditation: "",
     registrationDetails: "",
+    collegeCategory: "Engineering",
+    password: "",
+    confirmPassword: "",
   });
 
   const [loginData, setLoginData] = useState({
@@ -1043,7 +1059,7 @@ function Registeration() {
      REGISTER
   ========================= */
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const requiredFields = [
@@ -1055,10 +1071,13 @@ function Registeration() {
       "state",
       "collegeType",
       "affiliation",
+      "collegeCategory",
+      "password",
+      "confirmPassword",
     ];
 
     const missingField = requiredFields.find(
-      (field) => !formData[field].trim()
+      (field) => !String(formData[field] || "").trim()
     );
 
     if (missingField) {
@@ -1066,8 +1085,47 @@ function Registeration() {
       return;
     }
 
+    if (formData.password.length < 6) {
+      alert("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Password and confirm password do not match.");
+      return;
+    }
+
+    const accounts = JSON.parse(
+      localStorage.getItem(COLLEGE_ACCOUNTS_KEY) || "[]"
+    );
+
+    const email = formData.officialEmail.trim().toLowerCase();
+
+    if (accounts.some((account) => account.email === email)) {
+      alert("This official email is already registered. Please login.");
+      setLoginData({ email, password: "" });
+      setShowLogin(true);
+      return;
+    }
+
+    const passwordHash = await hashPassword(formData.password);
+
+    const pendingRegistration = {
+      ...formData,
+      officialEmail: email,
+      password: undefined,
+      confirmPassword: undefined,
+      passwordHash,
+      registeredAt: new Date().toISOString(),
+    };
+
+    localStorage.setItem(
+      PENDING_COLLEGE_KEY,
+      JSON.stringify(pendingRegistration)
+    );
+
     setLoginData({
-      email: formData.officialEmail,
+      email,
       password: "",
     });
 
@@ -1083,15 +1141,121 @@ function Registeration() {
      LOGIN
   ========================= */
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!loginData.email.trim() || !loginData.password.trim()) {
+    const email = loginData.email.trim().toLowerCase();
+    const password = loginData.password;
+
+    if (!email || !password) {
       alert("Please enter your email and password.");
       return;
     }
 
-    navigate("/college/dashboard");
+    const passwordHash = await hashPassword(password);
+
+    const accounts = JSON.parse(
+      localStorage.getItem(COLLEGE_ACCOUNTS_KEY) || "[]"
+    );
+
+    const pending = JSON.parse(
+      localStorage.getItem(PENDING_COLLEGE_KEY) || "null"
+    );
+
+    let account = accounts.find((item) => item.email === email);
+
+    // Complete a newly registered college only after successful login.
+    if (!account && pending && pending.officialEmail === email) {
+      if (pending.passwordHash !== passwordHash) {
+        alert("Incorrect password.");
+        return;
+      }
+
+      account = {
+        id: Date.now(),
+        email,
+        passwordHash,
+        collegeName: pending.collegeName,
+        registeredAt: pending.registeredAt,
+      };
+
+      localStorage.setItem(
+        COLLEGE_ACCOUNTS_KEY,
+        JSON.stringify([account, ...accounts])
+      );
+
+      const savedColleges = JSON.parse(
+        localStorage.getItem(COLLEGE_SAVED_KEY) || "[]"
+      );
+
+      const newCollege = {
+        id: `registered-${account.id}`,
+        name: pending.collegeName,
+        category: pending.collegeCategory || "Other",
+        location: `${pending.address}, ${pending.state}`.replace(/^, |, $/g, ""),
+        district: pending.district,
+        pincode: "",
+        established: "",
+        type: pending.collegeType,
+        affiliation: pending.affiliation,
+        accreditation: pending.accreditation || "Not available",
+        ranking: "Not available",
+        rankingLabel: "Recognition / Ranking",
+        counsellingCode: "",
+        website: pending.website,
+        logo: pending.website
+          ? `https://www.google.com/s2/favicons?domain=${pending.website.replace(/^https?:\/\//, "")}&sz=128`
+          : "",
+        hostel: "Not added",
+        transportation: "Not added",
+        placement: "Not added",
+        counselling: "College Admission",
+        courses: [["Course information not added", "-", "Indicative"]],
+        scholarships: [
+          "Government scholarships",
+          "Merit scholarships",
+          "Institutional financial assistance",
+        ],
+        placements: [
+          "Placement information can be updated from the college profile",
+          "Career guidance",
+          "Industry interaction",
+        ],
+        registeredAccountEmail: email,
+      };
+
+      const updatedSaved = [
+        newCollege,
+        ...savedColleges.filter(
+          (college) => college.registeredAccountEmail !== email
+        ),
+      ];
+
+      localStorage.setItem(
+        COLLEGE_SAVED_KEY,
+        JSON.stringify(updatedSaved)
+      );
+
+      localStorage.removeItem(PENDING_COLLEGE_KEY);
+    } else if (!account) {
+      alert("College account not found. Please register first.");
+      return;
+    } else if (account.passwordHash !== passwordHash) {
+      alert("Incorrect email or password.");
+      return;
+    }
+
+    localStorage.setItem(
+      COLLEGE_LOGIN_KEY,
+      JSON.stringify({
+        id: account.id,
+        email: account.email,
+        collegeName: account.collegeName,
+        loggedInAt: new Date().toISOString(),
+      })
+    );
+
+    navigate("/college/profile");
   };
 
   const availableDistricts = formData.state
@@ -2417,6 +2581,81 @@ function Registeration() {
 
                 </section>
 
+                {/* ACCOUNT DETAILS */}
+
+                <section className="form-section">
+
+                  <div className="section-title">
+                    <span className="section-number">
+                      03
+                    </span>
+
+                    <h3>Account & College Category</h3>
+                  </div>
+
+                  <div className="form-grid">
+
+                    <div className="form-group">
+                      <label htmlFor="collegeCategory">
+                        College Category
+                        <span className="required">*</span>
+                      </label>
+
+                      <div className="select-wrapper">
+                        <select
+                          id="collegeCategory"
+                          name="collegeCategory"
+                          value={formData.collegeCategory}
+                          onChange={handleChange}
+                        >
+                          <option value="Engineering">Engineering</option>
+                          <option value="Arts & Science">Arts & Science</option>
+                          <option value="Management">Management</option>
+                          <option value="Medical">Medical</option>
+                          <option value="Other">Other</option>
+                        </select>
+                        <span className="select-arrow" />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="collegePassword">
+                        Password
+                        <span className="required">*</span>
+                      </label>
+
+                      <input
+                        id="collegePassword"
+                        name="password"
+                        type="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Create a password"
+                        minLength={6}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="collegeConfirmPassword">
+                        Confirm Password
+                        <span className="required">*</span>
+                      </label>
+
+                      <input
+                        id="collegeConfirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="Re-enter password"
+                        minLength={6}
+                      />
+                    </div>
+
+                  </div>
+
+                </section>
+
                 {/* COLLEGE DETAILS */}
 
                 <section className="form-section">
@@ -2424,7 +2663,7 @@ function Registeration() {
                   <div className="section-title">
 
                     <span className="section-number">
-                      03
+                      04
                     </span>
 
                     <h3>
