@@ -6744,6 +6744,2118 @@
         }
       ],
       "website": "https://www.vsagroup.ac.in"
+    },
+    {
+      "id": 91,
+      "name": "SRM Institute of Science and Technology (SRMIST), Kattankulathur Campus",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Kattankulathur",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act.",
+      "affiliation": "SRM Institute of Science and Technology",
+      "established": 1985,
+      "rating": 4.7,
+      "fee": 275000,
+      "about": "One of India's largest private universities with a sprawling greens campus offering a wide range of B.Tech programmes.",
+      "facilities": [
+        "Central Library",
+        "AC Hostels",
+        "Research Centres",
+        "Olympic-size Sports Complex",
+        "Health Centre",
+        "Innovation Labs"
+      ],
+      "eligibility": "Through Class 12 marks and institute entrance / management admission",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31,
+        8,
+        16
+      ],
+      "website": "https://www.srmist.edu.in",
+      "state": "Tamil Nadu",
+      "funding": "Private",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "AI",
+          "name": "Computer Science and Engineering (Artificial Intelligence and Machine Learning)"
+        },
+        {
+          "code": "MT",
+          "name": "Mechatronics Engineering"
+        }
+      ]
+    },
+    {
+      "id": 92,
+      "name": "Vellore Institute of Technology (VIT), Vellore Campus",
+      "city": "Vellore",
+      "district": "Vellore",
+      "locality": "Katpadi",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act.",
+      "affiliation": "Vellore Institute of Technology",
+      "established": 1984,
+      "rating": 4.6,
+      "fee": 298000,
+      "about": "Top-ranked private deemed university in Tamil Nadu known for academics, research and a fully residential campus.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Sports Arena",
+        "Fab Lab",
+        "Health Centre",
+        "Innovation Hub"
+      ],
+      "eligibility": "Through Class 12 marks and institute entrance / management admission",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31,
+        8,
+        17,
+        24
+      ],
+      "website": "https://www.vit.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Private",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "AI",
+          "name": "Computer Science and Engineering (Artificial Intelligence and Machine Learning)"
+        },
+        {
+          "code": "BT",
+          "name": "BIO TECHNOLOGY"
+        },
+        {
+          "code": "AE",
+          "name": "AEROSPACE ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "name": "SSN College of Engineering",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Kalavakkam, Rajiv Gandhi Salai",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1996,
+      "rating": 4.7,
+      "fee": 255000,
+      "about": "Premier autonomous engineering college of the Shiv Nadar Foundation with a strong placement record.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Research Centres",
+        "Auditorium",
+        "Sports Facilities",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31,
+        11
+      ],
+      "website": "https://www.ssn.edu.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "BM",
+          "name": "BIO MEDICAL ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "name": "College of Engineering Guindy (Anna University)",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Guindy",
+      "type": "Autonomous (Government)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous State University College funded by the Government of Tamil Nadu",
+      "affiliation": "Anna University",
+      "established": 1794,
+      "rating": 4.8,
+      "fee": 65000,
+      "about": "The oldest and one of the most prestigious engineering institutions in India, part of Anna University.",
+      "facilities": [
+        "Historic Central Library",
+        "Hostels",
+        "High-end Research Labs",
+        "Playgrounds",
+        "Auditorium",
+        "Career Guidance Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        13,
+        18
+      ],
+      "website": "https://www.annauniv.edu",
+      "state": "Tamil Nadu",
+      "funding": "Government",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "EI",
+          "name": "ELECTRONICS AND INSTRUMENTATION ENGINEERING"
+        },
+        {
+          "code": "CH",
+          "name": "CHEMICAL ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 95,
+      "name": "Madras Institute of Technology (MIT), Anna University",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Chromepet",
+      "type": "Autonomous (Government)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous State University College funded by the Government of Tamil Nadu",
+      "affiliation": "Anna University",
+      "established": 1949,
+      "rating": 4.6,
+      "fee": 65000,
+      "about": "Historic engineering institute famous for aeronautical and electronics programmes, now an Anna University campus.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Aerospace Labs",
+        "Computing Centre",
+        "Auditorium",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        24
+      ],
+      "website": "https://www.annauniv.edu",
+      "state": "Tamil Nadu",
+      "funding": "Government",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AE",
+          "name": "AEROSPACE ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 96,
+      "name": "National Institute of Technology, Tiruchirappalli",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Thanjavur Main Road",
+      "type": "Non-Autonomous (Central Government Institution)",
+      "autonomous": false,
+      "autonomyNote": "Institute of National Importance under the Ministry of Education, Government of India",
+      "affiliation": "NIT Tiruchirappalli",
+      "established": 1964,
+      "rating": 4.9,
+      "fee": 185000,
+      "about": "Among the top NITs in India with excellent academics, research output and placement opportunities.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Research Centres",
+        "Sports Complex",
+        "Fitness Centre",
+        "Placement Cell"
+      ],
+      "eligibility": "Through JEE Main score and JoSAA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        18,
+        17
+      ],
+      "website": "https://www.nitt.edu",
+      "state": "Tamil Nadu",
+      "funding": "Government",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "CH",
+          "name": "CHEMICAL ENGINEERING"
+        },
+        {
+          "code": "BT",
+          "name": "BIO TECHNOLOGY"
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "name": "Thiagarajar College of Engineering",
+      "city": "Madurai",
+      "district": "Madurai",
+      "locality": "Thirupparankundram",
+      "type": "Autonomous (Government Aided)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Government Aided, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1957,
+      "rating": 4.6,
+      "fee": 145000,
+      "about": "Aided engineering college in Madurai run by the Thiagarajar Charities with a century of academic tradition.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Research Labs",
+        "Auditorium",
+        "Sports Grounds",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31
+      ],
+      "website": "https://www.tce.edu",
+      "state": "Tamil Nadu",
+      "funding": "Government",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 98,
+      "name": "Mepco Schlenk Engineering College",
+      "city": "Sivakasi",
+      "district": "Virudhunagar",
+      "locality": "Mepco Nagar, Aathupatti",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1984,
+      "rating": 4.5,
+      "fee": 145000,
+      "about": "Well-regarded autonomous college near Sivakasi with strong lab facilities and discipline.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell",
+        "NPTEL Centre"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31
+      ],
+      "website": "https://www.mepcoeng.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 99,
+      "name": "Kalasalingam Academy of Research and Education",
+      "city": "Srivilliputhur",
+      "district": "Virudhunagar",
+      "locality": "Anand Nagar, Krishnankoil",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act.",
+      "affiliation": "Kalasalingam Academy of Research and Education",
+      "established": 1984,
+      "rating": 4.3,
+      "fee": 175000,
+      "about": "Deemed university with a leafy green campus focused on research-led engineering education.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Research Centres",
+        "Sports Complex",
+        "Medical Centre",
+        "Placement Cell"
+      ],
+      "eligibility": "Through Class 12 marks and institute entrance / management admission",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31,
+        8
+      ],
+      "website": "https://www.kalasalingam.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Private",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "AI",
+          "name": "Computer Science and Engineering (Artificial Intelligence and Machine Learning)"
+        }
+      ]
+    },
+    {
+      "id": 100,
+      "name": "K.S. Rangasamy College of Technology",
+      "city": "Tiruchengode",
+      "district": "Namakkal",
+      "locality": "KSR Kalvi Nagar",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1994,
+      "rating": 4.2,
+      "fee": 125000,
+      "about": "Autonomous college under the KSR Educational Institutions in Tiruchengode.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31
+      ],
+      "website": "https://www.ksrct.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Sethu Institute of Technology",
+      "city": "Kariapatti",
+      "district": "Virudhunagar",
+      "locality": "Pulloor",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1995,
+      "rating": 4.2,
+      "fee": 105000,
+      "about": "Autonomous college near Kariapatti in Virudhunagar district with rural outreach programmes.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31
+      ],
+      "website": "https://www.sethu.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "name": "PSNA College of Engineering and Technology",
+      "city": "Dindigul",
+      "district": "Dindigul",
+      "locality": "Kottai",
+      "type": "Non-Autonomous (Self-Financing)",
+      "autonomous": false,
+      "autonomyNote": "Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1985,
+      "rating": 4,
+      "fee": 100000,
+      "about": "Established self-financing engineering college in Dindigul under the PSNA Educational Trust.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "name": "Arunai Engineering College",
+      "city": "Tiruvannamalai",
+      "district": "Tiruvannamalai",
+      "locality": "Mathur",
+      "type": "Non-Autonomous (Self-Financing)",
+      "autonomous": false,
+      "autonomyNote": "Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1993,
+      "rating": 4,
+      "fee": 85000,
+      "about": "Popular engineering college near the holy town of Tiruvannamalai run by the Arunai Educational Trust.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "name": "Oxford Engineering College",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Pirattiyur",
+      "type": "Non-Autonomous (Self-Financing)",
+      "autonomous": false,
+      "autonomyNote": "Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1998,
+      "rating": 3.9,
+      "fee": 80000,
+      "about": "Self-financing engineering college in the heart of Tiruchirappalli.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "name": "Saranathan College of Engineering",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Panjappur",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1998,
+      "rating": 4.1,
+      "fee": 95000,
+      "about": "Autonomous college established by the Madurai Sourashtra community in Trichy.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31
+      ],
+      "website": "https://www.saranathan.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "name": "E.G.S. Pillay Engineering College",
+      "city": "Nagapattinam",
+      "district": "Nagapattinam",
+      "locality": "Old Nagapattinam Road",
+      "type": "Non-Autonomous (Self-Financing)",
+      "autonomous": false,
+      "autonomyNote": "Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1995,
+      "rating": 3.9,
+      "fee": 85000,
+      "about": "One of the prominent self-financing colleges serving the coastal Nagapattinam region.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 107,
+      "name": "Hindustan Institute of Technology and Science",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Padur, Kelambakkam",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act.",
+      "affiliation": "Hindustan Institute of Technology and Science",
+      "established": 1985,
+      "rating": 4.4,
+      "fee": 250000,
+      "about": "Deemed university with big modern campus on the Old Mahabalipuram Road, known for aeronautical engineering.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Aeronautical Hangar",
+        "Sports Complex",
+        "Medical Centre",
+        "Placement Cell"
+      ],
+      "eligibility": "Through Class 12 marks and institute entrance / management admission",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        30,
+        31
+      ],
+      "website": "https://www.hindustanuniv.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Private",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AN",
+          "name": "AERONAUTICAL ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "name": "Sathyabama Institute of Science and Technology",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Rajiv Gandhi Salai",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act.",
+      "affiliation": "Sathyabama Institute of Science and Technology",
+      "established": 1987,
+      "rating": 4.5,
+      "fee": 225000,
+      "about": "Central Chennai deemed university with strong research focus and an active placement season.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Research Centres",
+        "Sports Arena",
+        "Healthcare Centre",
+        "Placement Cell"
+      ],
+      "eligibility": "Through Class 12 marks and institute entrance / management admission",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31,
+        8,
+        11,
+        17
+      ],
+      "website": "https://www.sathyabama.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Private",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "AI",
+          "name": "Computer Science and Engineering (Artificial Intelligence and Machine Learning)"
+        },
+        {
+          "code": "BM",
+          "name": "BIO MEDICAL ENGINEERING"
+        },
+        {
+          "code": "BT",
+          "name": "BIO TECHNOLOGY"
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Saveetha Engineering College",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Thandalam, Sriperumbudur",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 2001,
+      "rating": 4.4,
+      "fee": 150000,
+      "about": "Autonomous college of the Saveetha group with modern infrastructure near Sriperumbudur.",
+      "facilities": [
+        "Digital Library",
+        "Research Labs",
+        "Hostels",
+        "Gymnasium",
+        "Canteen",
+        "Incubation Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31,
+        8
+      ],
+      "website": "https://www.saveetha.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "AI",
+          "name": "Computer Science and Engineering (Artificial Intelligence and Machine Learning)"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Rajalakshmi Engineering College",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Thandalam, Sriperumbudur",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1997,
+      "rating": 4.6,
+      "fee": 200000,
+      "about": "Leading autonomous engineering college near the Sriperumbudur industrial belt with excellent placements.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell",
+        "Innovation Centre"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31,
+        8,
+        9,
+        11
+      ],
+      "website": "https://www.rajalakshmi.edu.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "AI",
+          "name": "Computer Science and Engineering (Artificial Intelligence and Machine Learning)"
+        },
+        {
+          "code": "CY",
+          "name": "Computer Science and Engineering (Cyber Security)"
+        },
+        {
+          "code": "BM",
+          "name": "BIO MEDICAL ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 111,
+      "name": "Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology",
+      "city": "Chennai",
+      "district": "Thiruvallur",
+      "locality": "Avadi",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Private University established by the Vel Tech group in Avadi",
+      "affiliation": "Vel Tech Rangarajan Dr. Sagunthala R&D Institute",
+      "established": 1997,
+      "rating": 4.4,
+      "fee": 175000,
+      "about": "Deemed status private institute in Avadi with a strong focus on innovation and research.",
+      "facilities": [
+        "Digital Library",
+        "Research Labs",
+        "Hostels",
+        "Gymnasium",
+        "Canteen",
+        "Incubation Cell"
+      ],
+      "eligibility": "Through Class 12 marks and institute entrance / management admission",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31,
+        9,
+        17
+      ],
+      "website": "https://www.veltech.edu.in",
+      "state": "Tamil Nadu",
+      "funding": "Private",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "CY",
+          "name": "Computer Science and Engineering (Cyber Security)"
+        },
+        {
+          "code": "BT",
+          "name": "BIO TECHNOLOGY"
+        }
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Sri Venkateswara College of Engineering",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Sriperumbudur",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1985,
+      "rating": 4.4,
+      "fee": 160000,
+      "about": "Autonomous college in Sriperumbudur run by the Muthaiah Foundation with high academic standards.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31,
+        16
+      ],
+      "website": "https://www.svce.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "MT",
+          "name": "Mechatronics Engineering"
+        }
+      ]
+    },
+    {
+      "id": 113,
+      "name": "KCG College of Technology",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Karapakkam",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1998,
+      "rating": 4.3,
+      "fee": 160000,
+      "about": "Autonomous college of the Hindustan Group on Rajiv Gandhi Salai, Karapakkam.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31,
+        16
+      ],
+      "website": "https://www.kcgcollege.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "MT",
+          "name": "Mechatronics Engineering"
+        }
+      ]
+    },
+    {
+      "id": 114,
+      "name": "Panimalar Engineering College",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Nazarethpet, Poonamallee",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 2000,
+      "rating": 4.3,
+      "fee": 150000,
+      "about": "Popular autonomous college of the PM group on the Poonamallee Bypass with a large campus.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        31
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "CE",
+          "name": "CIVIL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 115,
+      "name": "Easwari Engineering College",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Ramapuram",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1996,
+      "rating": 4.3,
+      "fee": 150000,
+      "about": "Autonomous college of the SRM group at Ramapuram, Chennai.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Sri Sai Ram Engineering College",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "West Tambaram",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1995,
+      "rating": 4.5,
+      "fee": 140000,
+      "about": "Top autonomous college under the Leo Muthu group at West Tambaram.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31,
+        8
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "AI",
+          "name": "Computer Science and Engineering (Artificial Intelligence and Machine Learning)"
+        }
+      ]
+    },
+    {
+      "id": 117,
+      "name": "Dr. M.G.R. Educational and Research Institute",
+      "city": "Chennai",
+      "district": "Thiruvallur",
+      "locality": "Maduravoyal",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act.",
+      "affiliation": "Dr. M.G.R. Educational and Research Institute",
+      "established": 1988,
+      "rating": 4.3,
+      "fee": 200000,
+      "about": "Deemed university established in memory of former TN Chief Minister M.G. Ramachandran at Maduravoyal.",
+      "facilities": [
+        "Digital Library",
+        "Research Labs",
+        "Hostels",
+        "Gymnasium",
+        "Canteen",
+        "Incubation Cell"
+      ],
+      "eligibility": "Through Class 12 marks and institute entrance / management admission",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        11,
+        17
+      ],
+      "website": "https://www.drmgrdu.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Private",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "BM",
+          "name": "BIO MEDICAL ENGINEERING"
+        },
+        {
+          "code": "BT",
+          "name": "BIO TECHNOLOGY"
+        }
+      ]
+    },
+    {
+      "id": 118,
+      "name": "R.M.K. Engineering College",
+      "city": "Chennai",
+      "district": "Thiruvallur",
+      "locality": "Kavaraipettai",
+      "type": "Non-Autonomous (Self-Financing)",
+      "autonomous": false,
+      "autonomyNote": "Self-Financing, Non-Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "established": 1994,
+      "rating": 4.2,
+      "fee": 100000,
+      "about": "Self-financing college of the R.M.K. group near Kavaraipettai on the Chennai-Gummidipoondi road.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31
+      ],
+      "website": "https://www.rmkec.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "minority": "Non-Minority",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        }
+      ]
+    },
+    {
+      "id": 119,
+      "name": "Jerusalem College of Engineering",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Narayanapuram, Pallikaranai",
+      "type": "Non-Autonomous (Self-Financing)",
+      "autonomous": false,
+      "autonomyNote": "Self-Financing, Christian Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "minority": "Christian Minority",
+      "established": 1994,
+      "rating": 4.1,
+      "fee": 100000,
+      "about": "Minority (Christian) self-financing college of the Jesuit-run congregation at Pallikaranai.",
+      "facilities": [
+        "Library",
+        "Laboratories",
+        "Hostels",
+        "Auditorium",
+        "Transport",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "website": "",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        }
+      ]
+    },
+    {
+      "id": 120,
+      "name": "St. Joseph's College of Engineering",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Old Mamallapuram Road",
+      "type": "Autonomous (Self-Financing)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous Self-Financing, Christian Minority, affiliated to Anna University",
+      "affiliation": "Anna University",
+      "minority": "Christian Minority",
+      "established": 1994,
+      "rating": 4.3,
+      "fee": 150000,
+      "about": "Minority (Christian) autonomous college of the Jesuit mission on Old Mamallapuram Road.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Computer Labs",
+        "Sports Complex",
+        "Cafeteria",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        31,
+        16
+      ],
+      "website": "https://www.stjosephs.ac.in",
+      "state": "Tamil Nadu",
+      "funding": "Self-Financing",
+      "tneaCode": "",
+      "image": "",
+      "imageSource": "",
+      "branches": [
+        {
+          "code": "CS",
+          "name": "COMPUTER SCIENCE AND ENGINEERING"
+        },
+        {
+          "code": "EC",
+          "name": "ELECTRONICS AND COMMUNICATION ENGINEERING"
+        },
+        {
+          "code": "IT",
+          "name": "INFORMATION TECHNOLOGY"
+        },
+        {
+          "code": "ME",
+          "name": "MECHANICAL ENGINEERING"
+        },
+        {
+          "code": "EE",
+          "name": "ELECTRICAL AND ELECTRONICS ENGINEERING"
+        },
+        {
+          "code": "AD",
+          "name": "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE"
+        },
+        {
+          "code": "MT",
+          "name": "Mechatronics Engineering"
+        }
+      ]
     }
   ],
   "courses": [

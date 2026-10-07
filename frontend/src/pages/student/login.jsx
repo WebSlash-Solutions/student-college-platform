@@ -411,12 +411,12 @@ export default function LoginView({ users = [], onSuccess }) {
 
             <h1>Find the Right College for Your Future</h1>
             <p>
-              Compare engineering colleges across Coimbatore, Erode and Salem —
-              courses, fees, eligibility and facilities in one place.
+              Compare engineering colleges across Tamil Nadu — courses, fees,
+              eligibility and facilities in one place.
             </p>
 
             <ul className="cc-login-features">
-              <li>{checkIcon} Browse 90+ verified engineering colleges</li>
+              <li>{checkIcon} Browse 120+ verified engineering colleges</li>
               <li>{checkIcon} Compare courses, fees &amp; eligibility side-by-side</li>
               <li>{checkIcon} Save favourites and revisit anytime</li>
             </ul>
