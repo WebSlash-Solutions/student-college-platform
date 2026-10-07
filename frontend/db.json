@@ -1,0 +1,1360 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "PSG College of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Government Aided)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous since 1978-79 (University of Madras), continued by Bharathiar University and now Anna University",
+      "affiliation": "Anna University, Chennai",
+      "established": 1951,
+      "rating": 4.7,
+      "fee": 220000,
+      "image": "https://www.psgtech.edu/images/glances2.jpg",
+      "imageSource": "Official college website (psgtech.edu)",
+      "about": "The PSG group's flagship engineering college on the Peelamedu campus. Being autonomous it frames its own syllabus and conducts its own examinations while remaining affiliated to Anna University.",
+      "facilities": [
+        "Central Library",
+        "Boys and Girls Hostels",
+        "Research Laboratories",
+        "Sports Complex",
+        "Auditorium",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM / CE",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "website": "https://www.psgtech.edu"
+    },
+    {
+      "id": 2,
+      "name": "Amrita Vishwa Vidyapeetham, Coimbatore Campus",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act - this is NOT a UGC 'autonomous college' affiliation",
+      "affiliation": "Deemed to be University (Amrita Vishwa Vidyapeetham)",
+      "established": 2003,
+      "rating": 4.8,
+      "fee": 320000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Amrita_Vishwa_Vidyapeetham_coimbatore_campus.jpg/1920px-Amrita_Vishwa_Vidyapeetham_coimbatore_campus.jpg",
+      "imageSource": "Wikimedia Commons",
+      "about": "Deemed university campus at Amritapuram offering B.Tech engineering programmes with a strong research culture and residential campus.",
+      "facilities": [
+        "Central Library",
+        "Residence Halls",
+        "Research Labs",
+        "Health Centre",
+        "Sports Complex",
+        "Innovation Cell"
+      ],
+      "eligibility": "50% in 12th with PCM (entrance as per programme)",
+      "courseIds": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "website": "https://www.amrita.edu"
+    },
+    {
+      "id": 3,
+      "name": "Government College of Technology, Coimbatore",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Government (Not Autonomous)",
+      "autonomous": false,
+      "autonomyNote": "NOT autonomous - affiliated to Anna University, follows its syllabus and examinations",
+      "affiliation": "Anna University, Chennai",
+      "established": 1942,
+      "rating": 4.1,
+      "fee": 48000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Government_College_of_Technology_Coimbatore.jpg",
+      "imageSource": "Wikimedia Commons",
+      "about": "Government engineering college on Venkatesa Road with low fees, strong public-sector placement links and Anna University affiliation.",
+      "facilities": [
+        "Library",
+        "Hostel",
+        "Workshop",
+        "Computing Centre",
+        "Sports Ground",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "website": ""
+    },
+    {
+      "id": 4,
+      "name": "Kumaraguru College of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "UGC extended autonomous status from 2024-25 to 2033-34 (approval letter published on kct.ac.in)",
+      "affiliation": "Anna University, Chennai",
+      "established": 1998,
+      "rating": 4.4,
+      "fee": 125000,
+      "image": "https://kct.ac.in/wp-content/uploads/2024/06/Home-banner.webp",
+      "imageSource": "Official college website (kct.ac.in)",
+      "about": "Self-financing engineering college at Chinnavedampatti. Autonomous with its own curriculum while remaining affiliated to Anna University.",
+      "facilities": [
+        "Central Library",
+        "Hostels",
+        "Innovation Lab",
+        "Sports Complex",
+        "Sharada Maiyam",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        6,
+        7
+      ],
+      "website": "https://kct.ac.in"
+    },
+    {
+      "id": 5,
+      "name": "Sri Ramakrishna Institute of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous since 17-04-2017 with extension up to 2032-33; NAAC 'A+' grade, NBA accredited",
+      "affiliation": "Anna University, Chennai (permanent affiliation)",
+      "established": 1992,
+      "rating": 4.5,
+      "fee": 100000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Sri_Ramakrishna_Institute_of_Technology%27s_Aerial_Shot.jpg",
+      "imageSource": "Wikimedia Commons",
+      "about": "Autonomous engineering college run by the SNR Sons Charitable Trust at Perur, with all UG programmes NBA accredited.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Research Centres",
+        "Gymnasium",
+        "Playground",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "website": "https://www.srit.org"
+    },
+    {
+      "id": 6,
+      "name": "Dr. N.G.P. Institute of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Conferred autonomous status in 2022-23 by UGC and Anna University",
+      "affiliation": "Anna University, Chennai",
+      "established": 2007,
+      "rating": 4.2,
+      "fee": 125000,
+      "image": "https://www.drngpit.ac.in/images/favicons/og-image.jpg",
+      "imageSource": "Official college website (drngpit.ac.in)",
+      "about": "Kalapatti-based engineering college that frames its own syllabus under autonomous status, with a strong research and placement record.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Research Labs",
+        "Sports Complex",
+        "Auditorium",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        3,
+        4,
+        7
+      ],
+      "website": "https://www.drngpit.ac.in"
+    },
+    {
+      "id": 7,
+      "name": "Bannari Amman Institute of Technology (BIT Campus)",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "UGC autonomous order 2020-2030 (published on bitsathy.ac.in)",
+      "affiliation": "Anna University, Chennai",
+      "established": 1996,
+      "rating": 4.2,
+      "fee": 120000,
+      "image": "https://www.bitsathy.ac.in/wp-content/uploads/About-Card-scaled.jpg",
+      "imageSource": "Official college website (bitsathy.ac.in)",
+      "about": "BIT Campus autonomous engineering college near Poolankulam with NBA accredited programmes and NAAC accreditation.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Clinic",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "website": "https://www.bitsathy.ac.in"
+    },
+    {
+      "id": 8,
+      "name": "Karunya Institute of Technology and Sciences",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Deemed University",
+      "autonomous": true,
+      "autonomyNote": "Deemed to be University under the UGC Act (NOT an Anna University affiliated college)",
+      "affiliation": "Deemed to be University (Ministry of Education, Government of India)",
+      "established": 2004,
+      "rating": 4.4,
+      "fee": 210000,
+      "image": "https://karunya.edu/img/homepage/Slides/slide1.jpg",
+      "imageSource": "Official college website (karunya.edu)",
+      "about": "Deemed university at Kinathukadavu offering B.Tech engineering programmes with a rural and community focus.",
+      "facilities": [
+        "Central Library",
+        "Residence Halls",
+        "Labs",
+        "Health Centre",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM (entrance as per programme)",
+      "courseIds": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "website": "https://karunya.edu.in"
+    },
+    {
+      "id": 9,
+      "name": "Karpagam College of Engineering",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous status conferred by Anna University in the academic year 2007-08; NAAC A+ grade",
+      "affiliation": "Anna University, Chennai",
+      "established": 2000,
+      "rating": 4.1,
+      "fee": 110000,
+      "image": "https://www.kce.ac.in/images/kce/home/banner/b1.jpg",
+      "imageSource": "Official college website (kce.ac.in)",
+      "about": "Autonomous engineering college at Myleripalayam with NBA accredited programmes and industry-aligned training.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Innovation Centre",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "website": "https://www.kce.ac.in"
+    },
+    {
+      "id": 10,
+      "name": "Coimbatore Institute of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous",
+      "autonomous": true,
+      "autonomyNote": "Marked '(Autonomous)' in the Anna University affiliated engineering colleges list",
+      "affiliation": "Anna University, Chennai",
+      "established": null,
+      "rating": 4,
+      "fee": 60000,
+      "image": "https://cit.edu.in/uploads/home/1767949157_CITAuditorium1.png",
+      "imageSource": "Official college website (cit.edu.in)",
+      "about": "Government-aided engineering institute in Coimbatore listed as autonomous in the Anna University affiliated colleges list.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Auditorium",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "website": "https://cit.edu.in"
+    },
+    {
+      "id": 11,
+      "name": "Coimbatore Institute of Engineering and Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous",
+      "autonomous": true,
+      "autonomyNote": "Marked '(Autonomous)' in the Anna University affiliated engineering colleges list",
+      "affiliation": "Anna University, Chennai",
+      "established": 2001,
+      "rating": 4,
+      "fee": 65000,
+      "image": "https://www.cietcbe.edu.in/upload/about-building-1-800x132.jpg",
+      "imageSource": "Official college website (cietcbe.edu.in)",
+      "about": "Engineering institute in Coimbatore listed as autonomous in the Anna University affiliated colleges list, with NBA accredited programmes.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "website": "https://www.cietcbe.edu.in"
+    },
+    {
+      "id": 12,
+      "name": "K P R Institute of Engineering and Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Listed as 'K P R Institute of Engineering and Technology (Autonomous)' by Anna University",
+      "affiliation": "Anna University, Chennai",
+      "established": null,
+      "rating": 4.1,
+      "fee": 100000,
+      "image": "https://www.kpriet.ac.in/asset/frontend/images/homepage/banner/Iyanthani%20Website.jpg",
+      "imageSource": "Official college website (kpriet.ac.in)",
+      "about": "Autonomous engineering college in Coimbatore with industry-aligned training, central library and a dedicated placement cell.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "website": "https://www.kpriet.ac.in"
+    },
+    {
+      "id": 13,
+      "name": "Sri Krishna College of Engineering & Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous since 2011 and affiliated to Anna University; NAAC 'A++' grade with NBA accredited programmes (skcet.ac.in)",
+      "affiliation": "Anna University, Chennai",
+      "established": 1998,
+      "rating": 4.2,
+      "fee": 95000,
+      "image": "https://skcet.ac.in/wp-content/uploads/2023/12/campus-tour-youtube-skcet.jpg",
+      "imageSource": "Official college website (skcet.ac.in)",
+      "about": "Sri Krishna College of Engineering and Technology (SKCET), a premier autonomous institution affiliated to Anna University, offering engineering and management programmes with NBA accreditation and NAAC 'A++' grade.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Innovation Centre",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "website": "https://skcet.ac.in/"
+    },
+    {
+      "id": 14,
+      "name": "S N S College of Engineering",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous status from 2019-20 for 10 years, granted by UGC and Anna University; NAAC 'A' grade (2015), NBA accredited ECE, EEE and Mechanical",
+      "affiliation": "Anna University, Chennai",
+      "established": 2007,
+      "rating": 4.1,
+      "fee": 90000,
+      "image": "https://cdn.bitrix24.in/b11752903/landing/896/896468f542a71ecbd9569d1ead65a086/snsce_1x.jpeg",
+      "imageSource": "Official college website (snsce.ac.in)",
+      "about": "Multi-disciplinary engineering college on Sathy Main Road, established in 2007 by the SNS Charitable Trust and affiliated to Anna University.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "website": "https://snsce.ac.in/"
+    },
+    {
+      "id": 15,
+      "name": "S N S College of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Listed as 'SNS College of Technology (Autonomous)' by Anna University",
+      "affiliation": "Anna University, Chennai",
+      "established": 2002,
+      "rating": 4.1,
+      "fee": 95000,
+      "image": "https://snsct.org/preview.jpg",
+      "imageSource": "Official college website (snsct.org)",
+      "about": "Autonomous engineering and technology college in Coimbatore affiliated to Anna University.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        7,
+        8
+      ],
+      "website": "https://snsct.org/"
+    },
+    {
+      "id": 16,
+      "name": "Hindusthan College of Engineering and Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous institution affiliated to Anna University with permanent affiliation for most programmes; NAAC 'A' grade, NBA accredited (ECE, Mech, EEE, IT, CSE)",
+      "affiliation": "Anna University, Chennai",
+      "established": 2000,
+      "rating": 4,
+      "fee": 90000,
+      "image": "https://hicet.ac.in/images/banner/02.jpg",
+      "imageSource": "Official college website (hicet.ac.in)",
+      "about": "Hindusthan College of Engineering and Technology (HiCET), established in 2000 by the Hindusthan Educational and Charitable Trust, run on a 100+ acre valley campus on Pollachi Main Road.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "website": "https://hicet.ac.in/"
+    },
+    {
+      "id": 17,
+      "name": "Sri Shakthi Institute of Engineering and Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous institution approved by AICTE and affiliated to Anna University; NBA accredited programmes and NAAC 'A' grade",
+      "affiliation": "Anna University, Chennai",
+      "established": 2006,
+      "rating": 4,
+      "fee": 100000,
+      "image": "https://web.archive.org/web/2025im_/https://www.siet.ac.in/images/unitysat/SIET_1_1%20-%20Photo.jpg",
+      "imageSource": "Official college website (siet.ac.in) - served via web.archive.org because siet.ac.in blocks automated requests",
+      "about": "Sri Shakthi Institute of Engineering and Technology (SIET), established in 2006, known for its 'Sri Shakthi Sat' student satellite and industry-focused engineering education.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Satellite Lab",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "website": "https://www.siet.ac.in/"
+    },
+    {
+      "id": 18,
+      "name": "Rathinam Technical Campus",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous approval published under Mandatory Disclosures on rtc.ac.in and the group operates as Rathinam Global Deemed to be University; NAAC 'A' and NBA accredited. Anna University's list does not carry the '(Autonomous)' tag",
+      "affiliation": "Anna University, Chennai",
+      "established": null,
+      "rating": 3.9,
+      "fee": 85000,
+      "image": "https://rtc.ac.in/wp-content/uploads/slider/cache/16eb77f910c94c04a4496c34f94cdb09/banner2.webp",
+      "imageSource": "Official college website (rtc.ac.in)",
+      "about": "Rathinam Technical Campus (RTC) on the 70-acre Rathinam Techzone campus in Eachanari, Coimbatore, offering engineering and technology programmes.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Incubator (AIC RAISE)",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "website": "https://rtc.ac.in/"
+    },
+    {
+      "id": 19,
+      "name": "KGISL Institute of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Private (Not Autonomous)",
+      "autonomous": false,
+      "autonomyNote": "Not marked '(Autonomous)' in the Anna University list, although the college website describes itself as autonomous - verify with the college before publishing",
+      "affiliation": "Anna University, Chennai",
+      "established": 2008,
+      "rating": 4.2,
+      "fee": 100000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/13/KGiSL_Institue_of_Technology.jpg",
+      "imageSource": "Wikimedia Commons",
+      "about": "NAAC 'A' grade engineering college in Coimbatore with industry-backed experiential engineering education.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Innovation Centre",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "website": "https://www.kgkite.ac.in"
+    },
+    {
+      "id": 20,
+      "name": "PSG Institute of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Private (Not Autonomous)",
+      "autonomous": false,
+      "autonomyNote": "Listed as 'PSG Institute of Technology and Applied Research' with no autonomous status in the Anna University list",
+      "affiliation": "Anna University, Chennai",
+      "established": null,
+      "rating": 4,
+      "fee": 90000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/PSG_iTech.jpg/1920px-PSG_iTech.jpg",
+      "imageSource": "Wikimedia Commons",
+      "about": "Applied sciences and technology institute of the PSG group in Coimbatore, affiliated to Anna University.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "website": ""
+    },
+    {
+      "id": 21,
+      "name": "Sri Krishna College of Technology",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "type": "Autonomous (Private)",
+      "autonomous": true,
+      "autonomyNote": "Autonomous institute affiliated to Anna University and approved by AICTE; NAAC 'A' grade with NBA accredited programmes (skct.edu.in)",
+      "affiliation": "Anna University, Chennai",
+      "established": 1985,
+      "rating": 4.3,
+      "fee": 105000,
+      "image": "https://skct.edu.in/wp-content/uploads/2024/03/Facilities_skct.jpg",
+      "imageSource": "Official college website (skct.edu.in)",
+      "about": "Sri Krishna College of Technology (SKCT), established in 1985 under Sri Krishna Institutions, spread over a 52-acre campus at Kovaipudur on the foothills of the Western Ghats.",
+      "facilities": [
+        "Library",
+        "Hostels",
+        "Laboratories",
+        "Sports Complex",
+        "Conference Halls",
+        "Placement Cell"
+      ],
+      "eligibility": "50% in 12th with PCM through TNEA counselling",
+      "courseIds": [
+        1,
+        2,
+        3,
+        6,
+        7
+      ],
+      "website": "https://skct.edu.in/"
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "name": "Computer Science Engineering",
+      "category": "Engineering",
+      "degree": "B.E",
+      "duration": "4 Years",
+      "eligibility": "12th with PCM"
+    },
+    {
+      "id": 2,
+      "name": "Electronics and Communication Engineering",
+      "category": "Engineering",
+      "degree": "B.E",
+      "duration": "4 Years",
+      "eligibility": "12th with PCM"
+    },
+    {
+      "id": 3,
+      "name": "Information Technology",
+      "category": "Engineering",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th with PCM"
+    },
+    {
+      "id": 4,
+      "name": "Mechanical Engineering",
+      "category": "Engineering",
+      "degree": "B.E",
+      "duration": "4 Years",
+      "eligibility": "12th with PCM"
+    },
+    {
+      "id": 5,
+      "name": "Civil Engineering",
+      "category": "Engineering",
+      "degree": "B.E",
+      "duration": "4 Years",
+      "eligibility": "12th with PCM"
+    },
+    {
+      "id": 6,
+      "name": "Electrical and Electronics Engineering",
+      "category": "Engineering",
+      "degree": "B.E",
+      "duration": "4 Years",
+      "eligibility": "12th with PCM"
+    },
+    {
+      "id": 7,
+      "name": "Artificial Intelligence and Data Science",
+      "category": "Engineering",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th with PCM"
+    },
+    {
+      "id": 8,
+      "name": "Diploma in Computer Engineering",
+      "category": "Technical",
+      "degree": "Diploma",
+      "duration": "3 Years",
+      "eligibility": "10th Pass"
+    }
+  ],
+  "collegeCourses": [
+    {
+      "id": 1,
+      "collegeId": 1,
+      "courseId": 1,
+      "fee": 220000,
+      "seats": 78
+    },
+    {
+      "id": 2,
+      "collegeId": 1,
+      "courseId": 2,
+      "fee": 215000,
+      "seats": 85
+    },
+    {
+      "id": 3,
+      "collegeId": 1,
+      "courseId": 3,
+      "fee": 210000,
+      "seats": 92
+    },
+    {
+      "id": 4,
+      "collegeId": 1,
+      "courseId": 4,
+      "fee": 205000,
+      "seats": 99
+    },
+    {
+      "id": 5,
+      "collegeId": 1,
+      "courseId": 6,
+      "fee": 200000,
+      "seats": 113
+    },
+    {
+      "id": 6,
+      "collegeId": 2,
+      "courseId": 1,
+      "fee": 320000,
+      "seats": 89
+    },
+    {
+      "id": 7,
+      "collegeId": 2,
+      "courseId": 2,
+      "fee": 315000,
+      "seats": 96
+    },
+    {
+      "id": 8,
+      "collegeId": 2,
+      "courseId": 4,
+      "fee": 310000,
+      "seats": 110
+    },
+    {
+      "id": 9,
+      "collegeId": 2,
+      "courseId": 7,
+      "fee": 305000,
+      "seats": 131
+    },
+    {
+      "id": 10,
+      "collegeId": 3,
+      "courseId": 1,
+      "fee": 48000,
+      "seats": 100
+    },
+    {
+      "id": 11,
+      "collegeId": 3,
+      "courseId": 2,
+      "fee": 43000,
+      "seats": 107
+    },
+    {
+      "id": 12,
+      "collegeId": 3,
+      "courseId": 4,
+      "fee": 38000,
+      "seats": 121
+    },
+    {
+      "id": 13,
+      "collegeId": 3,
+      "courseId": 8,
+      "fee": 33000,
+      "seats": 149
+    },
+    {
+      "id": 14,
+      "collegeId": 4,
+      "courseId": 1,
+      "fee": 125000,
+      "seats": 111
+    },
+    {
+      "id": 15,
+      "collegeId": 4,
+      "courseId": 2,
+      "fee": 120000,
+      "seats": 118
+    },
+    {
+      "id": 16,
+      "collegeId": 4,
+      "courseId": 6,
+      "fee": 115000,
+      "seats": 146
+    },
+    {
+      "id": 17,
+      "collegeId": 4,
+      "courseId": 7,
+      "fee": 110000,
+      "seats": 63
+    },
+    {
+      "id": 18,
+      "collegeId": 5,
+      "courseId": 1,
+      "fee": 100000,
+      "seats": 122
+    },
+    {
+      "id": 19,
+      "collegeId": 5,
+      "courseId": 2,
+      "fee": 95000,
+      "seats": 129
+    },
+    {
+      "id": 20,
+      "collegeId": 5,
+      "courseId": 3,
+      "fee": 90000,
+      "seats": 136
+    },
+    {
+      "id": 21,
+      "collegeId": 5,
+      "courseId": 6,
+      "fee": 85000,
+      "seats": 67
+    },
+    {
+      "id": 22,
+      "collegeId": 6,
+      "courseId": 1,
+      "fee": 125000,
+      "seats": 133
+    },
+    {
+      "id": 23,
+      "collegeId": 6,
+      "courseId": 3,
+      "fee": 120000,
+      "seats": 147
+    },
+    {
+      "id": 24,
+      "collegeId": 6,
+      "courseId": 4,
+      "fee": 115000,
+      "seats": 64
+    },
+    {
+      "id": 25,
+      "collegeId": 6,
+      "courseId": 7,
+      "fee": 110000,
+      "seats": 85
+    },
+    {
+      "id": 26,
+      "collegeId": 7,
+      "courseId": 1,
+      "fee": 120000,
+      "seats": 144
+    },
+    {
+      "id": 27,
+      "collegeId": 7,
+      "courseId": 2,
+      "fee": 115000,
+      "seats": 61
+    },
+    {
+      "id": 28,
+      "collegeId": 7,
+      "courseId": 4,
+      "fee": 110000,
+      "seats": 75
+    },
+    {
+      "id": 29,
+      "collegeId": 7,
+      "courseId": 6,
+      "fee": 105000,
+      "seats": 89
+    },
+    {
+      "id": 30,
+      "collegeId": 8,
+      "courseId": 1,
+      "fee": 210000,
+      "seats": 65
+    },
+    {
+      "id": 31,
+      "collegeId": 8,
+      "courseId": 2,
+      "fee": 205000,
+      "seats": 72
+    },
+    {
+      "id": 32,
+      "collegeId": 8,
+      "courseId": 3,
+      "fee": 200000,
+      "seats": 79
+    },
+    {
+      "id": 33,
+      "collegeId": 8,
+      "courseId": 5,
+      "fee": 195000,
+      "seats": 93
+    },
+    {
+      "id": 34,
+      "collegeId": 9,
+      "courseId": 1,
+      "fee": 110000,
+      "seats": 76
+    },
+    {
+      "id": 35,
+      "collegeId": 9,
+      "courseId": 2,
+      "fee": 105000,
+      "seats": 83
+    },
+    {
+      "id": 36,
+      "collegeId": 9,
+      "courseId": 3,
+      "fee": 100000,
+      "seats": 90
+    },
+    {
+      "id": 37,
+      "collegeId": 9,
+      "courseId": 4,
+      "fee": 95000,
+      "seats": 97
+    },
+    {
+      "id": 38,
+      "collegeId": 10,
+      "courseId": 1,
+      "fee": 60000,
+      "seats": 87
+    },
+    {
+      "id": 39,
+      "collegeId": 10,
+      "courseId": 2,
+      "fee": 55000,
+      "seats": 94
+    },
+    {
+      "id": 40,
+      "collegeId": 10,
+      "courseId": 4,
+      "fee": 50000,
+      "seats": 108
+    },
+    {
+      "id": 41,
+      "collegeId": 10,
+      "courseId": 8,
+      "fee": 45000,
+      "seats": 136
+    },
+    {
+      "id": 42,
+      "collegeId": 11,
+      "courseId": 1,
+      "fee": 65000,
+      "seats": 98
+    },
+    {
+      "id": 43,
+      "collegeId": 11,
+      "courseId": 2,
+      "fee": 60000,
+      "seats": 105
+    },
+    {
+      "id": 44,
+      "collegeId": 11,
+      "courseId": 3,
+      "fee": 55000,
+      "seats": 112
+    },
+    {
+      "id": 45,
+      "collegeId": 11,
+      "courseId": 5,
+      "fee": 50000,
+      "seats": 126
+    },
+    {
+      "id": 46,
+      "collegeId": 12,
+      "courseId": 1,
+      "fee": 100000,
+      "seats": 109
+    },
+    {
+      "id": 47,
+      "collegeId": 12,
+      "courseId": 2,
+      "fee": 95000,
+      "seats": 116
+    },
+    {
+      "id": 48,
+      "collegeId": 12,
+      "courseId": 3,
+      "fee": 90000,
+      "seats": 123
+    },
+    {
+      "id": 49,
+      "collegeId": 12,
+      "courseId": 7,
+      "fee": 85000,
+      "seats": 61
+    },
+    {
+      "id": 50,
+      "collegeId": 13,
+      "courseId": 1,
+      "fee": 95000,
+      "seats": 120
+    },
+    {
+      "id": 51,
+      "collegeId": 13,
+      "courseId": 2,
+      "fee": 90000,
+      "seats": 127
+    },
+    {
+      "id": 52,
+      "collegeId": 13,
+      "courseId": 3,
+      "fee": 85000,
+      "seats": 134
+    },
+    {
+      "id": 53,
+      "collegeId": 13,
+      "courseId": 4,
+      "fee": 80000,
+      "seats": 141
+    },
+    {
+      "id": 54,
+      "collegeId": 13,
+      "courseId": 6,
+      "fee": 75000,
+      "seats": 65
+    },
+    {
+      "id": 55,
+      "collegeId": 14,
+      "courseId": 1,
+      "fee": 90000,
+      "seats": 131
+    },
+    {
+      "id": 56,
+      "collegeId": 14,
+      "courseId": 2,
+      "fee": 85000,
+      "seats": 138
+    },
+    {
+      "id": 57,
+      "collegeId": 14,
+      "courseId": 3,
+      "fee": 80000,
+      "seats": 145
+    },
+    {
+      "id": 58,
+      "collegeId": 14,
+      "courseId": 6,
+      "fee": 75000,
+      "seats": 76
+    },
+    {
+      "id": 59,
+      "collegeId": 15,
+      "courseId": 1,
+      "fee": 95000,
+      "seats": 142
+    },
+    {
+      "id": 60,
+      "collegeId": 15,
+      "courseId": 2,
+      "fee": 90000,
+      "seats": 149
+    },
+    {
+      "id": 61,
+      "collegeId": 15,
+      "courseId": 7,
+      "fee": 85000,
+      "seats": 94
+    },
+    {
+      "id": 62,
+      "collegeId": 15,
+      "courseId": 8,
+      "fee": 80000,
+      "seats": 101
+    },
+    {
+      "id": 63,
+      "collegeId": 16,
+      "courseId": 1,
+      "fee": 90000,
+      "seats": 63
+    },
+    {
+      "id": 64,
+      "collegeId": 16,
+      "courseId": 2,
+      "fee": 85000,
+      "seats": 70
+    },
+    {
+      "id": 65,
+      "collegeId": 16,
+      "courseId": 4,
+      "fee": 80000,
+      "seats": 84
+    },
+    {
+      "id": 66,
+      "collegeId": 16,
+      "courseId": 5,
+      "fee": 75000,
+      "seats": 91
+    },
+    {
+      "id": 67,
+      "collegeId": 16,
+      "courseId": 6,
+      "fee": 70000,
+      "seats": 98
+    },
+    {
+      "id": 68,
+      "collegeId": 17,
+      "courseId": 1,
+      "fee": 100000,
+      "seats": 74
+    },
+    {
+      "id": 69,
+      "collegeId": 17,
+      "courseId": 2,
+      "fee": 95000,
+      "seats": 81
+    },
+    {
+      "id": 70,
+      "collegeId": 17,
+      "courseId": 3,
+      "fee": 90000,
+      "seats": 88
+    },
+    {
+      "id": 71,
+      "collegeId": 17,
+      "courseId": 5,
+      "fee": 85000,
+      "seats": 102
+    },
+    {
+      "id": 72,
+      "collegeId": 18,
+      "courseId": 1,
+      "fee": 85000,
+      "seats": 85
+    },
+    {
+      "id": 73,
+      "collegeId": 18,
+      "courseId": 2,
+      "fee": 80000,
+      "seats": 92
+    },
+    {
+      "id": 74,
+      "collegeId": 18,
+      "courseId": 3,
+      "fee": 75000,
+      "seats": 99
+    },
+    {
+      "id": 75,
+      "collegeId": 18,
+      "courseId": 4,
+      "fee": 70000,
+      "seats": 106
+    },
+    {
+      "id": 76,
+      "collegeId": 19,
+      "courseId": 1,
+      "fee": 100000,
+      "seats": 96
+    },
+    {
+      "id": 77,
+      "collegeId": 19,
+      "courseId": 2,
+      "fee": 95000,
+      "seats": 103
+    },
+    {
+      "id": 78,
+      "collegeId": 19,
+      "courseId": 3,
+      "fee": 90000,
+      "seats": 110
+    },
+    {
+      "id": 79,
+      "collegeId": 19,
+      "courseId": 7,
+      "fee": 85000,
+      "seats": 138
+    },
+    {
+      "id": 80,
+      "collegeId": 20,
+      "courseId": 1,
+      "fee": 90000,
+      "seats": 107
+    },
+    {
+      "id": 81,
+      "collegeId": 20,
+      "courseId": 2,
+      "fee": 85000,
+      "seats": 114
+    },
+    {
+      "id": 82,
+      "collegeId": 20,
+      "courseId": 3,
+      "fee": 80000,
+      "seats": 121
+    },
+    {
+      "id": 83,
+      "collegeId": 20,
+      "courseId": 6,
+      "fee": 75000,
+      "seats": 142
+    },
+    {
+      "id": 84,
+      "collegeId": 21,
+      "courseId": 1,
+      "fee": 105000,
+      "seats": 118
+    },
+    {
+      "id": 85,
+      "collegeId": 21,
+      "courseId": 2,
+      "fee": 100000,
+      "seats": 125
+    },
+    {
+      "id": 86,
+      "collegeId": 21,
+      "courseId": 3,
+      "fee": 95000,
+      "seats": 132
+    },
+    {
+      "id": 87,
+      "collegeId": 21,
+      "courseId": 6,
+      "fee": 90000,
+      "seats": 63
+    },
+    {
+      "id": 88,
+      "collegeId": 21,
+      "courseId": 7,
+      "fee": 85000,
+      "seats": 70
+    }
+  ],
+  "users": [],
+  "applications": []
+}
