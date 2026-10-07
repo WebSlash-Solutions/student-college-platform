@@ -4385,13 +4385,8 @@
       "established": null,
       "rating": null,
       "fee": null,
-<<<<<<< HEAD
       "image": "https://media.collegedekho.com/media/img/institute/crawled_images/Vishnu_Lakshmi_College_of_Engineering_and_Technology.jpg",
       "imageSource": "CollegeDekho (verified Vishnu Lakshmi College of Engineering and Technology page)",
-=======
-      "image": "",
-      "imageSource": "",
->>>>>>> 85ad8fb46be37a7fbf43510d0d276345bb72ad49
       "about": "Vishnu Lakshmi College of Engineering and Technology is a self-financing engineering college at Kanjikonampalayam, Coimbatore district, affiliated to Anna University. Its TNEA code is 2368 and the directory lists 5 engineering branches here.",
       "facilities": [],
       "eligibility": "12th with Physics, Chemistry and Mathematics; admission through TNEA counselling",
@@ -6226,13 +6221,8 @@
       "established": null,
       "rating": null,
       "fee": null,
-<<<<<<< HEAD
       "image": "https://media.collegedekho.com/media/img/institute/crawled_images/Salem_College_of_Engineering_and_Technology87g.jpg",
       "imageSource": "CollegeDekho (verified Salem College of Engineering and Technology page)",
-=======
-      "image": "https://img.collegedunia.com/public/image/09-Mar_10%3A52_collegedunia%20team.jpeg",
-      "imageSource": "Official college website (img.collegedunia.com)",
->>>>>>> 85ad8fb46be37a7fbf43510d0d276345bb72ad49
       "about": "Salem College of Engineering and Technology is a self-financing engineering college at Mettupatty Perumapalayam, Salem district, affiliated to Anna University. Its TNEA code is 2659 and the directory lists 9 engineering branches here.",
       "facilities": [],
       "eligibility": "12th with Physics, Chemistry and Mathematics; admission through TNEA counselling",
@@ -13310,6 +13300,14 @@
       "seats": null
     }
   ],
-  "users": [],
+  "users": [
+    {
+      "id": "u1",
+      "name": "Harini",
+      "email": "harini8070@gmail.com",
+      "password": "Harini@2006",
+      "role": "student"
+    }
+  ],
   "applications": []
 }

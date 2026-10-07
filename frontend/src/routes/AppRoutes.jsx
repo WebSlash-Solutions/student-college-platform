@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import StudentManagement from "../pages/admin/StudentManagement";
@@ -8,8 +8,9 @@ import StudentDashboard from "../pages/student/StudentDashboard";
 
 function AppRoutes() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/student-college-platform">
       <Routes>
+        <Route path="/" element={<Navigate to="/student/dashboard" replace />} />
 
         {/* ADMIN */}
         <Route
