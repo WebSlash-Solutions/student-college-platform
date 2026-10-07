@@ -8,7 +8,7 @@ import StudentDashboard from "../pages/student/StudentDashboard";
 
 function AppRoutes() {
   return (
-    <BrowserRouter basename="/student-college-platform">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/student/dashboard" replace />} />
 

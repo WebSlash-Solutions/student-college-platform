@@ -601,6 +601,10 @@
         {
           "code": "RM",
           "name": "ROBOTICS AND AUTOMATION"
+        },
+        {
+          "code": "BM",
+          "name": "BIO MEDICAL ENGINEERING"
         }
       ],
       "website": "https://www.kgkite.ac.in"

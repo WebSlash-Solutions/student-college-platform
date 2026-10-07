@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import dbData from "./db.json";
 import LoginView from "./login.jsx";
+import homeStudentImage from "../../assets/home student.png";
+import aboutStudentImage from "../../assets/about student.jpg";
 
 function InlineLogin({ users, onSuccess }) {
   const [email, setEmail] = useState("");
@@ -2284,7 +2286,7 @@ export default function StudentDashboard() {
             <div className="cc-hero-visual">
               <div className="cc-hero-img">
                 <img
-                  src="/src/assets/home student.png"
+                  src={homeStudentImage}
                   alt="Students on a college campus"
                 />
               </div>
@@ -2372,7 +2374,7 @@ export default function StudentDashboard() {
             </div>
 
             <div className="cc-about-img">
-              <img src="/src/assets/about student.jpg" alt="College campus" />
+              <img src={aboutStudentImage} alt="College campus" />
             </div>
           </div>
         </section>
