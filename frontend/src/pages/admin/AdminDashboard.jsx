@@ -10,6 +10,219 @@ const adminStyles = String.raw`/* ==============================================
 * {
   box-sizing: border-box;
 }
+
+/* =========================================================
+   SUBTLE DASHBOARD ANIMATIONS
+========================================================= */
+
+@keyframes dashboardFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iconPop {
+  0% {
+    transform: scale(0.88);
+  }
+  70% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes chartDraw {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes donutReveal {
+  from {
+    opacity: 0;
+    transform: rotate(-35deg) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes notificationPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes listReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes loginReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.admin-login-page {
+  animation: dashboardFadeUp 0.55s ease both;
+}
+
+.login-shell {
+  animation: loginReveal 0.65s ease both;
+}
+
+.dashboard-home {
+  animation: dashboardFadeUp 0.45s ease both;
+}
+
+.stat-card {
+  animation: cardReveal 0.55s ease both;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stat-card:nth-child(2) { animation-delay: 0.10s; }
+.stat-card:nth-child(3) { animation-delay: 0.15s; }
+.stat-card:nth-child(4) { animation-delay: 0.20s; }
+.stat-card:nth-child(5) { animation-delay: 0.25s; }
+.stat-card:nth-child(6) { animation-delay: 0.30s; }
+.stat-card:nth-child(7) { animation-delay: 0.35s; }
+.stat-card:nth-child(8) { animation-delay: 0.40s; }
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(33, 60, 91, 0.09);
+}
+
+.stat-card:hover .stat-icon {
+  animation: iconPop 0.35s ease both;
+}
+
+.analytics-grid,
+.recent-leads-card,
+.activity-card,
+.quick-actions-card {
+  animation: cardReveal 0.6s ease both;
+}
+
+.analytics-grid {
+  animation-delay: 0.28s;
+}
+
+.recent-leads-card,
+.activity-card {
+  animation-delay: 0.38s;
+}
+
+.quick-actions-card {
+  animation-delay: 0.48s;
+}
+
+.dynamic-chart-svg {
+  animation: chartDraw 0.9s ease both;
+}
+
+.donut-chart {
+  animation: donutReveal 0.75s ease both;
+}
+
+.notification-button {
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.notification-button:hover {
+  transform: translateY(-1px);
+  background: #f4f7fb;
+}
+
+.notification-dot {
+  animation: notificationPulse 1.8s ease-in-out infinite;
+}
+
+.recent-leads-card tbody tr,
+.activity-item {
+  animation: listReveal 0.4s ease both;
+}
+
+.recent-leads-card tbody tr:nth-child(1),
+.activity-item:nth-child(1) { animation-delay: 0.05s; }
+.recent-leads-card tbody tr:nth-child(2),
+.activity-item:nth-child(2) { animation-delay: 0.10s; }
+.recent-leads-card tbody tr:nth-child(3),
+.activity-item:nth-child(3) { animation-delay: 0.15s; }
+.recent-leads-card tbody tr:nth-child(4),
+.activity-item:nth-child(4) { animation-delay: 0.20s; }
+.recent-leads-card tbody tr:nth-child(5),
+.activity-item:nth-child(5) { animation-delay: 0.25s; }
+.recent-leads-card tbody tr:nth-child(6),
+.activity-item:nth-child(6) { animation-delay: 0.30s; }
+.recent-leads-card tbody tr:nth-child(7),
+.activity-item:nth-child(7) { animation-delay: 0.35s; }
+.recent-leads-card tbody tr:nth-child(8),
+.activity-item:nth-child(8) { animation-delay: 0.40s; }
+.recent-leads-card tbody tr:nth-child(9),
+.activity-item:nth-child(9) { animation-delay: 0.45s; }
+.recent-leads-card tbody tr:nth-child(10),
+.activity-item:nth-child(10) { animation-delay: 0.50s; }
+
+.quick-actions button {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.quick-actions button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(33, 60, 91, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 .admin-app {
   width: 100vw;
   min-height: 100vh;
@@ -37,36 +250,35 @@ const adminStyles = String.raw`/* ==============================================
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px;
+  padding: 60px 30px;
   background:
-    radial-gradient(
-      circle at top left,
-      rgba(47, 128, 237, 0.13),
-      transparent 32%
-    ),
-    linear-gradient(
-      135deg,
-      #f6f9ff 0%,
-      #eef4fb 100%
-    );
+    radial-gradient(circle at top left, rgba(47, 128, 237, 0.13), transparent 32%),
+    linear-gradient(135deg, #f6f9ff 0%, #eef4fb 100%);
 }
 
-.admin-login-card {
+/* white card that holds everything */
+.login-shell {
+  position: relative;
   width: 100%;
-  max-width: 470px;
-  padding: 42px;
-  border-radius: 22px;
+  max-width: 920px;
+  height: 450px;
+  display: flex;
+  align-items: stretch;
+  border-radius: 24px;
   background: #ffffff;
-  border: 1px solid #e6ebf2;
-  box-shadow:
-    0 24px 60px rgba(25, 52, 92, 0.12);
+  box-shadow: 0 24px 60px rgba(25, 52, 92, 0.12);
 }
 
-.login-logo {
+/* ---------- left rail (logo + Sign In tab) ---------- */
+
+.login-rail {
+  width: 150px;
+  flex-shrink: 0;
+  padding: 44px 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 13px;
-  margin-bottom: 36px;
+  justify-content: space-between;
 }
 
 .login-logo-icon {
@@ -80,47 +292,105 @@ const adminStyles = String.raw`/* ==============================================
   font-size: 27px;
 }
 
-.login-logo h1 {
-  margin: 0;
-  font-size: 21px;
-  color: #172b4d;
-}
-
-.login-logo h1 span {
-  color: #287bea;
-}
-
-.login-logo p {
-  margin: 2px 0 0;
-  color: #7b899f;
-  font-size: 12px;
-}
-
-.login-heading {
-  margin-bottom: 28px;
-}
-
-.login-heading h2 {
-  margin: 0 0 7px;
-  font-size: 30px;
-  color: #152a4a;
-}
-
-.login-heading p {
-  margin: 0;
-  color: #7b899f;
+.login-tab {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #2478e5;
   font-size: 14px;
+  font-weight: 600;
+}
+
+.login-tab::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -8px;
+  bottom: -8px;
+  width: 6px;
+  border-radius: 0 6px 6px 0;
+  background: #2478e5;
+}
+
+.login-tab svg {
+  width: 24px;
+  height: 24px;
+}
+
+.login-rail-spacer {
+  height: 52px;
+}
+
+/* ---------- middle image panel (sticks out top & bottom) ---------- */
+
+.login-visual {
+  position: relative;
+  z-index: 2;
+  width: 320px;
+  height: 530px;
+  flex-shrink: 0;
+  align-self: center;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 28px;
+  color: #ffffff;
+  box-shadow: 0 30px 60px rgba(10, 25, 45, 0.35);
+  background:
+    linear-gradient(180deg, rgba(8, 22, 40, 0.25) 0%, rgba(5, 12, 24, 0.55) 55%, rgba(0, 0, 0, 0.92) 100%),
+    url("/login-bg.jpg") center / cover no-repeat,
+    linear-gradient(160deg, #2a6f97 0%, #112746 70%);
+}
+
+.login-visual h2 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.login-visual p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.login-brand-name {
+  margin-top: 26px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.login-brand-name span {
+  color: #7db8ff;
+}
+
+/* ---------- right form ---------- */
+
+.login-form-area {
+  flex: 1;
+  min-width: 0;
+  padding: 0 48px 0 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .login-field {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .login-field label {
   display: block;
   margin-bottom: 8px;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 600;
   color: #33445f;
 }
 
@@ -130,21 +400,16 @@ const adminStyles = String.raw`/* ==============================================
   align-items: center;
   gap: 10px;
   padding: 0 14px;
-  border: 1px solid #dfe6ef;
-  border-radius: 10px;
-  background: #fbfcfe;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #f3f5f8;
   transition: 0.2s ease;
 }
 
 .input-wrapper:focus-within {
-  border-color: #2f80ed;
-  box-shadow:
-    0 0 0 3px rgba(47, 128, 237, 0.1);
-}
-
-.input-wrapper > span {
-  font-size: 15px;
-  color: #7890ad;
+  border-color: #2478e5;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(36, 120, 229, 0.1);
 }
 
 .input-wrapper input {
@@ -161,19 +426,32 @@ const adminStyles = String.raw`/* ==============================================
   color: #a5afbe;
 }
 
+.input-icon {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  color: #7b899f;
+}
+
 .password-toggle {
+  display: flex;
+  align-items: center;
+  padding: 0;
   border: 0;
   background: transparent;
-  color: #287bea;
+  color: #5c6b82;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 .login-error {
   padding: 11px 13px;
-  margin-bottom: 15px;
-  border-radius: 8px;
+  margin-bottom: 14px;
+  border-radius: 10px;
   background: #fff0f1;
   color: #d64550;
   font-size: 13px;
@@ -183,59 +461,92 @@ const adminStyles = String.raw`/* ==============================================
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 5px 0 23px;
-  font-size: 12px;
+  margin: 4px 0 22px;
+  font-size: 13px;
 }
 
 .login-options label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: #6d7b90;
+  gap: 8px;
+  color: #4a5a72;
+  cursor: pointer;
+}
+
+.login-options input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #2478e5;
 }
 
 .login-options button {
   border: 0;
   background: transparent;
-  color: #287bea;
+  color: #2478e5;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .admin-login-button {
   width: 100%;
   height: 50px;
   border: 0;
-  border-radius: 10px;
-  background: #2478e5;
+  border-radius: 14px;
+  background: #1f2430;
   color: #ffffff;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
   transition: 0.2s ease;
 }
 
 .admin-login-button:hover {
-  background: #1768d2;
+  background: #2478e5;
   transform: translateY(-1px);
 }
 
-.login-security {
-  text-align: center;
-  margin-top: 22px;
-  color: #8190a6;
-  font-size: 12px;
-}
-
 .login-demo {
-  margin-top: 12px;
+  margin: 16px 0 0;
   text-align: center;
   color: #a1adbd;
-  font-size: 10px;
+  font-size: 11px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 860px) {
+  .admin-login-page {
+    padding: 20px 15px;
+  }
+
+  .login-shell {
+    height: auto;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .login-rail {
+    display: none;
+  }
+
+  .login-visual {
+    width: 100%;
+    height: 220px;
+    border-radius: 24px 24px 0 0;
+    box-shadow: none;
+  }
+
+  .login-visual h2 {
+    font-size: 26px;
+  }
+
+  .login-brand-name {
+    margin-top: 14px;
+  }
+
+  .login-form-area {
+    padding: 28px 22px 30px;
+  }
 }
 
 
@@ -1569,14 +1880,6 @@ font-size: 14px;
     width: 40px;
   }
 
-  .admin-login-page {
-    padding: 15px;
-  }
-
-  .admin-login-card {
-    padding: 28px 22px;
-  }
-
   .admin-topbar {
     height: 65px;
   }
@@ -1800,83 +2103,97 @@ function AdminLogin({ onLogin }) {
 
   return (
     <div className="admin-login-page">
-      <div className="admin-login-card">
-        <div className="login-logo">
+      <div className="login-shell">
+        {/* LEFT RAIL */}
+        <div className="login-rail">
           <div className="login-logo-icon">🎓</div>
 
-          <div>
-            <h1>
-              Student<span>College</span>
-            </h1>
+          <div className="login-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21v-1a6 6 0 0 1 6-6h1.5" />
+              <path d="m15 18 2 2 4-4" />
+            </svg>
+            Sign In
+          </div>
 
-            <p>Admission Platform</p>
+          <div className="login-rail-spacer" />
+        </div>
+
+        {/* MIDDLE IMAGE PANEL */}
+        <div className="login-visual">
+          <h2>Welcome back</h2>
+          <p>Please enter your credentials</p>
+
+          <div className="login-brand-name">
+            Student<span>College</span> · Admin
           </div>
         </div>
 
-        <div className="login-heading">
-          <h2>Admin Login</h2>
-          <p>Sign in to access the administration dashboard.</p>
+        {/* RIGHT FORM */}
+        <div className="login-form-area">
+          <form onSubmit={handleSubmit}>
+            <div className="login-field">
+              <label>Email</label>
+
+              <div className="input-wrapper">
+                <input
+                  type="email"
+                  placeholder="admin@studentcollege.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <path d="m4 7 8 6 8-6" />
+                </svg>
+              </div>
+            </div>
+
+            <div className="login-field">
+              <label>Password</label>
+
+              <div className="input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                    {!showPassword && <path d="M4 4l16 16" />}
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {error && <div className="login-error">{error}</div>}
+
+            <div className="login-options">
+              <label>
+                <input type="checkbox" defaultChecked />
+                Remember
+              </label>
+
+              <button type="button">Forgot password?</button>
+            </div>
+
+            <button className="admin-login-button" type="submit">
+              Sign In
+            </button>
+          </form>
+
         </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="login-field">
-            <label>Email Address</label>
-
-            <div className="input-wrapper">
-              <span>✉</span>
-
-              <input
-                type="email"
-                placeholder="admin@studentcollege.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="login-field">
-            <label>Password</label>
-
-            <div className="input-wrapper">
-              <span>🔒</span>
-
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-          </div>
-
-          {error && <div className="login-error">{error}</div>}
-
-          <div className="login-options">
-            <label>
-              <input type="checkbox" />
-              Remember me
-            </label>
-
-            <button type="button">Forgot Password?</button>
-          </div>
-
-          <button className="admin-login-button" type="submit">
-            Login to Dashboard
-            <span>→</span>
-          </button>
-        </form>
-
-        <div className="login-security">🔐 Secure Admin Access</div>
-
-        <p className="login-demo">Demo: admin@studentcollege.com / admin123</p>
       </div>
     </div>
   );
