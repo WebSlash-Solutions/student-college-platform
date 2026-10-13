@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const PENDING_COLLEGE_KEY = "campusconnect_pending_college_registration";
@@ -944,38 +944,108 @@ const districtsByState = {
 };
 
 /* =========================
+   HELPERS
+========================= */
+
+const getDomain = (website) =>
+  (website || "")
+    .trim()
+    .replace(/^https?:\/\//i, "")
+    .replace(/^www\./i, "")
+    .split("/")[0];
+
+const normalizeUrl = (value) => {
+  const url = (value || "").trim();
+  if (!url) return "";
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+};
+
+// "Course | Duration | Fee" per line (or comma separated names) -> [[name, duration, fee]]
+const parseCourses = (text, category, fees) => {
+  const defaultDuration = category === "Engineering" ? "4 Years" : "3 Years";
+  let raw = String(text || "").trim();
+  if (!raw) return [];
+  if (!raw.includes("\n") && !raw.includes("|") && raw.includes(",")) {
+    raw = raw.split(",").join("\n");
+  }
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [name, duration, fee] = line.split("|").map((part) => part.trim());
+      return [name, duration || defaultDuration, fee || fees || "Verify with college"];
+    });
+};
+
+const fileToLogo = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = reject;
+      image.onload = () => {
+        const max = 160;
+        const width = image.width || max;
+        const height = image.height || max;
+        const scale = Math.min(1, max / Math.max(width, height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(width * scale));
+        canvas.height = Math.max(1, Math.round(height * scale));
+        canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/png"));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+const emptyForm = {
+  collegeName: "",
+  officialEmail: "",
+  mobile: "",
+  collegeType: "",
+  collegeCategory: "Engineering",
+  affiliation: "",
+  accreditation: "",
+  registrationDetails: "",
+  address: "",
+  state: "",
+  district: "",
+  pincode: "",
+  website: "",
+  logoData: "",
+  established: "",
+  hostel: "",
+  transportation: "",
+  placement: "",
+  fees: "",
+  courses: "",
+  password: "",
+  confirmPassword: "",
+};
+
+/* =========================
    ICONS
 ========================= */
 
 function GraduationIcon() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
       <path
         d="M3 9.2L12 4l9 5.2-9 5.1L3 9.2Z"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinejoin="round"
       />
-
       <path
         d="M7 11.6v4.2c0 1.4 2.2 3.2 5 3.2s5-1.8 5-3.2v-4.2"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
       />
-
-      <path
-        d="M21 9.5v5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
+      <path d="M21 9.5v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -983,12 +1053,7 @@ function GraduationIcon() {
 function CheckIcon() {
   return (
     <span className="feature-icon">
-      <svg
-        viewBox="0 0 24 24"
-        width="15"
-        height="15"
-        fill="none"
-      >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
         <path
           d="m6 12.5 4 4 8-9"
           stroke="currentColor"
@@ -1001,66 +1066,178 @@ function CheckIcon() {
   );
 }
 
+function EyeIcon({ off }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="22"
+      height="22"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+      <circle cx="12" cy="12" r="3" />
+      {off && <path d="M4 4l16 16" />}
+    </svg>
+  );
+}
+
+/* Logo shown in the preview: uploaded logo -> website logo -> initials */
+function LogoPreview({ name, website, logoData }) {
+  const [index, setIndex] = useState(0);
+  const domain = getDomain(website);
+
+  const sources = [];
+  if (logoData) sources.push({ src: logoData, min: 0 });
+  if (domain) {
+    sources.push({
+      src: `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
+      min: 32,
+    });
+    sources.push({ src: `https://icons.duckduckgo.com/ip3/${domain}.ico`, min: 16 });
+  }
+
+  const initials =
+    (name || "")
+      .split(" ")
+      .filter((word) => /[A-Za-z]/.test(word[0]))
+      .slice(0, 2)
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase() || "CC";
+
+  const current = sources[index];
+  if (!current) return <span className="logo-initials">{initials}</span>;
+
+  return (
+    <img
+      key={current.src}
+      src={current.src}
+      alt=""
+      referrerPolicy="no-referrer"
+      onError={() => setIndex((value) => value + 1)}
+      onLoad={(event) => {
+        if (event.currentTarget.naturalWidth < current.min) {
+          setIndex((value) => value + 1);
+        }
+      }}
+    />
+  );
+}
+
+function Field({ id, label, required, full, hint, children }) {
+  return (
+    <div className={full ? "form-group full" : "form-group"}>
+      <label htmlFor={id}>
+        {label}
+        {required && <span className="required"> *</span>}
+      </label>
+      {children}
+      {hint && <p className="field-hint">{hint}</p>}
+    </div>
+  );
+}
+
+function PasswordInput({ id, name, value, onChange, placeholder, autoComplete }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="password-wrap">
+      <input
+        id={id}
+        name={name}
+        type={visible ? "text" : "password"}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+      />
+      <button
+        type="button"
+        className="password-toggle"
+        onClick={() => setVisible((v) => !v)}
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        <EyeIcon off={visible} />
+      </button>
+    </div>
+  );
+}
+
+function Select({ id, name, value, onChange, disabled, children }) {
+  return (
+    <div className="select-wrapper">
+      <select id={id} name={name} value={value} onChange={onChange} disabled={disabled}>
+        {children}
+      </select>
+      <span className="select-arrow" />
+    </div>
+  );
+}
+
 /* =========================
    COMPONENT
 ========================= */
 
 function Registeration() {
   const navigate = useNavigate();
+  const noticeRef = useRef(null);
 
-  const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(
+    () => new URLSearchParams(window.location.search).get("mode") === "login"
+  );
+  const [formData, setFormData] = useState(emptyForm);
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [notice, setNotice] = useState(null); // { type: "error" | "success", text }
+  const [logoBusy, setLogoBusy] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  const [formData, setFormData] = useState({
-    collegeName: "",
-    officialEmail: "",
-    mobile: "",
-    address: "",
-    district: "",
-    state: "",
-    website: "",
-    collegeType: "",
-    affiliation: "",
-    accreditation: "",
-    registrationDetails: "",
-    collegeCategory: "Engineering",
-    password: "",
-    confirmPassword: "",
-  });
+  useEffect(() => {
+    if (notice && noticeRef.current) {
+      noticeRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [notice]);
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-
-  /* =========================
-     FORM CHANGE
-  ========================= */
+  const switchMode = (login) => {
+    setNotice(null);
+    setShowLogin(login);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "state") {
-      setFormData((prev) => ({
-        ...prev,
-        state: value,
-        district: "",
-      }));
-
+      setFormData((prev) => ({ ...prev, state: value, district: "" }));
       return;
     }
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  /* =========================
-     REGISTER
-  ========================= */
+  const handleLogo = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setNotice({ type: "error", text: "Please choose an image file (PNG or JPG) for the logo." });
+      return;
+    }
+    setLogoBusy(true);
+    try {
+      const logoData = await fileToLogo(file);
+      setFormData((prev) => ({ ...prev, logoData }));
+    } catch {
+      setNotice({ type: "error", text: "Could not read that image. Try a PNG or JPG file." });
+    }
+    setLogoBusy(false);
+  };
+
+  /* ---------- REGISTER ---------- */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setNotice(null);
 
     const requiredFields = [
       "collegeName",
@@ -1081,1302 +1258,285 @@ function Registeration() {
     );
 
     if (missingField) {
-      alert("Please fill all required fields.");
+      setNotice({ type: "error", text: "Please fill all the fields marked with *." });
+      return;
+    }
+
+    const email = formData.officialEmail.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setNotice({ type: "error", text: "Enter a valid official email address." });
+      return;
+    }
+
+    const mobileDigits = formData.mobile.replace(/\D/g, "");
+    if (mobileDigits.length < 10) {
+      setNotice({ type: "error", text: "Enter a valid 10-digit mobile number." });
       return;
     }
 
     if (formData.password.length < 6) {
-      alert("Password must be at least 6 characters.");
+      setNotice({ type: "error", text: "Password must be at least 6 characters." });
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Password and confirm password do not match.");
+      setNotice({ type: "error", text: "Password and confirm password do not match." });
       return;
     }
 
-    const accounts = JSON.parse(
-      localStorage.getItem(COLLEGE_ACCOUNTS_KEY) || "[]"
-    );
-
-    const email = formData.officialEmail.trim().toLowerCase();
+    let accounts = [];
+    try {
+      accounts = JSON.parse(localStorage.getItem(COLLEGE_ACCOUNTS_KEY) || "[]");
+    } catch {
+      accounts = [];
+    }
 
     if (accounts.some((account) => account.email === email)) {
-      alert("This official email is already registered. Please login.");
       setLoginData({ email, password: "" });
       setShowLogin(true);
+      setNotice({
+        type: "error",
+        text: "This official email is already registered. Please log in.",
+      });
       return;
     }
 
-    const passwordHash = await hashPassword(formData.password);
+    setBusy(true);
+    try {
+      const passwordHash = await hashPassword(formData.password);
 
-    const pendingRegistration = {
-      ...formData,
-      officialEmail: email,
-      password: undefined,
-      confirmPassword: undefined,
-      passwordHash,
-      registeredAt: new Date().toISOString(),
-    };
+      const pendingRegistration = {
+        ...formData,
+        mobile: mobileDigits.slice(-10),
+        website: normalizeUrl(formData.website),
+        officialEmail: email,
+        password: undefined,
+        confirmPassword: undefined,
+        passwordHash,
+        registeredAt: new Date().toISOString(),
+      };
 
-    localStorage.setItem(
-      PENDING_COLLEGE_KEY,
-      JSON.stringify(pendingRegistration)
-    );
+      localStorage.setItem(PENDING_COLLEGE_KEY, JSON.stringify(pendingRegistration));
+    } catch {
+      setBusy(false);
+      setNotice({
+        type: "error",
+        text: "Could not save your details. Check browser storage and try again.",
+      });
+      return;
+    }
+    setBusy(false);
 
-    setLoginData({
-      email,
-      password: "",
-    });
-
+    setLoginData({ email, password: "" });
     setShowLogin(true);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+    setNotice({
+      type: "success",
+      text: "Details saved. Log in once with your password to publish your college profile.",
     });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /* =========================
-     LOGIN
-  ========================= */
+  /* ---------- LOGIN ---------- */
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setNotice(null);
 
     const email = loginData.email.trim().toLowerCase();
     const password = loginData.password;
 
     if (!email || !password) {
-      alert("Please enter your email and password.");
+      setNotice({ type: "error", text: "Enter your official email and password." });
       return;
     }
 
-    const passwordHash = await hashPassword(password);
+    setBusy(true);
+    try {
+      const passwordHash = await hashPassword(password);
 
-    const accounts = JSON.parse(
-      localStorage.getItem(COLLEGE_ACCOUNTS_KEY) || "[]"
-    );
+      const accounts = JSON.parse(localStorage.getItem(COLLEGE_ACCOUNTS_KEY) || "[]");
+      const pending = JSON.parse(localStorage.getItem(PENDING_COLLEGE_KEY) || "null");
 
-    const pending = JSON.parse(
-      localStorage.getItem(PENDING_COLLEGE_KEY) || "null"
-    );
+      let account = accounts.find((item) => item.email === email);
 
-    let account = accounts.find((item) => item.email === email);
+      // A newly registered college is published only after its first successful login.
+      if (!account && pending && pending.officialEmail === email) {
+        if (pending.passwordHash !== passwordHash) {
+          setBusy(false);
+          setNotice({ type: "error", text: "Incorrect password. Please try again." });
+          return;
+        }
 
-    // Complete a newly registered college only after successful login.
-    if (!account && pending && pending.officialEmail === email) {
-      if (pending.passwordHash !== passwordHash) {
-        alert("Incorrect password.");
+        account = {
+          id: Date.now(),
+          email,
+          passwordHash,
+          collegeName: pending.collegeName,
+          registeredAt: pending.registeredAt,
+        };
+
+        localStorage.setItem(COLLEGE_ACCOUNTS_KEY, JSON.stringify([account, ...accounts]));
+
+        const savedColleges = JSON.parse(localStorage.getItem(COLLEGE_SAVED_KEY) || "[]");
+
+        const courses = parseCourses(pending.courses, pending.collegeCategory, pending.fees);
+
+        const newCollege = {
+          id: `registered-${account.id}`,
+          name: pending.collegeName,
+          category: pending.collegeCategory || "Other",
+          location: `${pending.address}, ${pending.state}`.replace(/^, |, $/g, ""),
+          district: pending.district,
+          pincode: pending.pincode || "",
+          established: pending.established || "",
+          type: pending.collegeType,
+          affiliation: pending.affiliation,
+          accreditation: pending.accreditation || "Not available",
+          ranking: "Not available",
+          rankingLabel: "Recognition",
+          counsellingCode: "",
+          website: pending.website || "",
+          logoData: pending.logoData || "",
+          hostel: pending.hostel || "",
+          transportation: pending.transportation || "",
+          placement: pending.placement || "",
+          fees: pending.fees || "",
+          counselling: "College Admission",
+          courses:
+            courses.length > 0
+              ? courses
+              : [["Course details not added", "-", pending.fees || "Not added"]],
+          scholarships: [
+            "Government scholarships",
+            "Merit scholarships",
+            "Institutional financial assistance",
+          ],
+          placements: [
+            "Placement information can be updated from Edit profile",
+            "Career guidance",
+            "Industry interaction",
+          ],
+          registeredAccountEmail: email,
+        };
+
+        const updatedSaved = [
+          newCollege,
+          ...savedColleges.filter((college) => college.registeredAccountEmail !== email),
+        ];
+
+        localStorage.setItem(COLLEGE_SAVED_KEY, JSON.stringify(updatedSaved));
+        localStorage.removeItem(PENDING_COLLEGE_KEY);
+      } else if (!account) {
+        setBusy(false);
+        setNotice({
+          type: "error",
+          text: "No college account found for this email. Please register first.",
+        });
+        return;
+      } else if (account.passwordHash !== passwordHash) {
+        setBusy(false);
+        setNotice({ type: "error", text: "Incorrect email or password." });
         return;
       }
 
-      account = {
-        id: Date.now(),
-        email,
-        passwordHash,
-        collegeName: pending.collegeName,
-        registeredAt: pending.registeredAt,
-      };
-
       localStorage.setItem(
-        COLLEGE_ACCOUNTS_KEY,
-        JSON.stringify([account, ...accounts])
+        COLLEGE_LOGIN_KEY,
+        JSON.stringify({
+          id: account.id,
+          email: account.email,
+          collegeName: account.collegeName,
+          loggedInAt: new Date().toISOString(),
+        })
       );
-
-      const savedColleges = JSON.parse(
-        localStorage.getItem(COLLEGE_SAVED_KEY) || "[]"
-      );
-
-      const newCollege = {
-        id: `registered-${account.id}`,
-        name: pending.collegeName,
-        category: pending.collegeCategory || "Other",
-        location: `${pending.address}, ${pending.state}`.replace(/^, |, $/g, ""),
-        district: pending.district,
-        pincode: "",
-        established: "",
-        type: pending.collegeType,
-        affiliation: pending.affiliation,
-        accreditation: pending.accreditation || "Not available",
-        ranking: "Not available",
-        rankingLabel: "Recognition / Ranking",
-        counsellingCode: "",
-        website: pending.website,
-        logo: pending.website
-          ? `https://www.google.com/s2/favicons?domain=${pending.website.replace(/^https?:\/\//, "")}&sz=128`
-          : "",
-        hostel: "Not added",
-        transportation: "Not added",
-        placement: "Not added",
-        counselling: "College Admission",
-        courses: [["Course information not added", "-", "Indicative"]],
-        scholarships: [
-          "Government scholarships",
-          "Merit scholarships",
-          "Institutional financial assistance",
-        ],
-        placements: [
-          "Placement information can be updated from the college profile",
-          "Career guidance",
-          "Industry interaction",
-        ],
-        registeredAccountEmail: email,
-      };
-
-      const updatedSaved = [
-        newCollege,
-        ...savedColleges.filter(
-          (college) => college.registeredAccountEmail !== email
-        ),
-      ];
-
-      localStorage.setItem(
-        COLLEGE_SAVED_KEY,
-        JSON.stringify(updatedSaved)
-      );
-
-      localStorage.removeItem(PENDING_COLLEGE_KEY);
-    } else if (!account) {
-      alert("College account not found. Please register first.");
-      return;
-    } else if (account.passwordHash !== passwordHash) {
-      alert("Incorrect email or password.");
+    } catch {
+      setBusy(false);
+      setNotice({ type: "error", text: "Something went wrong while logging in. Try again." });
       return;
     }
 
-    localStorage.setItem(
-      COLLEGE_LOGIN_KEY,
-      JSON.stringify({
-        id: account.id,
-        email: account.email,
-        collegeName: account.collegeName,
-        loggedInAt: new Date().toISOString(),
-      })
-    );
-
+    setBusy(false);
     navigate("/college/profile");
   };
 
-  const availableDistricts = formData.state
-    ? districtsByState[formData.state] || []
-    : [];
+  const availableDistricts = formData.state ? districtsByState[formData.state] || [] : [];
+
+  const noticeBox = notice && (
+    <div
+      ref={noticeRef}
+      className={`notice notice-${notice.type}`}
+      role={notice.type === "error" ? "alert" : "status"}
+    >
+      {notice.text}
+    </div>
+  );
 
   return (
     <>
-      <style>{`
-
-        * {
-          box-sizing: border-box;
-        }
-
-        html,
-        body,
-        #root {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          min-height: 100%;
-        }
-
-        body {
-          font-family:
-            Inter,
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            sans-serif;
-
-          background: #f7f9fc;
-          color: #172033;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-          font-family: inherit;
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .college-register-page {
-          width: 100%;
-          min-height: 100vh;
-          display: flex;
-          overflow: hidden;
-          background: #f7f9fc;
-        }
-
-        /* =========================
-           LEFT PANEL
-        ========================= */
-
-        .college-register-left {
-          width: 40%;
-          min-width: 340px;
-          height: 100vh;
-
-          position: sticky;
-          top: 0;
-
-          overflow: hidden;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          padding: 45px 50px;
-
-          color: #ffffff;
-
-          background:
-            radial-gradient(
-              circle at 15% 18%,
-              rgba(59, 130, 246, 0.2),
-              transparent 32%
-            ),
-            radial-gradient(
-              circle at 85% 80%,
-              rgba(37, 99, 235, 0.17),
-              transparent 35%
-            ),
-            linear-gradient(
-              145deg,
-              #07152f 0%,
-              #0c2145 52%,
-              #102e5b 100%
-            );
-        }
-
-        .college-register-left::before,
-        .college-register-left::after {
-          content: "";
-          position: absolute;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 50%;
-          pointer-events: none;
-        }
-
-        .college-register-left::before {
-          width: 300px;
-          height: 300px;
-          top: -145px;
-          right: -100px;
-        }
-
-        .college-register-left::after {
-          width: 240px;
-          height: 240px;
-          bottom: -120px;
-          left: -120px;
-        }
-
-        .left-content {
-          width: 100%;
-          max-width: 470px;
-          position: relative;
-          z-index: 2;
-        }
-
-        /* =========================
-           CAMPUSCONNECT LOGO
-        ========================= */
-
-        .brand {
-          display: flex;
-          align-items: center;
-          gap: 11px;
-
-          margin-bottom: 43px;
-        }
-
-        .brand-icon {
-          width: 40px;
-          height: 40px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          flex-shrink: 0;
-
-          border-radius: 10px;
-
-          color: #ffffff;
-
-          background: rgba(255, 255, 255, 0.1);
-
-          border: 1px solid rgba(255, 255, 255, 0.14);
-        }
-
-        .brand-name {
-          color: #ffffff;
-
-          font-size: 25px;
-          line-height: 1;
-
-          font-weight: 800;
-
-          letter-spacing: -0.8px;
-        }
-
-        /* =========================
-           LEFT CONTENT
-        ========================= */
-
-        .left-content h2 {
-          margin: 0 0 18px;
-
-          max-width: 460px;
-
-          color: #ffffff;
-
-          font-size: clamp(38px, 4vw, 55px);
-          line-height: 1.06;
-
-          letter-spacing: -2px;
-
-          font-weight: 850;
-        }
-
-        .left-content h2 span {
-          color: #60a5fa;
-        }
-
-        .left-description {
-          max-width: 455px;
-
-          margin: 0;
-
-          color: rgba(255, 255, 255, 0.76);
-
-          font-size: 15px;
-          line-height: 1.7;
-        }
-
-        .left-features {
-          display: flex;
-          flex-direction: column;
-          gap: 11px;
-
-          margin-top: 29px;
-        }
-
-        .feature-item {
-          min-height: 56px;
-
-          display: flex;
-          align-items: center;
-
-          gap: 11px;
-
-          padding: 11px 14px;
-
-          border: 1px solid rgba(255, 255, 255, 0.1);
-
-          border-radius: 10px;
-
-          background: rgba(255, 255, 255, 0.055);
-
-          color: rgba(255, 255, 255, 0.88);
-
-          font-size: 13.5px;
-          font-weight: 650;
-
-          transition: 0.25s ease;
-        }
-
-        .feature-item:hover {
-          transform: translateX(4px);
-          background: rgba(255, 255, 255, 0.09);
-        }
-
-        .feature-icon {
-          width: 24px;
-          height: 24px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          flex-shrink: 0;
-
-          border-radius: 50%;
-
-          color: #bfdbfe;
-
-          background: rgba(59, 130, 246, 0.22);
-        }
-
-        /* =========================
-           RIGHT SIDE
-        ========================= */
-
-        .college-register-right {
-          width: 60%;
-          flex: 1;
-          min-width: 0;
-
-          height: 100vh;
-
-          overflow-x: hidden;
-          overflow-y: auto;
-
-          background: #ffffff;
-
-          scrollbar-width: thin;
-          scrollbar-color: #cbd5e1 transparent;
-        }
-
-        .college-register-right::-webkit-scrollbar {
-          width: 7px;
-        }
-
-        .college-register-right::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        .college-register-right::-webkit-scrollbar-thumb {
-          border-radius: 20px;
-          background: #cbd5e1;
-        }
-
-        /* =========================
-           FORM CONTAINER
-        ========================= */
-
-        .form-container {
-          width: 100%;
-
-          max-width: 1000px;
-
-          margin: 0 auto;
-
-          padding: 48px 45px 65px;
-        }
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        .form-header {
-          width: 100%;
-
-          margin: 0 auto 36px;
-
-          text-align: center;
-        }
-
-        .form-header h1 {
-          margin: 0;
-
-          color: #17345f;
-
-          font-size: clamp(32px, 3.2vw, 44px);
-          line-height: 1.1;
-
-          font-weight: 850;
-
-          letter-spacing: -1.5px;
-        }
-
-        .form-header p {
-          margin: 9px auto 0;
-
-          max-width: 650px;
-
-          color: #64748b;
-
-          font-size: 14px;
-          line-height: 1.6;
-        }
-
-        .login-link {
-          margin-top: 12px;
-
-          color: #64748b;
-
-          font-size: 13.5px;
-        }
-
-        .login-link button {
-          padding: 0;
-
-          border: 0;
-          outline: 0;
-
-          cursor: pointer;
-
-          color: #1769e0;
-
-          background: transparent;
-
-          font-size: inherit;
-          font-weight: 750;
-        }
-
-        /* =========================
-           SECTION
-        ========================= */
-
-        .form-section {
-          width: 100%;
-
-          margin-bottom: 34px;
-        }
-
-        .section-title {
-          width: 100%;
-
-          display: flex;
-          align-items: center;
-
-          gap: 10px;
-
-          padding-bottom: 12px;
-
-          margin-bottom: 22px;
-
-          border-bottom: 1px solid #e5eaf1;
-
-          text-align: left;
-        }
-
-        .section-number {
-          width: 24px;
-          height: 24px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          flex-shrink: 0;
-
-          border-radius: 7px;
-
-          color: #1769e0;
-
-          background: #edf5ff;
-
-          font-size: 10px;
-          font-weight: 800;
-        }
-
-        .section-title h3 {
-          margin: 0;
-
-          color: #18243a;
-
-          font-size: 15.5px;
-          font-weight: 800;
-
-          text-align: left;
-        }
-
-        /* =========================
-           FORM GRID
-        ========================= */
-
-        .form-grid {
-          width: 100%;
-
-          display: grid;
-
-          grid-template-columns:
-            minmax(0, 1fr)
-            minmax(0, 1fr);
-
-          gap: 21px 20px;
-        }
-
-        .form-group {
-          width: 100%;
-          min-width: 0;
-
-          text-align: left !important;
-        }
-
-        .form-group.full {
-          grid-column: 1 / -1;
-        }
-
-        /* =========================
-           LABEL
-           LEFT ALIGN FIX
-        ========================= */
-
-        .form-group label {
-          display: block;
-
-          width: 100%;
-
-          margin: 0 0 8px;
-
-          color: #1d2935;
-
-          font-size: 14px;
-          line-height: 1.3;
-
-          font-weight: 700;
-
-          text-align: left !important;
-        }
-
-        .required {
-          color: #dc2626;
-
-          margin-left: 3px;
-        }
-
-        /* =========================
-           INPUT
-        ========================= */
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-          width: 100%;
-
-          border: 1px solid #d5dde8;
-
-          outline: none;
-
-          border-radius: 8px;
-
-          background: #ffffff;
-
-          color: #27364a;
-
-          font-size: 14px;
-
-          font-weight: 500;
-
-          text-align: left;
-
-          transition:
-            border-color 0.2s ease,
-            box-shadow 0.2s ease;
-        }
-
-        .form-group input,
-        .form-group select {
-          height: 46px;
-
-          padding: 0 13px;
-        }
-
-        .form-group textarea {
-          min-height: 102px;
-
-          padding: 12px 13px;
-
-          resize: vertical;
-
-          line-height: 1.5;
-        }
-
-        /* DARK PLACEHOLDER */
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-          color: #64748b !important;
-
-          opacity: 1 !important;
-        }
-
-        .form-group input:hover,
-        .form-group select:hover,
-        .form-group textarea:hover {
-          border-color: #b7c4d4;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-          border-color: #4f8ee8;
-
-          box-shadow:
-            0 0 0 3px rgba(59, 130, 246, 0.09);
-        }
-
-        /* =========================
-           SELECT
-        ========================= */
-
-        .select-wrapper {
-          width: 100%;
-
-          position: relative;
-        }
-
-        .select-wrapper select {
-          appearance: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-
-          cursor: pointer;
-
-          padding-right: 40px;
-        }
-
-        .select-arrow {
-          position: absolute;
-
-          top: 50%;
-          right: 14px;
-
-          width: 8px;
-          height: 8px;
-
-          border-right: 1.7px solid #64748b;
-          border-bottom: 1.7px solid #64748b;
-
-          transform:
-            translateY(-65%)
-            rotate(45deg);
-
-          pointer-events: none;
-        }
-
-        .form-group select:disabled {
-          color: #a6b3c4;
-
-          background: #f5f7fa;
-
-          border-color: #e0e6ee;
-
-          cursor: not-allowed;
-        }
-
-        .form-group select:disabled + .select-arrow {
-          border-color: #b9c4d1;
-        }
-
-        .field-hint {
-          margin: 6px 0 0;
-
-          color: #8da0b7;
-
-          font-size: 11.5px;
-
-          text-align: left;
-        }
-
-        /* =========================
-           REGISTER BUTTON
-           NORMAL SIZE
-        ========================= */
-
-        .submit-area {
-          width: 100%;
-
-          margin-top: 2px;
-
-          text-align: left;
-        }
-
-        .submit-button {
-          width: auto;
-
-          min-width: 220px;
-
-          height: 47px;
-
-          padding: 0 25px;
-
-          border: 0;
-
-          border-radius: 8px;
-
-          cursor: pointer;
-
-          color: #ffffff;
-
-          background: linear-gradient(
-            135deg,
-            #1769e0,
-            #1553b7
-          );
-
-          font-size: 14px;
-
-          font-weight: 750;
-
-          box-shadow:
-            0 8px 18px rgba(23, 105, 224, 0.18);
-
-          transition:
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
-        }
-
-        .submit-button:hover {
-          transform: translateY(-1px);
-
-          box-shadow:
-            0 11px 23px rgba(23, 105, 224, 0.24);
-        }
-
-        .submit-button:active {
-          transform: translateY(0);
-        }
-
-        .verification-note {
-          margin: 11px 0 0;
-
-          color: #8492a6;
-
-          font-size: 11.5px;
-
-          line-height: 1.5;
-
-          text-align: left;
-        }
-
-        /* =========================
-           LOGIN
-        ========================= */
-
-        .login-container {
-          min-height: 100%;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          padding: 40px 25px;
-        }
-
-        .login-card {
-          width: 100%;
-          max-width: 470px;
-
-          padding: 40px;
-
-          border: 1px solid #e2e8f0;
-
-          border-radius: 16px;
-
-          background: #ffffff;
-
-          box-shadow:
-            0 20px 60px rgba(15, 23, 42, 0.08);
-        }
-
-        .login-logo {
-          width: 50px;
-          height: 50px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          margin: 0 auto 18px;
-
-          border-radius: 13px;
-
-          color: #1769e0;
-
-          background: #edf5ff;
-        }
-
-        .login-card h1 {
-          margin: 0;
-
-          color: #17345f;
-
-          font-size: 30px;
-
-          font-weight: 850;
-
-          text-align: center;
-        }
-
-        .login-card > p {
-          margin: 8px 0 26px;
-
-          color: #64748b;
-
-          text-align: center;
-
-          font-size: 13.5px;
-
-          line-height: 1.5;
-        }
-
-        .login-form {
-          display: flex;
-
-          flex-direction: column;
-
-          gap: 19px;
-        }
-
-        .back-register {
-          width: 100%;
-
-          margin-top: 15px;
-
-          padding: 8px;
-
-          border: 0;
-
-          cursor: pointer;
-
-          color: #64748b;
-
-          background: transparent;
-
-          font-size: 13px;
-
-          font-weight: 650;
-        }
-
-        .back-register:hover {
-          color: #1769e0;
-        }
-
-        /* =========================
-           TABLET
-        ========================= */
-
-        @media (max-width: 900px) {
-
-          .college-register-page {
-            display: block;
-
-            overflow: visible;
-          }
-
-          .college-register-left {
-            width: 100%;
-
-            min-width: 0;
-
-            height: auto;
-            min-height: auto;
-
-            position: relative;
-
-            padding: 45px 30px;
-          }
-
-          .college-register-right {
-            width: 100%;
-
-            height: auto;
-
-            overflow: visible;
-          }
-
-          .left-content {
-            max-width: 700px;
-
-            margin: 0 auto;
-          }
-
-          .left-content h2 {
-            max-width: 650px;
-
-            font-size: clamp(
-              36px,
-              6vw,
-              50px
-            );
-          }
-
-          .left-description {
-            max-width: 650px;
-          }
-
-          .left-features {
-            max-width: 620px;
-
-            margin-left: auto;
-            margin-right: auto;
-          }
-
-          .form-container {
-            max-width: 900px;
-
-            padding:
-              42px 35px 55px;
-          }
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 700px) {
-
-          .college-register-left {
-            padding:
-              38px 22px 42px;
-          }
-
-          .brand {
-            margin-bottom: 32px;
-          }
-
-          .left-content h2 {
-            font-size: 36px;
-
-            letter-spacing: -1.5px;
-          }
-
-          .form-container {
-            padding:
-              38px 22px 50px;
-          }
-
-          .form-grid {
-            grid-template-columns: 1fr;
-
-            gap: 19px;
-          }
-
-          .form-group.full {
-            grid-column: auto;
-          }
-
-          .form-header h1 {
-            font-size: 34px;
-          }
-
-          .submit-button {
-            min-width: 205px;
-          }
-        }
-
-        /* =========================
-           SMALL MOBILE
-        ========================= */
-
-        @media (max-width: 480px) {
-
-          .college-register-left {
-            padding:
-              34px 18px 38px;
-          }
-
-          .brand-icon {
-            width: 38px;
-            height: 38px;
-          }
-
-          .brand-name {
-            font-size: 22px;
-          }
-
-          .left-content h2 {
-            font-size: 32px;
-
-            line-height: 1.08;
-          }
-
-          .left-description {
-            font-size: 14px;
-          }
-
-          .feature-item {
-            font-size: 12.5px;
-          }
-
-          .form-container {
-            padding:
-              32px 17px 45px;
-          }
-
-          .form-header h1 {
-            font-size: 30px;
-          }
-
-          .form-group label {
-            font-size: 14.5px;
-          }
-
-          .form-group input,
-          .form-group select {
-            height: 46px;
-
-            font-size: 14px;
-          }
-
-          .form-group textarea {
-            font-size: 14px;
-          }
-
-          .submit-button {
-            width: 100%;
-
-            min-width: 0;
-
-            max-width: 100%;
-          }
-
-          .verification-note {
-            text-align: left;
-          }
-
-          .login-card {
-            padding: 30px 22px;
-          }
-        }
-
-        /* =========================
-           VERY SMALL MOBILE
-        ========================= */
-
-        @media (max-width: 360px) {
-
-          .college-register-left {
-            padding-left: 15px;
-            padding-right: 15px;
-          }
-
-          .form-container {
-            padding-left: 14px;
-            padding-right: 14px;
-          }
-
-          .left-content h2 {
-            font-size: 29px;
-          }
-
-          .form-header h1 {
-            font-size: 27px;
-          }
-        }
-
-      `}</style>
+      <style>{styles}</style>
 
       <div className="college-register-page">
-
         {/* LEFT SIDE */}
-
         <aside className="college-register-left">
           <div className="left-content">
-
             <div className="brand">
-
               <div className="brand-icon">
                 <GraduationIcon />
               </div>
-
-              <div className="brand-name">
-                CampusConnect
-              </div>
-
+              <div className="brand-name">CampusConnect</div>
             </div>
 
-            <h2>
-              Connect your college with{" "}
-              <span>opportunity.</span>
-            </h2>
+            <h2>Put your college in front of students who are searching.</h2>
 
             <p className="left-description">
-              Register your institution on CampusConnect
-              and connect with students who are actively
-              looking for the right courses and colleges.
+              Register your institution, add your courses, fees and facilities, and
+              students can find you by district and category.
             </p>
 
-            <div className="left-features">
-
-              <div className="feature-item">
-                <CheckIcon />
-
-                <span>
-                  Build and manage your college profile
-                </span>
+            {showLogin && (
+              <div className="left-features">
+                <div className="feature-item">
+                  <CheckIcon />
+                  <span>Build and manage your college profile</span>
+                </div>
+                <div className="feature-item">
+                  <CheckIcon />
+                  <span>Showcase your courses and fees to students</span>
+                </div>
+                <div className="feature-item">
+                  <CheckIcon />
+                  <span>Receive student enquiries and leads</span>
+                </div>
               </div>
-
-              <div className="feature-item">
-                <CheckIcon />
-
-                <span>
-                  Showcase your courses to interested students
-                </span>
-              </div>
-
-              <div className="feature-item">
-                <CheckIcon />
-
-                <span>
-                  Receive student enquiries and leads
-                </span>
-              </div>
-
-            </div>
-
+            )}
           </div>
         </aside>
 
         {/* RIGHT SIDE */}
-
         <main className="college-register-right">
-
           {!showLogin ? (
-
             <div className="form-container">
-
               <div className="form-header">
-
-                <h1>
-                  Register Your College
-                </h1>
-
+                <h1>Register your college</h1>
                 <p>
-                  Create your college account and provide
-                  your official institution details.
+                  Create your college account and add the details students look for.
+                  Fields marked * are required.
                 </p>
-
                 <div className="login-link">
                   Already registered?{" "}
-
-                  <button
-                    type="button"
-                    onClick={() => setShowLogin(true)}
-                  >
-                    Login here
+                  <button type="button" onClick={() => switchMode(true)}>
+                    Log in here
                   </button>
                 </div>
-
               </div>
 
-              <form onSubmit={handleSubmit}>
-
-                {/* BASIC INFORMATION */}
-
+              <form onSubmit={handleSubmit} noValidate>
+                {/* 1. COLLEGE DETAILS */}
                 <section className="form-section">
-
                   <div className="section-title">
-
-                    <span className="section-number">
-                      01
-                    </span>
-
-                    <h3>
-                      Basic College Information
-                    </h3>
-
+                    <h3>College details</h3>
                   </div>
-
                   <div className="form-grid">
-
-                    <div className="form-group full">
-
-                      <label htmlFor="collegeName">
-                        College Name
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
+                    <Field id="collegeName" label="College name" required full>
                       <input
                         id="collegeName"
                         name="collegeName"
@@ -2384,610 +1544,875 @@ function Registeration() {
                         value={formData.collegeName}
                         onChange={handleChange}
                         placeholder="Enter your college name"
+                        autoComplete="organization"
                       />
+                    </Field>
 
-                    </div>
-
-                    <div className="form-group">
-
-                      <label htmlFor="officialEmail">
-                        Official Email
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
+                    <Field id="officialEmail" label="Official email" required>
                       <input
                         id="officialEmail"
                         name="officialEmail"
                         type="email"
                         value={formData.officialEmail}
                         onChange={handleChange}
-                        placeholder="Enter official email"
+                        placeholder="admissions@college.edu.in"
+                        autoComplete="email"
                       />
+                    </Field>
 
-                    </div>
-
-                    <div className="form-group">
-
-                      <label htmlFor="mobile">
-                        Mobile Number
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
+                    <Field id="mobile" label="Mobile number" required>
                       <input
                         id="mobile"
                         name="mobile"
                         type="tel"
-                        inputMode="numeric"
-                        maxLength="10"
+                        inputMode="tel"
                         value={formData.mobile}
                         onChange={handleChange}
-                        placeholder="Enter mobile number"
+                        placeholder="10-digit mobile number"
+                        autoComplete="tel"
                       />
+                    </Field>
 
-                    </div>
-
-                    <div className="form-group full">
-
-                      <label htmlFor="address">
-                        Address
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
-                      <textarea
-                        id="address"
-                        name="address"
-                        value={formData.address}
+                    <Field id="collegeType" label="College type" required>
+                      <Select
+                        id="collegeType"
+                        name="collegeType"
+                        value={formData.collegeType}
                         onChange={handleChange}
-                        placeholder="Enter complete college address"
-                      />
+                      >
+                        <option value="">Select college type</option>
+                        <option value="Government">Government</option>
+                        <option value="Private">Private</option>
+                        <option value="Autonomous">Autonomous</option>
+                        <option value="Deemed University">Deemed University</option>
+                        <option value="Government Aided">Government Aided</option>
+                        <option value="Other">Other</option>
+                      </Select>
+                    </Field>
 
-                    </div>
-
-                  </div>
-
-                </section>
-
-                {/* LOCATION */}
-
-                <section className="form-section">
-
-                  <div className="section-title">
-
-                    <span className="section-number">
-                      02
-                    </span>
-
-                    <h3>
-                      College Location
-                    </h3>
-
-                  </div>
-
-                  <div className="form-grid">
-
-                    <div className="form-group">
-
-                      <label htmlFor="state">
-                        State
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
-                      <div className="select-wrapper">
-
-                        <select
-                          id="state"
-                          name="state"
-                          value={formData.state}
-                          onChange={handleChange}
-                        >
-
-                          <option value="">
-                            Select state
-                          </option>
-
-                          {indianStates.map((state) => (
-                            <option
-                              key={state}
-                              value={state}
-                            >
-                              {state}
-                            </option>
-                          ))}
-
-                        </select>
-
-                        <span className="select-arrow" />
-
-                      </div>
-
-                    </div>
-
-                    <div className="form-group">
-
-                      <label htmlFor="district">
-                        District
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
-                      <div className="select-wrapper">
-
-                        <select
-                          id="district"
-                          name="district"
-                          value={formData.district}
-                          onChange={handleChange}
-                          disabled={!formData.state}
-                        >
-
-                          <option value="">
-                            {formData.state
-                              ? "Select district"
-                              : "Select state first"}
-                          </option>
-
-                          {availableDistricts.map(
-                            (district) => (
-                              <option
-                                key={district}
-                                value={district}
-                              >
-                                {district}
-                              </option>
-                            )
-                          )}
-
-                        </select>
-
-                        <span className="select-arrow" />
-
-                      </div>
-
-                      {!formData.state && (
-                        <p className="field-hint">
-                          Select a state to choose the district.
-                        </p>
-                      )}
-
-                    </div>
-
-                    <div className="form-group full">
-
-                      <label htmlFor="website">
-                        College Website
-                      </label>
-
-                      <input
-                        id="website"
-                        name="website"
-                        type="url"
-                        value={formData.website}
+                    <Field id="collegeCategory" label="College category" required>
+                      <Select
+                        id="collegeCategory"
+                        name="collegeCategory"
+                        value={formData.collegeCategory}
                         onChange={handleChange}
-                        placeholder="https://www.examplecollege.edu"
-                      />
+                      >
+                        <option value="Engineering">Engineering</option>
+                        <option value="Arts & Science">Arts & Science</option>
+                        <option value="Management">Management</option>
+                        <option value="Medical">Medical</option>
+                        <option value="Nursing">Nursing</option>
+                        <option value="Physiotherapy">Physiotherapy</option>
+                        <option value="Other">Other</option>
+                      </Select>
+                    </Field>
 
-                    </div>
-
-                  </div>
-
-                </section>
-
-                {/* ACCOUNT DETAILS */}
-
-                <section className="form-section">
-
-                  <div className="section-title">
-                    <span className="section-number">
-                      03
-                    </span>
-
-                    <h3>Account & College Category</h3>
-                  </div>
-
-                  <div className="form-grid">
-
-                    <div className="form-group">
-                      <label htmlFor="collegeCategory">
-                        College Category
-                        <span className="required">*</span>
-                      </label>
-
-                      <div className="select-wrapper">
-                        <select
-                          id="collegeCategory"
-                          name="collegeCategory"
-                          value={formData.collegeCategory}
-                          onChange={handleChange}
-                        >
-                          <option value="Engineering">Engineering</option>
-                          <option value="Arts & Science">Arts & Science</option>
-                          <option value="Management">Management</option>
-                          <option value="Medical">Medical</option>
-                          <option value="Other">Other</option>
-                        </select>
-                        <span className="select-arrow" />
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="collegePassword">
-                        Password
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        id="collegePassword"
-                        name="password"
-                        type="password"
-                        value={formData.password}
+                    <Field id="affiliation" label="Affiliation" required>
+                      <Select
+                        id="affiliation"
+                        name="affiliation"
+                        value={formData.affiliation}
                         onChange={handleChange}
-                        placeholder="Create a password"
-                        minLength={6}
-                      />
-                    </div>
+                      >
+                        <option value="">Select affiliation</option>
+                        <option value="AICTE">AICTE</option>
+                        <option value="UGC">UGC</option>
+                        <option value="Anna University">Anna University</option>
+                        <option value="University of Madras">University of Madras</option>
+                        <option value="Bharathiar University">Bharathiar University</option>
+                        <option value="Bharathidasan University">Bharathidasan University</option>
+                        <option value="Other University">Other University</option>
+                      </Select>
+                    </Field>
 
-                    <div className="form-group">
-                      <label htmlFor="collegeConfirmPassword">
-                        Confirm Password
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        id="collegeConfirmPassword"
-                        name="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
+                    <Field id="accreditation" label="Accreditation">
+                      <Select
+                        id="accreditation"
+                        name="accreditation"
+                        value={formData.accreditation}
                         onChange={handleChange}
-                        placeholder="Re-enter password"
-                        minLength={6}
-                      />
-                    </div>
+                      >
+                        <option value="">Select accreditation</option>
+                        <option value="NAAC A++">NAAC A++</option>
+                        <option value="NAAC A+">NAAC A+</option>
+                        <option value="NAAC A">NAAC A</option>
+                        <option value="NAAC B++">NAAC B++</option>
+                        <option value="NAAC B+">NAAC B+</option>
+                        <option value="NBA">NBA</option>
+                        <option value="NIRF">NIRF</option>
+                        <option value="Not Accredited">Not Accredited</option>
+                        <option value="Other">Other</option>
+                      </Select>
+                    </Field>
 
-                  </div>
-
-                </section>
-
-                {/* COLLEGE DETAILS */}
-
-                <section className="form-section">
-
-                  <div className="section-title">
-
-                    <span className="section-number">
-                      04
-                    </span>
-
-                    <h3>
-                      College Details
-                    </h3>
-
-                  </div>
-
-                  <div className="form-grid">
-
-                    <div className="form-group">
-
-                      <label htmlFor="collegeType">
-                        College Type
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
-                      <div className="select-wrapper">
-
-                        <select
-                          id="collegeType"
-                          name="collegeType"
-                          value={formData.collegeType}
-                          onChange={handleChange}
-                        >
-
-                          <option value="">
-                            Select college type
-                          </option>
-
-                          <option value="Government">
-                            Government
-                          </option>
-
-                          <option value="Private">
-                            Private
-                          </option>
-
-                          <option value="Autonomous">
-                            Autonomous
-                          </option>
-
-                          <option value="Deemed University">
-                            Deemed University
-                          </option>
-
-                          <option value="Government Aided">
-                            Government Aided
-                          </option>
-
-                          <option value="Other">
-                            Other
-                          </option>
-
-                        </select>
-
-                        <span className="select-arrow" />
-
-                      </div>
-
-                    </div>
-
-                    <div className="form-group">
-
-                      <label htmlFor="affiliation">
-                        Affiliation
-                        <span className="required">
-                          *
-                        </span>
-                      </label>
-
-                      <div className="select-wrapper">
-
-                        <select
-                          id="affiliation"
-                          name="affiliation"
-                          value={formData.affiliation}
-                          onChange={handleChange}
-                        >
-
-                          <option value="">
-                            Select affiliation
-                          </option>
-
-                          <option value="AICTE">
-                            AICTE
-                          </option>
-
-                          <option value="UGC">
-                            UGC
-                          </option>
-
-                          <option value="Anna University">
-                            Anna University
-                          </option>
-
-                          <option value="University of Madras">
-                            University of Madras
-                          </option>
-
-                          <option value="Bharathiar University">
-                            Bharathiar University
-                          </option>
-
-                          <option value="Bharathidasan University">
-                            Bharathidasan University
-                          </option>
-
-                          <option value="Other University">
-                            Other University
-                          </option>
-
-                        </select>
-
-                        <span className="select-arrow" />
-
-                      </div>
-
-                    </div>
-
-                    <div className="form-group">
-
-                      <label htmlFor="accreditation">
-                        Accreditation
-                      </label>
-
-                      <div className="select-wrapper">
-
-                        <select
-                          id="accreditation"
-                          name="accreditation"
-                          value={formData.accreditation}
-                          onChange={handleChange}
-                        >
-
-                          <option value="">
-                            Select accreditation
-                          </option>
-
-                          <option value="NAAC A++">
-                            NAAC A++
-                          </option>
-
-                          <option value="NAAC A+">
-                            NAAC A+
-                          </option>
-
-                          <option value="NAAC A">
-                            NAAC A
-                          </option>
-
-                          <option value="NAAC B++">
-                            NAAC B++
-                          </option>
-
-                          <option value="NAAC B+">
-                            NAAC B+
-                          </option>
-
-                          <option value="NBA">
-                            NBA
-                          </option>
-
-                          <option value="NIRF">
-                            NIRF
-                          </option>
-
-                          <option value="Not Accredited">
-                            Not Accredited
-                          </option>
-
-                          <option value="Other">
-                            Other
-                          </option>
-
-                        </select>
-
-                        <span className="select-arrow" />
-
-                      </div>
-
-                    </div>
-
-                    <div className="form-group">
-
-                      <label htmlFor="registrationDetails">
-                        Registration Details
-                      </label>
-
+                    <Field id="registrationDetails" label="Registration details">
                       <input
                         id="registrationDetails"
                         name="registrationDetails"
                         type="text"
                         value={formData.registrationDetails}
                         onChange={handleChange}
-                        placeholder="Enter registration / approval details"
+                        placeholder="Registration / approval number"
                       />
-
-                    </div>
-
+                    </Field>
                   </div>
-
                 </section>
 
-                {/* BUTTON */}
+                {/* 2. LOCATION + WEBSITE + LOGO */}
+                <section className="form-section">
+                  <div className="section-title">
+                    <h3>Location, website and logo</h3>
+                  </div>
+                  <div className="form-grid">
+                    <Field id="address" label="College address" required full>
+                      <input
+                        id="address"
+                        name="address"
+                        type="text"
+                        value={formData.address}
+                        onChange={handleChange}
+                        placeholder="Street, area, city"
+                        autoComplete="street-address"
+                      />
+                    </Field>
+
+                    <Field id="state" label="State" required>
+                      <Select id="state" name="state" value={formData.state} onChange={handleChange}>
+                        <option value="">Select state</option>
+                        {indianStates.map((state) => (
+                          <option key={state} value={state}>
+                            {state}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
+
+                    <Field
+                      id="district"
+                      label="District"
+                      required
+                      hint={!formData.state ? "Select a state to choose the district." : ""}
+                    >
+                      <Select
+                        id="district"
+                        name="district"
+                        value={formData.district}
+                        onChange={handleChange}
+                        disabled={!formData.state}
+                      >
+                        <option value="">
+                          {formData.state ? "Select district" : "Select state first"}
+                        </option>
+                        {availableDistricts.map((district) => (
+                          <option key={district} value={district}>
+                            {district}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
+
+                    <Field id="pincode" label="Pincode">
+                      <input
+                        id="pincode"
+                        name="pincode"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={formData.pincode}
+                        onChange={handleChange}
+                        placeholder="6-digit pincode"
+                        autoComplete="postal-code"
+                      />
+                    </Field>
+
+                    <Field id="website" label="Official website">
+                      <input
+                        id="website"
+                        name="website"
+                        type="url"
+                        value={formData.website}
+                        onChange={handleChange}
+                        placeholder="https://www.yourcollege.edu.in"
+                      />
+                    </Field>
+
+                    <div className="form-group full">
+                      <label>College logo</label>
+                      <div className="logo-upload">
+                        <div className="logo-box">
+                          <LogoPreview
+                            key={`${formData.website}-${formData.logoData.length}`}
+                            name={formData.collegeName}
+                            website={formData.website}
+                            logoData={formData.logoData}
+                          />
+                        </div>
+                        <div className="logo-actions">
+                          <label className="file-btn">
+                            {logoBusy
+                              ? "Reading image..."
+                              : formData.logoData
+                              ? "Change logo"
+                              : "Upload logo"}
+                            <input type="file" accept="image/*" onChange={handleLogo} />
+                          </label>
+                          {formData.logoData && (
+                            <button
+                              type="button"
+                              className="text-btn"
+                              onClick={() => setFormData((prev) => ({ ...prev, logoData: "" }))}
+                            >
+                              Remove uploaded logo
+                            </button>
+                          )}
+                          <p className="field-hint">
+                            No upload? We use the logo from your website, or your college
+                            initials if none is found.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* 3. PROFILE DETAILS */}
+                <section className="form-section">
+                  <div className="section-title">
+                    <h3>Profile details students see</h3>
+                  </div>
+                  <div className="form-grid">
+                    <Field id="established" label="Established year">
+                      <input
+                        id="established"
+                        name="established"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={4}
+                        value={formData.established}
+                        onChange={handleChange}
+                        placeholder="e.g. 1998"
+                      />
+                    </Field>
+
+                    <Field id="hostel" label="Hostel">
+                      <Select id="hostel" name="hostel" value={formData.hostel} onChange={handleChange}>
+                        <option value="">Select</option>
+                        <option value="Available">Available</option>
+                        <option value="Not Available">Not Available</option>
+                      </Select>
+                    </Field>
+
+                    <Field id="transportation" label="Transportation">
+                      <Select
+                        id="transportation"
+                        name="transportation"
+                        value={formData.transportation}
+                        onChange={handleChange}
+                      >
+                        <option value="">Select</option>
+                        <option value="Available">Available</option>
+                        <option value="Not Available">Not Available</option>
+                      </Select>
+                    </Field>
+
+                    <Field id="placement" label="Placement support">
+                      <Select
+                        id="placement"
+                        name="placement"
+                        value={formData.placement}
+                        onChange={handleChange}
+                      >
+                        <option value="">Select</option>
+                        <option value="Available">Available</option>
+                        <option value="Not Available">Not Available</option>
+                      </Select>
+                    </Field>
+
+                    <Field id="fees" label="Annual fee (approx.)" full>
+                      <input
+                        id="fees"
+                        name="fees"
+                        type="text"
+                        value={formData.fees}
+                        onChange={handleChange}
+                        placeholder="e.g. ₹80,000 – ₹1,20,000"
+                      />
+                    </Field>
+
+                    <Field
+                      id="courses"
+                      label="Courses offered"
+                      full
+                      hint="One course per line. Format: Course | Duration | Annual fee (duration and fee are optional)."
+                    >
+                      <textarea
+                        id="courses"
+                        name="courses"
+                        value={formData.courses}
+                        onChange={handleChange}
+                        placeholder={"B.E. Computer Science | 4 Years | ₹1,10,000\nB.Tech Information Technology | 4 Years | ₹1,00,000"}
+                      />
+                    </Field>
+                  </div>
+                </section>
+
+                {/* 4. ACCOUNT */}
+                <section className="form-section">
+                  <div className="section-title">
+                    <h3>Create your account</h3>
+                  </div>
+                  <div className="form-grid">
+                    <Field id="collegePassword" label="Password" required>
+                      <PasswordInput
+                        id="collegePassword"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="At least 6 characters"
+                        autoComplete="new-password"
+                      />
+                    </Field>
+                    <Field id="collegeConfirmPassword" label="Confirm password" required>
+                      <PasswordInput
+                        id="collegeConfirmPassword"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="Re-enter password"
+                        autoComplete="new-password"
+                      />
+                    </Field>
+                  </div>
+                </section>
+
+                {noticeBox}
 
                 <div className="submit-area">
-
-                  <button
-                    type="submit"
-                    className="submit-button"
-                  >
-                    Register Your College
+                  <button type="submit" className="submit-button" disabled={busy}>
+                    {busy ? "Saving..." : "Register your college"}
                   </button>
-
                   <p className="verification-note">
-                    Your college information will be reviewed
-                    and verified before your account becomes active.
+                    You can update any detail later using Edit profile.
                   </p>
-
                 </div>
-
               </form>
-
             </div>
-
           ) : (
-
             /* LOGIN */
-
             <div className="login-container">
-
               <div className="login-card">
-
                 <div className="login-logo">
                   <GraduationIcon />
                 </div>
 
-                <h1>
-                  College Login
-                </h1>
-
-                <p>
-                  Sign in to manage your college profile
-                  and connect with students.
+                <h1>College login</h1>
+                <p className="login-sub">
+                  Sign in to manage your college profile and connect with students.
                 </p>
 
-                <form
-                  className="login-form"
-                  onSubmit={handleLogin}
-                >
+                {noticeBox}
 
-                  <div className="form-group">
-
-                    <label htmlFor="loginEmail">
-                      Official Email
-                    </label>
-
+                <form className="login-form" onSubmit={handleLogin} noValidate>
+                  <Field id="loginEmail" label="Official email">
                     <input
                       id="loginEmail"
                       type="email"
                       value={loginData.email}
-                      onChange={(e) =>
-                        setLoginData((prev) => ({
-                          ...prev,
-                          email: e.target.value,
-                        }))
-                      }
+                      onChange={(e) => setLoginData((prev) => ({ ...prev, email: e.target.value }))}
                       placeholder="Enter official email"
+                      autoComplete="email"
                     />
+                  </Field>
 
-                  </div>
-
-                  <div className="form-group">
-
-                    <label htmlFor="loginPassword">
-                      Password
-                    </label>
-
-                    <input
+                  <Field id="loginPassword" label="Password">
+                    <PasswordInput
                       id="loginPassword"
-                      type="password"
+                      name="loginPassword"
                       value={loginData.password}
                       onChange={(e) =>
-                        setLoginData((prev) => ({
-                          ...prev,
-                          password: e.target.value,
-                        }))
+                        setLoginData((prev) => ({ ...prev, password: e.target.value }))
                       }
                       placeholder="Enter password"
+                      autoComplete="current-password"
                     />
+                  </Field>
 
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="submit-button"
-                  >
-                    Login to Dashboard
+                  <button type="submit" className="submit-button" disabled={busy}>
+                    {busy ? "Signing in..." : "Log in to dashboard"}
                   </button>
-
                 </form>
 
-                <button
-                  type="button"
-                  className="back-register"
-                  onClick={() => setShowLogin(false)}
-                >
-                  ← Back to registration
+                <button type="button" className="back-register" onClick={() => switchMode(false)}>
+                  New here? Register your college
                 </button>
-
               </div>
-
             </div>
-
           )}
-
         </main>
-
       </div>
     </>
   );
 }
+
+/* =========================
+   STYLES
+========================= */
+
+const styles = `
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+* { box-sizing: border-box; }
+
+html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
+
+body {
+  font-family: "Plus Jakarta Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f3f7fc;
+  color: #0e2342;
+}
+
+button, input, select, textarea { font-family: inherit; }
+
+#root {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border: 0 !important;
+  text-align: left !important;
+  display: block !important;
+  min-height: 100vh !important;
+}
+
+.college-register-page {
+  --ink: #0e2342;
+  --muted: #5a6f8a;
+  --line: #cbd9ea;
+  --blue: #1558d6;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  font-size: 17px;
+  line-height: 1.5;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+}
+
+.college-register-page button:focus-visible,
+.college-register-page input:focus-visible,
+.college-register-page select:focus-visible,
+.college-register-page textarea:focus-visible,
+.college-register-page label:focus-within.file-btn {
+  outline: 3px solid rgba(21, 88, 214, .45);
+  outline-offset: 2px;
+}
+
+/* ---------- Left panel ---------- */
+.college-register-left {
+  width: 42%;
+  min-width: 360px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px clamp(28px, 4vw, 64px);
+  color: #fff;
+  background:
+    radial-gradient(circle at 12% 15%, rgba(59, 130, 246, .28), transparent 34%),
+    radial-gradient(circle at 90% 85%, rgba(37, 99, 235, .22), transparent 38%),
+    linear-gradient(150deg, #06132b 0%, #0b2146 55%, #0f2f60 100%);
+}
+
+.left-content { width: 100%; max-width: 520px; }
+
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+
+.brand-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  color: #fff;
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .18);
+}
+
+.brand-name {
+  font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -.6px;
+}
+
+.left-content h2 {
+  margin: 0 0 18px;
+  font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(34px, 3.6vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -1.4px;
+  font-weight: 800;
+}
+
+.left-description {
+  margin: 0;
+  color: rgba(255, 255, 255, .8);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.left-features { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+
+.feature-item {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .06);
+  color: rgba(255, 255, 255, .93);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.feature-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #cfe3ff;
+  background: rgba(59, 130, 246, .3);
+}
+
+/* live preview card */
+.preview-card {
+  margin-top: 32px;
+  padding: 20px;
+  border-radius: 18px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, .3);
+}
+
+.preview-title { margin: 0 0 14px; color: var(--muted); font-size: 15px; font-weight: 700; }
+.preview-row { display: flex; gap: 14px; align-items: center; }
+
+.preview-logo {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  border-radius: 16px;
+  border: 1px solid #dbe5f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fff;
+}
+.preview-logo img { width: 54px; height: 54px; object-fit: contain; }
+
+.logo-initials {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--blue);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.preview-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.preview-text strong {
+  font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+  font-size: 21px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.preview-chip {
+  width: fit-content;
+  padding: 2px 10px;
+  border-radius: 7px;
+  background: #e6efff;
+  color: #1349c2;
+  font-size: 14px;
+  font-weight: 800;
+}
+.preview-place { color: var(--muted); font-size: 16px; }
+.preview-facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.preview-facts span {
+  padding: 5px 12px;
+  border-radius: 99px;
+  background: #eaf1fb;
+  color: #274466;
+  font-size: 15px;
+  font-weight: 700;
+}
+.preview-facts .muted { background: transparent; padding: 0; color: #7a8ca3; font-weight: 500; }
+
+/* ---------- Right panel ---------- */
+.college-register-right {
+  flex: 1 1 58%;
+  width: 58%;
+  min-width: 0;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #fff;
+  scrollbar-width: thin;
+  scrollbar-color: #c4d2e3 transparent;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 52px clamp(20px, 4vw, 52px) 70px;
+  text-align: left;
+}
+
+.form-header { margin: 0 0 36px; }
+.form-header h1 {
+  margin: 0;
+  font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(34px, 3.6vw, 50px);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  color: var(--ink);
+}
+.form-header p { margin: 12px 0 0; max-width: 640px; color: var(--muted); font-size: 18px; line-height: 1.6; }
+.login-link { margin-top: 14px; color: var(--muted); font-size: 17px; }
+.login-link button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font-size: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.form-section { margin-bottom: 36px; }
+.section-title { padding-bottom: 12px; margin-bottom: 22px; border-bottom: 2px solid #e3ebf5; }
+.section-title h3 {
+  margin: 0;
+  font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+}
+
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 20px; }
+.form-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.form-group { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.form-group.full { grid-column: 1 / -1; }
+
+.form-group label { color: #243f60; font-size: 16px; font-weight: 700; }
+.required { color: #d12a47; }
+
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 17px;
+}
+.form-group textarea { min-height: 150px; padding: 14px 16px; resize: vertical; line-height: 1.5; }
+.form-group input::placeholder, .form-group textarea::placeholder { color: #8a9bb0; }
+.form-group input:hover, .form-group select:hover, .form-group textarea:hover { border-color: #9db8d9; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--blue); }
+.form-group select:disabled { background: #f1f5fa; color: #7d8ea4; cursor: not-allowed; }
+
+.select-wrapper { position: relative; }
+.select-wrapper select { appearance: none; -webkit-appearance: none; padding-right: 46px; cursor: pointer; }
+.select-arrow {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -7px;
+  border-right: 2.5px solid #5a6f8a;
+  border-bottom: 2.5px solid #5a6f8a;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.field-hint { margin: 0; color: #6a7d94; font-size: 14.5px; line-height: 1.45; }
+
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 56px; }
+.password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #5a6f8a;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.password-toggle:hover { background: #eef3fa; }
+
+/* logo upload */
+.logo-upload { display: flex; gap: 20px; align-items: center; padding: 16px; border: 1.5px dashed #b5c9e2; border-radius: 16px; background: #f8fbff; }
+.logo-box {
+  width: 96px;
+  height: 96px;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid #dbe5f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.logo-box img { width: 72px; height: 72px; object-fit: contain; }
+.logo-actions { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.file-btn {
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1.5px solid #bcd0ea;
+  border-radius: 12px;
+  background: #fff;
+  color: #1349c2;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+.file-btn input { display: none; }
+.text-btn { padding: 0; border: 0; background: transparent; color: #b4233f; font-size: 15px; font-weight: 700; cursor: pointer; }
+
+/* notices */
+.notice { margin: 4px 0 18px; padding: 14px 18px; border-radius: 12px; font-size: 16.5px; font-weight: 600; line-height: 1.5; }
+.notice-error { background: #fdebee; color: #a31d37; border: 1px solid #f5c5ce; }
+.notice-success { background: #e4f6ea; color: #14702f; border: 1px solid #b9e3c7; }
+
+.submit-area { margin-top: 8px; }
+.submit-button {
+  width: 100%;
+  min-height: 60px;
+  border: 0;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(100deg, #1349c2, #1766e6);
+  box-shadow: 0 12px 26px rgba(21, 88, 214, .28);
+  font-size: 19px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.submit-button:hover { filter: brightness(1.07); }
+.submit-button:disabled { opacity: .7; cursor: wait; }
+.verification-note { margin: 14px 0 0; text-align: center; color: var(--muted); font-size: 15.5px; }
+
+/* ---------- Login ---------- */
+.login-container { min-height: 100%; display: grid; place-items: center; padding: 40px clamp(16px, 4vw, 48px); }
+
+.login-card {
+  width: 100%;
+  max-width: 520px;
+  padding: clamp(28px, 4vw, 46px);
+  border: 1px solid #dbe5f2;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(31, 71, 116, .12);
+}
+
+.login-logo {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+  border-radius: 18px;
+  color: #fff;
+  background: linear-gradient(135deg, #1349c2, #1766e6);
+  box-shadow: 0 12px 24px rgba(21, 88, 214, .3);
+}
+.login-logo svg { width: 32px; height: 32px; }
+
+.login-card h1 {
+  margin: 0;
+  font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(32px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--ink);
+}
+.login-sub { margin: 10px 0 24px; color: var(--muted); font-size: 18px; line-height: 1.55; }
+.login-form { display: flex; flex-direction: column; gap: 20px; }
+.login-form .submit-button { margin-top: 6px; }
+
+.back-register {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 12px;
+  background: #eef4fd;
+  color: #1349c2;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.back-register:hover { background: #e2edfb; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .college-register-left { width: 38%; min-width: 320px; padding: 40px 28px; }
+  .form-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .college-register-page { flex-direction: column; }
+  .college-register-left {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    position: relative;
+    overflow: visible;
+    padding: 28px 20px 32px;
+  }
+  .brand { margin-bottom: 22px; }
+  .left-content h2 { font-size: clamp(30px, 7vw, 40px); letter-spacing: -1px; }
+  .left-description { font-size: 17px; }
+  .preview-card { display: none; }
+  .left-features { display: none; }
+  .college-register-right { width: 100%; height: auto; overflow: visible; }
+  .form-container { padding-top: 34px; }
+}
+
+@media (max-width: 640px) {
+  .college-register-page { font-size: 16px; }
+  .form-grid, .form-grid-3 { grid-template-columns: 1fr; gap: 18px; }
+  .form-group.full { grid-column: auto; }
+  .logo-upload { flex-direction: column; align-items: flex-start; }
+  .login-container { padding: 24px 14px 40px; }
+}
+`;
 
 export default Registeration;
