@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import dbData from "./db.json";
+import artsData from "./arts.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
@@ -297,6 +298,15 @@ const getContact = (college) =>
 const getCollegeType = (college) =>
   toText(
     college?.institutionType?.category ||
+      college?.institutionType?.type ||
+      college?.type ||
+      "Engineering",
+  );
+
+const getCategory = (college) =>
+  toText(
+    college?.category ||
+      college?.institutionType?.category ||
       college?.institutionType?.type ||
       college?.type ||
       "Engineering",
@@ -1041,6 +1051,65 @@ html {
   margin-top: 12px;
   font-size: 1rem;
   color: var(--muted-dark);
+}
+
+/* CATEGORY TABS */
+
+.cc-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.cc-cat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted-dark);
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.cc-cat-btn:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.cc-cat-active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: var(--shadow-brand);
+}
+
+.cc-cat-active:hover {
+  color: #fff;
+}
+
+.cc-cat-count {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--blue-25);
+  color: var(--deep);
+  font-size: .74rem;
+  font-weight: 800;
+}
+
+.cc-cat-active .cc-cat-count {
+  background: rgba(255,255,255,.22);
+  color: #fff;
 }
 
 /* SEARCH */
@@ -1844,6 +1913,7 @@ export default function StudentDashboard() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
   const [type, setType] = useState("");
+  const [category, setCategory] = useState("Engineering");
   const [sort, setSort] = useState("rating-desc");
 
   const [selected, setSelected] = useState(null);
@@ -1859,8 +1929,13 @@ export default function StudentDashboard() {
     setLoading(true);
     setError("");
 
-    const collegeList = Array.isArray(dbData?.colleges) ? dbData.colleges : [];
-    const courseList = Array.isArray(dbData?.courses) ? dbData.courses : [];
+    // sources: engineering (db.json) + arts (arts.json)
+    const engList = Array.isArray(dbData?.colleges) ? dbData.colleges : [];
+    const artsList = Array.isArray(artsData?.colleges) ? artsData.colleges : [];
+    const engCourses = Array.isArray(dbData?.courses) ? dbData.courses : [];
+    const artsCourses = Array.isArray(artsData?.courses)
+      ? artsData.courses
+      : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
       : [];
@@ -1879,19 +1954,18 @@ export default function StudentDashboard() {
       byCollege[key].push(courseId);
     });
 
-    setColleges(
-      collegeList.map((college) => ({
-        ...college,
-        courseIds: [
-          ...new Set([
-            ...toList(college.courseIds),
-            ...(byCollege[String(college.id)] || []),
-          ]),
-        ],
-      })),
-    );
+    const decorate = (college) => ({
+      ...college,
+      courseIds: [
+        ...new Set([
+          ...toList(college.courseIds),
+          ...(byCollege[String(college.id)] || []),
+        ]),
+      ],
+    });
 
-    setCourses(courseList);
+    setColleges([...engList.map(decorate), ...artsList.map(decorate)]);
+    setCourses([...engCourses, ...artsCourses]);
     setLoading(false);
   }, []);
 
@@ -1949,6 +2023,17 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Medical"];
+
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    colleges.forEach((college) => {
+      const cat = getCategory(college);
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  }, [colleges]);
+
   /* =======================================================
      FILTER + SORT
   ======================================================= */
@@ -1962,6 +2047,10 @@ export default function StudentDashboard() {
       }
 
       if (type && getCollegeType(college) !== type) {
+        return false;
+      }
+
+      if (category && getCategory(college) !== category) {
         return false;
       }
 
@@ -1993,7 +2082,7 @@ export default function StudentDashboard() {
     }
 
     return result;
-  }, [colleges, courseIndex, search, city, type, sort]);
+  }, [colleges, courseIndex, search, city, type, category, sort]);
 
   /* =======================================================
      PAGINATION
@@ -2001,7 +2090,7 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, city, type, sort]);
+  }, [search, city, type, category, sort]);
 
   const totalPages = Math.ceil(visibleColleges.length / ITEMS_PER_PAGE);
 
@@ -2061,12 +2150,13 @@ export default function StudentDashboard() {
      FILTER RESET
   ======================================================= */
 
-  const filtersActive = Boolean(search || city || type);
+  const filtersActive = Boolean(search || city || type || category);
 
   const clearFilters = () => {
     setSearch("");
     setCity("");
     setType("");
+    setCategory("Engineering");
   };
 
   /* =======================================================
@@ -2388,13 +2478,33 @@ export default function StudentDashboard() {
             <div className="cc-col-head">
               <span className="cc-eyebrow">College Directory</span>
 
-              <h2>Explore Engineering Colleges</h2>
+              <h2>Explore {category} Colleges</h2>
 
               <p>
                 Search colleges and view complete information including basic
                 details, institution type, courses, fees, eligibility and
                 facilities.
               </p>
+            </div>
+
+            {/* CATEGORY TABS */}
+
+            <div className="cc-categories">
+              {COLLEGE_CATEGORIES.map((cat) => (
+                <button
+                  type="button"
+                  key={cat}
+                  className={`cc-cat-btn ${
+                    category === cat ? "cc-cat-active" : ""
+                  }`}
+                  onClick={() => setCategory(cat)}
+                >
+                  {cat}
+                  <span className="cc-cat-count">
+                    {categoryCounts[cat] ?? 0}
+                  </span>
+                </button>
+              ))}
             </div>
 
             {/* SEARCH/FILTER */}
@@ -2505,11 +2615,22 @@ export default function StudentDashboard() {
               <div className="cc-state">
                 <Icon name="search" size={26} />
 
-                <strong>No colleges found</strong>
+                <strong>
+                  {(categoryCounts[category] ?? 0) === 0
+                    ? `${category} colleges are not added yet`
+                    : "No colleges found"}
+                </strong>
 
-                <button className="cc-link-btn" onClick={clearFilters}>
-                  Clear filters
-                </button>
+                {(categoryCounts[category] ?? 0) === 0 ? (
+                  <span style={{ color: "#64748B", fontSize: ".9rem" }}>
+                    {category} colleges will be added soon. Engineering
+                    colleges are available now.
+                  </span>
+                ) : (
+                  <button className="cc-link-btn" onClick={clearFilters}>
+                    Clear filters
+                  </button>
+                )}
               </div>
             )}
 
