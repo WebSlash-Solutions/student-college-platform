@@ -4,28 +4,27 @@ import { useNavigate } from "react-router-dom";
 /* COLLEGE SIDE — ONE FILE (route: /college/home)
 
    Contains BOTH pages:
-   1. Public college website (no login): banner, district search, counters, how it works, plans, pricing, benefits, about, contact
+   1. Public college website (no login): hero, district explorer, counters, how it works,
+      plans, pricing, benefits, about, contact
    2. Subscription pricing view (LOGIN ONLY): Elite / Gold / Diamond with 1 Month, 6 Months, 1 Year
       -> opens inside this same page when a logged-in college clicks "View Plans & Prices".
       -> not logged in: the prices are never rendered and the college is sent to the login page.
 
-   CONNECT YOUR REAL COLLEGES (college profile data):
-     import CollegeSite from "./CollegeSite";
-     import { COLLEGES } from "./your-college-data-file";      // <- the list your College Profile page uses
-     <Route path="/college/home" element={<CollegeSite colleges={COLLEGES} />} />
-   If you don't pass `colleges`, SAMPLE_COLLEGES below are shown.
-   Clicking a college card opens  /college/profile?college=<id>
+   SEARCH COLLEGES lives in CollegeProfile.jsx (route: /college/profile).
+   Every "Search Colleges" / "Colleges" button and every district bubble on this page opens it:
+     /college/profile                      -> all colleges
+     /college/profile?district=Salem       -> Salem colleges (district search)
 
    NOTE: the login check here only controls what the screen shows. Real protection must be on the backend:
    plans/prices API and payment API must require the college's JWT, and payment success must be verified by the backend. */
 
 const SESSION_KEY = "campusconnect_college_session"; // same key used by Registeration.jsx
 const AFTER_LOGIN_KEY = "campusconnect_after_login"; // login page can read this and redirect back (value: "/college/home?view=plans")
-const ROTATE_MS = 5000; // search bar changes district every 5 seconds
 
+/* menu: [section id, label]. "colleges" opens the Search Colleges page (CollegeProfile.jsx) */
 const MENU = [
   ["home", "Home"],
-  ["search", "Colleges"],
+  ["colleges", "Colleges"],
   ["how", "How It Works"],
   ["plans", "Plans"],
   ["pricing", "Pricing"],
@@ -33,58 +32,31 @@ const MENU = [
   ["about", "About"],
   ["contact", "Contact"],
 ];
+const SPY_IDS = MENU.map(([id]) => id).filter((id) => id !== "colleges");
 
-const DISTRICTS = ["Coimbatore", "Chennai", "Erode", "Salem", "Tiruppur"];
-
-/* SAMPLE DATA — replaced by the `colleges` prop when you pass your real list */
-const SAMPLE_COLLEGES = [
-  { id: "chn-1", name: "IIT Madras", district: "Chennai", type: "Engineering", courses: ["B.Tech", "M.Tech", "Research"] },
-  { id: "chn-2", name: "Anna University – CEG Campus", district: "Chennai", type: "Engineering", courses: ["B.E", "M.E", "MBA"] },
-  { id: "chn-3", name: "Loyola College", district: "Chennai", type: "Arts & Science", courses: ["B.Sc", "B.Com", "BBA"] },
-  { id: "chn-4", name: "Madras Christian College", district: "Chennai", type: "Arts & Science", courses: ["B.A", "B.Sc", "B.Com"] },
-  { id: "cbe-1", name: "PSG College of Technology", district: "Coimbatore", type: "Engineering", courses: ["B.E", "B.Tech", "M.E"] },
-  { id: "cbe-2", name: "Coimbatore Institute of Technology", district: "Coimbatore", type: "Engineering", courses: ["B.E", "B.Tech", "MBA"] },
-  { id: "cbe-3", name: "Kumaraguru College of Technology", district: "Coimbatore", type: "Engineering", courses: ["B.E", "B.Tech", "M.E"] },
-  { id: "cbe-4", name: "PSG College of Arts & Science", district: "Coimbatore", type: "Arts & Science", courses: ["B.Sc", "B.Com", "BCA"] },
-  { id: "erd-1", name: "Kongu Engineering College", district: "Erode", type: "Engineering", courses: ["B.E", "B.Tech", "MBA"] },
-  { id: "erd-2", name: "Bannari Amman Institute of Technology", district: "Erode", type: "Engineering", courses: ["B.E", "B.Tech", "M.E"] },
-  { id: "erd-3", name: "Erode Sengunthar Engineering College", district: "Erode", type: "Engineering", courses: ["B.E", "B.Tech"] },
-  { id: "slm-1", name: "Government College of Engineering, Salem", district: "Salem", type: "Engineering", courses: ["B.E", "M.E"] },
-  { id: "slm-2", name: "Sona College of Technology", district: "Salem", type: "Engineering", courses: ["B.E", "B.Tech", "MBA"] },
-  { id: "slm-3", name: "Government Arts College, Salem", district: "Salem", type: "Arts & Science", courses: ["B.A", "B.Sc", "B.Com"] },
-  { id: "tpr-1", name: "Chikkanna Government Arts College", district: "Tiruppur", type: "Arts & Science", courses: ["B.A", "B.Sc", "B.Com"] },
-  { id: "tpr-2", name: "Tiruppur Kumaran College for Women", district: "Tiruppur", type: "Arts & Science", courses: ["B.Sc", "B.Com", "BCA"] },
-  { id: "tpr-3", name: "Angel College of Engineering & Technology", district: "Tiruppur", type: "Engineering", courses: ["B.E", "B.Tech"] },
+/* the five districts shown as floating bubbles — each opens CollegeProfile filtered to that district */
+const FEATURED = [
+  { name: "Coimbatore", note: "Engineering & Arts hub", ic: "🎓", size: "xl", g: "linear-gradient(145deg,#7c3aed,#c084fc)" },
+  { name: "Chennai", note: "Capital & IT city", ic: "🌆", size: "lg", g: "linear-gradient(145deg,#1558d6,#19b3e6)" },
+  { name: "Salem", note: "Steel city", ic: "⛰️", size: "md", g: "linear-gradient(145deg,#059669,#34d399)" },
+  { name: "Erode", note: "Textile & turmeric", ic: "🌾", size: "lg", g: "linear-gradient(145deg,#f59e0b,#fb7185)" },
+  { name: "Tiruppur", note: "Knitwear capital", ic: "🧵", size: "md", g: "linear-gradient(145deg,#e11d48,#fb923c)" },
 ];
 
-/* make any college object shape usable */
-const normalize = (c, i) => ({
-  id: c.id ?? c.collegeId ?? c._id ?? `college-${i}`,
-  name: c.name ?? c.collegeName ?? c.college_name ?? "College",
-  district: String(c.district ?? c.city ?? c.location ?? ""),
-  type: c.type ?? c.collegeType ?? c.category ?? "",
-  logo: c.logo ?? c.logoUrl ?? c.image ?? "",
-  ranking: c.ranking ?? c.rank ?? "",
-  courses: (c.courses ?? [])
-    .map((x) => (typeof x === "string" ? x : x?.name ?? x?.courseName ?? ""))
-    .filter(Boolean),
-});
+const TN_DISTRICTS = [
+  "Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode",
+  "Kallakurichi", "Kancheepuram", "Kanyakumari", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai",
+  "Nagapattinam", "Namakkal", "The Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet",
+  "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli",
+  "Tirupathur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar",
+];
 
-const initials = (name) =>
-  name
-    .split(" ")
-    .filter((w) => /^[A-Za-z]/.test(w))
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
-
-/* Counter numbers — SAMPLE values, change to your real numbers or load from API */
+/* Counter numbers — SAMPLE values, change to your real numbers or load from API.  [value, suffix, label, ring %, hue] */
 const STATS = [
-  [12500, "", "+", "student leads downloaded"],
-  [320, "", "+", "colleges registered"],
-  [5, "", "", "districts covered"],
-  [100, "", "%", "consent-based sharing"],
+  [12500, "+", "student leads downloaded", 0.86, "#19c3e6"],
+  [320, "+", "colleges registered", 0.68, "#a78bfa"],
+  [38, "", "Tamil Nadu districts listed", 1, "#34d399"],
+  [100, "%", "consent-based sharing", 1, "#fbbf24"],
 ];
 
 /* Subscription tiers — features are SAMPLE content. Prices live only on the login-protected page. */
@@ -112,20 +84,13 @@ const PLANS = [
   },
 ];
 
-const FEATURES = [
-  ["🎯", "Real student interest", "Every lead is a student who showed interest in a college or course."],
-  ["🔓", "Free preview, pay to unlock", "See ID, 12th % and course free. Pay ₹100 only for contact details."],
-  ["📍", "Chennai · Coimbatore · Erode · Salem · Tiruppur", "Engineering, Arts & Science, Medical, Nursing, Management and more."],
-  ["📊", "Private dashboard", "Track leads, purchases, spending and receipts in one place."],
-];
-
 const STEPS = [
-  ["Register & get verified", "Create your college account with official email, affiliation and accreditation. Admin verifies it before you go live."],
-  ["Complete profile & courses", "Add courses, fees, seats and eligibility so matching students can find you."],
-  ["Browse student leads", "See interested students. The free preview shows Student ID, 12th %, preferred course and location."],
-  ["Unlock for ₹100", "Pick a lead and pay ₹100 securely. Our server verifies the payment before unlocking."],
-  ["Receive full details", "Get the student's name, mobile and email, saved in My Purchased Leads."],
-  ["Follow up & track", "Contact the student and check payment history and receipts on your dashboard."],
+  ["Register & get verified", "Create your college account with official email, affiliation and accreditation. Admin verifies it before you go live.", "📝"],
+  ["Complete profile & courses", "Add courses, fees, seats and eligibility so matching students can find you.", "🏫"],
+  ["Browse student leads", "See interested students. The free preview shows Student ID, 12th %, preferred course and location.", "👀"],
+  ["Unlock for ₹100", "Pick a lead and pay ₹100 securely. Our server verifies the payment before unlocking.", "🔓"],
+  ["Receive full details", "Get the student's name, mobile and email, saved in My Purchased Leads.", "📲"],
+  ["Follow up & track", "Contact the student and check payment history and receipts on your dashboard.", "📈"],
 ];
 
 const BENEFITS = [
@@ -138,10 +103,10 @@ const BENEFITS = [
 ];
 
 const LEADS = [
-  ["STU10231", "82%", "B.Tech CSE", "Chennai"],
-  ["STU10232", "91%", "MBBS", "Coimbatore"],
-  ["STU10233", "76%", "B.Sc Nursing", "Salem"],
-  ["STU10234", "88%", "B.Com", "Erode"],
+  ["STU10231", "82%", "B.Tech CSE", "Chennai", "S"],
+  ["STU10232", "91%", "MBBS", "Coimbatore", "M"],
+  ["STU10233", "76%", "B.Sc Nursing", "Salem", "N"],
+  ["STU10234", "88%", "B.Com", "Erode", "B"],
 ];
 
 /* SAMPLE prices (monthly base, ₹) and discounts — change to your real pricing. Shown ONLY after login. */
@@ -154,21 +119,58 @@ const PERIODS = [
 ];
 const rupee = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
-const MARQUEE = ["Chennai", "Coimbatore", "Erode", "Salem", "Tiruppur", "₹100 per lead", "Verified colleges", "Consent-based leads", "Secure payments"];
+const RIBBON_A = ["Search by district", "₹100 per lead", "Verified colleges", "Consent-based leads", "Secure payments", "38 districts"];
+const RIBBON_B = ["Coimbatore", "Chennai", "Erode", "Salem", "Tiruppur", "Madurai", "Trichy", "Vellore", "Tirunelveli"];
 
-function CountUp({ to, prefix = "", suffix = "" }) {
+const SPARKS = [
+  [6, 14], [14, 62], [22, 30], [31, 80], [41, 12], [52, 70], [60, 22], [68, 88], [76, 40], [84, 10], [90, 66], [95, 30], [47, 46], [10, 90],
+];
+
+/* ---------- small helpers ---------- */
+
+/* 3D tilt + moving light on hover */
+function Tilt({ as: Tag = "div", className = "", max = 8, children, ...rest }) {
   const ref = useRef(null);
-  const [n, setN] = useState(0);
-  useEffect(() => {
+  const move = (e) => {
     const el = ref.current;
     if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--rx", `${((0.5 - y) * max).toFixed(2)}deg`);
+    el.style.setProperty("--ry", `${((x - 0.5) * max).toFixed(2)}deg`);
+    el.style.setProperty("--mx", `${(x * 100).toFixed(1)}%`);
+    el.style.setProperty("--my", `${(y * 100).toFixed(1)}%`);
+  };
+  const leave = () => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--rx", "0deg");
+    el.style.setProperty("--ry", "0deg");
+  };
+  return (
+    <Tag ref={ref} className={`cs-tilt ${className}`} onMouseMove={move} onMouseLeave={leave} {...rest}>
+      {children}
+    </Tag>
+  );
+}
+
+/* circular counter: ring draws itself and the number counts up when it scrolls into view */
+function StatRing({ to, suffix, label, pct, hue }) {
+  const ref = useRef(null);
+  const [n, setN] = useState(0);
+  const [go, setGo] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
     const io = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
         io.disconnect();
+        setGo(true);
         const t0 = performance.now();
         const tick = (t) => {
-          const p = Math.min((t - t0) / 1600, 1);
+          const p = Math.min((t - t0) / 1800, 1);
           setN(Math.round(to * (1 - Math.pow(1 - p, 3))));
           if (p < 1) requestAnimationFrame(tick);
         };
@@ -179,55 +181,138 @@ function CountUp({ to, prefix = "", suffix = "" }) {
     io.observe(el);
     return () => io.disconnect();
   }, [to]);
+  const C = 2 * Math.PI * 54;
   return (
-    <strong ref={ref}>
-      {prefix}
-      {n.toLocaleString("en-IN")}
-      {suffix}
-    </strong>
+    <div ref={ref} className="cs-stat" style={{ "--h": hue }}>
+      <div className="cs-stat-ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle className="trk" cx="60" cy="60" r="54" />
+          <circle className="bar" cx="60" cy="60" r="54" style={{ strokeDasharray: C, strokeDashoffset: go ? C * (1 - pct) : C }} />
+        </svg>
+        <strong>
+          {n.toLocaleString("en-IN")}
+          {suffix}
+        </strong>
+      </div>
+      <span>{label}</span>
+    </div>
   );
 }
 
+/* animated campus illustration: sun, clouds, birds, swaying trees, waving flag */
 function Campus() {
   return (
-    <svg viewBox="0 0 420 300" className="cs-campus" aria-hidden="true">
-      <circle cx="330" cy="70" r="38" fill="#ffd66b" opacity=".9" />
-      <rect x="0" y="250" width="420" height="50" fill="#d6e7fb" />
-      <rect x="60" y="130" width="300" height="120" rx="6" fill="#fff" />
-      <polygon points="40,132 210,60 380,132" fill="#1769e0" />
-      <rect x="180" y="170" width="60" height="80" rx="4" fill="#173d6b" />
-      {[85, 125, 255, 295].map((x) => (
-        <rect key={x} x={x} y="160" width="28" height="42" rx="3" fill="#bcd8fa" />
+    <svg viewBox="0 0 480 360" preserveAspectRatio="xMidYMax slice" className="cs-campus" aria-hidden="true">
+      <defs>
+        <linearGradient id="csSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#bfe3ff" />
+          <stop offset="1" stopColor="#f2f9ff" />
+        </linearGradient>
+        <linearGradient id="csRoof" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#1558d6" />
+          <stop offset="1" stopColor="#19a7e6" />
+        </linearGradient>
+        <linearGradient id="csGrass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#7be0a8" />
+          <stop offset="1" stopColor="#3cbf80" />
+        </linearGradient>
+      </defs>
+      <rect width="480" height="360" fill="url(#csSky)" />
+      <g className="cs-sun">
+        <circle cx="388" cy="78" r="54" fill="#ffd66b" opacity=".35" />
+        <circle cx="388" cy="78" r="36" fill="#ffc83d" />
+        {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+          <line key={a} x1="388" y1="78" x2="388" y2="22" stroke="#ffc83d" strokeWidth="5" strokeLinecap="round" opacity=".55" transform={`rotate(${a} 388 78)`} />
+        ))}
+        <circle cx="388" cy="78" r="38" fill="#ffc83d" />
+      </g>
+      <g className="cs-cloud c1"><ellipse cx="90" cy="70" rx="42" ry="15" fill="#fff" /><ellipse cx="116" cy="60" rx="28" ry="16" fill="#fff" /><ellipse cx="70" cy="62" rx="22" ry="12" fill="#fff" /></g>
+      <g className="cs-cloud c2"><ellipse cx="250" cy="40" rx="34" ry="12" fill="#fff" opacity=".9" /><ellipse cx="270" cy="33" rx="22" ry="12" fill="#fff" opacity=".9" /></g>
+      <g className="cs-bird b1"><path d="M0 0q8-9 16 0q8-9 16 0" fill="none" stroke="#2a4a7a" strokeWidth="3" strokeLinecap="round" /></g>
+      <g className="cs-bird b2"><path d="M0 0q6-7 12 0q6-7 12 0" fill="none" stroke="#2a4a7a" strokeWidth="2.5" strokeLinecap="round" /></g>
+
+      <ellipse cx="240" cy="330" rx="300" ry="64" fill="url(#csGrass)" />
+      <path d="M210 340 Q240 300 270 340Z" fill="#f6e7c1" />
+
+      {/* building */}
+      <rect x="86" y="170" width="308" height="150" rx="10" fill="#fff" />
+      <rect x="86" y="300" width="308" height="20" rx="6" fill="#dfeaf7" />
+      <polygon points="66,174 240,100 414,174" fill="url(#csRoof)" />
+      <rect x="196" y="76" width="88" height="96" rx="8" fill="#fff" />
+      <path d="M186 80 Q240 14 294 80Z" fill="#102b4b" />
+      <circle cx="240" cy="116" r="19" fill="#e6f1ff" stroke="#1558d6" strokeWidth="4" />
+      <line x1="240" y1="116" x2="240" y2="104" stroke="#102b4b" strokeWidth="3" strokeLinecap="round" />
+      <line x1="240" y1="116" x2="250" y2="120" stroke="#102b4b" strokeWidth="3" strokeLinecap="round" className="cs-hand" />
+      <line x1="240" y1="47" x2="240" y2="12" stroke="#102b4b" strokeWidth="3" />
+      <path className="cs-flag" d="M240 12 L274 22 L240 32Z" fill="#ff7a59" />
+      {[112, 156, 292, 336].map((x, i) => (
+        <rect key={x} x={x} y="198" width="34" height="52" rx="17" fill="#bfd9fb" className="cs-win" style={{ animationDelay: `${i * 0.7}s` }} />
       ))}
-      <rect x="196" y="96" width="28" height="28" rx="14" fill="#fff" />
-      <path d="M205 110l5-6 5 6" stroke="#1769e0" strokeWidth="2.5" fill="none" />
+      <rect x="212" y="232" width="56" height="88" rx="28 28 4 4" fill="#173d6b" />
+      <circle cx="258" cy="280" r="3.5" fill="#ffd66b" />
+
+      {/* trees */}
+      <g className="cs-tree t1"><rect x="40" y="262" width="9" height="60" fill="#8a5a2b" /><circle cx="44" cy="248" r="30" fill="#2fae6d" /><circle cx="64" cy="268" r="20" fill="#3cc27d" /></g>
+      <g className="cs-tree t2"><rect x="436" y="266" width="9" height="56" fill="#8a5a2b" /><circle cx="440" cy="252" r="28" fill="#2fae6d" /><circle cx="420" cy="272" r="18" fill="#3cc27d" /></g>
+
+      {/* graduation cap */}
       <g className="cs-cap">
-        <polygon points="70,60 105,45 140,60 105,75" fill="#102b4b" />
-        <rect x="92" y="72" width="26" height="16" fill="#102b4b" />
-        <line x1="140" y1="60" x2="140" y2="86" stroke="#ffd66b" strokeWidth="3" />
+        <polygon points="96,70 140,52 184,70 140,88" fill="#102b4b" />
+        <rect x="124" y="84" width="32" height="18" rx="3" fill="#173d6b" />
+        <line x1="184" y1="70" x2="184" y2="98" stroke="#ffc83d" strokeWidth="4" strokeLinecap="round" />
+        <circle cx="184" cy="102" r="5" fill="#ffc83d" />
       </g>
     </svg>
   );
 }
 
-function CollegeSite({ colleges }) {
+/* the sample student lead: details lock and unlock in a loop */
+function LeadCard({ onUnlock }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const t = setInterval(() => setOpen((o) => !o), 3400);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div className={`cs-lead ${open ? "open" : ""}`}>
+      <div className="cs-lead-top">
+        <span className="cs-av">K</span>
+        <div>
+          <b>Sample Student Lead</b>
+          <small>Interested in your college</small>
+        </div>
+        <span className="cs-live"><i /> Live</span>
+      </div>
+      <p><span>Student ID</span><em>STU10234</em></p>
+      <p><span>12th %</span><em>82%</em></p>
+      <p><span>Course</span><em>B.Tech CSE</em></p>
+      <p><span>Name</span><em key={`n${open}`} className={`swap ${open ? "" : "lock"}`}>{open ? "Keerthana" : "K••••••• 🔒"}</em></p>
+      <p><span>Mobile</span><em key={`m${open}`} className={`swap ${open ? "" : "lock"}`}>{open ? "98765 43210" : "98•••••••• 🔒"}</em></p>
+      <button className="cs-unlock-btn" onClick={onUnlock}>
+        {open ? "✓ Details unlocked" : "Unlock Details – ₹100"}
+      </button>
+    </div>
+  );
+}
+
+function Wave({ fill, pos = "top" }) {
+  return (
+    <svg className={`cs-wave ${pos}`} viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+      <path fill={fill} d="M0 0H1440V38C1290 92 1110 92 930 52S570 -6 390 34 90 80 0 50Z" />
+    </svg>
+  );
+}
+
+function CollegeSite() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false);
   const [active, setActive] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [sent, setSent] = useState(false);
   const barRef = useRef(null);
-
-  const list = (colleges && colleges.length ? colleges : SAMPLE_COLLEGES).map(normalize);
-
-  /* ---- search state ---- */
-  const [auto, setAuto] = useState(true); // auto-rotating district mode
-  const [idx, setIdx] = useState(0); // which district is showing in auto mode
-  const [typed, setTyped] = useState(""); // typewriter text in auto mode
-  const [paused, setPaused] = useState(false); // pause while mouse is over results
-  const [q, setQ] = useState(""); // manual text
-  const [district, setDistrict] = useState(""); // manual selection
-  const [focus, setFocus] = useState(false);
+  const heroRef = useRef(null);
+  const glowRef = useRef(null);
+  const lineRef = useRef(null);
 
   let loggedIn = false;
   try {
@@ -251,6 +336,10 @@ function CollegeSite({ colleges }) {
   const goRegister = () => navigate("/college/register");
   const goDashboard = () => navigate("/college/dashboard");
 
+  /* SEARCH COLLEGES -> CollegeProfile.jsx  (optionally already filtered to one district) */
+  const goColleges = (district) =>
+    navigate(district ? `/college/profile?district=${encodeURIComponent(district)}` : "/college/profile");
+
   // Subscription prices are login-only
   const goPlans = () => {
     if (loggedIn) {
@@ -269,6 +358,10 @@ function CollegeSite({ colleges }) {
 
   const scrollTo = (id) => {
     setMenu(false);
+    if (id === "colleges") {
+      goColleges();
+      return;
+    }
     const go = () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     if (view !== "site") {
       setView("site");
@@ -277,69 +370,6 @@ function CollegeSite({ colleges }) {
       go();
     }
   };
-
-  /* ---- auto-rotate: type "Best colleges in X", wait 5s, go to next district ---- */
-  useEffect(() => {
-    if (!auto || paused) return undefined;
-    const full = `Best colleges in ${DISTRICTS[idx]}`;
-    let i = 0;
-    setTyped("");
-    const typer = setInterval(() => {
-      i += 1;
-      setTyped(full.slice(0, i));
-      if (i >= full.length) clearInterval(typer);
-    }, 45);
-    const next = setTimeout(() => setIdx((p) => (p + 1) % DISTRICTS.length), ROTATE_MS);
-    return () => {
-      clearInterval(typer);
-      clearTimeout(next);
-    };
-  }, [auto, paused, idx]);
-
-  /* ---- manual search ---- */
-  const term = q
-    .toLowerCase()
-    .replace(/\b(best|colleges|college|in)\b/g, "")
-    .trim();
-  const suggestions = DISTRICTS.filter((d) => !term || d.toLowerCase().includes(term));
-  const showSuggest = focus && !auto && !district && suggestions.length > 0;
-
-  const shown = auto ? DISTRICTS[idx] : district; // district whose colleges are displayed
-  const results = shown ? list.filter((c) => c.district.toLowerCase() === shown.toLowerCase()) : [];
-  const countOf = (d) => list.filter((c) => c.district.toLowerCase() === d.toLowerCase()).length;
-
-  const pickDistrict = (d) => {
-    setAuto(false);
-    setDistrict(d);
-    setQ(`Best colleges in ${d}`);
-    setFocus(false);
-  };
-  const clearSearch = () => {
-    setQ("");
-    setDistrict("");
-    setAuto(true);
-  };
-  const onSearchFocus = () => {
-    if (auto) {
-      setAuto(false);
-      setQ("");
-      setDistrict("");
-    }
-    setFocus(true);
-  };
-  const onSearchBlur = () => {
-    setFocus(false);
-    if (!q && !district) setAuto(true);
-  };
-  const onSearchKey = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (suggestions.length) pickDistrict(suggestions[0]);
-    }
-    if (e.key === "Escape") e.currentTarget.blur();
-  };
-
-  const openCollege = (c) => navigate(`/college/profile?college=${encodeURIComponent(c.id)}`);
 
   /* ---- subscription pricing (login only) ---- */
   const showPricing = view === "pricing" && loggedIn;
@@ -368,12 +398,12 @@ function CollegeSite({ colleges }) {
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.15 }
+      { threshold: 0.12 }
     );
     items.forEach((el) => io.observe(el));
 
     // active menu item
-    const secs = MENU.map(([id]) => document.getElementById(id)).filter(Boolean);
+    const secs = SPY_IDS.map((id) => document.getElementById(id)).filter(Boolean);
     const spy = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
@@ -383,31 +413,55 @@ function CollegeSite({ colleges }) {
     );
     secs.forEach((el) => spy.observe(el));
 
-    // progress bar + header shadow
+    // progress bar + header + timeline line
     const onScroll = () => {
       const h = document.documentElement;
       const pct = (h.scrollTop / Math.max(h.scrollHeight - h.clientHeight, 1)) * 100;
       if (barRef.current) barRef.current.style.width = `${pct}%`;
       setScrolled(h.scrollTop > 400);
+      const tl = lineRef.current;
+      if (tl) {
+        const r = tl.getBoundingClientRect();
+        const p = Math.min(Math.max((window.innerHeight * 0.62 - r.top) / r.height, 0), 1);
+        tl.style.setProperty("--p", p.toFixed(3));
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
+
+    // soft light that follows the mouse
+    const onMove = (e) => {
+      if (glowRef.current) glowRef.current.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
 
     return () => {
       io.disconnect();
       spy.disconnect();
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", onMove);
     };
   }, [view]);
+
+  const onHeroMove = (e) => {
+    const el = heroRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--px", ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+    el.style.setProperty("--py", ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+  };
+
+  const headWords = ["Find", "students", "who", "are", "already", "looking", "for", "a"];
 
   return (
     <div className="cs">
       <style>{styles}</style>
       <div className="cs-bar" ref={barRef} />
+      <div className="cs-glow" ref={glowRef} aria-hidden="true" />
 
-      {/* FIXED NAV BAR */}
-      <header className="cs-header">
-        <div className="cs-wrap cs-header-in">
+      {/* FLOATING PILL NAV */}
+      <header className={`cs-header ${scrolled ? "sc" : ""}`}>
+        <div className="cs-pill">
           <button className="cs-brand" onClick={() => scrollTo("home")}>
             <span className="cs-logo">CC</span>
             <span>
@@ -422,17 +476,19 @@ function CollegeSite({ colleges }) {
                 {label}
               </button>
             ))}
-            {loggedIn ? (
-              <>
-                <button className="cs-ghost" onClick={() => navigate("/college/profile")}>My College</button>
-                <button className="cs-solid" onClick={goDashboard}>Go to Dashboard →</button>
-              </>
-            ) : (
-              <>
-                <button className="cs-ghost" onClick={goLogin}>College Login</button>
-                <button className="cs-solid" onClick={goRegister}>Register College</button>
-              </>
-            )}
+            <span className="cs-navcta">
+              {loggedIn ? (
+                <>
+                  <button className="cs-ghost" onClick={() => navigate("/college/profile")}>My College</button>
+                  <button className="cs-solid" onClick={goDashboard}>Go to Dashboard →</button>
+                </>
+              ) : (
+                <>
+                  <button className="cs-ghost" onClick={goLogin}>College Login</button>
+                  <button className="cs-solid" onClick={goRegister}>Register College</button>
+                </>
+              )}
+            </span>
           </nav>
 
           <button className="cs-burger" onClick={() => setMenu(!menu)} aria-label="Menu">{menu ? "✕" : "☰"}</button>
@@ -442,7 +498,7 @@ function CollegeSite({ colleges }) {
       {showPricing ? (
         /* ============ SUBSCRIPTION PRICING (LOGIN ONLY) ============ */
         <main className="sp-main">
-          <span className="cs-blob b4" /><span className="cs-blob b5" />
+          <span className="cs-blob b4" /><span className="cs-blob b5" /><span className="cs-blob b3" />
           <div className="cs-wrap sp-in">
             <button className="cs-ghost sp-back" onClick={() => scrollTo("home")}>← Back to Home</button>
 
@@ -514,384 +570,410 @@ function CollegeSite({ colleges }) {
         </main>
       ) : (
         <>
-      {/* HOME / HERO BANNER */}
-      <section id="home" className="cs-hero">
-        <span className="cs-blob b1" /><span className="cs-blob b2" /><span className="cs-blob b3" />
-        <div className="cs-wrap cs-hero-in">
-          <div className="cs-rv left">
-            <span className="cs-tag"><i className="cs-dot" /> ADMISSION SEASON · FOR COLLEGES</span>
-            <h1>
-              Find students who are already looking for a <span className="cs-grad">college like yours</span>
-            </h1>
-            <p>
-              CampusConnect connects colleges with prospective students after 12th standard.
-              Browse interested students, unlock their contact details for just ₹100 per lead
-              and start your admission conversation.
-            </p>
-            <div className="cs-row">
-              <button className="cs-solid big" onClick={loggedIn ? goDashboard : goRegister}>
-                {loggedIn ? "Open Dashboard" : "Register Your College"}
-              </button>
-              <button className="cs-ghost big" onClick={() => scrollTo("search")}>Search Colleges</button>
-            </div>
-          </div>
+          {/* ================= HERO ================= */}
+          <section id="home" className="cs-hero" ref={heroRef} onMouseMove={onHeroMove}>
+            <span className="cs-blob b1" /><span className="cs-blob b2" /><span className="cs-blob b3" />
+            {SPARKS.map(([x, y], i) => (
+              <span key={i} className="cs-spark" style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${(i % 7) * 0.45}s` }}>✦</span>
+            ))}
 
-          <div className="cs-rv right cs-hero-art">
-            <span className="cs-ring" />
-            <span className="cs-orb o1">🎓</span>
-            <span className="cs-orb o2">📚</span>
-            <span className="cs-orb o3">🏫</span>
-            <Campus />
-            <div className="cs-lead cs-float">
-              <b>Sample Student Lead</b>
-              <p><span>Student ID</span><em>STU10234</em></p>
-              <p><span>12th %</span><em>82%</em></p>
-              <p><span>Course</span><em>B.Tech CSE</em></p>
-              <p><span>Mobile</span><em className="lock">98•••••••• 🔒</em></p>
-              <button className="cs-dark" onClick={() => scrollTo("pricing")}>Unlock Details – ₹100</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* MARQUEE */}
-      <div className="cs-marquee" aria-hidden="true">
-        <div className="cs-track">
-          {[...MARQUEE, ...MARQUEE].map((t, i) => (
-            <span key={i}>{t}<i>✦</i></span>
-          ))}
-        </div>
-      </div>
-
-      {/* SEARCH — one full page */}
-      <section id="search" className="cs-search">
-        <span className="cs-blob b4" /><span className="cs-blob b5" />
-        <div className="cs-wrap cs-search-in">
-          <div className="cs-rv zoom">
-            <span className="cs-eyebrow">SEARCH COLLEGES</span>
-            <h2 className="cs-h2">Search colleges by district</h2>
-
-            <div className="cs-sbox">
-              <div className={`cs-sfield ${auto ? "auto" : ""}`}>
-                <span className="cs-sicon">🔍</span>
-                <input
-                  value={auto ? typed : q}
-                  onChange={(e) => {
-                    setQ(e.target.value);
-                    setDistrict("");
-                  }}
-                  onFocus={onSearchFocus}
-                  onBlur={onSearchBlur}
-                  onKeyDown={onSearchKey}
-                  placeholder="Best colleges in Coimbatore"
-                  aria-label="Search colleges by district"
-                  autoComplete="off"
-                />
-                {auto && <span className="cs-caret" />}
-                {!auto && (q || district) && (
-                  <button className="cs-sclear" onMouseDown={(e) => e.preventDefault()} onClick={clearSearch} aria-label="Clear search">
-                    ✕
+            <div className="cs-wrap cs-hero-in">
+              <div className="cs-hero-copy">
+                <span className="cs-tag cs-pop"><i className="cs-dot" /> ADMISSION SEASON · FOR COLLEGES</span>
+                <h1>
+                  {headWords.map((w, i) => (
+                    <React.Fragment key={w + i}>
+                      <span className="cs-w" style={{ "--w": i }}>{w}</span>{" "}
+                    </React.Fragment>
+                  ))}
+                  <span className="cs-w cs-grad" style={{ "--w": headWords.length }}>college like yours</span>
+                </h1>
+                <p className="cs-lede">
+                  CampusConnect connects colleges with prospective students after 12th standard.
+                  Browse interested students, unlock their contact details for just <b>₹100 per lead</b> and
+                  start your admission conversation.
+                </p>
+                <div className="cs-row">
+                  <button className="cs-solid big" onClick={loggedIn ? goDashboard : goRegister}>
+                    {loggedIn ? "Open Dashboard" : "Register Your College"} <i className="cs-arr">→</i>
                   </button>
-                )}
+                  <button className="cs-ghost big" onClick={() => goColleges()}>
+                    <span className="cs-mag">🔍</span> Search Colleges
+                  </button>
+                </div>
+                <div className="cs-trust">
+                  <span><b>₹100</b> per lead</span>
+                  <span><b>38</b> districts</span>
+                  <span><b>100%</b> consent-based</span>
+                </div>
               </div>
 
-              {auto && !paused && <span className="cs-prog" key={idx} />}
-
-              {showSuggest && (
-                <ul className="cs-sug" onMouseDown={(e) => e.preventDefault()}>
-                  {suggestions.map((d) => (
-                    <li key={d}>
-                      <button onClick={() => pickDistrict(d)}>
-                        <span>📍</span> Best colleges in <b>{d}</b>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <div className="cs-stage">
+                <span className="cs-ring" />
+                <span className="cs-ring r2" />
+                <div className="cs-orbit">
+                  <span className="cs-orb o1"><i>🎓</i></span>
+                  <span className="cs-orb o2"><i>📚</i></span>
+                  <span className="cs-orb o3"><i>🏫</i></span>
+                </div>
+                <div className="cs-blobframe">
+                  <Campus />
+                </div>
+                <div className="cs-lead-wrap">
+                  <LeadCard onUnlock={() => scrollTo("pricing")} />
+                </div>
+                <div className="cs-toast">
+                  <span>🔔</span>
+                  <div><b>New lead</b><small>STU10235 · B.E ECE · Salem</small></div>
+                </div>
+              </div>
             </div>
+          </section>
 
-            <div className="cs-chips">
-              {DISTRICTS.map((d) => (
-                <button key={d} className={shown === d ? "on" : ""} onClick={() => pickDistrict(d)}>
-                  {d} <em>{countOf(d)}</em>
-                </button>
-              ))}
-            </div>
-
-            <p className="cs-auto-note">
-              {auto ? (
-                <><i className="cs-dot" /> Auto-showing the next district every 5 seconds{paused ? " (paused)" : ""}</>
-              ) : (
-                <button onClick={clearSearch}>▶ Resume auto-play</button>
-              )}
-            </p>
-          </div>
-
-          <div
-            className="cs-results"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-          >
-            {shown ? (
-              <>
-                <p className="cs-rcount" key={`count-${shown}`}>
-                  <b>{results.length}</b> {results.length === 1 ? "college" : "colleges"} in <b>{shown}</b>
-                </p>
-                {results.length ? (
-                  <div className="cs-grid3">
-                    {results.slice(0, 6).map((c, i) => (
-                      <article
-                        key={`${shown}-${c.id}`}
-                        className="cs-college"
-                        style={{ animationDelay: `${i * 0.08}s` }}
-                        onClick={() => openCollege(c)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => e.key === "Enter" && openCollege(c)}
-                      >
-                        <div className="cs-chead">
-                          <span className="cs-clogo">
-                            <b>{initials(c.name)}</b>
-                            {c.logo && <img src={c.logo} alt="" onError={(e) => { e.currentTarget.style.display = "none"; }} />}
-                          </span>
-                          <div>
-                            {c.type && <span className="cs-ctype">{c.type}</span>}
-                            {c.ranking && <span className="cs-crank">🏆 {c.ranking}</span>}
-                          </div>
-                        </div>
-                        <h3>{c.name}</h3>
-                        <p>📍 {c.district}, Tamil Nadu</p>
-                        {c.courses.length > 0 && (
-                          <div className="cs-ctags">
-                            {c.courses.slice(0, 3).map((x) => <span key={x}>{x}</span>)}
-                            {c.courses.length > 3 && <span>+{c.courses.length - 3}</span>}
-                          </div>
-                        )}
-                        <span className="cs-cview">View profile →</span>
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="cs-empty">No colleges listed in {shown} yet.</p>
-                )}
-                {results.length > 6 && <p className="cs-more">+ {results.length - 6} more colleges in {shown}</p>}
-              </>
-            ) : (
-              <p className="cs-empty">Pick a district to see its colleges.</p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* COUNTERS */}
-      <section className="cs-wrap cs-stats">
-        {STATS.map(([to, prefix, suffix, label], i) => (
-          <div key={label} className="cs-rv zoom" style={{ "--d": `${i * 0.1}s` }}>
-            <CountUp to={to} prefix={prefix} suffix={suffix} />
-            <span>{label}</span>
-          </div>
-        ))}
-      </section>
-
-      <section className="cs-wrap cs-sec">
-        <h2 className="cs-h2 cs-rv">Why colleges use CampusConnect</h2>
-        <div className="cs-grid4">
-          {FEATURES.map(([ic, t, d], i) => (
-            <article key={t} className="cs-card cs-rv zoom" style={{ "--d": `${i * 0.1}s` }}>
-              <span className="cs-ic">{ic}</span>
-              <h3>{t}</h3>
-              <p>{d}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how" className="cs-band">
-        <div className="cs-wrap cs-sec">
-          <span className="cs-eyebrow cs-rv">HOW IT WORKS</span>
-          <h2 className="cs-h2 cs-rv">From registration to student contact in six steps</h2>
-          <div className="cs-steps">
-            {STEPS.map(([t, d], i) => (
-              <article key={t} className={`cs-step cs-rv ${i % 2 ? "right" : "left"}`}>
-                <div className="cs-num">{i + 1}</div>
-                <div><h3>{t}</h3><p>{d}</p></div>
-              </article>
-            ))}
-          </div>
-
-          {/* public -> private explained */}
-          <div className="cs-flow cs-rv">
-            <div><b>1</b><span>Public website</span><small>You are here</small></div>
-            <i>→</i>
-            <div><b>2</b><span>Register / Login</span><small>Private access</small></div>
-            <i>→</i>
-            <div><b>3</b><span>College profile</span><small>Your saved college</small></div>
-            <i>→</i>
-            <div><b>4</b><span>Dashboard</span><small>Buy leads for ₹100</small></div>
-          </div>
-
-          <div className="cs-preview cs-rv">
-            <div className="cs-preview-head">
-              <b>Inside the private dashboard</b>
-              <span>Preview · login required to unlock</span>
-            </div>
-            <div className="cs-table-wrap">
-              <table>
-                <thead><tr><th>Student ID</th><th>12th %</th><th>Course</th><th>Location</th><th>Mobile</th><th /></tr></thead>
-                <tbody>
-                  {LEADS.map(([id, pc, c, l]) => (
-                    <tr key={id}>
-                      <td><b>{id}</b></td><td>{pc}</td><td>{c}</td><td>{l}</td>
-                      <td className="lock">••••••••• 🔒</td>
-                      <td><button className="cs-unlock" onClick={goLogin}>Unlock ₹100</button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="cs-privacy cs-rv">
-            <h3>🔒 Student privacy is protected</h3>
-            <p>Mobile number and email stay hidden until a college unlocks the lead. The unlock is recorded only after the server verifies payment.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* SUBSCRIPTION PLANS (prices only after login) */}
-      <section id="plans" className="cs-wrap cs-sec">
-        <span className="cs-eyebrow cs-rv">SUBSCRIPTION</span>
-        <h2 className="cs-h2 cs-rv">Choose a plan that fits your college</h2>
-        <div className="cs-plans">
-          {PLANS.map((p, i) => (
-            <article key={p.id} className={`cs-plan ${p.id} cs-rv zoom`} style={{ "--d": `${i * 0.12}s` }}>
-              <span className="cs-plan-ic">{p.icon}</span>
-              <h3>{p.name}</h3>
-              <p className="cs-plan-tag">{p.tagline}</p>
-              <ul>
-                {p.features.map((f) => (
-                  <li key={f}><i>✓</i>{f}</li>
+          {/* ================= RIBBONS ================= */}
+          <div className="cs-ribbons" aria-hidden="true">
+            <div className="cs-ribbon a">
+              <div className="cs-track">
+                {[...RIBBON_A, ...RIBBON_A, ...RIBBON_A].map((t, i) => (
+                  <span key={i}>{t}<i>✦</i></span>
                 ))}
-              </ul>
-              <button className="cs-solid" onClick={goPlans}>
-                {loggedIn ? "View Plans & Prices →" : "🔒 Login to view prices"}
-              </button>
-            </article>
-          ))}
-        </div>
-        <p className="cs-plans-note cs-rv">
-          Plans are available for 1 month, 6 months and 1 year. {loggedIn ? "Open any plan to compare durations." : "Prices are shown to registered colleges after login."}
-        </p>
-      </section>
-
-      {/* PRICING (per lead) */}
-      <section id="pricing" className="cs-band">
-        <div className="cs-wrap cs-sec">
-          <span className="cs-eyebrow cs-rv">PRICING</span>
-          <h2 className="cs-h2 cs-rv">One simple price for every student lead</h2>
-          <div className="cs-price cs-rv zoom">
-            <div className="cs-price-box">
-              <small>Per student lead</small>
-              <strong>₹100</strong>
-              <span>one-time · per lead</span>
-              <button className="cs-white" onClick={loggedIn ? goDashboard : goRegister}>
-                {loggedIn ? "Buy Leads" : "Register & Start Buying"}
-              </button>
+              </div>
             </div>
-            <ul>
-              {["Free preview of every lead", "Name, mobile and email after unlock", "Saved forever in My Purchased Leads", "Secure payment, verified by server", "Receipts and transaction history", "Pay only for the leads you unlock"].map((x) => (
-                <li key={x}><i>✓</i>{x}</li>
+            <div className="cs-ribbon b">
+              <div className="cs-track rev">
+                {[...RIBBON_B, ...RIBBON_B, ...RIBBON_B].map((t, i) => (
+                  <span key={i}>{t}<i>●</i></span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ================= DISTRICT EXPLORER (opens CollegeProfile) ================= */}
+          <section id="districts" className="cs-districts">
+            <span className="cs-blob b4" /><span className="cs-blob b5" />
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow cs-rv">SEARCH COLLEGES</span>
+              <h2 className="cs-h2 cs-rv">Pick a district, <span className="cs-grad">see its colleges</span></h2>
+              <p className="cs-sub cs-rv">Tap a bubble to open the college search for that district.</p>
+
+              <div className="cs-bubbles">
+                {FEATURED.map((d, i) => (
+                  <button
+                    key={d.name}
+                    className={`cs-bubble ${d.size} cs-rv zoom`}
+                    style={{ "--g": d.g, "--d": `${i * 0.1}s`, "--f": `${i * -1.3}s` }}
+                    onClick={() => goColleges(d.name)}
+                    aria-label={`Colleges in ${d.name}`}
+                  >
+                    <span className="cs-bubble-in">
+                      <span className="ic">{d.ic}</span>
+                      <b>{d.name}</b>
+                      <small>{d.note}</small>
+                      <em>View colleges →</em>
+                    </span>
+                  </button>
+                ))}
+                <button className="cs-bubble more md cs-rv zoom" style={{ "--d": "0.5s", "--f": "-6s" }} onClick={() => goColleges()}>
+                  <span className="cs-bubble-in">
+                    <span className="ic">🗺️</span>
+                    <b>+{TN_DISTRICTS.length - FEATURED.length} more</b>
+                    <small>All Tamil Nadu districts</small>
+                    <em>Open search →</em>
+                  </span>
+                </button>
+              </div>
+
+              <div className="cs-center cs-rv">
+                <button className="cs-solid big" onClick={() => goColleges()}>
+                  <span className="cs-mag">🔍</span> Open College Search <i className="cs-arr">→</i>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* ================= COUNTERS ================= */}
+          <section className="cs-stats">
+            <Wave fill="#f5f8ff" />
+            <Wave fill="#f5f8ff" pos="bottom" />
+            <span className="cs-blob b6" /><span className="cs-blob b7" />
+            <div className="cs-wrap cs-stats-in">
+              {STATS.map(([to, suffix, label, pct, hue], i) => (
+                <div key={label} className="cs-rv zoom" style={{ "--d": `${i * 0.12}s` }}>
+                  <StatRing to={to} suffix={suffix} label={label} pct={pct} hue={hue} />
+                </div>
               ))}
-            </ul>
-          </div>
-          <div className="cs-est">
-            {[[10, "₹1,000"], [50, "₹5,000"], [100, "₹10,000"], [500, "₹50,000"]].map(([n, t], i) => (
-              <div key={n} className="cs-rv zoom" style={{ "--d": `${i * 0.1}s` }}><b>{n} leads</b><span>{t}</span></div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+          </section>
 
-      {/* BENEFITS */}
-      <section id="benefits" className="cs-wrap cs-sec">
-        <span className="cs-eyebrow cs-rv">BENEFITS</span>
-        <h2 className="cs-h2 cs-rv">Why colleges choose CampusConnect</h2>
-        <div className="cs-grid3">
-          {BENEFITS.map(([ic, t, d], i) => (
-            <article key={t} className="cs-card cs-rv zoom" style={{ "--d": `${(i % 3) * 0.12}s` }}>
-              <span className="cs-ic">{ic}</span>
-              <h3>{t}</h3>
-              <p>{d}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+          {/* ================= WHY (bento) ================= */}
+          <section className="cs-light cs-why">
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow cs-rv">WHY CAMPUSCONNECT</span>
+              <h2 className="cs-h2 cs-rv">Why colleges use <span className="cs-grad">CampusConnect</span></h2>
+              <div className="cs-bento">
+                <Tilt className="bn bn1 cs-rv zoom">
+                  <span className="bn-ic">🎯</span>
+                  <h3>Real student interest</h3>
+                  <p>Every lead is a student who showed interest in a college or course.</p>
+                  <div className="bn-feed">
+                    <div><i>S</i><span>STU10236 · 84% · B.Sc CS</span><em>just now</em></div>
+                    <div><i>R</i><span>STU10237 · 79% · B.E Mech</span><em>2 min</em></div>
+                    <div><i>A</i><span>STU10238 · 91% · MBBS</span><em>5 min</em></div>
+                  </div>
+                </Tilt>
+                <Tilt className="bn bn2 cs-rv zoom" style={{ "--d": "0.1s" }}>
+                  <span className="bn-ic">🔓</span>
+                  <h3>Free preview, pay to unlock</h3>
+                  <p>See ID, 12th % and course free. Pay ₹100 only for contact details.</p>
+                  <div className="bn-lock"><span>🔒</span></div>
+                </Tilt>
+                <Tilt className="bn bn3 cs-rv zoom" style={{ "--d": "0.2s" }}>
+                  <span className="bn-ic">📊</span>
+                  <h3>Private dashboard</h3>
+                  <p>Track leads, purchases, spending and receipts in one place.</p>
+                  <div className="bn-bars"><i /><i /><i /><i /><i /></div>
+                </Tilt>
+                <Tilt className="bn bn4 cs-rv zoom" style={{ "--d": "0.3s" }}>
+                  <span className="bn-ic">📍</span>
+                  <h3>Chennai · Coimbatore · Erode · Salem · Tiruppur and 33 more districts</h3>
+                  <p>Engineering, Arts & Science, Medical, Nursing, Management and more.</p>
+                  <div className="bn-chips">
+                    {["Engineering", "Arts & Science", "Medical", "Nursing", "Management", "Physiotherapy"].map((c) => <span key={c}>{c}</span>)}
+                  </div>
+                </Tilt>
+              </div>
+            </div>
+          </section>
 
-      {/* ABOUT */}
-      <section id="about" className="cs-band">
-        <div className="cs-wrap cs-sec cs-about">
-          <div className="cs-rv left">
-            <span className="cs-eyebrow">ABOUT US</span>
-            <h2 className="cs-h2 left">Connecting students and colleges</h2>
-            <p>Students who finish 12th create a profile, search colleges and courses, and show interest. Colleges that register on our platform see those interested students and can pay ₹100 to access the complete contact details of the students they want to reach.</p>
-            <p>We protect student privacy: contact details are hidden until purchase, and students agree to share their profile for admission purposes only.</p>
-          </div>
-          <div className="cs-rv right"><Campus /></div>
-        </div>
-      </section>
+          {/* ================= HOW IT WORKS ================= */}
+          <section id="how" className="cs-how">
+            <span className="cs-blob b4" />
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow cs-rv">HOW IT WORKS</span>
+              <h2 className="cs-h2 cs-rv">From registration to student contact in <span className="cs-grad">six steps</span></h2>
 
-      {/* CONTACT */}
-      <section id="contact" className="cs-wrap cs-sec">
-        <span className="cs-eyebrow cs-rv">CONTACT</span>
-        <h2 className="cs-h2 cs-rv">We'd love to hear from you</h2>
-        <form
-          className="cs-form cs-rv zoom"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-            e.target.reset();
-          }}
-        >
-          <label>College Name<input required placeholder="Your college name" /></label>
-          <label>Official Email<input required type="email" placeholder="admissions@college.edu" /></label>
-          <label>Mobile<input required inputMode="tel" placeholder="10-digit number" /></label>
-          <label>District
-            <select defaultValue="Chennai">
-              {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
-            </select>
-          </label>
-          <label className="full">Message<textarea required rows="4" placeholder="How can we help?" /></label>
-          <button className="cs-solid big full" type="submit">Send Message</button>
-          {sent && <p className="cs-ok full">✓ Thank you! We will contact you soon.</p>}
-        </form>
-      </section>
+              <div className="cs-tl" ref={lineRef}>
+                <span className="cs-tl-line"><i /></span>
+                {STEPS.map(([t, d, ic], i) => (
+                  <article key={t} className={`cs-step ${i % 2 ? "r" : "l"} cs-rv ${i % 2 ? "right" : "left"}`}>
+                    <span className="cs-num"><b>{i + 1}</b></span>
+                    <Tilt className="cs-step-card" max={5}>
+                      <span className="cs-step-ic">{ic}</span>
+                      <h3>{t}</h3>
+                      <p>{d}</p>
+                    </Tilt>
+                  </article>
+                ))}
+              </div>
 
-      <section className="cs-wrap cs-ctawrap">
-        <div className="cs-banner cs-rv zoom">
-          <h2>Ready to reach this year's students?</h2>
-          <p>Create your college account in minutes. Admin verifies your college before you go live.</p>
-          <div className="cs-row center">
-            <button className="cs-white" onClick={goRegister}>Register College</button>
-            <button className="cs-outline" onClick={goLogin}>College Login</button>
-          </div>
-        </div>
-      </section>
+              {/* public -> private explained */}
+              <div className="cs-flow cs-rv">
+                <div><b>1</b><span>Public website</span><small>You are here</small></div>
+                <i />
+                <div><b>2</b><span>Register / Login</span><small>Private access</small></div>
+                <i />
+                <div><b>3</b><span>College profile</span><small>Your saved college</small></div>
+                <i />
+                <div><b>4</b><span>Dashboard</span><small>Buy leads for ₹100</small></div>
+              </div>
 
-      <footer className="cs-footer">
-        <div className="cs-wrap cs-footer-in">
-          <div>
-            <strong>CampusConnect</strong>
-            <p>Student contact details are shared only with consent and after purchase.</p>
-          </div>
-          <div className="cs-flinks">
-            {MENU.map(([id, l]) => <button key={id} onClick={() => scrollTo(id)}>{l}</button>)}
-            <button onClick={goLogin}>College Login</button>
-            <button onClick={goRegister}>Register</button>
-          </div>
-        </div>
-      </footer>
+              <div className="cs-preview cs-rv">
+                <div className="cs-preview-head">
+                  <b>Inside the private dashboard</b>
+                  <span>Preview · login required to unlock</span>
+                </div>
+                <div className="cs-leads">
+                  {LEADS.map(([id, pc, c, l, a], i) => (
+                    <div key={id} className="cs-leadrow" style={{ "--i": i }}>
+                      <span className="av">{a}</span>
+                      <b className="id">{id}</b>
+                      <span className="chip">{pc}</span>
+                      <span className="chip c2">{c}</span>
+                      <span className="chip c3">📍 {l}</span>
+                      <span className="mob lock">••••••••• 🔒</span>
+                      <button className="cs-unlock" onClick={goLogin}>Unlock ₹100</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
+              <div className="cs-privacy cs-rv">
+                <span className="shield">🔒</span>
+                <div>
+                  <h3>Student privacy is protected</h3>
+                  <p>Mobile number and email stay hidden until a college unlocks the lead. The unlock is recorded only after the server verifies payment.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ================= PLANS (prices only after login) ================= */}
+          <section id="plans" className="cs-light">
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow cs-rv">SUBSCRIPTION</span>
+              <h2 className="cs-h2 cs-rv">Choose a plan that <span className="cs-grad">fits your college</span></h2>
+              <div className="cs-plans">
+                {PLANS.map((p, i) => (
+                  <Tilt key={p.id} className={`cs-plan ${p.id} cs-rv zoom`} style={{ "--d": `${i * 0.12}s` }} max={6}>
+                    {p.id === "gold" && <span className="cs-pop-badge">★ Most chosen</span>}
+                    <span className="cs-plan-ic">{p.icon}</span>
+                    <h3>{p.name}</h3>
+                    <p className="cs-plan-tag">{p.tagline}</p>
+                    <ul>
+                      {p.features.map((f) => (
+                        <li key={f}><i>✓</i>{f}</li>
+                      ))}
+                    </ul>
+                    <button className="cs-solid" onClick={goPlans}>
+                      {loggedIn ? "View Plans & Prices →" : "🔒 Login to view prices"}
+                    </button>
+                  </Tilt>
+                ))}
+              </div>
+              <p className="cs-plans-note cs-rv">
+                Plans are available for 1 month, 6 months and 1 year. {loggedIn ? "Open any plan to compare durations." : "Prices are shown to registered colleges after login."}
+              </p>
+            </div>
+          </section>
+
+          {/* ================= PRICING (per lead) ================= */}
+          <section id="pricing" className="cs-pricing">
+            <Wave fill="#f5f8ff" />
+            <Wave fill="#f5f8ff" pos="bottom" />
+            <span className="cs-blob b6" /><span className="cs-blob b7" />
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow dark cs-rv">PRICING</span>
+              <h2 className="cs-h2 light cs-rv">One simple price for every <span className="cs-grad">student lead</span></h2>
+              <div className="cs-price">
+                <div className="cs-coinwrap cs-rv zoom">
+                  <span className="cs-coin-ring" />
+                  <div className="cs-coin">
+                    <small>Per student lead</small>
+                    <strong>₹100</strong>
+                    <span>one-time · per lead</span>
+                  </div>
+                  <span className="cs-mini m1">₹</span><span className="cs-mini m2">₹</span><span className="cs-mini m3">₹</span>
+                </div>
+                <div className="cs-price-right cs-rv right">
+                  <ul>
+                    {["Free preview of every lead", "Name, mobile and email after unlock", "Saved forever in My Purchased Leads", "Secure payment, verified by server", "Receipts and transaction history", "Pay only for the leads you unlock"].map((x, i) => (
+                      <li key={x} style={{ "--i": i }}><i>✓</i>{x}</li>
+                    ))}
+                  </ul>
+                  <button className="cs-white" onClick={loggedIn ? goDashboard : goRegister}>
+                    {loggedIn ? "Buy Leads" : "Register & Start Buying"} →
+                  </button>
+                </div>
+              </div>
+              <div className="cs-est">
+                {[[10, "₹1,000"], [50, "₹5,000"], [100, "₹10,000"], [500, "₹50,000"]].map(([n, t], i) => (
+                  <div key={n} className="cs-rv zoom" style={{ "--d": `${i * 0.1}s` }}><b>{n} leads</b><span>{t}</span></div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ================= BENEFITS ================= */}
+          <section id="benefits" className="cs-light">
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow cs-rv">BENEFITS</span>
+              <h2 className="cs-h2 cs-rv">Why colleges choose <span className="cs-grad">CampusConnect</span></h2>
+              <div className="cs-grid3">
+                {BENEFITS.map(([ic, t, d], i) => (
+                  <Tilt key={t} className="cs-ben cs-rv zoom" style={{ "--d": `${(i % 3) * 0.12}s`, "--k": i }}>
+                    <span className="cs-ben-ic">{ic}</span>
+                    <h3>{t}</h3>
+                    <p>{d}</p>
+                  </Tilt>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ================= ABOUT ================= */}
+          <section id="about" className="cs-about-sec">
+            <span className="cs-blob b4" />
+            <div className="cs-wrap cs-sec cs-about">
+              <div className="cs-rv left">
+                <span className="cs-eyebrow">ABOUT US</span>
+                <h2 className="cs-h2 left">Connecting <span className="cs-grad">students and colleges</span></h2>
+                <p>Students who finish 12th create a profile, search colleges and courses, and show interest. Colleges that register on our platform see those interested students and can pay ₹100 to access the complete contact details of the students they want to reach.</p>
+                <p>We protect student privacy: contact details are hidden until purchase, and students agree to share their profile for admission purposes only.</p>
+                <div className="cs-pills">
+                  <span>🔒 Privacy first</span><span>✅ Verified colleges</span><span>🤝 Consent based</span>
+                </div>
+              </div>
+              <div className="cs-rv right cs-about-art">
+                <div className="cs-blobframe sm"><Campus /></div>
+                <span className="cs-orb o1 sm"><i>🎓</i></span>
+                <span className="cs-orb o2 sm"><i>📚</i></span>
+              </div>
+            </div>
+          </section>
+
+          {/* ================= CONTACT ================= */}
+          <section id="contact" className="cs-light">
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow cs-rv">CONTACT</span>
+              <h2 className="cs-h2 cs-rv">We'd love to <span className="cs-grad">hear from you</span></h2>
+              <div className="cs-contact cs-rv zoom">
+                <div className="cs-contact-side">
+                  <span className="cs-env">✉️</span>
+                  <h3>Say hello</h3>
+                  <p>Tell us about your college and what you need. We will get back to you soon.</p>
+                  <span className="cs-c-blob a" /><span className="cs-c-blob b" />
+                </div>
+                <form
+                  className="cs-form"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setSent(true);
+                    e.target.reset();
+                  }}
+                >
+                  <label>College Name<input required placeholder="Your college name" /></label>
+                  <label>Official Email<input required type="email" placeholder="admissions@college.edu" /></label>
+                  <label>Mobile<input required inputMode="tel" placeholder="10-digit number" /></label>
+                  <label>District
+                    <select defaultValue="Coimbatore">
+                      {TN_DISTRICTS.map((d) => <option key={d}>{d}</option>)}
+                    </select>
+                  </label>
+                  <label className="full">Message<textarea required rows="4" placeholder="How can we help?" /></label>
+                  <button className="cs-solid big full" type="submit">Send Message →</button>
+                  {sent && <p className="cs-ok full">✓ Thank you! We will contact you soon.</p>}
+                </form>
+              </div>
+            </div>
+          </section>
+
+          {/* ================= CTA ================= */}
+          <section className="cs-wrap cs-ctawrap">
+            <div className="cs-banner cs-rv zoom">
+              <span className="cs-c-blob a" /><span className="cs-c-blob b" /><span className="cs-c-blob c" />
+              <h2>Ready to reach this year's students?</h2>
+              <p>Create your college account in minutes. Admin verifies your college before you go live.</p>
+              <div className="cs-row center">
+                <button className="cs-white" onClick={goRegister}>Register College</button>
+                <button className="cs-outline" onClick={goLogin}>College Login</button>
+              </div>
+            </div>
+          </section>
+
+          <footer className="cs-footer">
+            <div className="cs-wrap cs-footer-in">
+              <div className="cs-fbrand">
+                <strong>CampusConnect</strong>
+                <p>Student contact details are shared only with consent and after purchase.</p>
+              </div>
+              <div className="cs-flinks">
+                {MENU.map(([id, l]) => <button key={id} onClick={() => scrollTo(id)}>{l}</button>)}
+                <button onClick={goLogin}>College Login</button>
+                <button onClick={goRegister}>Register</button>
+              </div>
+            </div>
+            <div className="cs-wordmark" aria-hidden="true">CampusConnect</div>
+          </footer>
         </>
       )}
 
@@ -901,329 +983,476 @@ function CollegeSite({ colleges }) {
 }
 
 const styles = `
-/* full-width page, equal margin on all sides */
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
 html{scroll-behavior:smooth}
-body{display:block!important;background:#f4f8fd!important;color-scheme:light;margin:0!important}
+body{display:block!important;background:#f5f8ff!important;color-scheme:light;margin:0!important}
 #root{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;text-align:left!important;display:block!important;min-height:0!important}
-.cs{--pad:clamp(22px,5vw,80px);--nav:78px;min-height:100vh;padding-top:var(--nav);color:#12284a;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;text-align:left;overflow-x:hidden}
+
+.cs{--pad:clamp(20px,5vw,84px);--nav:76px;--ink:#0b1b3a;--blue:#1558d6;--sky:#19b3e6;--violet:#8b5cf6;--sun:#ffc83d;--coral:#ff7a59;--muted:#52698a;
+  min-height:100vh;color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.55;text-align:left;overflow-x:hidden;position:relative}
 .cs *{box-sizing:border-box}
 .cs h1,.cs h2,.cs h3,.cs p{margin:0;letter-spacing:normal;font-family:inherit;text-align:inherit}
+.cs h1,.cs h2,.cs h3{font-family:"Bricolage Grotesque","Plus Jakarta Sans",sans-serif}
 .cs button{font:inherit;cursor:pointer}
-.cs-wrap{width:100%;max-width:none;margin:0;padding-inline:var(--pad)}
-.cs-bar{position:fixed;top:0;left:0;height:4px;width:0;z-index:400;background:linear-gradient(90deg,#1458d8,#10a5df,#8b5cf6)}
+.cs button:focus-visible,.cs a:focus-visible,.cs input:focus-visible,.cs select:focus-visible,.cs textarea:focus-visible{outline:3px solid rgba(21,88,214,.5);outline-offset:3px}
+.cs-wrap{width:100%;max-width:1680px;margin:0 auto;padding-inline:var(--pad)}
+.cs-sec{padding-block:clamp(70px,9vw,130px);position:relative}
+.cs-center{display:flex;justify-content:center}
 
-/* FIXED nav */
-.cs-header{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav);background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid #e0e9f3;box-shadow:0 4px 18px rgba(26,65,112,.08)}
-.cs-header-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:100%}
-.cs-brand{display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;text-align:left}
-.cs-logo{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#1458d8,#10a5df);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;animation:pulse 3s ease-in-out infinite}
-.cs-brand strong{display:block;color:#173d6b;font-size:20px;font-weight:850}
-.cs-brand small{display:block;margin-top:2px;color:#6f89a8;font-size:12.5px;font-weight:700;white-space:nowrap}
+/* progress bar + mouse glow */
+.cs-bar{position:fixed;top:0;left:0;height:5px;width:0;z-index:400;border-radius:0 5px 5px 0;background:linear-gradient(90deg,#1458d8,#19b3e6,#8b5cf6,#ffc83d)}
+.cs-glow{position:fixed;top:0;left:0;width:460px;height:460px;margin:-230px 0 0 -230px;border-radius:50%;background:radial-gradient(circle,rgba(60,130,255,.17),transparent 65%);pointer-events:none;z-index:2;mix-blend-mode:multiply;transition:transform .14s linear}
+@media (hover:none){.cs-glow{display:none}}
+
+/* ---------- floating pill nav ---------- */
+.cs-header{position:fixed;top:14px;left:0;right:0;z-index:300;padding-inline:clamp(10px,2vw,28px);pointer-events:none}
+.cs-pill{pointer-events:auto;position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1680px;margin:0 auto;height:var(--nav);padding:0 14px 0 12px;border-radius:999px;background:rgba(255,255,255,.76);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 40px rgba(21,60,140,.14);transition:background .35s,box-shadow .35s}
+.cs-header.sc .cs-pill{background:rgba(255,255,255,.93);box-shadow:0 18px 50px rgba(21,60,140,.24)}
+.cs-brand{display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;text-align:left;color:inherit}
+.cs-logo{display:grid;place-items:center;width:52px;height:52px;border-radius:50% 50% 50% 16%;background:linear-gradient(135deg,#1458d8,#19b3e6);color:#fff;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;box-shadow:0 10px 22px rgba(21,88,214,.35);animation:morph 9s ease-in-out infinite}
+.cs-brand strong{display:block;color:#0f2a5c;font-family:"Bricolage Grotesque",sans-serif;font-size:22px;font-weight:800;letter-spacing:-.3px;line-height:1.1}
+.cs-brand small{display:block;margin-top:2px;color:#6d86a6;font-size:12.5px;font-weight:700;white-space:nowrap}
 .cs-header nav{display:flex;align-items:center;gap:2px}
-.cs-header nav button:not(.cs-ghost):not(.cs-solid){position:relative;border:0;background:none;padding:11px 13px;border-radius:10px;color:#526d8c;font-size:15.5px;font-weight:700;white-space:nowrap;transition:.2s}
-.cs-header nav button:not(.cs-ghost):not(.cs-solid)::after{content:"";position:absolute;left:50%;bottom:4px;width:0;height:3px;border-radius:3px;background:#1767c9;transition:.25s;transform:translateX(-50%)}
-.cs-header nav button.on::after,.cs-header nav button:not(.cs-ghost):not(.cs-solid):hover::after{width:55%}
-.cs-header nav button.on,.cs-header nav button:not(.cs-ghost):not(.cs-solid):hover{color:#1767c9}
-.cs-solid,.cs-ghost,.cs-dark,.cs-white,.cs-outline{position:relative;overflow:hidden;min-height:46px;padding:0 22px;border-radius:11px;font-size:16px;font-weight:800;border:0;white-space:nowrap;transition:transform .2s,box-shadow .2s,background .2s}
-.cs-solid{color:#fff;background:linear-gradient(100deg,#1458d8,#1673e8,#10a5df);box-shadow:0 7px 18px rgba(22,103,224,.25)}
-.cs-solid::after,.cs-white::after{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shine 3.4s infinite}
-.cs-ghost{color:#1c5eb9;background:#edf5ff;border:1px solid #d7e8fb;margin-left:8px}
-.cs-solid:hover,.cs-white:hover,.cs-dark:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(22,103,224,.3)}
-.cs-ghost:hover{background:#dcecff;transform:translateY(-2px)}
-.cs-solid.big,.cs-ghost.big{min-height:54px;padding:0 28px;margin-left:0;font-size:17px}
-.cs-dark{background:#102b4b;color:#fff;width:100%;margin-top:16px}
-.cs-white{background:#fff;color:#1458d8}
-.cs-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.7)}
-.cs-outline:hover{background:rgba(255,255,255,.15)}
-.cs-burger{display:none;width:46px;height:46px;border:1px solid #d7e8fb;background:#edf5ff;color:#1767c9;border-radius:10px;font-size:22px}
+.cs-header nav>button{position:relative;border:0;background:none;padding:11px 15px;border-radius:999px;color:#47608a;font-size:16.5px;font-weight:700;white-space:nowrap;transition:background .25s,color .25s,transform .25s}
+.cs-header nav>button:hover{background:#eaf2ff;color:var(--blue);transform:translateY(-2px)}
+.cs-header nav>button.on{background:linear-gradient(100deg,#e3eeff,#dff4ff);color:var(--blue)}
+.cs-navcta{display:flex;align-items:center;gap:8px;margin-left:10px}
+.cs-burger{display:none;place-items:center;width:50px;height:50px;border:0;background:#eaf2ff;color:var(--blue);border-radius:50%;font-size:22px}
 
-/* hero banner */
-.cs-hero{position:relative;overflow:hidden;padding:var(--pad) 0;background:linear-gradient(160deg,#eaf3ff 0%,#f7fbff 55%,#e6f6ff 100%);min-height:calc(100vh - var(--nav));display:flex;align-items:center}
-.cs-blob{position:absolute;border-radius:50%;filter:blur(10px);opacity:.5;animation:blob 9s ease-in-out infinite;pointer-events:none}
-.cs-blob.b1{width:420px;height:420px;background:#bcd8fa;top:-140px;left:-120px}
-.cs-blob.b2{width:320px;height:320px;background:#c7f0ff;bottom:-100px;right:8%;animation-delay:-4s}
-.cs-blob.b3{width:200px;height:200px;background:#e0d4ff;top:18%;right:42%;animation-delay:-2s}
-.cs-hero-in{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(24px,4vw,70px);align-items:center;width:100%}
-.cs-tag,.cs-eyebrow{display:inline-block;color:#1769d2;font-size:13px;font-weight:900;letter-spacing:1.4px}
-.cs-tag{display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:999px;background:#dcecff}
-.cs-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#10b981;box-shadow:0 0 0 0 rgba(16,185,129,.6);animation:ping 1.8s infinite}
-.cs-hero h1{margin:20px 0!important;font-size:clamp(34px,4.8vw,66px);line-height:1.1;color:#102b4d;font-weight:900;text-align:left}
-.cs-grad{background:linear-gradient(90deg,#1458d8,#10a5df,#8b5cf6,#1458d8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:grad 6s linear infinite}
-.cs-hero p{margin-bottom:28px;color:#4d6785;font-size:clamp(17px,1.5vw,20px);line-height:1.7;max-width:660px}
-.cs-row{display:flex;gap:14px;flex-wrap:wrap}.cs-row.center{justify-content:center}
-.cs-hero-art{position:relative;display:flex;justify-content:center}
-.cs-ring{position:absolute;top:50%;left:50%;width:min(440px,92%);aspect-ratio:1;margin:calc(min(440px,92%)/-2) 0 0 calc(min(440px,92%)/-2);border-radius:50%;border:3px dashed rgba(23,103,201,.28);animation:spin 28s linear infinite}
-.cs-orb{position:absolute;z-index:2;width:58px;height:58px;border-radius:17px;background:#fff;box-shadow:0 14px 30px rgba(34,74,117,.2);display:flex;align-items:center;justify-content:center;font-size:28px;animation:bob 5s ease-in-out infinite}
-.cs-orb.o1{top:2%;left:6%}.cs-orb.o2{top:10%;right:2%;animation-delay:-1.6s}.cs-orb.o3{bottom:34%;left:-1%;animation-delay:-3s}
-.cs-campus{position:relative;width:100%;max-width:520px;height:auto;filter:drop-shadow(0 22px 30px rgba(23,80,160,.18))}
-.cs-cap{animation:bob 3.2s ease-in-out infinite;transform-origin:center}
-.cs-lead{position:absolute;z-index:3;right:0;bottom:-26px;width:min(300px,78%);padding:20px;border-radius:18px;background:#fff;border:1px solid #dce6f1;box-shadow:0 20px 45px rgba(34,74,117,.18)}
-.cs-float{animation:bob 4s ease-in-out infinite}
-.cs-lead b{display:block;margin-bottom:6px;color:#173b65;font-size:17px}
-.cs-lead p{display:flex!important;justify-content:space-between;gap:10px;margin:0!important;padding:9px 0;border-bottom:1px solid #edf1f5;font-size:15.5px!important}
-.cs-lead span{color:#6f8195}.cs-lead em{font-style:normal;font-weight:800;color:#1a304d}
-.lock{color:#98a6b8!important}
+/* buttons: all pill shaped */
+.cs-solid,.cs-ghost,.cs-white,.cs-outline{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 26px;border-radius:999px;font-size:16.5px;font-weight:800;border:0;white-space:nowrap;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background-position .5s}
+.cs-solid{color:#fff;background:linear-gradient(100deg,#1349c2,#1766e6,#19b3e6,#1349c2);background-size:300% 100%;box-shadow:0 12px 26px rgba(22,103,224,.32)}
+.cs-solid::after,.cs-white::after{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shine 3.6s infinite}
+.cs-solid:hover{transform:translateY(-4px) scale(1.03);background-position:100% 0;box-shadow:0 18px 34px rgba(22,103,224,.42)}
+.cs-ghost{color:#1c5eb9;background:#fff;border:2px solid #cfe1fb}
+.cs-ghost:hover{background:#eef5ff;border-color:var(--blue);transform:translateY(-3px)}
+.cs-white{background:#fff;color:#1349c2;box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.cs-white:hover{transform:translateY(-4px) scale(1.04)}
+.cs-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.75)}
+.cs-outline:hover{background:rgba(255,255,255,.18);transform:translateY(-3px)}
+.cs-solid.big,.cs-ghost.big{min-height:60px;padding:0 34px;font-size:18px}
+.cs-arr{font-style:normal;display:inline-block;transition:transform .25s}
+.cs-solid:hover .cs-arr{transform:translateX(7px)}
+.cs-mag{display:inline-block;animation:wiggle 4s ease-in-out infinite}
 
-/* marquee */
-.cs-marquee{overflow:hidden;background:#102b4b;color:#dbe9fb;padding:15px 0;white-space:nowrap}
-.cs-track{display:inline-flex;gap:0;animation:marq 28s linear infinite}
-.cs-marquee:hover .cs-track{animation-play-state:paused}
-.cs-track span{display:inline-flex;align-items:center;font-size:17px;font-weight:750;padding:0 26px}
-.cs-track i{margin-left:52px;font-style:normal;color:#10a5df}
+/* ---------- headings ---------- */
+.cs-eyebrow{display:table;margin:0 auto 18px;padding:9px 20px;border-radius:999px;background:#e1ecff;color:var(--blue);font-size:13.5px;font-weight:800;letter-spacing:2.2px}
+.cs-eyebrow.dark{background:rgba(255,255,255,.13);color:#a9dcff}
+.cs-h2{margin-bottom:18px!important;font-size:clamp(34px,4.6vw,66px);line-height:1.06;font-weight:800;letter-spacing:-1.4px;text-align:center!important;color:var(--ink)}
+.cs-h2.left{text-align:left!important}
+.cs-h2.light{color:#fff}
+.cs-sub{max-width:640px;margin:0 auto 54px;text-align:center!important;font-size:20px;color:var(--muted)}
+.cs-grad{display:inline-block;background:linear-gradient(90deg,#1458d8,#19b3e6,#8b5cf6,#ff7a59,#1458d8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:grad 7s linear infinite}
+.cs-tag{display:inline-flex;align-items:center;gap:10px;padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.85);border:1px solid #d4e4fb;color:var(--blue);font-size:13.5px;font-weight:800;letter-spacing:1.6px;box-shadow:0 8px 22px rgba(21,88,214,.12)}
+.cs-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981;animation:ping 1.8s infinite}
 
-/* search (full page) */
-.cs-search{position:relative;overflow:hidden;min-height:calc(100vh - var(--nav));display:flex;align-items:center;background:linear-gradient(180deg,#f4f8fd 0%,#e9f3ff 100%)}
-.cs-blob.b4{width:340px;height:340px;background:#cfe3fb;top:-100px;right:-80px}
-.cs-blob.b5{width:260px;height:260px;background:#d9f3ff;bottom:-80px;left:-60px;animation-delay:-5s}
-.cs-search-in{position:relative;width:100%;padding-block:var(--pad)}
-.cs-search .cs-h2{margin-bottom:26px!important}
-.cs-sbox{position:relative;width:min(100%,980px);margin:0 auto;z-index:20}
-.cs-sfield{display:flex;align-items:center;gap:12px;padding:0 14px 0 24px;height:76px;border-radius:22px;background:#fff;border:2px solid #cfe0f3;box-shadow:0 18px 44px rgba(34,74,117,.14);transition:.25s}
-.cs-sfield.auto{border-color:#9fc6f3}
-.cs-sfield:focus-within{border-color:#1767c9;box-shadow:0 0 0 6px rgba(23,103,201,.14),0 18px 44px rgba(34,74,117,.14)}
-.cs-sicon{font-size:25px}
-.cs-sfield input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font:inherit;font-size:clamp(18px,2vw,24px);font-weight:700;color:#12284a}
-.cs-sfield input::placeholder{color:#8aa2bd;font-weight:500}
-.cs-caret{width:3px;height:30px;margin-left:-8px;border-radius:2px;background:#1767c9;animation:blink 1s steps(1) infinite}
-.cs-sclear{width:40px;height:40px;border:0;border-radius:50%;background:#edf5ff;color:#1767c9;font-size:16px;font-weight:800;transition:.2s}
-.cs-sclear:hover{background:#dcecff;transform:rotate(90deg)}
-.cs-prog{position:absolute;left:22px;right:22px;bottom:0;height:4px;border-radius:4px;background:linear-gradient(90deg,#1458d8,#10a5df,#8b5cf6);transform-origin:left;animation:prog ${ROTATE_MS}ms linear forwards}
-.cs-sug{position:absolute;top:calc(100% + 10px);left:0;right:0;margin:0;padding:8px;list-style:none;background:#fff;border:1px solid #dce6f1;border-radius:18px;box-shadow:0 24px 48px rgba(34,74,117,.2);animation:pop .18s ease}
-.cs-sug button{display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;border:0;background:none;border-radius:12px;text-align:left;font-size:17.5px;color:#35506c}
-.cs-sug button:hover{background:#eef6ff;color:#1767c9}
-.cs-sug b{color:#102b4d}
-.cs-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:22px}
-.cs-chips button{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;border:1px solid #cfe0f3;background:#fff;color:#35506c;font-size:15.5px;font-weight:750;transition:.25s}
-.cs-chips button em{font-style:normal;min-width:24px;padding:1px 7px;border-radius:999px;background:#eaf3ff;color:#1767c9;font-size:12.5px;font-weight:850}
-.cs-chips button:hover{border-color:#1767c9;color:#1767c9;transform:translateY(-3px)}
-.cs-chips button.on{background:linear-gradient(100deg,#1458d8,#10a5df);border-color:transparent;color:#fff;box-shadow:0 10px 22px rgba(22,103,224,.3);transform:translateY(-3px) scale(1.04)}
-.cs-chips button.on em{background:rgba(255,255,255,.25);color:#fff}
-.cs-auto-note{margin-top:16px!important;text-align:center!important;color:#6f8195;font-size:15px;display:flex;align-items:center;justify-content:center;gap:9px}
-.cs-auto-note button{border:0;background:#fff;color:#1767c9;font-weight:800;padding:8px 16px;border-radius:999px;border:1px solid #cfe0f3}
-.cs-results{margin-top:30px;min-height:330px}
-.cs-rcount{margin-bottom:16px!important;color:#566f8d;font-size:18px;animation:pop .35s ease both}
-.cs-rcount b{color:#102b4d}
-.cs-college{position:relative;overflow:hidden;cursor:pointer;padding:22px;border-radius:20px;background:#fff;border:1px solid #dce6f1;box-shadow:0 8px 24px rgba(34,74,117,.07);animation:pop .5s cubic-bezier(.2,.8,.2,1) both;transition:transform .3s,box-shadow .3s,border-color .3s}
-.cs-college::before{content:"";position:absolute;left:0;top:0;width:100%;height:5px;background:linear-gradient(90deg,#1458d8,#10a5df,#8b5cf6);transform:scaleX(0);transform-origin:left;transition:transform .4s}
-.cs-college:hover{transform:translateY(-8px);border-color:#b9d6f7;box-shadow:0 24px 44px rgba(34,74,117,.18)}
-.cs-college:hover::before{transform:scaleX(1)}
-.cs-chead{display:flex;align-items:center;gap:14px;margin-bottom:12px}
-.cs-clogo{position:relative;flex:0 0 auto;width:58px;height:58px;border-radius:15px;background:linear-gradient(135deg,#eaf3ff,#dff2ff);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #d3e4f7}
-.cs-clogo b{color:#1767c9;font-size:19px;font-weight:900}
-.cs-clogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:4px}
-.cs-ctype{display:inline-block;padding:5px 11px;border-radius:8px;background:#e3f3ff;color:#0a68b8;font-size:13px;font-weight:850}
-.cs-crank{display:block;margin-top:6px;color:#b87100;font-size:13px;font-weight:800}
-.cs-college h3{margin:4px 0 6px!important;font-size:19px;line-height:1.3;color:#173b65}
-.cs-college p{color:#566f8d;font-size:15.5px}
-.cs-ctags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.cs-ctags span{padding:5px 11px;border-radius:999px;background:#f0f5fb;color:#44607e;font-size:13.5px;font-weight:700}
-.cs-cview{display:inline-block;margin-top:16px;color:#1767c9;font-weight:850;font-size:15px;transition:transform .25s}
-.cs-college:hover .cs-cview{transform:translateX(6px)}
-.cs-more{margin-top:14px!important;color:#6f8195;font-size:15.5px;text-align:center!important}
-.cs-empty{padding:30px;border-radius:18px;background:#fff;border:1px dashed #cfe0f3;color:#566f8d;text-align:center!important}
+/* reveal on scroll (uses translate/scale so it never fights the 3D tilt transform) */
+.cs-rv{opacity:0;translate:0 46px;transition:opacity .85s ease var(--d,0s),translate .85s cubic-bezier(.2,.8,.2,1) var(--d,0s),scale .85s cubic-bezier(.2,.8,.2,1) var(--d,0s),transform .25s ease-out,box-shadow .3s}
+.cs-rv.left{translate:-70px 0}.cs-rv.right{translate:70px 0}.cs-rv.zoom{translate:0 30px;scale:.86}
+.cs-rv.in{opacity:1;translate:0 0;scale:1}
 
-/* counters */
-.cs-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding-block:var(--pad)}
-.cs-stats>div{padding:28px;border-radius:20px;background:#fff;border:1px solid #dce6f1;text-align:center;border-top:5px solid #1677ee;box-shadow:0 8px 24px rgba(34,74,117,.06);transition:transform .3s,box-shadow .3s}
-.cs-stats>div:hover{transform:translateY(-8px);box-shadow:0 22px 40px rgba(34,74,117,.14)}
-.cs-stats>div:nth-child(2){border-top-color:#10b981}.cs-stats>div:nth-child(3){border-top-color:#f59e0b}.cs-stats>div:nth-child(4){border-top-color:#8b5cf6}
-.cs-stats strong{display:block;font-size:clamp(34px,3.6vw,50px);color:#1767c9;font-weight:900}
-.cs-stats span{color:#566f8d;font-size:17px}
+/* 3D tilt + moving light */
+.cs-tilt{--spot:rgba(21,88,214,.11);position:relative;transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d;will-change:transform}
+.cs-tilt::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;z-index:3;background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),var(--spot),transparent 55%)}
+.cs-tilt:hover::before{opacity:1}
 
-/* sections */
-.cs-sec{padding-block:var(--pad)}
-.cs-band{background:#fff;border-block:1px solid #e3ecf6}
-.cs-eyebrow{display:block;text-align:center}
-.cs-h2{margin:10px auto 36px!important;text-align:center;font-size:clamp(28px,3.2vw,44px);line-height:1.2;color:#102b4d;font-weight:900;max-width:980px}
-.cs-h2::after{content:"";display:block;width:0;height:5px;margin:14px auto 0;border-radius:5px;background:linear-gradient(90deg,#1458d8,#10a5df,#8b5cf6);transition:width .8s ease .3s}
-.cs-h2.in::after,.cs-search .cs-rv.in .cs-h2::after{width:90px}
-.cs-h2.left{text-align:left;margin-left:0!important}
-.cs-h2.left::after{margin-left:0}
-.cs-grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.cs-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.cs-card{position:relative;overflow:hidden;padding:30px;border-radius:22px;background:#fff;border:1px solid #dce6f1;box-shadow:0 8px 24px rgba(34,74,117,.06);transition:transform .3s,box-shadow .3s}
-.cs-card::before{content:"";position:absolute;top:0;left:-120%;width:80%;height:100%;background:linear-gradient(100deg,transparent,rgba(23,114,232,.1),transparent);transform:skewX(-20deg);transition:left .7s}
-.cs-card:hover::before{left:140%}
-.cs-band .cs-card{background:#f7fafe}
-.cs-card:hover{transform:translateY(-10px);box-shadow:0 24px 44px rgba(34,74,117,.15)}
-.cs-ic{display:flex;width:58px;height:58px;margin-bottom:14px;border-radius:16px;background:#eaf3ff;align-items:center;justify-content:center;font-size:28px;transition:.3s}
-.cs-card:hover .cs-ic{transform:rotate(-10deg) scale(1.15);background:#d9ebff}
-.cs-card h3{margin-bottom:8px!important;font-size:20px;color:#173b65}
-.cs-card p{color:#566f8d;font-size:16.5px;line-height:1.6}
+/* ---------- blobs / sparks / waves ---------- */
+.cs-blob{position:absolute;opacity:.5;pointer-events:none;filter:blur(2px);animation:morph 12s ease-in-out infinite,drift 18s ease-in-out infinite}
+.cs-blob.b1{width:520px;height:520px;background:#bcd6ff;top:-180px;left:-160px}
+.cs-blob.b2{width:420px;height:420px;background:#c1f1ff;bottom:-140px;right:6%;animation-delay:-4s}
+.cs-blob.b3{width:240px;height:240px;background:#e3d6ff;top:16%;right:44%;animation-delay:-8s}
+.cs-blob.b4{width:380px;height:380px;background:#cfe3fb;top:-100px;right:-90px}
+.cs-blob.b5{width:300px;height:300px;background:#d9f3ff;bottom:-90px;left:-70px;animation-delay:-6s}
+.cs-blob.b6{width:460px;height:460px;background:#2563eb;top:-120px;left:-120px;opacity:.28}
+.cs-blob.b7{width:420px;height:420px;background:#19b3e6;bottom:-140px;right:-100px;opacity:.25;animation-delay:-5s}
+.cs-spark{position:absolute;color:#6f9dff;font-size:18px;opacity:0;pointer-events:none;animation:twinkle 4.5s ease-in-out infinite}
+.cs-wave{position:absolute;left:0;width:100%;height:clamp(44px,6vw,96px);display:block;z-index:1;pointer-events:none}
+.cs-wave.top{top:-1px}
+.cs-wave.bottom{bottom:-1px;transform:scaleY(-1)}
 
-/* steps */
-.cs-steps{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.cs-step{display:flex;gap:18px;padding:26px;border-radius:20px;background:#f7fafe;border:1px solid #dce6f1;transition:transform .3s,box-shadow .3s}
-.cs-step:hover{transform:translateX(6px);box-shadow:0 14px 30px rgba(34,74,117,.1)}
-.cs-num{flex:0 0 auto;width:54px;height:54px;border-radius:15px;background:linear-gradient(135deg,#1458d8,#10a5df);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
-.cs-step h3{margin-bottom:6px!important;color:#173b65;font-size:20px}
-.cs-step p{color:#566f8d;font-size:16.5px;line-height:1.65}
-.cs-flow{display:flex;align-items:stretch;justify-content:center;gap:12px;margin:36px 0;flex-wrap:wrap}
-.cs-flow div{flex:1 1 180px;padding:20px;border-radius:18px;background:#eaf3ff;text-align:center;display:flex;flex-direction:column;gap:4px;transition:transform .3s}
-.cs-flow div:hover{transform:translateY(-6px)}
-.cs-flow div:last-of-type{background:#102b4b;color:#fff}
-.cs-flow b{width:36px;height:36px;margin:0 auto 4px;border-radius:50%;background:#1767c9;color:#fff;display:flex;align-items:center;justify-content:center}
-.cs-flow span{font-weight:800;font-size:17px}.cs-flow small{opacity:.75;font-size:14px}
-.cs-flow i{align-self:center;font-style:normal;font-size:28px;color:#1767c9;animation:nudge 1.6s ease-in-out infinite}
-.cs-preview{border-radius:22px;border:1px solid #dce6f1;background:#fff;box-shadow:0 14px 36px rgba(34,74,117,.1);overflow:hidden}
-.cs-preview-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:18px 24px;background:#f3f8ff;border-bottom:1px solid #e3ecf6}
-.cs-preview-head b{font-size:18px;color:#173b65}.cs-preview-head span{color:#6f8195;font-size:15px}
-.cs-table-wrap{overflow-x:auto}
-.cs-preview table{width:100%;border-collapse:collapse;min-width:640px}
-.cs-preview th{padding:14px 22px;text-align:left;font-size:13.5px;text-transform:uppercase;letter-spacing:.5px;color:#52657a;background:#fbfcfe}
-.cs-preview td{padding:16px 22px;border-top:1px solid #edf1f5;font-size:16.5px;color:#263f5c;white-space:nowrap}
-.cs-preview tbody tr{transition:background .2s}
-.cs-preview tbody tr:hover{background:#f1f7ff}
-.cs-unlock{border:1px solid #b8d8fa;background:#eff7ff;color:#0869d8;padding:10px 16px;border-radius:9px;font-size:15px;font-weight:850;animation:ring 2.4s infinite}
-.cs-unlock:hover{background:#0869d8;color:#fff}
-.cs-privacy{margin-top:26px;padding:28px;border-radius:20px;background:#102b4b;color:#fff}
-.cs-privacy h3{margin-bottom:8px!important;font-size:20px}.cs-privacy p{color:#b5cdea;line-height:1.7;font-size:16.5px}
+/* ---------- hero ---------- */
+.cs-hero{--px:0;--py:0;position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;padding:calc(var(--nav) + 64px) 0 110px;background:radial-gradient(900px 500px at 85% 10%,rgba(139,92,246,.14),transparent 70%),radial-gradient(800px 500px at 0% 90%,rgba(25,179,230,.16),transparent 70%),linear-gradient(160deg,#eaf3ff 0%,#f8fbff 55%,#e8f6ff 100%)}
+.cs-hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(21,88,214,.2) 1.6px,transparent 1.6px);background-size:34px 34px;-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000,transparent 70%);mask-image:radial-gradient(ellipse at 70% 40%,#000,transparent 70%);pointer-events:none}
+.cs-hero-in{position:relative;z-index:3;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(24px,4vw,70px);align-items:center}
+.cs-hero h1{margin:24px 0 22px!important;font-size:clamp(42px,5.6vw,92px);line-height:1.02;font-weight:800;letter-spacing:-2.4px;color:var(--ink);text-align:left!important}
+.cs-w{display:inline-block;opacity:0;animation:wordIn .9s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--w) * .09s + .25s)}
+.cs-pop{animation:pop .8s cubic-bezier(.2,.8,.2,1) both}
+.cs-lede{max-width:640px;margin-bottom:34px!important;font-size:clamp(18px,1.5vw,21px);line-height:1.75;color:#46608a;animation:pop 1s .9s cubic-bezier(.2,.8,.2,1) both}
+.cs-lede b{color:var(--blue)}
+.cs-row{display:flex;gap:16px;flex-wrap:wrap;animation:pop 1s 1.1s cubic-bezier(.2,.8,.2,1) both}.cs-row.center{justify-content:center}
+.cs-trust{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;animation:pop 1s 1.3s cubic-bezier(.2,.8,.2,1) both}
+.cs-trust span{padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid #d9e7fb;font-size:15.5px;font-weight:700;color:#47608a;box-shadow:0 8px 18px rgba(21,60,140,.07)}
+.cs-trust b{color:var(--blue);font-family:"Bricolage Grotesque",sans-serif;font-size:18px}
 
-/* subscription plans */
-.cs-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
-.cs-plan{--pc:100,116,139;display:flex;flex-direction:column;padding:34px 30px;border-radius:26px;background:#fff;border:1px solid #dce6f1;border-top:6px solid rgb(var(--pc));animation:glow 3.6s ease-in-out infinite;transition:transform .3s}
-.cs-plan:hover{transform:translateY(-10px)}
-.cs-plan.gold{--pc:245,158,11;animation-delay:-1.2s}
-.cs-plan.diamond{--pc:139,92,246;animation-delay:-2.4s}
-.cs-plan-ic{display:inline-block;font-size:42px;line-height:1;animation:bob 3.6s ease-in-out infinite}
-.cs-plan h3{margin:12px 0 4px!important;font-size:28px;color:#102b4d;font-weight:900}
-.cs-plan-tag{color:#6f8195;font-size:15.5px;margin-bottom:18px!important}
-.cs-plan ul{list-style:none;margin:0 0 26px;padding:0;display:flex;flex-direction:column;gap:12px;flex:1}
-.cs-plan li{display:flex;gap:10px;align-items:flex-start;color:#35506c;font-size:16.5px;line-height:1.45}
-.cs-plan li i{flex:0 0 auto;width:24px;height:24px;margin-top:1px;border-radius:50%;background:rgba(var(--pc),.14);color:rgb(var(--pc));font-style:normal;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
-.cs-plan .cs-solid{width:100%}
-.cs-plans-note{margin-top:24px!important;text-align:center!important;color:#6f8195;font-size:16px}
+.cs-stage{position:relative;display:grid;place-items:center;min-height:clamp(420px,46vw,620px);animation:pop 1.1s .5s cubic-bezier(.2,.8,.2,1) both}
+.cs-blobframe{position:relative;z-index:2;width:min(540px,100%);aspect-ratio:1/.96;overflow:hidden;border:9px solid #fff;background:linear-gradient(#bfe3ff,#eaf6ff);box-shadow:0 40px 80px rgba(21,70,150,.28);border-radius:58% 42% 52% 48%/48% 56% 44% 52%;animation:morph 14s ease-in-out infinite;translate:calc(var(--px) * -14px) calc(var(--py) * -14px)}
+.cs-blobframe.sm{width:min(480px,100%)}
+.cs-campus{display:block;width:100%;height:100%}
+.cs-ring{position:absolute;z-index:1;top:50%;left:50%;width:min(620px,112%);aspect-ratio:1;margin:calc(min(620px,112%) / -2) 0 0 calc(min(620px,112%) / -2);border-radius:50%;border:3px dashed rgba(21,88,214,.28);animation:spin 40s linear infinite}
+.cs-ring.r2{width:min(720px,128%);margin:calc(min(720px,128%) / -2) 0 0 calc(min(720px,128%) / -2);border:2px solid rgba(139,92,246,.18);animation-direction:reverse;animation-duration:60s}
+.cs-orbit{position:absolute;z-index:4;inset:-3%;animation:spin 32s linear infinite;pointer-events:none;translate:calc(var(--px) * 26px) calc(var(--py) * 26px)}
+.cs-orb{position:absolute;display:grid;place-items:center;width:68px;height:68px;border-radius:50% 50% 50% 14%;background:#fff;box-shadow:0 18px 36px rgba(21,70,150,.25)}
+.cs-orb i{font-style:normal;font-size:32px;display:block;animation:spinrev 32s linear infinite}
+.cs-orb.o1{top:2%;left:46%}.cs-orb.o2{top:50%;right:-1%}.cs-orb.o3{bottom:6%;left:16%}
+.cs-orb.sm{width:58px;height:58px;z-index:4;animation:bob 5s ease-in-out infinite}.cs-orb.sm i{animation:none;font-size:28px}
+.cs-orb.sm.o1{top:4%;left:4%}.cs-orb.sm.o2{top:auto;bottom:10%;right:2%;animation-delay:-2s}
 
-/* pricing */
-.cs-price{width:100%;display:grid;grid-template-columns:380px 1fr;gap:36px;padding:36px;border-radius:28px;background:#f7fafe;border:1px solid #dce6f1;box-shadow:0 22px 50px rgba(34,74,117,.1)}
-.cs-price-box{padding:32px;border-radius:22px;background:linear-gradient(135deg,#1458d8,#10a5df);color:#fff;text-align:center;display:flex;flex-direction:column;gap:6px;justify-content:center}
-.cs-price-box small{font-size:16px;opacity:.9}
-.cs-price-box strong{font-size:80px;line-height:1;font-weight:900}
-.cs-price-box span{margin-bottom:16px;opacity:.92;font-size:16px}
-.cs-price ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:16px 28px;align-content:center}
-.cs-price li{display:flex;gap:12px;color:#35506c;font-size:17px;align-items:center}
-.cs-price li i{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:#eaf3ff;color:#1672d3;font-style:normal;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center}
-.cs-est{width:100%;margin:24px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.cs-est div{padding:22px;border-radius:18px;background:#f7fafe;border:1px solid #dce6f1;text-align:center;transition:transform .3s}
-.cs-est div:hover{transform:translateY(-6px)}
-.cs-est b{display:block;color:#566f8d;font-size:16px}.cs-est span{display:block;margin-top:4px;font-size:28px;font-weight:900;color:#1767c9}
+.cs-lead-wrap{position:absolute;z-index:6;right:-3%;bottom:-5%;width:min(330px,76%);translate:calc(var(--px) * 22px) calc(var(--py) * 22px)}
+.cs-lead{padding:20px 22px 22px;border-radius:34px 34px 34px 10px;background:rgba(255,255,255,.93);backdrop-filter:blur(14px);border:1px solid #fff;box-shadow:0 30px 60px rgba(21,70,150,.28);animation:bob 5.5s ease-in-out infinite}
+.cs-lead-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.cs-lead-top b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:18px;color:#0f2a5c;line-height:1.2}
+.cs-lead-top small{color:#7389a8;font-size:13.5px;font-weight:600}
+.cs-av{display:grid;place-items:center;flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#19b3e6);color:#fff;font-weight:800;font-size:19px}
+.cs-live{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding:5px 11px;border-radius:999px;background:#e3fbef;color:#0f8a52;font-size:12.5px;font-weight:800}
+.cs-live i{width:8px;height:8px;border-radius:50%;background:#10b981;animation:ping 1.6s infinite}
+.cs-lead p{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed #dde8f6;font-size:15.5px}
+.cs-lead p span{color:#7389a8;font-weight:600}.cs-lead p em{font-style:normal;font-weight:800;color:#12284a}
+.cs-lead em.swap{animation:swapIn .55s cubic-bezier(.2,.8,.2,1)}
+.lock{background:linear-gradient(90deg,#8d9db3 30%,#d3deec 50%,#8d9db3 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;animation:shimmerText 2.4s linear infinite}
+.cs-unlock-btn{width:100%;min-height:50px;margin-top:14px;border:0;border-radius:999px;color:#fff;font-size:16.5px;font-weight:800;background:linear-gradient(100deg,#1349c2,#19b3e6);box-shadow:0 12px 24px rgba(21,88,214,.35);transition:background .5s,transform .25s}
+.cs-unlock-btn:hover{transform:translateY(-3px)}
+.cs-lead.open .cs-unlock-btn{background:linear-gradient(100deg,#059669,#34d399);box-shadow:0 12px 24px rgba(5,150,105,.35)}
+.cs-toast{position:absolute;z-index:7;top:4%;left:-4%;display:flex;align-items:center;gap:12px;padding:12px 22px 12px 14px;border-radius:999px;background:#fff;box-shadow:0 18px 40px rgba(21,70,150,.25);animation:toast 8s ease-in-out infinite}
+.cs-toast>span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#ffc83d,#ff7a59);font-size:20px;animation:wiggle 2s infinite}
+.cs-toast b{display:block;font-size:16px;color:#0f2a5c;line-height:1.2}.cs-toast small{color:#6d86a6;font-size:13.5px;font-weight:600}
 
-/* about / contact */
-.cs-about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,64px);align-items:center}
-.cs-about p{margin-top:14px;color:#44607e;font-size:18px;line-height:1.75}
-.cs-about .cs-eyebrow{text-align:left}
-.cs-form{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:36px;border-radius:24px;background:#fff;border:1px solid #dce6f1;box-shadow:0 14px 36px rgba(34,74,117,.08)}
-.cs-form label{display:flex;flex-direction:column;gap:8px;color:#344f6d;font-size:15.5px;font-weight:800}
+/* svg scene */
+.cs-sun{transform-origin:388px 78px;animation:spin 50s linear infinite}
+.cs-cloud.c1{animation:cloud 16s ease-in-out infinite alternate}.cs-cloud.c2{animation:cloud 22s ease-in-out infinite alternate-reverse}
+.cs-bird.b1{animation:fly 13s linear infinite}.cs-bird.b2{animation:fly 17s linear infinite;animation-delay:-8s}
+.cs-tree{transform-box:fill-box;transform-origin:50% 100%;animation:sway 4.5s ease-in-out infinite}.cs-tree.t2{animation-delay:-2s}
+.cs-flag{transform-origin:240px 12px;animation:waveflag 1.4s ease-in-out infinite}
+.cs-hand{transform-origin:240px 116px;animation:spin 8s linear infinite}
+.cs-win{animation:winBlink 6s ease-in-out infinite}
+.cs-cap{animation:bob 3.4s ease-in-out infinite}
+
+/* ---------- tilted ribbons ---------- */
+.cs-ribbons{position:relative;z-index:6;height:150px;margin-top:-86px;overflow:hidden;pointer-events:none}
+.cs-ribbon{position:absolute;left:-4%;width:108%;overflow:hidden;white-space:nowrap;padding:15px 0;box-shadow:0 14px 30px rgba(13,33,80,.25)}
+.cs-ribbon.a{top:22px;rotate:-1.8deg;background:linear-gradient(100deg,#0c1f55,#123a8f);color:#dbe9fb}
+.cs-ribbon.b{top:66px;rotate:1.6deg;background:linear-gradient(100deg,#1558d6,#19b3e6 55%,#8b5cf6);color:#fff;z-index:2}
+.cs-track{display:inline-flex;animation:marq 42s linear infinite}.cs-track.rev{animation-direction:reverse;animation-duration:50s}
+.cs-track span{display:inline-flex;align-items:center;padding:0 28px;font-family:"Bricolage Grotesque",sans-serif;font-size:21px;font-weight:700}
+.cs-track i{margin-left:56px;font-style:normal;color:#ffd66b}
+
+/* ---------- district bubbles ---------- */
+.cs-districts{position:relative;overflow:hidden;background:#f5f8ff;padding-top:60px}
+.cs-bubbles{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:clamp(18px,2.6vw,40px);margin-bottom:56px}
+.cs-bubble{--s:clamp(200px,17vw,250px);position:relative;border:0;background:none;padding:0;color:#fff}
+.cs-bubble.lg{--s:clamp(220px,19vw,280px)}.cs-bubble.xl{--s:clamp(250px,22vw,330px)}
+.cs-bubble:nth-child(even){margin-top:46px}
+.cs-bubble::before{content:"";position:absolute;inset:-12px;border-radius:50%;border:2px dashed rgba(21,88,214,.28);animation:spin 24s linear infinite;pointer-events:none}
+.cs-bubble-in{position:relative;display:grid;align-content:center;justify-items:center;gap:4px;width:var(--s);aspect-ratio:1;padding:22px;border-radius:50%;background:var(--g);text-align:center;box-shadow:0 34px 60px -20px rgba(21,60,140,.5),inset 0 -16px 34px rgba(0,0,0,.14),inset 0 12px 26px rgba(255,255,255,.28);animation:float 7s ease-in-out infinite;animation-delay:var(--f);transition:transform .45s cubic-bezier(.2,.8,.2,1),border-radius .6s}
+.cs-bubble-in::after{content:"";position:absolute;top:10%;left:16%;width:26%;height:14%;border-radius:50%;background:rgba(255,255,255,.4);filter:blur(4px);rotate:-30deg}
+.cs-bubble:hover .cs-bubble-in{transform:scale(1.1) rotate(-4deg);border-radius:46% 54% 52% 48%/54% 46% 54% 46%}
+.cs-bubble .ic{font-size:clamp(36px,3.4vw,52px);line-height:1;animation:wiggle 5s ease-in-out infinite}
+.cs-bubble b{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(24px,2.4vw,36px);font-weight:800;line-height:1.1}
+.cs-bubble small{font-size:15.5px;font-weight:600;opacity:.92}
+.cs-bubble em{font-style:normal;font-weight:800;font-size:14.5px;max-height:0;opacity:0;overflow:hidden;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.26);transition:max-height .35s,opacity .35s,padding .35s,margin .35s}
+.cs-bubble:hover em{max-height:44px;opacity:1;padding:7px 16px;margin-top:8px}
+.cs-bubble.more{color:var(--blue)}
+.cs-bubble.more .cs-bubble-in{background:rgba(255,255,255,.75);border:3px dashed #9fc3f7;box-shadow:0 20px 40px -20px rgba(21,60,140,.3)}
+.cs-bubble.more em{background:#e3eeff}
+
+/* ---------- counters (dark) ---------- */
+.cs-stats{position:relative;overflow:hidden;color:#fff;padding:clamp(120px,14vw,200px) 0;background:linear-gradient(155deg,#0a1744,#0d2f7a 60%,#0b4f9e)}
+.cs-stats-in{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+.cs-stat{text-align:center}
+.cs-stat-ring{position:relative;width:clamp(150px,15vw,214px);aspect-ratio:1;margin:0 auto 20px}
+.cs-stat-ring svg{width:100%;height:100%;rotate:-90deg}
+.cs-stat-ring .trk{fill:none;stroke:rgba(255,255,255,.12);stroke-width:7}
+.cs-stat-ring .bar{fill:none;stroke:var(--h);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset 2.2s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 9px var(--h))}
+.cs-stat-ring strong{position:absolute;inset:0;display:grid;place-items:center;font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(30px,3.3vw,50px);font-weight:800}
+.cs-stat>span{display:block;max-width:230px;margin:0 auto;font-size:18px;font-weight:600;color:#bcd2f2}
+
+/* ---------- light sections ---------- */
+.cs-light{position:relative;background:#f5f8ff;overflow:hidden}
+
+/* bento */
+.cs-bento{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(16px,2vw,30px);margin-top:56px}
+.bn{display:flex;flex-direction:column;min-height:330px;padding:clamp(28px,3vw,46px);overflow:hidden;background:#fff;border:1px solid #dce8f7;box-shadow:0 22px 50px -24px rgba(21,60,140,.3)}
+.bn1{grid-column:span 4;border-radius:64px 64px 64px 14px;color:#fff;background:linear-gradient(135deg,#1349c2,#1766e6 55%,#19b3e6);--spot:rgba(255,255,255,.3)}
+.bn2{grid-column:span 2;border-radius:64px 64px 14px 64px}
+.bn3{grid-column:span 2;border-radius:64px 14px 64px 64px}
+.bn4{grid-column:span 4;border-radius:14px 64px 64px 64px;color:#fff;background:linear-gradient(135deg,#5b21b6,#7c3aed 50%,#1558d6);--spot:rgba(255,255,255,.28)}
+.bn-ic{display:grid;place-items:center;width:70px;height:70px;margin-bottom:18px;font-size:34px;background:#e6f0ff;border-radius:60% 40% 55% 45%/50% 55% 45% 50%;animation:morph 8s ease-in-out infinite}
+.bn1 .bn-ic,.bn4 .bn-ic{background:rgba(255,255,255,.2)}
+.bn h3{margin-bottom:10px!important;font-size:clamp(23px,2.1vw,32px);line-height:1.15;font-weight:800;letter-spacing:-.4px}
+.bn p{font-size:18px;line-height:1.65;color:var(--muted)}.bn1 p,.bn4 p{color:rgba(255,255,255,.88)}
+.bn-feed{display:grid;gap:10px;margin-top:auto;padding-top:24px}
+.bn-feed div{display:flex;align-items:center;gap:12px;padding:10px 16px 10px 10px;border-radius:999px;background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.28);font-weight:700;font-size:16px;backdrop-filter:blur(6px)}
+.bn-feed div:first-child{animation:glowPulse 2.6s ease-in-out infinite}
+.bn-feed i{display:grid;place-items:center;flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:#fff;color:var(--blue);font-style:normal;font-weight:800}
+.bn-feed em{margin-left:auto;font-style:normal;font-size:13px;opacity:.8}
+.bn-lock{display:grid;place-items:center;margin-top:auto;padding-top:20px}
+.bn-lock span{display:grid;place-items:center;width:96px;height:96px;border-radius:50%;background:radial-gradient(#e6f0ff,#cfe0fb);font-size:44px;box-shadow:0 0 0 12px rgba(21,88,214,.08),0 0 0 26px rgba(21,88,214,.05);animation:lockShake 3.6s ease-in-out infinite}
+.bn-bars{display:flex;align-items:flex-end;gap:12px;height:110px;margin-top:auto;padding-top:20px}
+.bn-bars i{flex:1;border-radius:12px 12px 6px 6px;background:linear-gradient(#19b3e6,#1558d6);transform-origin:bottom;animation:bar 2.8s ease-in-out infinite}
+.bn-bars i:nth-child(1){height:45%}.bn-bars i:nth-child(2){height:70%;animation-delay:.2s}.bn-bars i:nth-child(3){height:55%;animation-delay:.4s}.bn-bars i:nth-child(4){height:90%;animation-delay:.6s}.bn-bars i:nth-child(5){height:75%;animation-delay:.8s}
+.bn-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:24px}
+.bn-chips span{padding:9px 18px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);font-weight:700;font-size:15.5px;animation:bob 5s ease-in-out infinite}
+.bn-chips span:nth-child(2n){animation-delay:-1.4s}.bn-chips span:nth-child(3n){animation-delay:-2.8s}
+
+/* ---------- how it works ---------- */
+.cs-how{position:relative;overflow:hidden;margin:0 clamp(10px,2vw,28px);border-radius:clamp(36px,6vw,84px);background:linear-gradient(160deg,#e3eeff 0%,#f0f6ff 50%,#e1f4ff 100%)}
+.cs-tl{--p:0;position:relative;display:grid;gap:clamp(26px,3.4vw,50px);margin-top:70px}
+.cs-tl-line{position:absolute;left:50%;top:0;bottom:0;width:7px;margin-left:-3.5px;border-radius:7px;background:#cbdcf4}
+.cs-tl-line i{display:block;width:100%;height:calc(var(--p) * 100%);border-radius:7px;background:linear-gradient(#1558d6,#19b3e6,#8b5cf6);box-shadow:0 0 18px rgba(21,88,214,.5)}
+.cs-step{display:grid;grid-template-columns:1fr 96px 1fr;align-items:center;position:relative;z-index:2}
+.cs-num{grid-column:2;grid-row:1;display:grid;place-items:center;width:76px;height:76px;margin:auto;border-radius:50% 50% 50% 14%;background:#fff;border:5px solid var(--blue);color:var(--blue);box-shadow:0 0 0 12px rgba(21,88,214,.12),0 16px 30px rgba(21,88,214,.25)}
+.cs-num b{font-family:"Bricolage Grotesque",sans-serif;font-size:30px;font-weight:800}
+.cs-step.in .cs-num{animation:numPop .8s .25s cubic-bezier(.2,.8,.2,1) both}
+.cs-step.l .cs-step-card{grid-column:1;grid-row:1;border-radius:40px 40px 10px 40px}
+.cs-step.r .cs-step-card{grid-column:3;grid-row:1;border-radius:40px 40px 40px 10px}
+.cs-step-card{padding:30px 34px 32px;background:#fff;border:1px solid #d9e7f8;box-shadow:0 22px 46px -22px rgba(21,60,140,.3)}
+.cs-step-ic{display:grid;place-items:center;width:64px;height:64px;margin-bottom:14px;font-size:32px;border-radius:50%;background:#e6f0ff}
+.cs-step-card h3{margin-bottom:8px!important;font-size:clamp(23px,2vw,30px);font-weight:800;letter-spacing:-.3px;line-height:1.15}
+.cs-step-card p{font-size:18px;line-height:1.65;color:var(--muted)}
+
+.cs-flow{display:flex;align-items:center;gap:14px;margin-top:90px;padding:30px clamp(20px,3vw,46px);border-radius:90px;background:#fff;border:1px solid #d9e7f8;box-shadow:0 24px 50px -26px rgba(21,60,140,.3)}
+.cs-flow>div{display:grid;justify-items:center;gap:3px;text-align:center}
+.cs-flow b{display:grid;place-items:center;width:62px;height:62px;margin-bottom:6px;border-radius:50% 50% 50% 14%;background:linear-gradient(135deg,#1349c2,#19b3e6);color:#fff;font-family:"Bricolage Grotesque",sans-serif;font-size:26px;font-weight:800;box-shadow:0 12px 24px rgba(21,88,214,.3)}
+.cs-flow span{font-weight:800;font-size:18px;color:#0f2a5c}.cs-flow small{color:#7389a8;font-size:14.5px;font-weight:600}
+.cs-flow i{flex:1;min-width:24px;height:5px;border-radius:5px;background:repeating-linear-gradient(90deg,#1558d6 0 14px,transparent 14px 26px);background-size:26px 5px;animation:dash 1s linear infinite}
+
+.cs-preview{margin-top:40px}
+.cs-preview-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px;margin-bottom:18px;padding-inline:14px}
+.cs-preview-head b{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(24px,2.4vw,34px);font-weight:800}
+.cs-preview-head span{color:#6d86a6;font-weight:700;font-size:15.5px}
+.cs-leadrow{display:flex;align-items:center;flex-wrap:wrap;gap:12px 14px;margin-bottom:14px;padding:12px 16px 12px 12px;border-radius:999px;background:#fff;border:1px solid #d9e7f8;box-shadow:0 14px 30px -18px rgba(21,60,140,.3);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.cs-leadrow:hover{transform:translateX(12px) scale(1.01);box-shadow:0 22px 40px -18px rgba(21,60,140,.4)}
+.cs-leadrow .av{display:grid;place-items:center;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#1558d6,#19b3e6);color:#fff;font-weight:800;font-size:20px}
+.cs-leadrow:nth-child(2n) .av{background:linear-gradient(135deg,#8b5cf6,#ec4899)}
+.cs-leadrow .id{font-size:18px;color:#0f2a5c;min-width:104px}
+.cs-leadrow .chip{padding:7px 16px;border-radius:999px;background:#e6f0ff;color:#1349c2;font-weight:800;font-size:15.5px}
+.cs-leadrow .chip.c2{background:#f1e9ff;color:#6d28d9}.cs-leadrow .chip.c3{background:#e0f7ef;color:#0b7a4f}
+.cs-leadrow .mob{margin-left:auto;font-weight:800;font-size:18px}
+.cs-unlock{min-height:46px;padding:0 24px;border:0;border-radius:999px;color:#fff;font-weight:800;font-size:16px;background:linear-gradient(100deg,#1349c2,#19b3e6);box-shadow:0 10px 20px rgba(21,88,214,.3);transition:transform .25s}
+.cs-unlock:hover{transform:translateY(-3px) scale(1.04)}
+
+.cs-privacy{display:flex;align-items:center;gap:24px;margin-top:34px;padding:30px 40px;border-radius:56px 56px 56px 14px;color:#fff;background:linear-gradient(110deg,#0c2a78,#1558d6 70%,#19b3e6)}
+.cs-privacy .shield{display:grid;place-items:center;flex:0 0 auto;width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.18);font-size:36px;animation:ping2 2.4s infinite}
+.cs-privacy h3{margin-bottom:6px!important;font-size:clamp(23px,2.2vw,32px);font-weight:800}
+.cs-privacy p{font-size:18px;line-height:1.65;color:rgba(255,255,255,.9)}
+
+/* ---------- plans ---------- */
+.cs-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.4vw,36px);align-items:stretch;margin-top:64px}
+.cs-plan{display:flex;flex-direction:column;padding:48px 34px 36px;text-align:center;border-radius:60px 60px 60px 14px;background:#fff;border:1px solid #dce8f7;box-shadow:0 26px 54px -26px rgba(21,60,140,.35)}
+.cs-plan.elite{background:linear-gradient(#fff,#f1f5fb)}
+.cs-plan.gold{margin-top:-26px;margin-bottom:26px;padding-top:62px;background:linear-gradient(#fff,#fff8e6);border-color:transparent;box-shadow:0 40px 80px -26px rgba(245,158,11,.5)}
+.cs-plan.gold::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:4px;pointer-events:none;background:conic-gradient(from var(--ang),#1558d6,#19b3e6,#8b5cf6,#ffc83d,#ff7a59,#1558d6);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:ang 5s linear infinite}
+.cs-plan.diamond{color:#fff;background:linear-gradient(160deg,#0c1f55,#1b3f9a);--spot:rgba(255,255,255,.22)}
+.cs-pop-badge{position:absolute;top:18px;left:50%;transform:translateX(-50%);padding:7px 18px;border-radius:999px;background:linear-gradient(90deg,#f59e0b,#ff7a59);color:#fff;font-size:13.5px;font-weight:800;letter-spacing:.6px;white-space:nowrap;box-shadow:0 10px 20px rgba(245,158,11,.4)}
+.cs-plan-ic{font-size:60px;line-height:1;animation:bob 4s ease-in-out infinite}
+.cs-plan h3{margin:12px 0 6px!important;font-size:38px;font-weight:800;letter-spacing:-.6px}
+.cs-plan-tag{margin-bottom:6px!important;color:var(--muted);font-size:18px}.cs-plan.diamond .cs-plan-tag{color:#bcd2f2}
+.cs-plan ul,.sp-plan ul{list-style:none;display:grid;gap:13px;margin:24px 0 30px;padding:0;text-align:left;flex:1}
+.cs-plan li,.sp-plan li{display:flex;align-items:flex-start;gap:12px;font-size:17.5px;font-weight:600;line-height:1.4}
+.cs-plan li i,.sp-plan li i{display:grid;place-items:center;flex:0 0 auto;width:26px;height:26px;margin-top:1px;border-radius:50%;background:#dcf7e9;color:#0f9158;font-style:normal;font-size:14px;font-weight:900}
+.cs-plan.diamond li i{background:rgba(255,255,255,.18);color:#7ff0c1}
+.cs-plans-note{margin-top:40px!important;text-align:center!important;color:var(--muted);font-size:18px}
+
+/* ---------- pricing (dark) ---------- */
+.cs-pricing{position:relative;overflow:hidden;color:#fff;padding:clamp(40px,5vw,70px) 0;background:linear-gradient(155deg,#0a1744,#0e3283 60%,#0b4f9e)}
+.cs-pricing .cs-sec{padding-block:clamp(90px,11vw,150px)}
+.cs-price{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(30px,5vw,90px);align-items:center;margin-top:56px}
+.cs-coinwrap{position:relative;display:grid;place-items:center;width:100%;max-width:430px;aspect-ratio:1;margin:0 auto}
+.cs-coin-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from var(--ang),#ffc83d,#ff7a59,#8b5cf6,#19b3e6,#ffc83d);animation:ang 6s linear infinite;box-shadow:0 0 70px rgba(255,200,61,.35)}
+.cs-coin{position:relative;display:grid;align-content:center;justify-items:center;width:88%;aspect-ratio:1;border-radius:50%;text-align:center;background:radial-gradient(circle at 30% 24%,#2358d0,#0a1a4a 70%);box-shadow:inset 0 0 50px rgba(255,255,255,.14),0 30px 60px rgba(0,0,0,.4);animation:coinTilt 7s ease-in-out infinite}
+.cs-coin small{font-size:17px;font-weight:700;color:#b9d2f5;letter-spacing:.5px}
+.cs-coin strong{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(70px,9vw,128px);font-weight:800;line-height:1;background:linear-gradient(180deg,#fff2b8,#ffc83d 60%,#ff9b3d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cs-coin span{font-size:17px;font-weight:600;color:#b9d2f5}
+.cs-mini{position:absolute;display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:linear-gradient(145deg,#ffd66b,#f59e0b);color:#7a4a00;font-weight:900;font-size:27px;box-shadow:0 14px 26px rgba(0,0,0,.3);animation:float 5s ease-in-out infinite}
+.cs-mini.m1{top:2%;right:4%}.cs-mini.m2{bottom:8%;left:-2%;width:46px;height:46px;font-size:22px;animation-delay:-2s}.cs-mini.m3{bottom:-2%;right:20%;width:38px;height:38px;font-size:18px;animation-delay:-3.4s}
+.cs-price-right ul{list-style:none;display:grid;gap:16px;margin:0 0 34px;padding:0}
+.cs-price-right li{display:flex;align-items:center;gap:14px;font-size:clamp(18px,1.6vw,22px);font-weight:600}
+.cs-price-right.in li{animation:liIn .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * .1s + .3s)}
+.cs-price-right li i{display:grid;place-items:center;flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#34d399,#10b981);color:#fff;font-style:normal;font-size:16px;font-weight:900}
+.cs-est{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:80px}
+.cs-est>div{display:grid;gap:4px;padding:26px 20px;text-align:center;border-radius:44px 44px 44px 10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px)}
+.cs-est b{font-size:19px;font-weight:700;color:#bcd2f2}.cs-est span{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(28px,3vw,42px);font-weight:800;color:#ffd66b}
+
+/* ---------- benefits ---------- */
+.cs-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.2vw,32px);margin-top:60px}
+.cs-ben{padding:40px 34px 38px;border-radius:50px 50px 50px 12px;background:#fff;border:1px solid #dce8f7;box-shadow:0 22px 46px -26px rgba(21,60,140,.3);transition:box-shadow .3s,transform .25s ease-out}
+.cs-ben:nth-child(even){border-radius:50px 50px 12px 50px}
+.cs-ben:hover{box-shadow:0 34px 60px -24px rgba(21,60,140,.45)}
+.cs-ben-ic{display:grid;place-items:center;width:80px;height:80px;margin-bottom:20px;font-size:40px;background:#e6f0ff;border-radius:60% 40% 55% 45%/50% 55% 45% 50%;animation:morph 9s ease-in-out infinite;transition:scale .3s,rotate .3s}
+.cs-ben:nth-child(6n+2) .cs-ben-ic{background:#f1e9ff}.cs-ben:nth-child(6n+3) .cs-ben-ic{background:#dff7ee}.cs-ben:nth-child(6n+4) .cs-ben-ic{background:#fff0d9}.cs-ben:nth-child(6n+5) .cs-ben-ic{background:#ffe6ec}.cs-ben:nth-child(6n) .cs-ben-ic{background:#dff4ff}
+.cs-ben:hover .cs-ben-ic{scale:1.14;rotate:12deg}
+.cs-ben h3{margin-bottom:10px!important;font-size:clamp(23px,2vw,29px);font-weight:800;letter-spacing:-.3px;line-height:1.15}
+.cs-ben p{font-size:18px;line-height:1.65;color:var(--muted)}
+
+/* ---------- about ---------- */
+.cs-about-sec{position:relative;overflow:hidden;margin:0 clamp(10px,2vw,28px);border-radius:clamp(36px,6vw,84px);background:linear-gradient(160deg,#eaf1ff,#e0f2ff)}
+.cs-about{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,90px);align-items:center}
+.cs-about .cs-eyebrow{margin-left:0}
+.cs-about p{margin-bottom:18px!important;font-size:19.5px;line-height:1.8;color:#46608a}
+.cs-pills{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.cs-pills span{padding:11px 20px;border-radius:999px;background:#fff;border:1px solid #d4e4fb;color:#1349c2;font-weight:800;font-size:16px;box-shadow:0 10px 20px -12px rgba(21,60,140,.4)}
+.cs-about-art{position:relative;display:grid;place-items:center}
+
+/* ---------- contact ---------- */
+.cs-contact{display:grid;grid-template-columns:.78fr 1.22fr;margin-top:56px;overflow:hidden;border-radius:72px 72px 72px 16px;background:#fff;border:1px solid #dbe7f6;box-shadow:0 34px 80px -30px rgba(21,60,140,.4)}
+.cs-contact-side{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:clamp(34px,4vw,60px);color:#fff;background:linear-gradient(150deg,#0f3fb5,#1766e6 60%,#19b3e6)}
+.cs-contact-side>*{position:relative;z-index:2}
+.cs-env{display:grid;place-items:center;width:92px;height:92px;border-radius:50% 50% 50% 14%;background:rgba(255,255,255,.2);font-size:44px;animation:bob 4s ease-in-out infinite}
+.cs-contact-side h3{font-size:clamp(32px,3vw,46px);font-weight:800}
+.cs-contact-side p{font-size:19px;line-height:1.7;color:rgba(255,255,255,.9)}
+.cs-c-blob{position:absolute!important;border-radius:50%;background:rgba(255,255,255,.14);animation:morph 10s ease-in-out infinite,drift 14s ease-in-out infinite}
+.cs-c-blob.a{width:260px;height:260px;right:-90px;bottom:-80px}.cs-c-blob.b{width:140px;height:140px;left:-40px;top:-40px;animation-delay:-5s}.cs-c-blob.c{width:200px;height:200px;left:40%;bottom:-120px;animation-delay:-3s}
+.cs-form{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:clamp(28px,4vw,56px)}
+.cs-form label{display:grid;gap:8px;font-size:15.5px;font-weight:800;color:#23406e}
 .cs-form .full{grid-column:1/-1}
-.cs-form input,.cs-form textarea,.cs-form select{width:100%;border:1px solid #d3e0ee;border-radius:12px;padding:14px 16px;font:inherit;font-size:16.5px;background:#fff;outline:none;transition:.2s}
-.cs-form input:focus,.cs-form textarea:focus,.cs-form select:focus{border-color:#1767c9;box-shadow:0 0 0 4px rgba(23,103,201,.12)}
-.cs-ok{color:#087a50;font-weight:800;font-size:17px}
-.cs-ctawrap{padding-bottom:var(--pad)}
-.cs-banner{margin:0;padding:clamp(36px,5vw,64px) 24px;border-radius:30px;text-align:center;color:#fff;background:linear-gradient(120deg,#0a3f9e,#0b6bdc,#12a7e0,#0b6bdc,#0a3f9e);background-size:300% 100%;animation:grad 9s ease infinite}
-.cs-banner h2{margin-bottom:10px!important;font-size:clamp(26px,3.4vw,42px);color:#fff;text-align:center}
-.cs-banner p{margin-bottom:24px;font-size:18px;opacity:.93;text-align:center}
-.cs-footer{background:#102b4b;color:#cfe0f5;padding:var(--pad) 0}
-.cs-footer-in{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.cs-footer strong{color:#fff;font-size:21px}
-.cs-footer p{margin-top:8px!important;color:#9fbbdc;max-width:440px;line-height:1.6;font-size:16px}
-.cs-flinks{display:flex;flex-wrap:wrap;gap:6px 22px;align-content:flex-start}
-.cs-flinks button{border:0;background:none;color:#9fbbdc;font-size:16px;padding:4px 0;transition:.2s}
-.cs-flinks button:hover{color:#fff;transform:translateX(3px)}
-.cs-top{position:fixed;right:24px;bottom:24px;width:50px;height:50px;border-radius:50%;border:0;background:#1767c9;color:#fff;font-size:22px;box-shadow:0 10px 24px rgba(23,103,201,.35);opacity:0;pointer-events:none;transform:translateY(16px);transition:.3s;z-index:250}
-.cs-top.show{opacity:1;pointer-events:auto;transform:none}
+.cs-form input,.cs-form select,.cs-form textarea{width:100%;min-height:58px;padding:0 22px;border:2px solid #d7e5f7;border-radius:22px;background:#f7faff;font:inherit;font-size:17.5px;font-weight:600;color:var(--ink);outline:none;transition:border-color .25s,box-shadow .25s,background .25s}
+.cs-form textarea{padding:16px 22px;border-radius:26px;resize:vertical}
+.cs-form input:focus,.cs-form select:focus,.cs-form textarea:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 5px rgba(21,88,214,.14)}
+.cs-ok{padding:14px 22px;border-radius:999px;background:#dcf7e9;color:#0b7a4f;font-weight:800;animation:pop .4s both}
 
-/* scroll reveal */
-.cs-rv{opacity:0;transform:translateY(36px);transition:opacity .8s ease var(--d,0s),transform .8s cubic-bezier(.2,.8,.2,1) var(--d,0s)}
-.cs-rv.left{transform:translateX(-60px)}.cs-rv.right{transform:translateX(60px)}
-.cs-rv.zoom{transform:scale(.9) translateY(24px)}
-.cs-rv.in{opacity:1;transform:none}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-@keyframes blob{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,24px) scale(1.12)}}
-@keyframes grad{0%{background-position:0 50%}100%{background-position:300% 50%}}
-@keyframes ring{0%{box-shadow:0 0 0 0 rgba(8,105,216,.35)}70%{box-shadow:0 0 0 10px rgba(8,105,216,0)}100%{box-shadow:0 0 0 0 rgba(8,105,216,0)}}
-@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
-@keyframes shine{0%{left:-80%}55%,100%{left:150%}}
+/* ---------- CTA + footer ---------- */
+.cs-ctawrap{padding-block:clamp(50px,7vw,100px)}
+.cs-banner{position:relative;overflow:hidden;padding:clamp(54px,7vw,100px) 30px;border-radius:90px 90px 90px 24px;text-align:center;color:#fff;background:linear-gradient(120deg,#1349c2,#1766e6 40%,#19b3e6 75%,#8b5cf6 100%);background-size:200% 200%;animation:gradMove 10s ease-in-out infinite;box-shadow:0 40px 80px -30px rgba(21,88,214,.6)}
+.cs-banner>*{position:relative;z-index:2}
+.cs-banner h2{margin-bottom:14px!important;font-size:clamp(32px,4.6vw,66px);line-height:1.06;font-weight:800;letter-spacing:-1.2px;text-align:center!important}
+.cs-banner p{max-width:640px;margin:0 auto 34px!important;font-size:clamp(18px,1.6vw,22px);color:rgba(255,255,255,.92);text-align:center!important}
+.cs-footer{position:relative;overflow:hidden;padding-top:clamp(50px,6vw,80px);border-radius:clamp(36px,6vw,84px) clamp(36px,6vw,84px) 0 0;background:#081538;color:#bdd0ee}
+.cs-footer-in{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:30px}
+.cs-fbrand strong{display:block;margin-bottom:8px;font-family:"Bricolage Grotesque",sans-serif;font-size:30px;font-weight:800;color:#fff}
+.cs-fbrand p{max-width:420px;font-size:17px;line-height:1.7}
+.cs-flinks{display:flex;flex-wrap:wrap;gap:6px 8px;max-width:640px}
+.cs-flinks button{border:0;background:rgba(255,255,255,.07);padding:10px 18px;border-radius:999px;color:#d4e3fa;font-size:16px;font-weight:700;transition:background .25s,transform .25s}
+.cs-flinks button:hover{background:rgba(255,255,255,.2);transform:translateY(-3px)}
+.cs-wordmark{margin-top:40px;font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(54px,14.5vw,250px);font-weight:800;line-height:.88;letter-spacing:-.04em;text-align:center;white-space:nowrap;user-select:none;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cs-top{position:fixed;right:24px;bottom:24px;z-index:250;display:grid;place-items:center;width:58px;height:58px;border:0;border-radius:50% 50% 50% 14%;color:#fff;font-size:26px;font-weight:800;background:linear-gradient(135deg,#1349c2,#19b3e6);box-shadow:0 14px 30px rgba(21,88,214,.45);opacity:0;translate:0 90px;transition:opacity .35s,translate .45s cubic-bezier(.2,.8,.2,1),scale .25s}
+.cs-top.show{opacity:1;translate:0 0}.cs-top:hover{scale:1.12}
+
+/* ---------- subscription pricing view (login only) ---------- */
+.sp-main{position:relative;overflow:hidden;min-height:100vh;padding:calc(var(--nav) + 64px) 0 90px;background:radial-gradient(900px 500px at 90% 0%,rgba(139,92,246,.14),transparent 70%),linear-gradient(160deg,#eaf3ff,#f8fbff 55%,#e8f6ff)}
+.sp-in{position:relative;z-index:2}
+.sp-back{margin-bottom:26px}
+.sp-head{text-align:center}
+.sp-head h1{margin:20px 0 12px!important;font-size:clamp(36px,5vw,70px);line-height:1.05;font-weight:800;letter-spacing:-1.6px;text-align:center!important}
+.sp-head p{color:var(--muted);font-size:20px;text-align:center!important}
+.sp-toggle{position:relative;display:grid;grid-template-columns:repeat(3,1fr);width:min(100%,600px);margin:34px auto 52px;padding:7px;border-radius:999px;background:#fff;border:1px solid #d7e5f7;box-shadow:0 18px 40px -22px rgba(21,60,140,.4)}
+.sp-pill{position:absolute;top:7px;bottom:7px;left:7px;width:calc((100% - 14px) / 3);border-radius:999px;background:linear-gradient(100deg,#1349c2,#19b3e6);box-shadow:0 10px 22px rgba(21,88,214,.35);transform:translateX(calc(var(--i) * 100%));transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.sp-toggle button{position:relative;z-index:1;display:grid;justify-items:center;border:0;background:none;padding:12px 8px;border-radius:999px;color:#35506c;font-size:17px;font-weight:800;transition:color .3s}
+.sp-toggle button em{font-style:normal;font-size:12.5px;font-weight:800;color:#16a34a}
+.sp-toggle button.on{color:#fff}.sp-toggle button.on em{color:#d9f6ff}
+.sp-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.4vw,34px);align-items:stretch}
+.sp-plan{position:relative;display:flex;flex-direction:column;padding:42px 32px 34px;text-align:center;cursor:pointer;border-radius:56px 56px 56px 14px;background:#fff;border:2px solid #dce8f7;box-shadow:0 24px 50px -28px rgba(21,60,140,.35);animation:planIn .7s cubic-bezier(.2,.8,.2,1) both;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
+.sp-plan:hover{transform:translateY(-8px)}
+.sp-plan.sel{border-color:var(--blue);box-shadow:0 0 0 7px rgba(21,88,214,.14),0 36px 70px -26px rgba(21,60,140,.5);transform:translateY(-12px)}
+.sp-ribbon{position:absolute;top:-15px;left:50%;transform:translateX(-50%);padding:7px 18px;border-radius:999px;background:linear-gradient(90deg,#f59e0b,#ff7a59);color:#fff;font-size:13.5px;font-weight:800;white-space:nowrap}
+.sp-ic{font-size:56px;line-height:1;animation:bob 4s ease-in-out infinite}
+.sp-plan h3{margin:10px 0 4px!important;font-size:36px;font-weight:800}
+.sp-tg{color:var(--muted);font-size:17.5px}
+.sp-price{display:flex;align-items:baseline;justify-content:center;gap:8px;margin-top:18px}
+.sp-price strong{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(40px,3.6vw,54px);font-weight:800;color:var(--ink)}
+.sp-price span{color:var(--muted);font-weight:700}
+.sp-per{margin-top:4px!important;color:var(--muted);font-weight:700;font-size:16.5px}
+.sp-per s{margin-left:10px;color:#9aaec8}
+.sp-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;margin-top:52px;padding:22px 26px 22px 40px;border-radius:999px;background:#fff;border:1px solid #d7e5f7;box-shadow:0 26px 56px -28px rgba(21,60,140,.45);animation:pop .45s cubic-bezier(.2,.8,.2,1) both}
+.sp-summary small{display:block;color:#7389a8;font-weight:700;font-size:14.5px}.sp-summary b{font-size:21px;color:#0f2a5c}
+.sp-total{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(34px,3.6vw,50px);font-weight:800;color:var(--blue)}
+.sp-note{margin-top:26px!important;text-align:center!important;color:var(--muted);font-weight:600}
+
+/* ---------- keyframes ---------- */
+@keyframes morph{0%,100%{border-radius:58% 42% 52% 48%/48% 56% 44% 52%}33%{border-radius:42% 58% 40% 60%/56% 42% 58% 44%}66%{border-radius:52% 48% 60% 40%/42% 60% 40% 58%}}
+@keyframes drift{0%,100%{translate:0 0}50%{translate:40px 30px}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes ping{0%{box-shadow:0 0 0 0 rgba(16,185,129,.55)}70%{box-shadow:0 0 0 10px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(22,103,224,.35)}50%{box-shadow:0 0 0 9px rgba(22,103,224,0)}}
-@keyframes marq{to{transform:translateX(-50%)}}
-@keyframes blink{50%{opacity:0}}
-@keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
-@keyframes glow{0%,100%{box-shadow:0 10px 28px rgba(var(--pc),.14)}50%{box-shadow:0 20px 48px rgba(var(--pc),.38)}}
-@media(prefers-reduced-motion:reduce){.cs *{animation:none!important;transition:none!important}.cs-rv{opacity:1;transform:none}html{scroll-behavior:auto}.cs-track{animation:none!important}}
+@keyframes spinrev{to{transform:rotate(-360deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(1.5deg)}}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5) rotate(0)}50%{opacity:.9;transform:scale(1.2) rotate(90deg)}}
+@keyframes wordIn{from{opacity:0;transform:translateY(46px) rotate(5deg);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(16,185,129,.65)}80%,100%{box-shadow:0 0 0 12px rgba(16,185,129,0)}}
+@keyframes ping2{0%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}80%,100%{box-shadow:0 0 0 22px rgba(255,255,255,0)}}
+@keyframes marq{to{transform:translateX(-33.3333%)}}
+@keyframes grad{to{background-position:300% 0}}
+@keyframes gradMove{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes shine{0%,60%{left:-80%}100%{left:140%}}
+@keyframes wiggle{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-14deg)}95%{transform:rotate(12deg)}}
+@keyframes toast{0%,6%{opacity:0;transform:translateX(-40px) scale(.85)}12%,64%{opacity:1;transform:none}72%,100%{opacity:0;transform:translateX(-30px) scale(.9)}}
+@keyframes swapIn{from{opacity:0;transform:translateY(10px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes shimmerText{to{background-position:-220% 0}}
+@keyframes ang{to{--ang:360deg}}
+@keyframes coinTilt{0%,100%{transform:perspective(900px) rotateY(-14deg) rotateX(4deg)}50%{transform:perspective(900px) rotateY(14deg) rotateX(-4deg)}}
+@keyframes dash{to{background-position-x:26px}}
+@keyframes bar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}60%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
+@keyframes lockShake{0%,80%,100%{transform:rotate(0)}84%{transform:rotate(-12deg)}88%{transform:rotate(10deg)}92%{transform:rotate(-6deg)}}
+@keyframes numPop{0%{transform:scale(0) rotate(-120deg)}70%{transform:scale(1.18) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes liIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes planIn{from{opacity:0;transform:translateY(46px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes cloud{from{transform:translateX(-20px)}to{transform:translateX(70px)}}
+@keyframes fly{0%{transform:translate(-60px,130px)}100%{transform:translate(540px,50px)}}
+@keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
+@keyframes waveflag{0%,100%{transform:skewY(-6deg) scaleX(1)}50%{transform:skewY(6deg) scaleX(.84)}}
+@keyframes winBlink{0%,70%,100%{fill:#bfd9fb}80%,90%{fill:#ffe9a8}}
 
-/* subscription pricing view (login only) */
-.sp-main{position:relative;overflow:hidden;min-height:calc(100vh - var(--nav));background:linear-gradient(160deg,#eaf3ff 0%,#f7fbff 55%,#e6f6ff 100%)}
-.sp-in{position:relative;padding-block:var(--pad)}
-.sp-back{margin:0!important;min-height:42px}
-.sp-head{text-align:center;margin-top:8px}
-.sp-head h1{margin:18px 0 10px!important;font-size:clamp(32px,4vw,54px);line-height:1.12;color:#102b4d;font-weight:900;text-align:center}
-.sp-head p{color:#566f8d;font-size:19px;text-align:center}
-.sp-toggle{--i:0;position:relative;display:grid;grid-template-columns:repeat(3,1fr);width:min(100%,640px);margin:34px auto 38px;padding:6px;border-radius:18px;background:#fff;border:1px solid #d3e4f7;box-shadow:0 14px 34px rgba(34,74,117,.1)}
-.sp-pill{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/3);border-radius:13px;background:linear-gradient(100deg,#1458d8,#10a5df);box-shadow:0 8px 18px rgba(22,103,224,.3);transform:translateX(calc(var(--i)*100%));transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}
-.sp-toggle button{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:13px 8px;border:0;background:none;border-radius:13px;color:#526d8c;font-size:16.5px;font-weight:800;transition:color .3s}
-.sp-toggle button.on{color:#fff}
-.sp-toggle em{font-style:normal;font-size:12px;font-weight:800;opacity:.85}
-.sp-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
-.sp-plan{--pc:100,116,139;position:relative;display:flex;flex-direction:column;padding:34px 30px;border-radius:26px;background:#fff;border:2px solid #dce6f1;border-top:7px solid rgb(var(--pc));cursor:pointer;animation:pop .55s cubic-bezier(.2,.8,.2,1) both;transition:transform .3s,box-shadow .3s,border-color .3s}
-.sp-plan.gold{--pc:245,158,11}
-.sp-plan.diamond{--pc:139,92,246}
-.sp-plan:hover{transform:translateY(-10px);box-shadow:0 26px 48px rgba(var(--pc),.25)}
-.sp-plan.sel{border-color:rgb(var(--pc));box-shadow:0 22px 46px rgba(var(--pc),.3);transform:translateY(-6px)}
-.sp-ribbon{position:absolute;top:-16px;right:22px;padding:6px 14px;border-radius:999px;background:#f59e0b;color:#fff;font-size:13px;font-weight:850;box-shadow:0 8px 18px rgba(245,158,11,.4);animation:bob 3s ease-in-out infinite}
-.sp-ic{display:inline-block;font-size:44px;line-height:1;animation:bob 3.6s ease-in-out infinite}
-.sp-plan h3{margin:12px 0 4px!important;font-size:28px;color:#102b4d;font-weight:900}
-.sp-tg{color:#6f8195;font-size:15.5px;margin-bottom:20px!important}
-.sp-price{display:flex;align-items:baseline;gap:8px}
-.sp-price strong{font-size:clamp(38px,3.6vw,52px);line-height:1;color:rgb(var(--pc));font-weight:900;animation:pop .4s ease both}
-.sp-price span{color:#6f8195;font-size:16px;font-weight:700}
-.sp-per{margin:8px 0 22px!important;color:#566f8d;font-size:15.5px;display:flex;gap:10px;align-items:center}
-.sp-per s{color:#98a6b8}
-.sp-plan ul{list-style:none;margin:0 0 26px;padding:0;display:flex;flex-direction:column;gap:12px;flex:1}
-.sp-plan li{display:flex;gap:10px;align-items:flex-start;color:#35506c;font-size:16.5px;line-height:1.45}
-.sp-plan li i{flex:0 0 auto;width:24px;height:24px;margin-top:1px;border-radius:50%;background:rgba(var(--pc),.14);color:rgb(var(--pc));font-style:normal;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
-.sp-plan>button{width:100%;margin:0!important}
-.sp-summary{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:32px;padding:22px 26px;border-radius:22px;background:#102b4b;color:#fff;box-shadow:0 20px 44px rgba(16,43,75,.3);animation:pop .45s ease both}
-.sp-summary small{display:block;color:#9fbbdc;font-size:14px}
-.sp-summary b{font-size:20px}
-.sp-total{font-size:clamp(28px,3vw,40px);font-weight:900;color:#7dd3fc}
-.sp-note{margin-top:20px!important;text-align:center!important;color:#6f8195;font-size:15.5px}
-@media(max-width:1020px){.sp-plans{grid-template-columns:1fr;max-width:560px;margin-inline:auto}}
-@media(max-width:640px){.sp-summary{flex-direction:column;align-items:stretch;text-align:center}.sp-summary .big{width:100%}}
-
-/* responsive */
-.cs section[id]{scroll-margin-top:var(--nav)}
-@media(max-width:1180px){
-  .cs-brand small{display:none}
-  .cs-header nav button:not(.cs-ghost):not(.cs-solid){padding:10px 8px;font-size:14.5px}
-  .cs-ghost{margin-left:4px;padding:0 16px}.cs-solid{padding:0 16px}
-}
-@media(max-width:1020px){
-  .cs-burger{display:block}
-  .cs-header nav{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;padding:14px var(--pad) 22px;border-bottom:1px solid #e0e9f3;box-shadow:0 18px 30px rgba(26,65,112,.1);max-height:calc(100vh - var(--nav));overflow:auto}
+/* ---------- responsive ---------- */
+@media (max-width:1240px){
+  .cs-burger{display:grid}
+  .cs-header nav{position:absolute;top:calc(100% + 12px);left:0;right:0;display:none;flex-direction:column;align-items:stretch;gap:4px;padding:16px;border-radius:36px;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);box-shadow:0 30px 60px rgba(21,60,140,.28);animation:pop .25s both}
   .cs-header nav.open{display:flex}
-  .cs-header nav button:not(.cs-ghost):not(.cs-solid){text-align:left;font-size:16.5px}
-  .cs-ghost{margin:6px 0 0}
-  .cs-hero,.cs-search{min-height:0}
-  .cs-hero-in,.cs-about,.cs-price,.cs-steps{grid-template-columns:1fr}
-  .cs-lead{position:relative;right:auto;bottom:auto;margin:-40px auto 0}
-  .cs-hero-art{flex-direction:column;align-items:center}
-  .cs-stats,.cs-grid4{grid-template-columns:repeat(2,1fr)}
-  .cs-grid3,.cs-plans{grid-template-columns:repeat(2,1fr)}
-  .cs-rv.left,.cs-rv.right{transform:translateY(30px)}
-  .cs-flow i{display:none}
+  .cs-header nav>button{text-align:left;padding:14px 20px}
+  .cs-navcta{flex-direction:column;align-items:stretch;margin:8px 0 0}
+  .cs-navcta .cs-ghost,.cs-navcta .cs-solid{width:100%}
 }
-@media(max-width:640px){
-  .cs{font-size:16px;--nav:70px}
-  .cs-stats,.cs-grid4,.cs-grid3,.cs-plans,.cs-form,.cs-price ul{grid-template-columns:1fr}
+@media (max-width:1000px){
+  .cs-hero{padding-bottom:90px}
+  .cs-hero-in{grid-template-columns:1fr}
+  .cs-stage{margin-top:30px}
+  .cs-lead-wrap{right:2%}.cs-toast{left:0}
+  .cs-stats-in{grid-template-columns:repeat(2,1fr);row-gap:50px}
+  .cs-bento{grid-template-columns:repeat(2,1fr)}.bn1,.bn2,.bn3,.bn4{grid-column:span 2}.bn2,.bn3{grid-column:span 1}
+  .cs-plans,.sp-plans{grid-template-columns:1fr;max-width:560px;margin-inline:auto}
+  .cs-plan.gold{margin:0}
+  .cs-price{grid-template-columns:1fr}
   .cs-est{grid-template-columns:repeat(2,1fr)}
-  .cs-price{padding:20px}
-  .cs-price-box strong{font-size:62px}
-  .cs-form{padding:22px}
-  .cs-row .big{width:100%}
-  .cs-sfield{height:64px;padding-left:16px}
-  .cs-orb{width:48px;height:48px;font-size:23px}
+  .cs-grid3{grid-template-columns:repeat(2,1fr)}
+  .cs-about{grid-template-columns:1fr}
+  .cs-contact{grid-template-columns:1fr;border-radius:48px 48px 48px 14px}
+  .cs-flow{border-radius:48px;flex-wrap:wrap;justify-content:center}.cs-flow i{display:none}
+}
+@media (max-width:760px){
+  .cs{font-size:17px}
+  .cs-tl-line{left:34px}
+  .cs-step{grid-template-columns:70px 1fr;gap:8px}
+  .cs-num{grid-column:1;width:62px;height:62px;box-shadow:0 0 0 8px rgba(21,88,214,.12)}
+  .cs-step.l .cs-step-card,.cs-step.r .cs-step-card{grid-column:2;border-radius:30px 30px 30px 8px;padding:22px 22px 24px}
+  .cs-rv.left,.cs-rv.right{translate:0 40px}
+  .cs-leadrow{border-radius:34px;padding:14px}
+  .cs-leadrow .mob{margin-left:0}
+  .cs-privacy{flex-direction:column;align-items:flex-start;padding:28px 26px;border-radius:40px 40px 40px 10px}
+  .cs-form{grid-template-columns:1fr}
+  .sp-summary{border-radius:40px;padding:24px;justify-content:center;text-align:center}
+}
+@media (max-width:640px){
+  .cs-brand small{display:none}
+  .cs-brand strong{font-size:19px}
+  .cs-logo{width:44px;height:44px;font-size:17px}
+  .cs-pill{height:68px}
+  .cs-grid3,.cs-bento{grid-template-columns:1fr}.bn1,.bn2,.bn3,.bn4{grid-column:auto}
+  .cs-est{grid-template-columns:1fr 1fr;gap:14px}
+  .cs-stats-in{gap:34px 10px}
+  .cs-bubble:nth-child(even){margin-top:0}
+  .cs-bubble,.cs-bubble.lg,.cs-bubble.xl{--s:min(78vw,300px)}
+  .cs-orb{width:54px;height:54px}.cs-orb i{font-size:26px}
+  .cs-lead-wrap{width:min(300px,86%);right:0;bottom:-8%}
+  .cs-toast{top:0;left:0;padding:9px 16px 9px 10px}
+  .cs-row .cs-solid.big,.cs-row .cs-ghost.big{width:100%}
+  .cs-banner{border-radius:50px 50px 50px 16px}
+  .cs-top{right:14px;bottom:14px;width:52px;height:52px}
+}
+@media (prefers-reduced-motion:reduce){
+  .cs *,.cs *::before,.cs *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  .cs-w{opacity:1}
+  .cs-rv{opacity:1;translate:0 0;scale:1}
 }
 `;
 

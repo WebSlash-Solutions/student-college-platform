@@ -1,5 +1,117 @@
 import { useEffect, useMemo, useState } from "react";
 import dbData from "./db.json";
+import artsData from "./arts.json";
+import LoginView from "./login.jsx";
+import homeStudentImage from "../../assets/home student.png";
+import aboutStudentImage from "../../assets/about student.jpg";
+
+function InlineLogin({ users, onSuccess }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const submit = (event) => {
+    event.preventDefault();
+    setError("");
+
+    const match = users.find(
+      (user) =>
+        String(user?.email || "").trim().toLowerCase() ===
+        email.trim().toLowerCase(),
+    );
+
+    if (!match) {
+      setError("No account found with this email.");
+      return;
+    }
+
+    if (String(match?.password || "") !== password) {
+      setError("Incorrect password. Please try again.");
+      return;
+    }
+
+    onSuccess({ ...match, provider: "email" });
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center",
+        background: "#f1f2f6",
+        fontFamily: "Segoe UI, system-ui, Arial, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 400,
+          background: "#fff",
+          borderRadius: 16,
+          padding: 32,
+          boxShadow: "0 18px 40px rgba(17,24,39,.15)",
+        }}
+      >
+        <h2 style={{ margin: "0 0 6px" }}>Sign in</h2>
+        <p style={{ margin: "0 0 16px", color: "#6b7280", fontSize: 14 }}>
+          Enter your registered email to continue.
+        </p>
+        <form
+          onSubmit={submit}
+          style={{ display: "grid", gap: 12 }}
+        >
+          <input
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            autoComplete="email"
+            onChange={(e) => setEmail(e.target.value)}
+            style={{
+              padding: "11px 12px",
+              borderRadius: 10,
+              border: "1px solid #e5e7eb",
+              fontSize: 14,
+            }}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            autoComplete="current-password"
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              padding: "11px 12px",
+              borderRadius: 10,
+              border: "1px solid #e5e7eb",
+              fontSize: 14,
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: "12px 14px",
+              borderRadius: 10,
+              border: 0,
+              background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Sign In
+          </button>
+        </form>
+        {error ? (
+          <p style={{ color: "#b91c1c", fontSize: 13, marginTop: 12 }}>
+            {error}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 const API_ORIGIN = window.location.origin;
 
@@ -186,6 +298,15 @@ const getContact = (college) =>
 const getCollegeType = (college) =>
   toText(
     college?.institutionType?.category ||
+      college?.institutionType?.type ||
+      college?.type ||
+      "Engineering",
+  );
+
+const getCategory = (college) =>
+  toText(
+    college?.category ||
+      college?.institutionType?.category ||
       college?.institutionType?.type ||
       college?.type ||
       "Engineering",
@@ -930,6 +1051,65 @@ html {
   margin-top: 12px;
   font-size: 1rem;
   color: var(--muted-dark);
+}
+
+/* CATEGORY TABS */
+
+.cc-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.cc-cat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted-dark);
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.cc-cat-btn:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.cc-cat-active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: var(--shadow-brand);
+}
+
+.cc-cat-active:hover {
+  color: #fff;
+}
+
+.cc-cat-count {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--blue-25);
+  color: var(--deep);
+  font-size: .74rem;
+  font-weight: 800;
+}
+
+.cc-cat-active .cc-cat-count {
+  background: rgba(255,255,255,.22);
+  color: #fff;
 }
 
 /* SEARCH */
@@ -1685,6 +1865,45 @@ html {
 ========================================================= */
 
 export default function StudentDashboard() {
+  const [session, setSession] = useState(() => {
+    try {
+      const raw = localStorage.getItem("scp_session");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const login = (profile) => {
+    try {
+      localStorage.setItem("scp_session", JSON.stringify(profile));
+    } catch {
+      /* storage unavailable */
+    }
+    setSession(profile);
+  };
+
+  const logout = () => {
+    try {
+      localStorage.removeItem("scp_session");
+    } catch {
+      /* storage unavailable */
+    }
+    setSession(null);
+  };
+
+  const user = session;
+
+  const userInitials = user?.name
+    ? user.name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase()
+    : "U";
+  const userFirstName = user?.name?.trim().split(/\s+/)[0] || "Student";
   const [colleges, setColleges] = useState([]);
   const [courses, setCourses] = useState([]);
 
@@ -1694,6 +1913,7 @@ export default function StudentDashboard() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
   const [type, setType] = useState("");
+  const [category, setCategory] = useState("Engineering");
   const [sort, setSort] = useState("rating-desc");
 
   const [selected, setSelected] = useState(null);
@@ -1709,8 +1929,13 @@ export default function StudentDashboard() {
     setLoading(true);
     setError("");
 
-    const collegeList = Array.isArray(dbData?.colleges) ? dbData.colleges : [];
-    const courseList = Array.isArray(dbData?.courses) ? dbData.courses : [];
+    // sources: engineering (db.json) + arts (arts.json)
+    const engList = Array.isArray(dbData?.colleges) ? dbData.colleges : [];
+    const artsList = Array.isArray(artsData?.colleges) ? artsData.colleges : [];
+    const engCourses = Array.isArray(dbData?.courses) ? dbData.courses : [];
+    const artsCourses = Array.isArray(artsData?.courses)
+      ? artsData.courses
+      : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
       : [];
@@ -1729,19 +1954,18 @@ export default function StudentDashboard() {
       byCollege[key].push(courseId);
     });
 
-    setColleges(
-      collegeList.map((college) => ({
-        ...college,
-        courseIds: [
-          ...new Set([
-            ...toList(college.courseIds),
-            ...(byCollege[String(college.id)] || []),
-          ]),
-        ],
-      })),
-    );
+    const decorate = (college) => ({
+      ...college,
+      courseIds: [
+        ...new Set([
+          ...toList(college.courseIds),
+          ...(byCollege[String(college.id)] || []),
+        ]),
+      ],
+    });
 
-    setCourses(courseList);
+    setColleges([...engList.map(decorate), ...artsList.map(decorate)]);
+    setCourses([...engCourses, ...artsCourses]);
     setLoading(false);
   }, []);
 
@@ -1799,6 +2023,17 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Medical"];
+
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    colleges.forEach((college) => {
+      const cat = getCategory(college);
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  }, [colleges]);
+
   /* =======================================================
      FILTER + SORT
   ======================================================= */
@@ -1812,6 +2047,10 @@ export default function StudentDashboard() {
       }
 
       if (type && getCollegeType(college) !== type) {
+        return false;
+      }
+
+      if (category && getCategory(college) !== category) {
         return false;
       }
 
@@ -1843,7 +2082,7 @@ export default function StudentDashboard() {
     }
 
     return result;
-  }, [colleges, courseIndex, search, city, type, sort]);
+  }, [colleges, courseIndex, search, city, type, category, sort]);
 
   /* =======================================================
      PAGINATION
@@ -1851,7 +2090,7 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, city, type, sort]);
+  }, [search, city, type, category, sort]);
 
   const totalPages = Math.ceil(visibleColleges.length / ITEMS_PER_PAGE);
 
@@ -1911,12 +2150,13 @@ export default function StudentDashboard() {
      FILTER RESET
   ======================================================= */
 
-  const filtersActive = Boolean(search || city || type);
+  const filtersActive = Boolean(search || city || type || category);
 
   const clearFilters = () => {
     setSearch("");
     setCity("");
     setType("");
+    setCategory("Engineering");
   };
 
   /* =======================================================
@@ -1934,12 +2174,35 @@ export default function StudentDashboard() {
     : "";
 
   /* =======================================================
+     AUTH GATE
+  ======================================================= */
+
+  if (!session) {
+    return (
+      <>
+        {LoginView ? (
+          <LoginView
+            users={Array.isArray(dbData?.users) ? dbData.users : []}
+            onSuccess={login}
+          />
+        ) : (
+          <InlineLogin
+            users={Array.isArray(dbData?.users) ? dbData.users : []}
+            onSuccess={login}
+          />
+        )}
+      </>
+    );
+  }
+
+  /* =======================================================
      RETURN
   ======================================================= */
 
   return (
     <>
       <style>{STYLE}</style>
+      <style>{USER_STYLE}</style>
 
       <div className="cc-root" id="home">
         {/* =================================================
@@ -1982,13 +2245,35 @@ export default function StudentDashboard() {
                 <Icon name="search" size={18} />
               </a>
 
-              <a href="/login" className="cc-btn cc-btn-outline cc-btn-sm">
-                Login
-              </a>
+              {user ? (
+                <div className="cc-user">
+                  <span className="cc-user-avatar">
+                    {user.picture ? (
+                      <img src={user.picture} alt="" />
+                    ) : (
+                      userInitials
+                    )}
+                  </span>
+                  <span className="cc-user-name">{userFirstName}</span>
+                  <button
+                    type="button"
+                    className="cc-btn cc-btn-outline cc-btn-sm cc-user-signout"
+                    onClick={logout}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <a href="/login" className="cc-btn cc-btn-outline cc-btn-sm">
+                    Login
+                  </a>
 
-              <a href="/register" className="cc-btn cc-btn-primary cc-btn-sm">
-                Register
-              </a>
+                  <a href="/register" className="cc-btn cc-btn-primary cc-btn-sm">
+                    Register
+                  </a>
+                </>
+              )}
 
               <label htmlFor="cc-nav-toggle" className="cc-icon-btn cc-burger">
                 <span className="cc-icon-burger">
@@ -2009,13 +2294,31 @@ export default function StudentDashboard() {
               </a>
             ))}
 
-            <a href="/login" className="cc-btn cc-btn-outline cc-btn-block">
-              Login
-            </a>
+            {user ? (
+              <div className="cc-user">
+                <span className="cc-user-avatar">
+                  {user.picture ? <img src={user.picture} alt="" /> : userInitials}
+                </span>
+                <span className="cc-user-name">{userFirstName}</span>
+                <button
+                  type="button"
+                  className="cc-btn cc-btn-outline cc-btn-block"
+                  onClick={logout}
+                >
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <>
+                <a href="/login" className="cc-btn cc-btn-outline cc-btn-block">
+                  Login
+                </a>
 
-            <a href="/register" className="cc-btn cc-btn-primary cc-btn-block">
-              Register
-            </a>
+                <a href="/register" className="cc-btn cc-btn-primary cc-btn-block">
+                  Register
+                </a>
+              </>
+            )}
           </nav>
         </header>
 
@@ -2073,7 +2376,7 @@ export default function StudentDashboard() {
             <div className="cc-hero-visual">
               <div className="cc-hero-img">
                 <img
-                  src="/src/assets/home student.png"
+                  src={homeStudentImage}
                   alt="Students on a college campus"
                 />
               </div>
@@ -2161,7 +2464,7 @@ export default function StudentDashboard() {
             </div>
 
             <div className="cc-about-img">
-              <img src="/src/assets/about student.jpg" alt="College campus" />
+              <img src={aboutStudentImage} alt="College campus" />
             </div>
           </div>
         </section>
@@ -2175,13 +2478,33 @@ export default function StudentDashboard() {
             <div className="cc-col-head">
               <span className="cc-eyebrow">College Directory</span>
 
-              <h2>Explore Engineering Colleges</h2>
+              <h2>Explore {category} Colleges</h2>
 
               <p>
                 Search colleges and view complete information including basic
                 details, institution type, courses, fees, eligibility and
                 facilities.
               </p>
+            </div>
+
+            {/* CATEGORY TABS */}
+
+            <div className="cc-categories">
+              {COLLEGE_CATEGORIES.map((cat) => (
+                <button
+                  type="button"
+                  key={cat}
+                  className={`cc-cat-btn ${
+                    category === cat ? "cc-cat-active" : ""
+                  }`}
+                  onClick={() => setCategory(cat)}
+                >
+                  {cat}
+                  <span className="cc-cat-count">
+                    {categoryCounts[cat] ?? 0}
+                  </span>
+                </button>
+              ))}
             </div>
 
             {/* SEARCH/FILTER */}
@@ -2292,11 +2615,22 @@ export default function StudentDashboard() {
               <div className="cc-state">
                 <Icon name="search" size={26} />
 
-                <strong>No colleges found</strong>
+                <strong>
+                  {(categoryCounts[category] ?? 0) === 0
+                    ? `${category} colleges are not added yet`
+                    : "No colleges found"}
+                </strong>
 
-                <button className="cc-link-btn" onClick={clearFilters}>
-                  Clear filters
-                </button>
+                {(categoryCounts[category] ?? 0) === 0 ? (
+                  <span style={{ color: "#64748B", fontSize: ".9rem" }}>
+                    {category} colleges will be added soon. Engineering
+                    colleges are available now.
+                  </span>
+                ) : (
+                  <button className="cc-link-btn" onClick={clearFilters}>
+                    Clear filters
+                  </button>
+                )}
               </div>
             )}
 
@@ -2775,3 +3109,56 @@ export default function StudentDashboard() {
     </>
   );
 }
+
+const USER_STYLE = `
+.cc-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+}
+
+.cc-user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.cc-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cc-user-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-h, #08060d);
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cc-user-signout {
+  margin-left: 2px;
+}
+
+.cc-mobile .cc-user {
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.cc-mobile .cc-user-name {
+  flex: 1;
+  font-size: 15px;
+}
+`;

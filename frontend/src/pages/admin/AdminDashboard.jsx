@@ -1109,7 +1109,7 @@ const adminStyles = String.raw`/* ==============================================
 .chart-area {
   display: flex;
   height: 245px;
-  padding: 0 18px 15px;
+  padding: 0 18px 0;
 }
 
 .chart-y-axis {
@@ -1176,6 +1176,30 @@ const adminStyles = String.raw`/* ==============================================
   font-size: 8px;
 }
 
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  padding: 0 20px 18px 58px;
+  color: #71839c;
+  font-size: 11px;
+}
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chart-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+@media (max-width: 650px) {
+  .chart-legend { padding: 0 12px 16px; gap: 10px 14px; font-size: 10px; }
+}
 
 /* =========================================================
    LEAD STATUS
@@ -1301,15 +1325,19 @@ const adminStyles = String.raw`/* ==============================================
 
 .lower-grid {
   display: grid;
-  grid-template-columns:
-    minmax(0, 1.65fr)
-    minmax(320px, 0.9fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 15px;
   margin-bottom: 17px;
 }
 
+.lower-grid > .dashboard-card {
+  min-width: 0;
+}
+
 .recent-leads-card {
   min-width: 0;
+  width: 100%;
 }
 
 .view-all-button {
@@ -1419,18 +1447,26 @@ font-size: 14px;
 ========================================================= */
 
 .activity-card {
-  min-height: 100%;
+  min-height: 0;
+  height: max-content;
+  min-height: unset;
+  align-self: start;
 }
 
 .activity-list {
-  padding: 0 18px 15px;
+  padding: 0 18px 0;
+}
+
+.activity-card .card-header {
+  min-height: 58px;
+  padding-bottom: 8px;
 }
 
 .activity-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 0;
+  padding: 7px 0;
   border-bottom: 1px solid #edf1f5;
 }
 
@@ -2614,18 +2650,26 @@ function DashboardHome() {
 
   const [chartPeriod, setChartPeriod] = useState("30D");
 
+  // Keep graph dates current instead of leaving the old September demo dates.
+  const today = new Date();
+  const formatChartDate = (date) =>
+    date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+  const makeDayLabels = (count, daysBack) =>
+    Array.from({ length: count }, (_, index) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - daysBack + Math.round((daysBack * index) / (count - 1)));
+      return formatChartDate(date);
+    });
+  const makeMonthLabels = (count) =>
+    Array.from({ length: count }, (_, index) => {
+      const date = new Date(today.getFullYear(), today.getMonth() - (count - 1 - index), 1);
+      return date.toLocaleDateString("en-GB", { month: "short", year: count === 12 ? "2-digit" : undefined });
+    });
+
   const chartData = {
     "7D": {
       values: [120, 210, 180, 360, 310, 470, 540],
-      labels: [
-        "Sep 23",
-        "Sep 24",
-        "Sep 25",
-        "Sep 26",
-        "Sep 27",
-        "Sep 28",
-        "Sep 29",
-      ],
+      labels: makeDayLabels(7, 6),
     },
 
     "30D": {
@@ -2633,102 +2677,48 @@ function DashboardHome() {
         80, 150, 320, 240, 420, 370, 480, 430, 610, 500, 660, 550, 720, 680,
         810,
       ],
-      labels: [
-        "Aug 25",
-        "Aug 27",
-        "Aug 29",
-        "Sep 01",
-        "Sep 04",
-        "Sep 07",
-        "Sep 09",
-        "Sep 12",
-        "Sep 14",
-        "Sep 17",
-        "Sep 19",
-        "Sep 22",
-        "Sep 24",
-        "Sep 27",
-        "Sep 29",
-      ],
+      labels: makeDayLabels(15, 29),
     },
 
     "3M": {
       values: [180, 260, 220, 390, 340, 480, 430, 560, 510, 640, 590, 710],
-      labels: [
-        "Jul",
-        "Jul 08",
-        "Jul 16",
-        "Jul 24",
-        "Aug",
-        "Aug 08",
-        "Aug 16",
-        "Aug 24",
-        "Sep",
-        "Sep 08",
-        "Sep 18",
-        "Sep 29",
-      ],
+      labels: makeDayLabels(12, 89),
     },
 
     "6M": {
       values: [120, 180, 250, 220, 340, 300, 430, 390, 510, 470, 620, 580],
-      labels: [
-        "Apr",
-        "Apr 15",
-        "May",
-        "May 15",
-        "Jun",
-        "Jun 15",
-        "Jul",
-        "Jul 15",
-        "Aug",
-        "Aug 15",
-        "Sep",
-        "Sep 29",
-      ],
+      labels: makeDayLabels(12, 182),
     },
 
     "1Y": {
       values: [100, 180, 150, 240, 300, 270, 390, 450, 420, 560, 650, 810],
-      labels: [
-        "Oct 2025",
-        "Nov",
-        "Dec",
-        "Jan 2026",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
+      labels: makeMonthLabels(12),
     },
   };
 
   const activeChart = chartData[chartPeriod];
 
-  const chartPoints = activeChart.values
-    .map((value, index) => {
-      const x = (index / (activeChart.values.length - 1)) * 700;
-      const y = 260 - (value / 800) * 250;
+  const chartSeries = [
+    { name: "Students", color: "#2f80ed", values: activeChart.values },
+    { name: "Colleges", color: "#19bb7d", values: activeChart.values.map((v, i) => Math.round(v * 0.48 + (i % 3) * 18)) },
+  ].map((series) => ({
+    ...series,
+    points: series.values.map((value, index) => {
+      const x = (index / (series.values.length - 1)) * 700;
+      const y = 260 - (Math.min(value, 1000) / 1000) * 250;
       return `${x},${y}`;
-    })
-    .join(" ");
+    }).join(" "),
+  }));
 
-  const chartAreaPath = `
-    M0 260
-    ${activeChart.values
-      .map((value, index) => {
-        const x = (index / (activeChart.values.length - 1)) * 700;
-        const y = 260 - (value / 800) * 250;
-        return `L${x} ${y}`;
-      })
-      .join(" ")}
-    L700 260
-    Z
-  `;
+  const formatLeadDate = (daysAgo) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - daysAgo);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   const recentLeads = [
     {
@@ -2737,7 +2727,7 @@ function DashboardHome() {
       college: "ABC Engineering College",
       course: "B.Tech CSE",
       status: "New",
-      date: "29 Sep 2026",
+      date: formatLeadDate(0),
     },
     {
       id: "STU10927",
@@ -2745,7 +2735,7 @@ function DashboardHome() {
       college: "PSG College",
       course: "B.Tech Mechanical",
       status: "Purchased",
-      date: "29 Sep 2026",
+      date: formatLeadDate(0),
     },
     {
       id: "STU10926",
@@ -2753,7 +2743,7 @@ function DashboardHome() {
       college: "City College",
       course: "BCA",
       status: "Converted",
-      date: "28 Sep 2026",
+      date: formatLeadDate(1),
     },
     {
       id: "STU10925",
@@ -2761,7 +2751,7 @@ function DashboardHome() {
       college: "St. Joseph's College",
       course: "B.Com",
       status: "New",
-      date: "28 Sep 2026",
+      date: formatLeadDate(1),
     },
     {
       id: "STU10924",
@@ -2769,7 +2759,7 @@ function DashboardHome() {
       college: "Medical College",
       course: "B.Sc Nursing",
       status: "Invalid",
-      date: "27 Sep 2026",
+      date: formatLeadDate(2),
     },
     {
       id: "STU10923",
@@ -2777,7 +2767,7 @@ function DashboardHome() {
       college: "Kumaraguru College",
       course: "B.Tech IT",
       status: "Purchased",
-      date: "27 Sep 2026",
+      date: formatLeadDate(2),
     },
     {
       id: "STU10922",
@@ -2785,7 +2775,7 @@ function DashboardHome() {
       college: "PSG College",
       course: "BCA",
       status: "Converted",
-      date: "26 Sep 2026",
+      date: formatLeadDate(3),
     },
     {
       id: "STU10921",
@@ -2793,7 +2783,7 @@ function DashboardHome() {
       college: "City College",
       course: "B.Tech ECE",
       status: "New",
-      date: "26 Sep 2026",
+      date: formatLeadDate(3),
     },
     {
       id: "STU10920",
@@ -2801,7 +2791,7 @@ function DashboardHome() {
       college: "St. Joseph's College",
       course: "B.Com",
       status: "Purchased",
-      date: "25 Sep 2026",
+      date: formatLeadDate(4),
     },
     {
       id: "STU10919",
@@ -2809,7 +2799,7 @@ function DashboardHome() {
       college: "ABC Engineering College",
       course: "B.Tech CSE",
       status: "Converted",
-      date: "25 Sep 2026",
+      date: formatLeadDate(4),
     },
   ];
 
@@ -2851,22 +2841,22 @@ function DashboardHome() {
       type: "green",
     },
     {
-      icon: "♙",
-      title: "New student STU10927 registered",
+      icon: "▤",
+      title: "New college course added to the platform",
       time: "4 hours ago",
       type: "purple",
     },
     {
-      icon: "₹",
-      title: "Student lead purchased by PSG College",
+      icon: "♙",
+      title: "Student profile updated successfully by Admin",
       time: "5 hours ago",
       type: "blue",
     },
     {
       icon: "✓",
-      title: "Application status updated",
+      title: "College account activated by Admin",
       time: "6 hours ago",
-      type: "orange",
+      type: "green",
     },
     {
       icon: "₹",
@@ -2911,7 +2901,7 @@ function DashboardHome() {
         <StatCard
           icon="▥"
           title="Total Colleges"
-          value="325"
+          value="900"
           change="+5%"
           description="vs last month"
           iconClass="green"
@@ -3001,10 +2991,10 @@ function DashboardHome() {
 
           <div className="chart-area">
             <div className="chart-y-axis">
-              <span>800</span>
-              <span>600</span>
-              <span>400</span>
-              <span>200</span>
+              <span>1,000</span>
+              <span>750</span>
+              <span>500</span>
+              <span>250</span>
               <span>0</span>
             </div>
 
@@ -3022,42 +3012,25 @@ function DashboardHome() {
                 className="dynamic-chart-svg"
               >
                 <defs>
-                  <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2f80ed" stopOpacity="0.25" />
-
-                    <stop
-                      offset="100%"
-                      stopColor="#2f80ed"
-                      stopOpacity="0.02"
-                    />
-                  </linearGradient>
+                  {chartSeries.map((series, index) => (
+                    <linearGradient key={series.name} id={`areaGradient${index}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={series.color} stopOpacity="0.13" />
+                      <stop offset="100%" stopColor={series.color} stopOpacity="0.01" />
+                    </linearGradient>
+                  ))}
                 </defs>
-
-                <path d={chartAreaPath} fill="url(#areaGradient)" />
-
-                <polyline
-                  points={chartPoints}
-                  fill="none"
-                  stroke="#2f80ed"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-                {activeChart.values.map((value, index) => {
-                  const x = (index / (activeChart.values.length - 1)) * 700;
-                  const y = 260 - (value / 800) * 250;
-
-                  return (
-                    <circle
-                      key={`${chartPeriod}-${index}`}
-                      cx={x}
-                      cy={y}
-                      r={index === activeChart.values.length - 1 ? "5" : "4"}
-                      fill="#2f80ed"
-                    />
-                  );
-                })}
+                {chartSeries.map((series) => (
+                  <polyline
+                    key={series.name}
+                    points={series.points}
+                    fill="none"
+                    stroke={series.color}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                ))}
               </svg>
 
               <div className="chart-x-axis">
@@ -3066,6 +3039,11 @@ function DashboardHome() {
                 ))}
               </div>
             </div>
+          </div>
+          <div className="chart-legend">
+            {chartSeries.map((series) => (
+              <span key={series.name}><i style={{ backgroundColor: series.color }} />{series.name}</span>
+            ))}
           </div>
         </div>
 
@@ -3125,7 +3103,44 @@ function DashboardHome() {
       {/* LOWER CONTENT */}
 
       <div className="lower-grid">
-        {/* RECENT LEADS */}
+{/* RECENT ACTIVITY */}
+
+        <div className="dashboard-card activity-card">
+          <div className="card-header">
+            <div>
+              <h2>Recent Activity</h2>
+              <p>Latest admin and platform activities</p>
+            </div>
+
+            <button
+              type="button"
+              className="view-all-button"
+              onClick={() => setShowAllActivities((previous) => !previous)}
+              aria-expanded={showAllActivities}
+            >
+              {showAllActivities ? "Show Less ←" : "View All →"}
+            </button>
+          </div>
+
+          <div className="activity-list">
+            {activities
+              .slice(0, showAllActivities ? activities.length : 7)
+              .map((activity, index) => (
+                <div className="activity-item" key={index}>
+                  <div className={`activity-icon ${activity.type}`}>
+                    {activity.icon}
+                  </div>
+
+                  <div className="activity-details">
+                    <strong>{activity.title}</strong>
+                    <span>{activity.time}</span>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* RECENT STUDENT LEADS */}
 
         <div className="dashboard-card recent-leads-card">
           <div className="card-header">
@@ -3194,43 +3209,6 @@ function DashboardHome() {
                   ))}
               </tbody>
             </table>
-          </div>
-        </div>
-
-        {/* RECENT ACTIVITY */}
-
-        <div className="dashboard-card activity-card">
-          <div className="card-header">
-            <div>
-              <h2>Recent Activity</h2>
-              <p>Latest admin and platform activities</p>
-            </div>
-
-            <button
-              type="button"
-              className="view-all-button"
-              onClick={() => setShowAllActivities((previous) => !previous)}
-              aria-expanded={showAllActivities}
-            >
-              {showAllActivities ? "Show Less ←" : "View All →"}
-            </button>
-          </div>
-
-          <div className="activity-list">
-            {activities
-              .slice(0, showAllActivities ? activities.length : 5)
-              .map((activity, index) => (
-                <div className="activity-item" key={index}>
-                  <div className={`activity-icon ${activity.type}`}>
-                    {activity.icon}
-                  </div>
-
-                  <div className="activity-details">
-                    <strong>{activity.title}</strong>
-                    <span>{activity.time}</span>
-                  </div>
-                </div>
-              ))}
           </div>
         </div>
       </div>
