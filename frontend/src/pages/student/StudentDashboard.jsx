@@ -1954,17 +1954,22 @@ export default function StudentDashboard() {
       byCollege[key].push(courseId);
     });
 
-    const decorate = (college) => ({
+    // The collegeCourses join table only maps engineering colleges, so it must
+    // not be applied to arts colleges (their ids overlap with engineering ids).
+    const decorate = (college, withLinks) => ({
       ...college,
       courseIds: [
         ...new Set([
           ...toList(college.courseIds),
-          ...(byCollege[String(college.id)] || []),
+          ...(withLinks ? byCollege[String(college.id)] || [] : []),
         ]),
       ],
     });
 
-    setColleges([...engList.map(decorate), ...artsList.map(decorate)]);
+    setColleges([
+      ...engList.map((college) => decorate(college, true)),
+      ...artsList.map((college) => decorate(college, false)),
+    ]);
     setCourses([...engCourses, ...artsCourses]);
     setLoading(false);
   }, []);
