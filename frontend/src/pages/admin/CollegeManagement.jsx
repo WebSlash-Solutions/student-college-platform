@@ -618,7 +618,7 @@ const lawCourseFees = {
   "Ph.D Law": "Course Specific",
 };
 
-function getCourseFee(college, course) {
+export function getCourseFee(college, course) {
   const feeMaps = {
     Engineering: engineeringCourseFees,
     "Arts & Science": artsCourseFees,
@@ -633,7 +633,7 @@ function getCourseFee(college, course) {
   return map[course] || college.annualFee;
 }
 
-const collegesData = [
+export const collegesData = [
   /* ================= ENGINEERING 10 ================= */
 
   createCollege({
@@ -24160,13 +24160,11 @@ function AdminSidebar({ onCollegesClick }) {
     ["Dashboard", "⌂", "/admin/dashboard"],
     ["Students", "♙", "/admin/students"],
     ["Colleges", "▥", "/admin/colleges"],
-    ["Courses", "▤", "/admin/courses"],
-    ["Leads", "★", "/admin/leads"],
-    ["Applications", "▣", "/admin/applications"],
+    ["Courses", "▱", "/admin/courses"],
+    ["Applications", "✉", "/admin/applications"],
     ["Transactions", "₹", "/admin/transactions"],
-    ["Reports", "▥", "/admin/reports"],
-    ["Notifications", "♢", "/admin/notifications"],
-    ["Users", "♙", "/admin/users"],
+    ["Reports", "◑", "/admin/reports"],
+    ["Users", "♧", "/admin/users"],
     ["Settings", "⚙", "/admin/settings"],
   ];
 
@@ -24210,8 +24208,6 @@ function AdminSidebar({ onCollegesClick }) {
           >
             <span className="sidebar-icon">{icon}</span>
             <span>{name}</span>
-
-            {name === "Leads" && <span className="lead-star">★</span>}
           </button>
         ))}
       </div>
@@ -27829,32 +27825,36 @@ button {
   background: #f5f8fc;
 }
 
+
 .college-main {
   min-width: 0;
   flex: 1 1 auto;
-  width: calc(100% - 230px);
-  margin-left: 230px;
+  width: calc(100% - 236px);
+  margin-left: 236px;
   overflow-x: hidden;
 }
+
 
 /* =========================================================
    SIDEBAR
 ========================================================= */
+
 
 .college-sidebar {
   position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 228px;
-  background: linear-gradient(180deg, #102f55 0%, #102b4d 100%);
+  width: 236px;
+  background: #112746;
   color: white;
   z-index: 100;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
+
 
 .college-brand {
   height: 82px;
@@ -27917,7 +27917,7 @@ button {
   min-height: 43px;
   border: 0;
   background: transparent;
-  color: #b8c9dc;
+   color: #d6e1ef;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -29152,16 +29152,69 @@ button {
     display: block;
   }
 
+  /* Keep the admin navigation visible on mobile as a compact icon rail */
   .college-sidebar {
     position: fixed;
-    left: -220px;
-    width: 220px;
-    transition: .25s;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 62px;
+    min-width: 62px;
+    z-index: 1000;
+    overflow-x: hidden;
+    transition: width .25s;
+  }
+
+  .college-brand {
+    justify-content: center;
+    padding: 12px 5px;
+  }
+
+  .college-brand > div:last-child,
+  .college-sidebar .menu-title,
+  .college-sidebar-item > span:not(.sidebar-icon):not(.lead-star),
+  .college-sidebar .lead-star,
+  .sidebar-admin-card > div:last-child,
+  .logout-button > span {
+    display: none;
+  }
+
+  .college-sidebar .sidebar-scroll {
+    padding: 8px 5px;
+  }
+
+  .college-sidebar-item {
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    min-height: 44px;
+  }
+
+  .college-sidebar-item .sidebar-icon {
+    width: 100%;
+    text-align: center;
+    font-size: 17px;
+  }
+
+  .sidebar-bottom {
+    padding: 8px 5px;
+  }
+
+  .sidebar-admin-card {
+    justify-content: center;
+    padding: 5px 0;
+  }
+
+  .logout-button {
+    justify-content: center;
+    width: 100%;
+    padding: 10px 0;
   }
 
   .college-main {
-    margin-left: 0;
-    width: 100%;
+    margin-left: 62px;
+    width: calc(100% - 62px);
+    min-width: 0;
   }
 
   .college-topbar {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentManagement from "./StudentManagement";
-
+import CourseManagement from "./CourseManagement";
 
 const adminStyles = String.raw`/* =========================================================
    GLOBAL ADMIN
@@ -225,17 +225,13 @@ const adminStyles = String.raw`/* ==============================================
 }
 .admin-app {
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;          /* min-height: 100vh ku badhula */
+  overflow: hidden;       /* add */
   margin-left: calc(50% - 50vw);
   display: flex;
   background: #f4f7fb;
   color: #16243d;
-  font-family:
-    Inter,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 
@@ -608,6 +604,12 @@ const adminStyles = String.raw`/* ==============================================
   flex: 1;
   padding: 24px 12px;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+  display: none;
 }
 
 .menu-title {
@@ -725,10 +727,11 @@ const adminStyles = String.raw`/* ==============================================
 /* =========================================================
    MAIN AREA
 ========================================================= */
-
 .admin-main {
   min-width: 0;
   flex: 1;
+  height: 100vh;          /* add */
+  overflow-y: auto;       /* add: scroll inga nadakkum */
 }
 
 .admin-topbar {
@@ -739,6 +742,11 @@ const adminStyles = String.raw`/* ==============================================
   justify-content: space-between;
   background: #ffffff;
   border-bottom: 1px solid #e7ecf2;
+
+  /* add pannunga */
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .top-search-container {
@@ -2145,7 +2153,14 @@ function AdminLogin({ onLogin }) {
           <div className="login-logo-icon">🎓</div>
 
           <div className="login-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <circle cx="12" cy="8" r="4" />
               <path d="M4 21v-1a6 6 0 0 1 6-6h1.5" />
               <path d="m15 18 2 2 4-4" />
@@ -2180,7 +2195,15 @@ function AdminLogin({ onLogin }) {
                   onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  className="input-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <rect x="3" y="5" width="18" height="14" rx="3" />
                   <path d="m4 7 8 6 8-6" />
                 </svg>
@@ -2204,7 +2227,14 @@ function AdminLogin({ onLogin }) {
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
                     <circle cx="12" cy="12" r="3" />
                     {!showPassword && <path d="M4 4l16 16" />}
@@ -2228,7 +2258,6 @@ function AdminLogin({ onLogin }) {
               Sign In
             </button>
           </form>
-
         </div>
       </div>
     </div>
@@ -2244,13 +2273,11 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate }) {
     { name: "Dashboard", icon: "⌂" },
     { name: "Students", icon: "♙" },
     { name: "Colleges", icon: "▥" },
-    { name: "Courses", icon: "▤" },
-    { name: "Leads", icon: "★", important: true },
-    { name: "Applications", icon: "▣" },
+    { name: "Courses", icon: "▱" },
+   { name: "Applications", icon: "✉" },
     { name: "Transactions", icon: "₹" },
-    { name: "Reports", icon: "▥" },
-    { name: "Notifications", icon: "♢" },
-    { name: "Users", icon: "♙" },
+    { name: "Reports", icon: "◑" },
+    { name: "Users", icon: "♧" },
     { name: "Settings", icon: "⚙" },
   ];
 
@@ -2290,8 +2317,6 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate }) {
             <span className="sidebar-icon">{item.icon}</span>
 
             <span>{item.name}</span>
-
-            {item.important && <span className="lead-star">★</span>}
           </button>
         ))}
       </div>
@@ -2657,13 +2682,24 @@ function DashboardHome() {
   const makeDayLabels = (count, daysBack) =>
     Array.from({ length: count }, (_, index) => {
       const date = new Date(today);
-      date.setDate(today.getDate() - daysBack + Math.round((daysBack * index) / (count - 1)));
+      date.setDate(
+        today.getDate() -
+          daysBack +
+          Math.round((daysBack * index) / (count - 1)),
+      );
       return formatChartDate(date);
     });
   const makeMonthLabels = (count) =>
     Array.from({ length: count }, (_, index) => {
-      const date = new Date(today.getFullYear(), today.getMonth() - (count - 1 - index), 1);
-      return date.toLocaleDateString("en-GB", { month: "short", year: count === 12 ? "2-digit" : undefined });
+      const date = new Date(
+        today.getFullYear(),
+        today.getMonth() - (count - 1 - index),
+        1,
+      );
+      return date.toLocaleDateString("en-GB", {
+        month: "short",
+        year: count === 12 ? "2-digit" : undefined,
+      });
     });
 
   const chartData = {
@@ -2700,14 +2736,22 @@ function DashboardHome() {
 
   const chartSeries = [
     { name: "Students", color: "#2f80ed", values: activeChart.values },
-    { name: "Colleges", color: "#19bb7d", values: activeChart.values.map((v, i) => Math.round(v * 0.48 + (i % 3) * 18)) },
+    {
+      name: "Colleges",
+      color: "#19bb7d",
+      values: activeChart.values.map((v, i) =>
+        Math.round(v * 0.48 + (i % 3) * 18),
+      ),
+    },
   ].map((series) => ({
     ...series,
-    points: series.values.map((value, index) => {
-      const x = (index / (series.values.length - 1)) * 700;
-      const y = 260 - (Math.min(value, 1000) / 1000) * 250;
-      return `${x},${y}`;
-    }).join(" "),
+    points: series.values
+      .map((value, index) => {
+        const x = (index / (series.values.length - 1)) * 700;
+        const y = 260 - (Math.min(value, 1000) / 1000) * 250;
+        return `${x},${y}`;
+      })
+      .join(" "),
   }));
 
   const formatLeadDate = (daysAgo) => {
@@ -2917,7 +2961,7 @@ function DashboardHome() {
         />
 
         <StatCard
-          icon="▣"
+          icon="✉"
           title="Applications"
           value="3,642"
           change="+8%"
@@ -2944,7 +2988,7 @@ function DashboardHome() {
         />
 
         <StatCard
-          icon="♙"
+          icon="♧"
           title="Active Users"
           value="152"
           change="+8%"
@@ -3013,9 +3057,24 @@ function DashboardHome() {
               >
                 <defs>
                   {chartSeries.map((series, index) => (
-                    <linearGradient key={series.name} id={`areaGradient${index}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={series.color} stopOpacity="0.13" />
-                      <stop offset="100%" stopColor={series.color} stopOpacity="0.01" />
+                    <linearGradient
+                      key={series.name}
+                      id={`areaGradient${index}`}
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor={series.color}
+                        stopOpacity="0.13"
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor={series.color}
+                        stopOpacity="0.01"
+                      />
                     </linearGradient>
                   ))}
                 </defs>
@@ -3042,7 +3101,10 @@ function DashboardHome() {
           </div>
           <div className="chart-legend">
             {chartSeries.map((series) => (
-              <span key={series.name}><i style={{ backgroundColor: series.color }} />{series.name}</span>
+              <span key={series.name}>
+                <i style={{ backgroundColor: series.color }} />
+                {series.name}
+              </span>
             ))}
           </div>
         </div>
@@ -3103,7 +3165,7 @@ function DashboardHome() {
       {/* LOWER CONTENT */}
 
       <div className="lower-grid">
-{/* RECENT ACTIVITY */}
+        {/* RECENT ACTIVITY */}
 
         <div className="dashboard-card activity-card">
           <div className="card-header">
@@ -3336,6 +3398,8 @@ function AdminDashboard() {
           <main className="admin-content">
             {activePage === "Dashboard" ? (
               <DashboardHome />
+            ) : activePage === "Courses" ? (
+              <CourseManagement />
             ) : (
               <AdminSection title={activePage} />
             )}

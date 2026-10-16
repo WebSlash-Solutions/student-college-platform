@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CollegeExplorer, INDIA_DISTRICTS, TOTAL_DISTRICTS } from "./CollegeProfile"; // college explorer + every district of India, state-wise
 
 /* COLLEGE SIDE — ONE FILE (route: /college/home)
 
@@ -10,10 +11,12 @@ import { useNavigate } from "react-router-dom";
       -> opens inside this same page when a logged-in college clicks "View Plans & Prices".
       -> not logged in: the prices are never rendered and the college is sent to the login page.
 
-   SEARCH COLLEGES lives in CollegeProfile.jsx (route: /college/profile).
-   Every "Search Colleges" / "Colleges" button and every district bubble on this page opens it:
-     /college/profile                      -> all colleges
-     /college/profile?district=Salem       -> Salem colleges (district search)
+   COLLEGE SEARCH: the "Explore colleges" section on this page is the <CollegeExplorer embedded /> component
+   exported from CollegeProfile.jsx (search box, district dropdown, category tabs, college cards, Learn more / Edit profile).
+   The full page is still available at /college/profile (and /college/profile?district=Salem).
+
+   NAV ORDER: Home · Downloads · Dream Campus (= Explore colleges) · Subscription (4th) · How It Works · Pricing · Benefits · About · Contact
+   SUBSCRIPTION (4th menu item): logged in -> opens the prices page. Not logged in -> a "Please login" popup is shown and NO price is rendered.
 
    NOTE: the login check here only controls what the screen shows. Real protection must be on the backend:
    plans/prices API and payment API must require the college's JWT, and payment success must be verified by the backend. */
@@ -21,41 +24,27 @@ import { useNavigate } from "react-router-dom";
 const SESSION_KEY = "campusconnect_college_session"; // same key used by Registeration.jsx
 const AFTER_LOGIN_KEY = "campusconnect_after_login"; // login page can read this and redirect back (value: "/college/home?view=plans")
 
-/* menu: [section id, label]. "colleges" opens the Search Colleges page (CollegeProfile.jsx) */
+/* menu: [section id, label, kind]
+   kind "fancy" = animated highlight item (Explore colleges section, id "districts")
+   kind "plans" = Subscription: opens the login-only prices page (or the "Please login" popup) instead of scrolling */
 const MENU = [
   ["home", "Home"],
-  ["colleges", "Colleges"],
+  ["downloads", "Downloads"],
+  ["districts", "Dream Campus", "fancy"],
+  ["plans", "Subscription", "plans"],
   ["how", "How It Works"],
-  ["plans", "Plans"],
   ["pricing", "Pricing"],
   ["benefits", "Benefits"],
   ["about", "About"],
   ["contact", "Contact"],
 ];
-const SPY_IDS = MENU.map(([id]) => id).filter((id) => id !== "colleges");
-
-/* the five districts shown as floating bubbles — each opens CollegeProfile filtered to that district */
-const FEATURED = [
-  { name: "Coimbatore", note: "Engineering & Arts hub", ic: "🎓", size: "xl", g: "linear-gradient(145deg,#7c3aed,#c084fc)" },
-  { name: "Chennai", note: "Capital & IT city", ic: "🌆", size: "lg", g: "linear-gradient(145deg,#1558d6,#19b3e6)" },
-  { name: "Salem", note: "Steel city", ic: "⛰️", size: "md", g: "linear-gradient(145deg,#059669,#34d399)" },
-  { name: "Erode", note: "Textile & turmeric", ic: "🌾", size: "lg", g: "linear-gradient(145deg,#f59e0b,#fb7185)" },
-  { name: "Tiruppur", note: "Knitwear capital", ic: "🧵", size: "md", g: "linear-gradient(145deg,#e11d48,#fb923c)" },
-];
-
-const TN_DISTRICTS = [
-  "Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode",
-  "Kallakurichi", "Kancheepuram", "Kanyakumari", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai",
-  "Nagapattinam", "Namakkal", "The Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet",
-  "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli",
-  "Tirupathur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar",
-];
+const SPY_IDS = MENU.map(([id]) => id);
 
 /* Counter numbers — SAMPLE values, change to your real numbers or load from API.  [value, suffix, label, ring %, hue] */
 const STATS = [
-  [12500, "+", "student leads downloaded", 0.86, "#19c3e6"],
-  [320, "+", "colleges registered", 0.68, "#a78bfa"],
-  [38, "", "Tamil Nadu districts listed", 1, "#34d399"],
+  [12450, "+", "student leads downloaded", 0.86, "#19c3e6"],
+  [325, "+", "colleges registered", 0.68, "#a78bfa"],
+  [TOTAL_DISTRICTS, "", "districts listed across India", 1, "#34d399"],
   [100, "%", "consent-based sharing", 1, "#fbbf24"],
 ];
 
@@ -119,12 +108,28 @@ const PERIODS = [
 ];
 const rupee = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
-const RIBBON_A = ["Search by district", "₹100 per lead", "Verified colleges", "Consent-based leads", "Secure payments", "38 districts"];
+const RIBBON_A = ["Search by district", "₹100 per lead", "Verified colleges", "Consent-based leads", "Secure payments", `${TOTAL_DISTRICTS} districts`];
 const RIBBON_B = ["Coimbatore", "Chennai", "Erode", "Salem", "Tiruppur", "Madurai", "Trichy", "Vellore", "Tirunelveli"];
 
 const SPARKS = [
   [6, 14], [14, 62], [22, 30], [31, 80], [41, 12], [52, 70], [60, 22], [68, 88], [76, 40], [84, 10], [90, 66], [95, 30], [47, 46], [10, 90],
 ];
+
+/* ---------- logo (replaces the "CC" text) ---------- */
+function CCLogo() {
+  return (
+    <svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 19 24 11l16 8-16 8-16-8Z" />
+      <path d="M15 23.5v7c0 3 4 5.5 9 5.5s9-2.5 9-5.5v-7" />
+      <path d="M40 19v9" />
+      <circle cx="40" cy="31" r="1.8" fill="#fff" stroke="none" />
+      <circle cx="10" cy="40" r="2" fill="#fff" stroke="none" />
+      <circle cx="24" cy="43" r="2" fill="#fff" stroke="none" />
+      <circle cx="38" cy="40" r="2" fill="#fff" stroke="none" />
+      <path d="M12 40l10 2.4M26 42.4l10-2.4" strokeWidth="1.6" opacity=".8" />
+    </svg>
+  );
+}
 
 /* ---------- small helpers ---------- */
 
@@ -248,7 +253,7 @@ function Campus() {
       {[112, 156, 292, 336].map((x, i) => (
         <rect key={x} x={x} y="198" width="34" height="52" rx="17" fill="#bfd9fb" className="cs-win" style={{ animationDelay: `${i * 0.7}s` }} />
       ))}
-      <rect x="212" y="232" width="56" height="88" rx="28 28 4 4" fill="#173d6b" />
+      <path d="M212 320V260a28 28 0 0 1 56 0V320Z" fill="#173d6b" />
       <circle cx="258" cy="280" r="3.5" fill="#ffd66b" />
 
       {/* trees */}
@@ -303,6 +308,218 @@ function Wave({ fill, pos = "top" }) {
   );
 }
 
+/* ---------- LEAD DOWNLOADS (counter page between Home and Colleges) ----------
+   "Download" = a college pays Rs.100 to UNLOCK one student's full details (name, mobile, email) and save them.
+   (Student_Lead.docx -> sections 13, 14, 15.)  Numbers below are SAMPLE values from the spec's admin dashboard:
+   12,450 transactions x Rs.100 = Rs.12,45,000. Replace with your API values.  The demo rows use fake data only. */
+const DL_BASE = { downloads: 12450, students: 25430, leads: 18250, colleges: 325, price: 100 };
+
+const DL_LEADS = [
+  { id: "STU10231", pc: "82%", course: "B.Tech CSE", city: "Chennai", name: "Keerthana R", mobile: "98765 43210", email: "keerthana@example.com" },
+  { id: "STU10232", pc: "91%", course: "MBBS", city: "Coimbatore", name: "Mohan S", mobile: "98765 43211", email: "mohan@example.com" },
+  { id: "STU10233", pc: "76%", course: "B.Sc Nursing", city: "Salem", name: "Nandhini P", mobile: "98765 43212", email: "nandhini@example.com" },
+  { id: "STU10234", pc: "88%", course: "B.Com", city: "Erode", name: "Barath K", mobile: "98765 43213", email: "barath@example.com" },
+];
+
+const DL_STEPS = [
+  ["Find an interested student", "Free preview: Student ID, 12th %, course and location.", "👀"],
+  ["Click Download for ₹100", "Pay securely. Only that one student's profile is unlocked.", "💳"],
+  ["Server verifies the payment", "Details unlock only after our backend confirms the payment.", "🛡️"],
+  ["Download the full details", "Name, mobile and email are saved in My Purchased Leads (CSV export).", "📥"],
+];
+
+/* number that counts up when it scrolls into view and eases to every later change */
+function AnimatedNumber({ value, prefix = "", className = "" }) {
+  const ref = useRef(null);
+  const from = useRef(0);
+  const [seen, setSeen] = useState(false);
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setSeen(true); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!seen) return undefined;
+    const start = from.current;
+    const t0 = performance.now();
+    let raf;
+    const tick = (t) => {
+      const p = Math.min((t - t0) / 1100, 1);
+      const v = Math.round(start + (value - start) * (1 - Math.pow(1 - p, 3)));
+      setShown(v);
+      from.current = v;
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, seen]);
+  return <span ref={ref} className={className}>{prefix}{shown.toLocaleString("en-IN")}</span>;
+}
+
+function DownloadsSection({ onRegister, onBrowse }) {
+  const [state, setState] = useState({}); // id -> "paying" | "done"
+  const doneIds = DL_LEADS.filter((l) => state[l.id] === "done").map((l) => l.id);
+  const mine = doneIds.length;
+
+  const download = (id) => {
+    if (state[id]) return;
+    setState((s) => ({ ...s, [id]: "paying" }));
+    setTimeout(() => setState((s) => ({ ...s, [id]: "done" })), 1100); // demo of "backend verified the payment"
+  };
+
+  const csv = () => {
+    const rows = DL_LEADS.filter((l) => state[l.id] === "done");
+    const text = [["Student ID", "12th %", "Course", "City", "Name", "Mobile", "Email"]]
+      .concat(rows.map((l) => [l.id, l.pc, l.course, l.city, l.name, l.mobile, l.email]))
+      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const url = URL.createObjectURL(new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "campusconnect-sample-leads.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const total = DL_BASE.downloads + mine;
+
+  return (
+    <section id="downloads" className="dl">
+      <span className="cs-blob b4" /><span className="cs-blob b5" />
+      <div className="cs-wrap cs-sec">
+        <span className="cs-eyebrow cs-rv">LEAD DOWNLOADS</span>
+        <h2 className="cs-h2 cs-rv">Every download is a <span className="cs-grad">student ready to talk</span></h2>
+        <p className="cs-sub cs-rv">
+          A <b>download</b> means a college unlocks one student's full contact details for <b>₹{DL_BASE.price}</b> and saves
+          them. Here is the live counter, how it works, and a sample you can try.
+        </p>
+
+        <div className="dl-grid">
+          <div className="dl-total cs-rv">
+            <small>TOTAL STUDENT LEADS DOWNLOADED</small>
+            <div className="dl-big" key={mine}><AnimatedNumber value={total} /></div>
+            <p className="dl-sub">by <b>{DL_BASE.colleges}+</b> colleges across Tamil Nadu</p>
+            <div className="dl-mini">
+              <div><b><AnimatedNumber value={DL_BASE.students} /></b><span>students registered</span></div>
+              <div><b><AnimatedNumber value={DL_BASE.leads} /></b><span>student leads available</span></div>
+              <div><b><AnimatedNumber value={total * DL_BASE.price} prefix="₹" /></b><span>paid by colleges</span></div>
+            </div>
+          </div>
+
+          <div className="dl-flow cs-rv">
+            <h3>What is a download?</h3>
+            <ol>
+              {DL_STEPS.map(([t, d, ic], i) => (
+                <li key={t} style={{ "--i": `${i * 90}ms` }}>
+                  <span className="dl-ic">{ic}</span>
+                  <div><b>{t}</b><small>{d}</small></div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <div className="dl-demo cs-rv">
+          <div className="dl-demo-head">
+            <div>
+              <h3>Try it: sample student leads</h3>
+              <small>Demo with fake data. A real download needs a college login and a payment verified by our server.</small>
+            </div>
+            <div className="dl-session">
+              <span><b><AnimatedNumber value={mine} /></b> downloaded</span>
+              <span><b><AnimatedNumber value={mine * DL_BASE.price} prefix="₹" /></b> spent</span>
+              <button className="cs-ghost" onClick={csv} disabled={!mine}>⬇ Download CSV ({mine})</button>
+              <button className="dl-reset" onClick={() => setState({})} disabled={!mine}>Reset</button>
+            </div>
+          </div>
+
+          <div className="dl-rows">
+            {DL_LEADS.map((l, i) => {
+              const st = state[l.id];
+              const open = st === "done";
+              return (
+                <div key={l.id} className={`dl-row ${open ? "open" : ""}`} style={{ "--i": `${i * 80}ms` }}>
+                  <span className="dl-av">{l.name[0]}</span>
+                  <div className="dl-c id"><small>Student ID</small><b>{l.id}</b></div>
+                  <div className="dl-c"><small>12th %</small><b>{l.pc}</b></div>
+                  <div className="dl-c wide"><small>Course · City</small><b>{l.course} · {l.city}</b></div>
+                  <div className="dl-c wide"><small>Name</small><b key={`n${open}`} className={open ? "swap" : "lock"}>{open ? l.name : "•••••••• 🔒"}</b></div>
+                  <div className="dl-c wide"><small>Mobile</small><b key={`m${open}`} className={open ? "swap" : "lock"}>{open ? l.mobile : "98••• ••••• 🔒"}</b></div>
+                  <div className="dl-c wide"><small>Email</small><b key={`e${open}`} className={open ? "swap" : "lock"}>{open ? l.email : "••••••@•••••.com 🔒"}</b></div>
+                  <button className={`dl-btn ${st || ""}`} onClick={() => download(l.id)} disabled={Boolean(st)}>
+                    {open ? "✓ Downloaded" : st === "paying" ? <><i className="dl-spin" /> Verifying…</> : `⬇ Download ₹${DL_BASE.price}`}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="dl-cta cs-rv">
+          <button className="cs-solid big" onClick={onRegister}>Register to download real leads <i className="cs-arr">→</i></button>
+          <button className="cs-ghost big" onClick={onBrowse}><span className="cs-mag">🔍</span> Browse colleges</button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- "Please login" popup (shown instead of subscription prices when the college is not logged in) ----------
+   No real price is ever rendered here — only blurred placeholders. */
+function LoginGate({ onLogin, onRegister, onClose }) {
+  const btn = useRef(null);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    btn.current?.focus();
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [onClose]);
+
+  return (
+    <div className="lg-back" onClick={onClose} role="presentation">
+      <div className="lg-card" role="dialog" aria-modal="true" aria-labelledby="lg-title" onClick={(e) => e.stopPropagation()}>
+        <span className="lg-blob a" /><span className="lg-blob b" />
+        <button className="lg-x" onClick={onClose} aria-label="Close">✕</button>
+
+        <div className="lg-lock">
+          <span className="lg-ring" /><span className="lg-ring r2" />
+          <span className="lg-ico">🔒</span>
+        </div>
+
+        <span className="cs-eyebrow lg-eye">REGISTERED COLLEGES ONLY</span>
+        <h3 id="lg-title">Please login to view prices</h3>
+        <p className="lg-p">Subscription plans and prices are shown only after you login with your college account.</p>
+
+        <div className="lg-teaser" aria-hidden="true">
+          {PLANS.map((p, i) => (
+            <div key={p.id} style={{ "--i": i }}>
+              <b>{p.icon} {p.name}</b>
+              <span className="lock">₹ ••••</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="lg-actions">
+          <button ref={btn} className="cs-solid big" onClick={onLogin}>Login to view prices <i className="cs-arr">→</i></button>
+          <button className="cs-ghost big" onClick={onRegister}>New college? Register</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CollegeSite() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false);
@@ -329,6 +546,7 @@ function CollegeSite() {
       return "site";
     }
   });
+  const [gate, setGate] = useState(false); // "Please login" popup for Subscription
   const [period, setPeriod] = useState("6m");
   const [selected, setSelected] = useState("gold");
 
@@ -336,32 +554,40 @@ function CollegeSite() {
   const goRegister = () => navigate("/college/register");
   const goDashboard = () => navigate("/college/dashboard");
 
-  /* SEARCH COLLEGES -> CollegeProfile.jsx  (optionally already filtered to one district) */
-  const goColleges = (district) =>
-    navigate(district ? `/college/profile?district=${encodeURIComponent(district)}` : "/college/profile");
-
-  // Subscription prices are login-only
-  const goPlans = () => {
-    if (loggedIn) {
-      setView("pricing");
-      setMenu(false);
-      window.scrollTo({ top: 0 });
-      return;
-    }
+  // remember where to come back to after login (login page reads this key)
+  const rememberPlans = () => {
     try {
       sessionStorage.setItem(AFTER_LOGIN_KEY, "/college/home?view=plans");
     } catch {
       /* ignore */
     }
+  };
+
+  // Subscription prices are login-only
+  const goPlans = () => {
+    setMenu(false);
+    if (loggedIn) {
+      setGate(false);
+      setView("pricing");
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    // not logged in: show "Please login" — prices are NOT rendered
+    setGate(true);
+  };
+  const gateLogin = () => {
+    rememberPlans();
+    setGate(false);
     goLogin();
+  };
+  const gateRegister = () => {
+    rememberPlans();
+    setGate(false);
+    goRegister();
   };
 
   const scrollTo = (id) => {
     setMenu(false);
-    if (id === "colleges") {
-      goColleges();
-      return;
-    }
     const go = () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     if (view !== "site") {
       setView("site");
@@ -371,8 +597,12 @@ function CollegeSite() {
     }
   };
 
+  // one handler for the menu and the footer links
+  const onNav = (id, kind) => (kind === "plans" ? goPlans() : scrollTo(id));
+
   /* ---- subscription pricing (login only) ---- */
   const showPricing = view === "pricing" && loggedIn;
+  const navActive = showPricing ? "plans" : active; // Subscription stays highlighted on the prices page
   const pIndex = Math.max(PERIODS.findIndex(([id]) => id === period), 0);
   const [, pLabel, months, discount] = PERIODS[pIndex];
   const priceOf = (plan) => {
@@ -388,19 +618,27 @@ function CollegeSite() {
   };
 
   useEffect(() => {
-    // reveal on scroll
-    const items = document.querySelectorAll(".cs-rv");
+    // reveal on scroll (robust: threshold 0, picks up elements added later, shows anything already scrolled past,
+    // and a safety sweep so no section can stay invisible)
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
-          if (e.isIntersecting) {
+          if (e.isIntersecting || e.boundingClientRect.top < 0) {
             e.target.classList.add("in");
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.12 }
+      { threshold: 0, rootMargin: "0px 0px -6% 0px" }
     );
-    items.forEach((el) => io.observe(el));
+    const watch = () => document.querySelectorAll(".cs-rv:not(.in)").forEach((el) => io.observe(el));
+    watch();
+    const mo = new MutationObserver(watch);
+    mo.observe(document.body, { childList: true, subtree: true });
+    const sweep = () =>
+      document.querySelectorAll(".cs-rv:not(.in)").forEach((el) => {
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.94) el.classList.add("in");
+      });
+    const sweepTimer = setInterval(sweep, 500);
 
     // active menu item
     const secs = SPY_IDS.map((id) => document.getElementById(id)).filter(Boolean);
@@ -437,6 +675,8 @@ function CollegeSite() {
 
     return () => {
       io.disconnect();
+      mo.disconnect();
+      clearInterval(sweepTimer);
       spy.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onMove);
@@ -463,7 +703,7 @@ function CollegeSite() {
       <header className={`cs-header ${scrolled ? "sc" : ""}`}>
         <div className="cs-pill">
           <button className="cs-brand" onClick={() => scrollTo("home")}>
-            <span className="cs-logo">CC</span>
+            <span className="cs-logo"><CCLogo /></span>
             <span>
               <strong>CampusConnect</strong>
               <small>Student Leads · Better Admissions</small>
@@ -471,23 +711,21 @@ function CollegeSite() {
           </button>
 
           <nav className={menu ? "open" : ""}>
-            {MENU.map(([id, label]) => (
-              <button key={id} className={active === id ? "on" : ""} onClick={() => scrollTo(id)}>
-                {label}
+            {MENU.map(([id, label, kind]) => (
+              <button
+                key={id}
+                className={`${navActive === id ? "on" : ""} ${kind === "fancy" ? "cs-fancy" : ""} ${kind === "plans" ? "cs-subnav" : ""}`.trim()}
+                onClick={() => onNav(id, kind)}
+              >
+                {kind === "fancy" && <span className="cs-fi" aria-hidden="true">🎓</span>}
+                <span className="cs-nl">{label}</span>
+                {kind === "fancy" && <em className="cs-new">NEW</em>}
+                {kind === "plans" && <span className={`cs-key ${loggedIn ? "ok" : "lk"}`} aria-hidden="true">{loggedIn ? "💎" : "🔒"}</span>}
               </button>
             ))}
             <span className="cs-navcta">
-              {loggedIn ? (
-                <>
-                  <button className="cs-ghost" onClick={() => navigate("/college/profile")}>My College</button>
-                  <button className="cs-solid" onClick={goDashboard}>Go to Dashboard →</button>
-                </>
-              ) : (
-                <>
-                  <button className="cs-ghost" onClick={goLogin}>College Login</button>
-                  <button className="cs-solid" onClick={goRegister}>Register College</button>
-                </>
-              )}
+              <button className="cs-ghost" onClick={goLogin}>College Login</button>
+              <button className="cs-solid" onClick={goRegister}>Register College</button>
             </span>
           </nav>
 
@@ -597,13 +835,13 @@ function CollegeSite() {
                   <button className="cs-solid big" onClick={loggedIn ? goDashboard : goRegister}>
                     {loggedIn ? "Open Dashboard" : "Register Your College"} <i className="cs-arr">→</i>
                   </button>
-                  <button className="cs-ghost big" onClick={() => goColleges()}>
+                  <button className="cs-ghost big" onClick={() => scrollTo("districts")}>
                     <span className="cs-mag">🔍</span> Search Colleges
                   </button>
                 </div>
                 <div className="cs-trust">
                   <span><b>₹100</b> per lead</span>
-                  <span><b>38</b> districts</span>
+                  <span><b>{TOTAL_DISTRICTS}</b> districts</span>
                   <span><b>100%</b> consent-based</span>
                 </div>
               </div>
@@ -648,47 +886,13 @@ function CollegeSite() {
             </div>
           </div>
 
-          {/* ================= DISTRICT EXPLORER (opens CollegeProfile) ================= */}
+          {/* ================= LEAD DOWNLOADS COUNTER (after Home, before Colleges) ================= */}
+          <DownloadsSection onRegister={goRegister} onBrowse={() => scrollTo("districts")} />
+
+          {/* ================= EXPLORE COLLEGES (same page as /college/profile) ================= */}
           <section id="districts" className="cs-districts">
             <span className="cs-blob b4" /><span className="cs-blob b5" />
-            <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow cs-rv">SEARCH COLLEGES</span>
-              <h2 className="cs-h2 cs-rv">Pick a district, <span className="cs-grad">see its colleges</span></h2>
-              <p className="cs-sub cs-rv">Tap a bubble to open the college search for that district.</p>
-
-              <div className="cs-bubbles">
-                {FEATURED.map((d, i) => (
-                  <button
-                    key={d.name}
-                    className={`cs-bubble ${d.size} cs-rv zoom`}
-                    style={{ "--g": d.g, "--d": `${i * 0.1}s`, "--f": `${i * -1.3}s` }}
-                    onClick={() => goColleges(d.name)}
-                    aria-label={`Colleges in ${d.name}`}
-                  >
-                    <span className="cs-bubble-in">
-                      <span className="ic">{d.ic}</span>
-                      <b>{d.name}</b>
-                      <small>{d.note}</small>
-                      <em>View colleges →</em>
-                    </span>
-                  </button>
-                ))}
-                <button className="cs-bubble more md cs-rv zoom" style={{ "--d": "0.5s", "--f": "-6s" }} onClick={() => goColleges()}>
-                  <span className="cs-bubble-in">
-                    <span className="ic">🗺️</span>
-                    <b>+{TN_DISTRICTS.length - FEATURED.length} more</b>
-                    <small>All Tamil Nadu districts</small>
-                    <em>Open search →</em>
-                  </span>
-                </button>
-              </div>
-
-              <div className="cs-center cs-rv">
-                <button className="cs-solid big" onClick={() => goColleges()}>
-                  <span className="cs-mag">🔍</span> Open College Search <i className="cs-arr">→</i>
-                </button>
-              </div>
-            </div>
+            <CollegeExplorer embedded />
           </section>
 
           {/* ================= COUNTERS ================= */}
@@ -735,7 +939,7 @@ function CollegeSite() {
                 </Tilt>
                 <Tilt className="bn bn4 cs-rv zoom" style={{ "--d": "0.3s" }}>
                   <span className="bn-ic">📍</span>
-                  <h3>Chennai · Coimbatore · Erode · Salem · Tiruppur and 33 more districts</h3>
+                  <h3>Chennai · Coimbatore · Erode · Salem · Tiruppur and {TOTAL_DISTRICTS - 5} more districts</h3>
                   <p>Engineering, Arts & Science, Medical, Nursing, Management and more.</p>
                   <div className="bn-chips">
                     {["Engineering", "Arts & Science", "Medical", "Nursing", "Management", "Physiotherapy"].map((c) => <span key={c}>{c}</span>)}
@@ -936,7 +1140,11 @@ function CollegeSite() {
                   <label>Mobile<input required inputMode="tel" placeholder="10-digit number" /></label>
                   <label>District
                     <select defaultValue="Coimbatore">
-                      {TN_DISTRICTS.map((d) => <option key={d}>{d}</option>)}
+                      {Object.entries(INDIA_DISTRICTS).map(([st, list]) => (
+                        <optgroup key={st} label={st}>
+                          {list.map((d) => <option key={`${st}-${d}`} value={d}>{d}</option>)}
+                        </optgroup>
+                      ))}
                     </select>
                   </label>
                   <label className="full">Message<textarea required rows="4" placeholder="How can we help?" /></label>
@@ -967,7 +1175,7 @@ function CollegeSite() {
                 <p>Student contact details are shared only with consent and after purchase.</p>
               </div>
               <div className="cs-flinks">
-                {MENU.map(([id, l]) => <button key={id} onClick={() => scrollTo(id)}>{l}</button>)}
+                {MENU.map(([id, l, kind]) => <button key={id} onClick={() => onNav(id, kind)}>{l}</button>)}
                 <button onClick={goLogin}>College Login</button>
                 <button onClick={goRegister}>Register</button>
               </div>
@@ -976,6 +1184,8 @@ function CollegeSite() {
           </footer>
         </>
       )}
+
+      {gate && !loggedIn && <LoginGate onLogin={gateLogin} onRegister={gateRegister} onClose={() => setGate(false)} />}
 
       <button className={`cs-top ${scrolled ? "show" : ""}`} onClick={() => scrollTo("home")} aria-label="Back to top">↑</button>
     </div>
@@ -994,9 +1204,9 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .cs{--pad:clamp(20px,5vw,84px);--nav:76px;--ink:#0b1b3a;--blue:#1558d6;--sky:#19b3e6;--violet:#8b5cf6;--sun:#ffc83d;--coral:#ff7a59;--muted:#52698a;
   min-height:100vh;color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.55;text-align:left;overflow-x:hidden;position:relative}
 .cs *{box-sizing:border-box}
-.cs h1,.cs h2,.cs h3,.cs p{margin:0;letter-spacing:normal;font-family:inherit;text-align:inherit}
-.cs h1,.cs h2,.cs h3{font-family:"Bricolage Grotesque","Plus Jakarta Sans",sans-serif}
-.cs button{font:inherit;cursor:pointer}
+:where(.cs) h1,:where(.cs) h2,:where(.cs) h3,:where(.cs) p{margin:0;letter-spacing:normal;font-family:inherit;text-align:inherit}
+:where(.cs) h1,:where(.cs) h2,:where(.cs) h3{font-family:"Bricolage Grotesque","Plus Jakarta Sans",sans-serif}
+:where(.cs) button{font:inherit;cursor:pointer}
 .cs button:focus-visible,.cs a:focus-visible,.cs input:focus-visible,.cs select:focus-visible,.cs textarea:focus-visible{outline:3px solid rgba(21,88,214,.5);outline-offset:3px}
 .cs-wrap{width:100%;max-width:1680px;margin:0 auto;padding-inline:var(--pad)}
 .cs-sec{padding-block:clamp(70px,9vw,130px);position:relative}
@@ -1012,6 +1222,7 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .cs-pill{pointer-events:auto;position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1680px;margin:0 auto;height:var(--nav);padding:0 14px 0 12px;border-radius:999px;background:rgba(255,255,255,.76);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 40px rgba(21,60,140,.14);transition:background .35s,box-shadow .35s}
 .cs-header.sc .cs-pill{background:rgba(255,255,255,.93);box-shadow:0 18px 50px rgba(21,60,140,.24)}
 .cs-brand{display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;text-align:left;color:inherit}
+.cs-logo svg{width:66%;height:66%;display:block}
 .cs-logo{display:grid;place-items:center;width:52px;height:52px;border-radius:50% 50% 50% 16%;background:linear-gradient(135deg,#1458d8,#19b3e6);color:#fff;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;box-shadow:0 10px 22px rgba(21,88,214,.35);animation:morph 9s ease-in-out infinite}
 .cs-brand strong{display:block;color:#0f2a5c;font-family:"Bricolage Grotesque",sans-serif;font-size:22px;font-weight:800;letter-spacing:-.3px;line-height:1.1}
 .cs-brand small{display:block;margin-top:2px;color:#6d86a6;font-size:12.5px;font-weight:700;white-space:nowrap}
@@ -1139,23 +1350,8 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .cs-track i{margin-left:56px;font-style:normal;color:#ffd66b}
 
 /* ---------- district bubbles ---------- */
-.cs-districts{position:relative;overflow:hidden;background:#f5f8ff;padding-top:60px}
-.cs-bubbles{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:clamp(18px,2.6vw,40px);margin-bottom:56px}
-.cs-bubble{--s:clamp(200px,17vw,250px);position:relative;border:0;background:none;padding:0;color:#fff}
-.cs-bubble.lg{--s:clamp(220px,19vw,280px)}.cs-bubble.xl{--s:clamp(250px,22vw,330px)}
-.cs-bubble:nth-child(even){margin-top:46px}
-.cs-bubble::before{content:"";position:absolute;inset:-12px;border-radius:50%;border:2px dashed rgba(21,88,214,.28);animation:spin 24s linear infinite;pointer-events:none}
-.cs-bubble-in{position:relative;display:grid;align-content:center;justify-items:center;gap:4px;width:var(--s);aspect-ratio:1;padding:22px;border-radius:50%;background:var(--g);text-align:center;box-shadow:0 34px 60px -20px rgba(21,60,140,.5),inset 0 -16px 34px rgba(0,0,0,.14),inset 0 12px 26px rgba(255,255,255,.28);animation:float 7s ease-in-out infinite;animation-delay:var(--f);transition:transform .45s cubic-bezier(.2,.8,.2,1),border-radius .6s}
-.cs-bubble-in::after{content:"";position:absolute;top:10%;left:16%;width:26%;height:14%;border-radius:50%;background:rgba(255,255,255,.4);filter:blur(4px);rotate:-30deg}
-.cs-bubble:hover .cs-bubble-in{transform:scale(1.1) rotate(-4deg);border-radius:46% 54% 52% 48%/54% 46% 54% 46%}
-.cs-bubble .ic{font-size:clamp(36px,3.4vw,52px);line-height:1;animation:wiggle 5s ease-in-out infinite}
-.cs-bubble b{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(24px,2.4vw,36px);font-weight:800;line-height:1.1}
-.cs-bubble small{font-size:15.5px;font-weight:600;opacity:.92}
-.cs-bubble em{font-style:normal;font-weight:800;font-size:14.5px;max-height:0;opacity:0;overflow:hidden;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.26);transition:max-height .35s,opacity .35s,padding .35s,margin .35s}
-.cs-bubble:hover em{max-height:44px;opacity:1;padding:7px 16px;margin-top:8px}
-.cs-bubble.more{color:var(--blue)}
-.cs-bubble.more .cs-bubble-in{background:rgba(255,255,255,.75);border:3px dashed #9fc3f7;box-shadow:0 20px 40px -20px rgba(21,60,140,.3)}
-.cs-bubble.more em{background:#e3eeff}
+.cs-districts{position:relative;overflow:hidden;background:#f5f8ff;padding:clamp(50px,6vw,90px) 0 clamp(50px,6vw,90px)}
+.cs-districts .cp-embedded{position:relative;z-index:1}
 
 /* ---------- counters (dark) ---------- */
 .cs-stats{position:relative;overflow:hidden;color:#fff;padding:clamp(120px,14vw,200px) 0;background:linear-gradient(155deg,#0a1744,#0d2f7a 60%,#0b4f9e)}
@@ -1359,6 +1555,107 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .sp-total{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(34px,3.6vw,50px);font-weight:800;color:var(--blue)}
 .sp-note{margin-top:26px!important;text-align:center!important;color:var(--muted);font-weight:600}
 
+/* ---------- lead downloads counter ---------- */
+.dl{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#eef5ff 100%)}
+.dl .cs-sec{padding-block:clamp(60px,7vw,100px)}
+.dl .cs-sub{margin-bottom:44px}
+.dl-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(20px,2.4vw,34px);align-items:stretch;margin-bottom:34px}
+.dl-total{position:relative;overflow:hidden;padding:clamp(28px,3vw,46px);border-radius:52px 52px 52px 14px;color:#fff;background:linear-gradient(135deg,#1349c2 0%,#1766e6 55%,#19b3e6 100%);box-shadow:0 36px 70px -30px rgba(21,60,140,.7)}
+.dl-total::before,.dl-total::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none}
+.dl-total::before{width:300px;height:300px;right:-90px;top:-110px;animation:drift 14s ease-in-out infinite}
+.dl-total::after{width:200px;height:200px;left:-60px;bottom:-90px;animation:drift 11s ease-in-out infinite reverse}
+.dl-total>*{position:relative;z-index:1}
+.dl-total small{display:block;font-size:13.5px;font-weight:800;letter-spacing:2.2px;opacity:.88}
+.dl-big{margin:14px 0 6px;font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(56px,7.4vw,112px);font-weight:800;line-height:1;letter-spacing:-2px;animation:dlPulse .6s cubic-bezier(.2,.8,.2,1)}
+.dl-sub{font-size:19px;opacity:.92}
+.dl-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+.dl-mini div{padding:14px 16px;border-radius:22px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(6px)}
+.dl-mini b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(20px,2.1vw,30px);font-weight:800;line-height:1.15}
+.dl-mini span{font-size:13.5px;font-weight:600;opacity:.92}
+.dl-flow{padding:clamp(26px,2.6vw,40px);border-radius:52px 52px 14px 52px;background:#fff;border:1px solid #d7e5f7;box-shadow:0 26px 56px -30px rgba(21,60,140,.4)}
+.dl-flow h3{margin-bottom:18px!important;font-size:clamp(24px,2.4vw,32px);font-weight:800;color:var(--ink)}
+.dl-flow ol{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.dl-flow li{display:flex;align-items:center;gap:16px;padding:12px 16px;border-radius:24px;background:#f5f9ff;border:1px solid #e1ecfb;transition:transform .25s,background .25s}
+.dl-flow li:hover{transform:translateX(6px);background:#eaf3ff}
+.dl-ic{flex:0 0 auto;width:52px;height:52px;display:grid;place-items:center;border-radius:50%;background:#fff;box-shadow:0 8px 18px -8px rgba(21,88,214,.5);font-size:26px}
+.dl-flow li b{display:block;font-size:17.5px;color:var(--ink)}
+.dl-flow li small{display:block;color:var(--muted);font-size:15px;line-height:1.4}
+.dl-demo{padding:clamp(22px,2.4vw,36px);border-radius:48px;background:#fff;border:1px solid #d7e5f7;box-shadow:0 30px 60px -32px rgba(21,60,140,.45)}
+.dl-demo-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.dl-demo-head h3{font-size:clamp(22px,2.2vw,30px);font-weight:800;color:var(--ink)}
+.dl-demo-head small{display:block;color:var(--muted);font-size:15px;max-width:520px}
+.dl-session{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-weight:700;color:#35506c}
+.dl-session b{font-family:"Bricolage Grotesque",sans-serif;font-size:24px;color:var(--blue)}
+.dl-session .cs-ghost{min-height:46px;padding:0 20px;font-size:15.5px}
+.dl-session .cs-ghost:disabled,.dl-reset:disabled{opacity:.45;cursor:not-allowed}
+.dl-reset{border:0;background:none;color:#5a6f8a;font-weight:800;text-decoration:underline}
+.dl-rows{display:grid;gap:12px}
+.dl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:14px 18px;border-radius:30px;background:#f5f9ff;border:1.5px solid #e1ecfb;animation:dlRowIn .6s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:var(--i,0ms);transition:background .35s,border-color .35s,box-shadow .35s}
+.dl-row:hover{box-shadow:0 14px 30px -18px rgba(21,60,140,.5)}
+.dl-row.open{background:#effbf4;border-color:#a7e5c3}
+.dl-av{width:46px;height:46px;flex:0 0 auto;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#1349c2,#19b3e6);color:#fff;font-weight:800;font-size:19px}
+.dl-row.open .dl-av{background:linear-gradient(135deg,#059669,#34d399)}
+.dl-c{flex:1 1 90px;min-width:0}
+.dl-c.wide{flex:1.4 1 150px}
+.dl-c small{display:block;color:#7389a8;font-size:12.5px;font-weight:700}
+.dl-c b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16.5px;color:var(--ink)}
+.dl-c b.lock{color:#8aa0bd;letter-spacing:.5px}
+.dl-c b.swap{animation:swapIn .5s both;color:#047857}
+.dl-btn{flex:0 0 auto;min-width:168px;min-height:48px;padding:0 20px;border:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:15.5px;color:#fff;background:linear-gradient(100deg,#1349c2,#1766e6,#19b3e6);box-shadow:0 10px 22px -8px rgba(22,103,224,.6);transition:transform .2s,box-shadow .2s,filter .2s}
+.dl-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.07)}
+.dl-btn:disabled{cursor:default}
+.dl-btn.paying{background:#6b8bc0;box-shadow:none}
+.dl-btn.done{background:#059669;box-shadow:0 10px 22px -10px rgba(5,150,105,.7)}
+.dl-spin{width:16px;height:16px;border-radius:50%;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite}
+.dl-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:40px}
+@keyframes dlPulse{from{transform:scale(.9);opacity:.4}to{transform:none;opacity:1}}
+@keyframes dlRowIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@media (max-width:1000px){
+  .dl-grid{grid-template-columns:1fr}
+  .dl-mini{grid-template-columns:1fr 1fr 1fr}
+}
+@media (max-width:640px){
+  .dl-mini{grid-template-columns:1fr}
+  .dl-total,.dl-flow,.dl-demo{border-radius:36px}
+  .dl-btn{width:100%}
+}
+
+/* ---------- nav: Dream Campus (explore colleges) + Subscription ---------- */
+.cs-header nav>button.cs-fancy,.cs-header nav>button.cs-subnav{display:inline-flex;align-items:center;gap:6px}
+.cs-header nav>button.cs-fancy{isolation:isolate;margin-inline:2px;color:#fff;background:linear-gradient(100deg,#1349c2,#8b5cf6,#19b3e6,#1349c2);background-size:300% 100%;animation:grad 6s linear infinite;box-shadow:0 8px 20px rgba(21,88,214,.3)}
+.cs-header nav>button.cs-fancy::before{content:"";position:absolute;inset:-4px;z-index:-1;border-radius:999px;background:conic-gradient(from var(--ang),#19b3e6,#8b5cf6,#ffc83d,#ff7a59,#19b3e6);filter:blur(7px);opacity:.55;animation:ang 4s linear infinite;transition:opacity .3s}
+.cs-header nav>button.cs-fancy:hover,.cs-header nav>button.cs-fancy.on{color:#fff;background:linear-gradient(100deg,#1349c2,#8b5cf6,#19b3e6,#1349c2);background-size:300% 100%;transform:translateY(-3px) scale(1.05)}
+.cs-header nav>button.cs-fancy:hover::before,.cs-header nav>button.cs-fancy.on::before{opacity:.95}
+.cs-fi{display:inline-block;font-size:18px;line-height:1;animation:capToss 3.6s ease-in-out infinite}
+.cs-new{position:absolute;top:-7px;right:-6px;font-style:normal;padding:2px 7px;border-radius:999px;background:linear-gradient(90deg,#ffc83d,#ff7a59);color:#5a2200;font-size:10.5px;font-weight:800;letter-spacing:.8px;animation:newPing 2s infinite}
+.cs-key{display:inline-block;font-size:14px;line-height:1}
+.cs-key.lk{animation:lockShake 3.6s ease-in-out infinite}
+.cs-key.ok{animation:bob 3s ease-in-out infinite}
+.cs-header nav>button.cs-subnav:hover .cs-key{animation:keyPop .5s cubic-bezier(.2,.8,.2,1)}
+
+/* ---------- "Please login" popup ---------- */
+.lg-back{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(8,21,56,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);animation:lgFade .3s both}
+.lg-card{position:relative;overflow:hidden;width:min(560px,100%);padding:46px clamp(22px,4vw,48px) 38px;text-align:center;border-radius:58px 58px 58px 14px;background:linear-gradient(#fff,#f4f8ff);box-shadow:0 50px 100px -30px rgba(8,21,56,.75);animation:lgPop .65s cubic-bezier(.2,1.15,.3,1) both}
+.lg-card::before{content:"";position:absolute;top:0;left:0;right:0;height:7px;background:linear-gradient(90deg,#1458d8,#19b3e6,#8b5cf6,#ffc83d,#1458d8);background-size:300% 100%;animation:grad 5s linear infinite}
+.lg-card>*{position:relative;z-index:2}
+.lg-blob{position:absolute!important;z-index:1!important;border-radius:50%;background:#dbe9ff;opacity:.7;animation:morph 10s ease-in-out infinite,drift 14s ease-in-out infinite;pointer-events:none}
+.lg-blob.a{width:200px;height:200px;right:-70px;top:-60px}.lg-blob.b{width:150px;height:150px;left:-50px;bottom:-50px;background:#d6f2ff;animation-delay:-5s}
+.lg-x{position:absolute!important;top:18px;right:18px;display:grid;place-items:center;width:42px;height:42px;border:0;border-radius:50%;background:#eaf2ff;color:var(--blue);font-size:17px;font-weight:800;transition:transform .3s,background .25s}
+.lg-x:hover{background:#dbe9ff;transform:rotate(90deg) scale(1.1)}
+.lg-lock{position:relative;display:grid;place-items:center;width:112px;height:112px;margin:0 auto 18px}
+.lg-ring{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(21,88,214,.45);animation:lgRing 2.6s ease-out infinite}
+.lg-ring.r2{animation-delay:1.3s}
+.lg-ico{position:relative;display:grid;place-items:center;width:88px;height:88px;border-radius:50% 50% 50% 16%;background:linear-gradient(135deg,#1349c2,#19b3e6);font-size:42px;box-shadow:0 18px 34px rgba(21,88,214,.4);animation:lockShake 3.2s ease-in-out infinite,morph 9s ease-in-out infinite}
+.lg-eye{margin-bottom:14px!important}
+.lg-card h3{margin-bottom:10px!important;font-size:clamp(28px,3.4vw,38px);font-weight:800;line-height:1.1;letter-spacing:-.6px;color:var(--ink)}
+.lg-p{max-width:420px;margin:0 auto!important;font-size:17.5px;line-height:1.65;color:var(--muted);text-align:center!important}
+.lg-teaser{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0 26px}
+.lg-teaser div{display:grid;gap:2px;padding:12px 8px;border-radius:24px 24px 24px 8px;background:#fff;border:1px solid #d9e7f8;box-shadow:0 12px 24px -16px rgba(21,60,140,.4);animation:planIn .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * .1s + .3s)}
+.lg-teaser b{font-size:15px;color:#0f2a5c}
+.lg-teaser span{font-family:"Bricolage Grotesque",sans-serif;font-size:22px;font-weight:800}
+.lg-actions{display:grid;gap:12px}
+.lg-actions .cs-solid,.lg-actions .cs-ghost{width:100%}
+
 /* ---------- keyframes ---------- */
 @keyframes morph{0%,100%{border-radius:58% 42% 52% 48%/48% 56% 44% 52%}33%{border-radius:42% 58% 40% 60%/56% 42% 58% 44%}66%{border-radius:52% 48% 60% 40%/42% 60% 40% 58%}}
 @keyframes drift{0%,100%{translate:0 0}50%{translate:40px 30px}}
@@ -1392,14 +1689,27 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 @keyframes fly{0%{transform:translate(-60px,130px)}100%{transform:translate(540px,50px)}}
 @keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
 @keyframes waveflag{0%,100%{transform:skewY(-6deg) scaleX(1)}50%{transform:skewY(6deg) scaleX(.84)}}
+@keyframes capToss{0%,60%,100%{transform:translateY(0) rotate(0)}70%{transform:translateY(-7px) rotate(-18deg)}80%{transform:translateY(-3px) rotate(14deg)}90%{transform:translateY(0) rotate(-4deg)}}
+@keyframes newPing{0%{box-shadow:0 0 0 0 rgba(255,200,61,.8)}80%,100%{box-shadow:0 0 0 9px rgba(255,200,61,0)}}
+@keyframes keyPop{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(-14deg)}100%{transform:scale(1)}}
+@keyframes lgFade{from{opacity:0}to{opacity:1}}
+@keyframes lgPop{0%{opacity:0;transform:translateY(60px) scale(.82) rotate(-2deg)}100%{opacity:1;transform:none}}
+@keyframes lgRing{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.55);opacity:0}}
 @keyframes winBlink{0%,70%,100%{fill:#bfd9fb}80%,90%{fill:#ffe9a8}}
 
 /* ---------- responsive ---------- */
-@media (max-width:1240px){
+@media (max-width:2000px){
+  .cs-header nav>button{padding:10px 10px;font-size:15px}
+  .cs-navcta{margin-left:6px}
+  .cs-navcta .cs-ghost,.cs-navcta .cs-solid{min-height:46px;padding:0 18px;font-size:15px}
+  .cs-brand small{display:none}
+}
+@media (max-width:1660px){
   .cs-burger{display:grid}
   .cs-header nav{position:absolute;top:calc(100% + 12px);left:0;right:0;display:none;flex-direction:column;align-items:stretch;gap:4px;padding:16px;border-radius:36px;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);box-shadow:0 30px 60px rgba(21,60,140,.28);animation:pop .25s both}
   .cs-header nav.open{display:flex}
   .cs-header nav>button{text-align:left;padding:14px 20px}
+  .cs-header nav>button.cs-fancy,.cs-header nav>button.cs-subnav{justify-content:flex-start;margin-inline:0}
   .cs-navcta{flex-direction:column;align-items:stretch;margin:8px 0 0}
   .cs-navcta .cs-ghost,.cs-navcta .cs-solid{width:100%}
 }
@@ -1440,14 +1750,14 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
   .cs-grid3,.cs-bento{grid-template-columns:1fr}.bn1,.bn2,.bn3,.bn4{grid-column:auto}
   .cs-est{grid-template-columns:1fr 1fr;gap:14px}
   .cs-stats-in{gap:34px 10px}
-  .cs-bubble:nth-child(even){margin-top:0}
-  .cs-bubble,.cs-bubble.lg,.cs-bubble.xl{--s:min(78vw,300px)}
   .cs-orb{width:54px;height:54px}.cs-orb i{font-size:26px}
   .cs-lead-wrap{width:min(300px,86%);right:0;bottom:-8%}
   .cs-toast{top:0;left:0;padding:9px 16px 9px 10px}
   .cs-row .cs-solid.big,.cs-row .cs-ghost.big{width:100%}
   .cs-banner{border-radius:50px 50px 50px 16px}
   .cs-top{right:14px;bottom:14px;width:52px;height:52px}
+  .lg-card{border-radius:42px 42px 42px 12px}
+  .lg-teaser{gap:8px}.lg-teaser span{font-size:18px}
 }
 @media (prefers-reduced-motion:reduce){
   .cs *,.cs *::before,.cs *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}

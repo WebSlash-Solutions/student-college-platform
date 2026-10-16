@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 
 const STORAGE_KEY = "campusconnect_custom_colleges";
@@ -8517,6 +8518,8 @@ function Icon({ name, size = 18 }) {
     check: "m5 12 4 4L19 6",
     globe: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z",
     plus: "M12 5v14M5 12h14",
+    back: "M19 12H5m6-6-6 6 6 6",
+    star: "m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z",
   };
   return (
     <svg
@@ -8895,18 +8898,243 @@ function CollegeForm({ initial, submitLabel, onSubmit, onCancel }) {
    PAGE
 ========================= */
 
-function CollegeProfile() {
+/* ALL districts of India, state-wise (36 states and union territories). Keys match INDIA_STATES below exactly.
+   Districts are re-organised by governments from time to time, so add or rename an entry here whenever that happens. */
+export const INDIA_DISTRICTS = {
+  "Andaman and Nicobar Islands": ["Nicobars", "North and Middle Andaman", "South Andaman"],
+  "Andhra Pradesh": [
+    "Alluri Sitharama Raju", "Anakapalli", "Anantapur", "Annamayya", "Bapatla", "Chittoor", "East Godavari", "Eluru",
+    "Guntur", "Kakinada", "Konaseema", "Krishna", "Kurnool", "Nandyal", "NTR", "Palnadu", "Parvathipuram Manyam",
+    "Prakasam", "Sri Sathya Sai", "Srikakulam", "Tirupati", "Visakhapatnam", "Vizianagaram", "West Godavari",
+    "YSR Kadapa", "Nellore",
+  ],
+  "Arunachal Pradesh": [
+    "Anjaw", "Bichom", "Changlang", "Dibang Valley", "East Kameng", "East Siang", "Kamle", "Keyi Panyor", "Kra Daadi",
+    "Kurung Kumey", "Lepa Rada", "Lohit", "Longding", "Lower Dibang Valley", "Lower Siang", "Lower Subansiri", "Namsai",
+    "Pakke-Kessang", "Papum Pare", "Shi Yomi", "Siang", "Tawang", "Tirap", "Upper Siang", "Upper Subansiri",
+    "West Kameng", "West Siang",
+  ],
+  "Assam": [
+    "Bajali", "Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang", "Dhemaji",
+    "Dhubri", "Dibrugarh", "Dima Hasao", "Goalpara", "Golaghat", "Hailakandi", "Hojai", "Jorhat", "Kamrup",
+    "Kamrup Metropolitan", "Karbi Anglong", "Karimganj (Sribhumi)", "Kokrajhar", "Lakhimpur", "Majuli", "Morigaon",
+    "Nagaon", "Nalbari", "Sivasagar", "Sonitpur", "South Salmara-Mankachar", "Tamulpur", "Tinsukia", "Udalguri",
+    "West Karbi Anglong",
+  ],
+  "Bihar": [
+    "Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar", "Darbhanga",
+    "East Champaran", "Gaya", "Gopalganj", "Jamui", "Jehanabad", "Kaimur", "Katihar", "Khagaria", "Kishanganj",
+    "Lakhisarai", "Madhepura", "Madhubani", "Munger", "Muzaffarpur", "Nalanda", "Nawada", "Patna", "Purnia", "Rohtas",
+    "Saharsa", "Samastipur", "Saran", "Sheikhpura", "Sheohar", "Sitamarhi", "Siwan", "Supaul", "Vaishali",
+    "West Champaran",
+  ],
+  "Chandigarh": ["Chandigarh"],
+  "Chhattisgarh": [
+    "Balod", "Baloda Bazar", "Balrampur", "Bastar", "Bemetara", "Bijapur", "Bilaspur", "Dantewada", "Dhamtari", "Durg",
+    "Gariaband", "Gaurela-Pendra-Marwahi", "Janjgir-Champa", "Jashpur", "Kabirdham", "Kanker",
+    "Khairagarh-Chhuikhadan-Gandai", "Kondagaon", "Korba", "Koriya", "Mahasamund", "Manendragarh-Chirmiri-Bharatpur",
+    "Mohla-Manpur-Ambagarh Chowki", "Mungeli", "Narayanpur", "Raigarh", "Raipur", "Rajnandgaon", "Sakti",
+    "Sarangarh-Bilaigarh", "Sukma", "Surajpur", "Surguja",
+  ],
+  "Dadra and Nagar Haveli and Daman and Diu": ["Dadra and Nagar Haveli", "Daman", "Diu"],
+  "Delhi": [
+    "Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "Shahdara",
+    "South Delhi", "South East Delhi", "South West Delhi", "West Delhi",
+  ],
+  "Goa": ["North Goa", "South Goa"],
+  "Gujarat": [
+    "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad", "Chhota Udepur", "Dahod",
+    "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch", "Mahisagar",
+    "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan", "Porbandar", "Rajkot", "Sabarkantha", "Surat",
+    "Surendranagar", "Tapi", "Vadodara", "Valsad", "Vav-Tharad",
+  ],
+  "Haryana": [
+    "Ambala", "Bhiwani", "Charkhi Dadri", "Faridabad", "Fatehabad", "Gurugram", "Hansi", "Hisar", "Jhajjar", "Jind",
+    "Kaithal", "Karnal", "Kurukshetra", "Mahendragarh", "Nuh", "Palwal", "Panchkula", "Panipat", "Rewari", "Rohtak",
+    "Sirsa", "Sonipat", "Yamunanagar",
+  ],
+  "Himachal Pradesh": [
+    "Bilaspur", "Chamba", "Hamirpur", "Kangra", "Kinnaur", "Kullu", "Lahaul and Spiti", "Mandi", "Shimla", "Sirmaur",
+    "Solan", "Una",
+  ],
+  "Jammu and Kashmir": [
+    "Anantnag", "Bandipora", "Baramulla", "Budgam", "Doda", "Ganderbal", "Jammu", "Kathua", "Kishtwar", "Kulgam",
+    "Kupwara", "Poonch", "Pulwama", "Rajouri", "Ramban", "Reasi", "Samba", "Shopian", "Srinagar", "Udhampur",
+  ],
+  "Jharkhand": [
+    "Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum", "Garhwa", "Giridih", "Godda", "Gumla",
+    "Hazaribagh", "Jamtara", "Khunti", "Koderma", "Latehar", "Lohardaga", "Pakur", "Palamu", "Ramgarh", "Ranchi",
+    "Sahebganj", "Seraikela Kharsawan", "Simdega", "West Singhbhum",
+  ],
+  "Karnataka": [
+    "Bagalkot", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur",
+    "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri",
+    "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru",
+    "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgir",
+  ],
+  "Kerala": [
+    "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam", "Kozhikode", "Malappuram",
+    "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad",
+  ],
+  "Ladakh": ["Changthang", "Drass", "Kargil", "Leh", "Nubra", "Sham", "Zanskar"],
+  "Lakshadweep": ["Lakshadweep"],
+  "Madhya Pradesh": [
+    "Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur",
+    "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori", "Guna", "Gwalior", "Harda", "Indore",
+    "Jabalpur", "Jhabua", "Katni", "Khandwa", "Khargone", "Maihar", "Mandla", "Mandsaur", "Mauganj", "Morena",
+    "Narmadapuram", "Narsinghpur", "Neemuch", "Niwari", "Pandhurna", "Panna", "Raisen", "Rajgarh", "Ratlam", "Rewa",
+    "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur", "Sheopur", "Shivpuri", "Sidhi", "Singrauli",
+    "Tikamgarh", "Ujjain", "Umaria", "Vidisha",
+  ],
+  "Maharashtra": [
+    "Ahmednagar", "Akola", "Amravati", "Chhatrapati Sambhajinagar (Aurangabad)", "Beed", "Bhandara", "Buldhana",
+    "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai City",
+    "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik", "Dharashiv (Osmanabad)", "Palghar", "Parbhani",
+    "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal",
+  ],
+  "Manipur": [
+    "Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching", "Kamjong", "Kangpokpi",
+    "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal", "Thoubal", "Ukhrul",
+  ],
+  "Meghalaya": [
+    "East Garo Hills", "East Jaintia Hills", "East Khasi Hills", "Eastern West Khasi Hills", "North Garo Hills",
+    "Ri Bhoi", "South Garo Hills", "South West Garo Hills", "South West Khasi Hills", "West Garo Hills",
+    "West Jaintia Hills", "West Khasi Hills",
+  ],
+  "Mizoram": [
+    "Aizawl", "Champhai", "Hnahthial", "Khawzawl", "Kolasib", "Lawngtlai", "Lunglei", "Mamit", "Saitual", "Serchhip",
+    "Siaha",
+  ],
+  "Nagaland": [
+    "Chumoukedima", "Dimapur", "Kiphire", "Kohima", "Longleng", "Mokokchung", "Mon", "Niuland", "Noklak", "Peren",
+    "Phek", "Shamator", "Tseminyu", "Tuensang", "Wokha", "Zunheboto",
+  ],
+  "Odisha": [
+    "Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati",
+    "Ganjam", "Jagatsinghpur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar", "Khordha",
+    "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur",
+    "Subarnapur", "Sundargarh",
+  ],
+  "Puducherry": ["Karaikal", "Mahe", "Puducherry", "Yanam"],
+  "Punjab": [
+    "Amritsar", "Barnala", "Bathinda", "Faridkot", "Fatehgarh Sahib", "Fazilka", "Ferozepur", "Gurdaspur", "Hoshiarpur",
+    "Jalandhar", "Kapurthala", "Ludhiana", "Malerkotla", "Mansa", "Moga", "Mohali (SAS Nagar)", "Muktsar", "Pathankot",
+    "Patiala", "Rupnagar", "Sangrur", "Shaheed Bhagat Singh Nagar", "Tarn Taran",
+  ],
+  "Rajasthan": [
+    "Ajmer", "Alwar", "Balotra", "Banswara", "Baran", "Barmer", "Beawar", "Bharatpur", "Bhilwara", "Bikaner", "Bundi",
+    "Chittorgarh", "Churu", "Dausa", "Deeg", "Dholpur", "Didwana-Kuchaman", "Dungarpur", "Hanumangarh", "Jaipur",
+    "Jaisalmer", "Jalore", "Jhalawar", "Jhunjhunu", "Jodhpur", "Karauli", "Khairthal-Tijara", "Kota",
+    "Kotputli-Behror", "Nagaur", "Pali", "Phalodi", "Pratapgarh", "Rajsamand", "Salumbar", "Sawai Madhopur", "Sikar",
+    "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur",
+  ],
+  "Sikkim": ["Gangtok", "Gyalshing", "Mangan", "Namchi", "Pakyong", "Soreng"],
+  "Tamil Nadu": [
+    "Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kallakurichi",
+    "Kancheepuram", "Kanyakumari", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai", "Nagapattinam", "Namakkal",
+    "The Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem", "Sivaganga", "Tenkasi",
+    "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupathur", "Tiruppur", "Tiruvallur",
+    "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar",
+  ],
+  "Telangana": [
+    "Adilabad", "Bhadradri Kothagudem", "Hanumakonda", "Hyderabad", "Jagtial", "Jangaon", "Jayashankar Bhupalpally",
+    "Jogulamba Gadwal", "Kamareddy", "Karimnagar", "Khammam", "Kumuram Bheem Asifabad", "Mahabubabad", "Mahabubnagar",
+    "Mancherial", "Medak", "Medchal-Malkajgiri", "Mulugu", "Nagarkurnool", "Nalgonda", "Narayanpet", "Nirmal",
+    "Nizamabad", "Peddapalli", "Rajanna Sircilla", "Rangareddy", "Sangareddy", "Siddipet", "Suryapet", "Vikarabad",
+    "Wanaparthy", "Warangal", "Yadadri Bhuvanagiri",
+  ],
+  "Tripura": ["Dhalai", "Gomati", "Khowai", "North Tripura", "Sepahijala", "South Tripura", "Unakoti", "West Tripura"],
+  "Uttar Pradesh": [
+    "Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich",
+    "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr",
+    "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar",
+    "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur",
+    "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kushinagar", "Lakhimpur Kheri",
+    "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad",
+    "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal",
+    "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur",
+    "Unnao", "Varanasi",
+  ],
+  "Uttarakhand": [
+    "Almora", "Bageshwar", "Chamoli", "Champawat", "Dehradun", "Haridwar", "Nainital", "Pauri Garhwal", "Pithoragarh",
+    "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi",
+  ],
+  "West Bengal": [
+    "Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah",
+    "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas",
+    "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas",
+    "Uttar Dinajpur",
+  ],
+};
+
+/* every district name once, A-Z (used for URL ?district=... and counts) */
+export const ALL_DISTRICTS = Array.from(new Set(Object.values(INDIA_DISTRICTS).flat())).sort((a, b) => a.localeCompare(b));
+
+/* total number of district entries across India (a name shared by two states, e.g. Bilaspur, counts twice) */
+export const TOTAL_DISTRICTS = Object.values(INDIA_DISTRICTS).reduce((sum, list) => sum + list.length, 0);
+
+/* All 28 states + 8 union territories of India (chips appear one by one). College data is currently Tamil Nadu only. */
+const INDIA_STATES = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh",
+  "Chhattisgarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", "Gujarat", "Haryana",
+  "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Lakshadweep",
+  "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry",
+  "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand",
+  "West Bengal",
+];
+const DATA_STATE = "Tamil Nadu"; // the state every college in the list belongs to (unless a college has its own `state`)
+
+/* PINNED in the search bar: exact college names from the list above, shown in this order */
+const BEST_COLLEGES = [
+  "Indian Institute of Technology Madras",
+  "National Institute of Technology, Tiruchirappalli",
+  "College of Engineering, Guindy (Anna University)",
+  "PSG College of Technology",
+  "Madras Institute of Technology (Anna University)",
+  "Vellore Institute of Technology (VIT), Vellore Campus",
+  "SSN College of Engineering",
+  "Coimbatore Institute of Technology",
+  "Madras Medical College",
+  "Loyola College",
+];
+
+/* placeholder text that rotates in the search bar */
+const SEARCH_HINTS = [
+  "Search college, district, category or affiliation",
+  "Try \"IIT Madras\"",
+  "Try \"Anna University\"",
+  "Try \"Engineering in Coimbatore\"",
+  "Try \"Nursing colleges in Madurai\"",
+];
+
+/* =========================
+   COLLEGE EXPLORER  (search + district + category + cards + Learn more / Edit modals)
+   Used by:  1) this file's /college/profile page      -> <CollegeExplorer />
+             2) CollegeSite.jsx (/college/home) section -> <CollegeExplorer embedded />
+========================= */
+
+export function CollegeExplorer({
+  embedded = false,
+  initialDistrict = "All",
+  initialState = "All",
+  initialCategory = "All",
+  initialSearch = "",
+  initialShowAll = false,
+}) {
   const navigate = useNavigate();
-  const isAddPage = window.location.pathname.endsWith("/new");
 
   const [colleges, setColleges] = useState(loadColleges);
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [activeDistrict, setActiveDistrict] = useState("All");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [activeDistrict, setActiveDistrict] = useState(initialDistrict);
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedCollege, setSelectedCollege] = useState(null);
   const [editingCollege, setEditingCollege] = useState(null);
-  const [showAllColleges, setShowAllColleges] = useState(false);
+  const [showAllColleges, setShowAllColleges] = useState(initialShowAll);
   const [toast, setToast] = useState("");
+  const [activeState, setActiveState] = useState(initialState);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [hintIndex, setHintIndex] = useState(0);
+  const searchRef = useRef(null);
 
   const modalOpen = Boolean(selectedCollege || editingCollege);
 
@@ -8925,6 +9153,22 @@ function CollegeProfile() {
       window.removeEventListener("keydown", onKey);
     };
   }, [modalOpen, editingCollege]);
+
+  /* rotating placeholder in the search bar */
+  useEffect(() => {
+    const t = setInterval(() => setHintIndex((i) => (i + 1) % SEARCH_HINTS.length), 2800);
+    return () => clearInterval(t);
+  }, []);
+
+  /* close the best-colleges dropdown when clicking outside the search bar */
+  useEffect(() => {
+    if (!searchOpen) return undefined;
+    const onDown = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) setSearchOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [searchOpen]);
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -8947,7 +9191,6 @@ function CollegeProfile() {
     "Tuticorin": "Thoothukudi",
     "Tirunelveli": "Tirunelveli",
     "Tiruvannamalai": "Tiruvannamalai",
-    "Tiruvannamalai": "Tiruvannamalai",
     "Viluppuram": "Viluppuram",
     "Villupuram": "Viluppuram",
     "Kanyakumari": "Kanyakumari",
@@ -8965,8 +9208,10 @@ function CollegeProfile() {
     const canonicalDistrict = districtAliases[rawDistrict] || rawDistrict;
     const matchesDistrict =
       activeDistrict === "All" || canonicalDistrict === activeDistrict;
+    const matchesState =
+      activeState === "All" || (college.state || DATA_STATE) === activeState;
 
-    if (!normalizedSearch) return matchesCategory && matchesDistrict;
+    if (!normalizedSearch) return matchesCategory && matchesDistrict && matchesState;
 
     const searchableText = [
       college.name,
@@ -8981,40 +9226,73 @@ function CollegeProfile() {
       .toLowerCase();
 
     return (
-      matchesCategory && matchesDistrict && searchableText.includes(normalizedSearch)
+      matchesCategory && matchesDistrict && matchesState && searchableText.includes(normalizedSearch)
     );
   });
 
+  /* on the home page (embedded) only 9 cards are shown; "Show all" opens /college/profile */
   const shouldShowAll =
-    showAllColleges ||
-    Boolean(normalizedSearch) ||
-    activeCategory !== "All" ||
-    activeDistrict !== "All";
+    !embedded &&
+    (showAllColleges ||
+      Boolean(normalizedSearch) ||
+      activeCategory !== "All" ||
+      activeDistrict !== "All" ||
+      activeState !== "All");
 
   const visibleColleges = shouldShowAll ? filteredColleges : filteredColleges.slice(0, 9);
 
-  const saveNewCollege = (form) => {
-    const fields = formToFields(form);
-    const newCollege = {
-      id: Date.now(),
-      ...fields,
-      scholarships: [
-        "Government scholarships",
-        "Merit scholarships",
-        "Institutional financial assistance",
-      ],
-      placements: ["Placement support", "Career guidance", "Industry interaction"],
-    };
-    try {
-      const saved = readJSON(STORAGE_KEY, []);
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify([newCollege, ...(Array.isArray(saved) ? saved : [])])
-      );
-      navigate("/college/profile");
-    } catch {
-      alert("Could not save this college. Please check your browser storage.");
+  const isOtherState = activeState !== "All" && activeState !== DATA_STATE;
+
+  /* district dropdown: districts of the selected state, or every state's districts grouped when "All India" */
+  const stateDistricts = activeState === "All" ? [] : INDIA_DISTRICTS[activeState] || [];
+
+  /* best colleges pinned in the search bar (only the ones present in the list) */
+  const bestColleges = BEST_COLLEGES.map((name) =>
+    colleges.find((c) => normName(c.name) === normName(name))
+  ).filter(Boolean);
+
+  const suggestions = normalizedSearch
+    ? colleges
+        .filter((c) =>
+          [c.name, c.location, c.district, c.category, c.affiliation]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(normalizedSearch)
+        )
+        .slice(0, 6)
+    : [];
+
+  const pickBest = (college) => {
+    setSearchOpen(false);
+    setSelectedCollege(college);
+  };
+
+  const pickState = (name) => {
+    setActiveState(name);
+    setActiveDistrict("All"); // a district belongs to one state, so reset it whenever the state changes
+  };
+
+  /* in "All India" mode the option value is "State::District" so the state is selected automatically */
+  const pickDistrict = (value) => {
+    if (value.includes("::")) {
+      const [st, dist] = value.split("::");
+      setActiveState(st);
+      setActiveDistrict(dist);
+    } else {
+      setActiveDistrict(value);
     }
+  };
+
+  /* "442 colleges" badge and "Show all" button on the home page -> /college/profile (keeps the current filters) */
+  const goAll = () => {
+    const params = new URLSearchParams();
+    if (activeDistrict !== "All") params.set("district", activeDistrict);
+    if (activeCategory !== "All") params.set("category", activeCategory);
+    if (activeState !== "All") params.set("state", activeState);
+    if (searchTerm.trim()) params.set("q", searchTerm.trim());
+    params.set("all", "1");
+    navigate(`/college/profile?${params.toString()}`);
   };
 
   const saveEdit = (form) => {
@@ -9035,230 +9313,8 @@ function CollegeProfile() {
     }
   };
 
-  const brandButton = (target) => (
-    <button className="cp-brand" onClick={() => navigate(target)}>
-      <CampusLogo />
-      <div>
-        <strong>CampusConnect</strong>
-        <span>Student leads, better admissions</span>
-      </div>
-    </button>
-  );
-
-  /* ---------- Add college page ---------- */
-  if (isAddPage) {
-    return (
-      <div className="cp-page">
-        <style>{styles}</style>
-        <header className="cp-header">
-          <div className="cp-header-inner">
-            {brandButton("/college/profile")}
-            <button
-              className="cp-secondary-btn"
-              onClick={() => navigate("/college/profile")}
-            >
-              Back to colleges
-            </button>
-          </div>
-        </header>
-
-        <main className="cp-add-page">
-          <div className="cp-add-heading">
-            <h1>Add a new college</h1>
-            <p>Add institution details to the college directory.</p>
-          </div>
-          <CollegeForm
-            initial={emptyForm}
-            submitLabel="Add college"
-            onSubmit={saveNewCollege}
-            onCancel={() => navigate("/college/profile")}
-          />
-        </main>
-      </div>
-    );
-  }
-
-  /* ---------- Directory page ---------- */
-  return (
-    <div className="cp-page">
-      <style>{styles}</style>
-
-      <header className="cp-header">
-        <div className="cp-header-inner">
-          {brandButton("/college/dashboard")}
-          <button
-            className="cp-primary-btn cp-add-btn"
-            onClick={() => navigate("/college/register")}
-          >
-            <Icon name="plus" size={18} /> Add new college
-          </button>
-        </div>
-      </header>
-
-      <main className="cp-main">
-        <section className="cp-saved-section">
-          <div className="cp-section-heading">
-            <div>
-              <h2>Explore colleges</h2>
-              <p>Browse by district and category. Every profile can be edited.</p>
-            </div>
-            <div className="cp-count">{filteredColleges.length} colleges</div>
-          </div>
-
-          <div className="cp-search-wrap">
-            <span className="cp-search-icon">
-              <Icon name="search" size={22} />
-            </span>
-            <input
-              className="cp-search-input"
-              type="search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search college, district, category or affiliation"
-              aria-label="Search colleges"
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                className="cp-search-clear"
-                onClick={() => setSearchTerm("")}
-                aria-label="Clear search"
-              >
-                <Icon name="close" size={16} />
-              </button>
-            )}
-          </div>
-
-          <div className="cp-district-select-wrap">
-            <label htmlFor="districtFilter">District</label>
-            <select
-              id="districtFilter"
-              className="cp-district-select"
-              value={activeDistrict}
-              onChange={(e) => setActiveDistrict(e.target.value)}
-            >
-              <option value="All">All districts</option>
-              {baseDistricts.map((district) => (
-                <option key={district} value={district}>{district}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="cp-tabs" role="group" aria-label="Category">
-            {categories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                className={activeCategory === category ? "active" : ""}
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          <div className="cp-college-grid">
-            {visibleColleges.map((college) => {
-              const theme = themeOf(college.category);
-              return (
-                <article
-                  className="cp-college-card"
-                  key={college.id}
-                  style={{ "--accent": theme.color, "--accent-soft": theme.soft }}
-                >
-                  <div className="cp-card-top">
-                    <div className="cp-college-logo">
-                      <LogoBadge key={logoKey(college)} college={college} />
-                    </div>
-                    <div className="cp-card-heading">
-                      <span className="cp-category">{college.category}</span>
-                      <h3>{college.name}</h3>
-                      <p className="cp-location">
-                        <Icon name="pin" size={16} />
-                        <span>{college.location}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="cp-card-details">
-                    <DetailItem label="Type" value={cleanValue(college.type)} />
-                    <DetailItem label="Affiliation" value={cleanValue(college.affiliation)} />
-                    <DetailItem label="District" value={cleanValue(college.district)} />
-                    <DetailItem label="Pincode" value={cleanValue(college.pincode)} />
-                  </div>
-
-                  <div className="cp-card-footer">
-                    {cleanValue(college.established) && (
-                      <span className="cp-established">
-                        Est. {cleanValue(college.established)}
-                      </span>
-                    )}
-                    <div className="cp-card-actions">
-                      <button
-                        type="button"
-                        className="cp-edit-btn"
-                        onClick={() => setEditingCollege(college)}
-                      >
-                        <Icon name="edit" size={16} /> Edit profile
-                      </button>
-                      <button
-                        type="button"
-                        className="cp-learn-btn"
-                        onClick={() => setSelectedCollege(college)}
-                      >
-                        Learn more <Icon name="arrow" size={17} />
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-
-          {!shouldShowAll && filteredColleges.length > 9 && (
-            <div className="cp-explore-more-wrap">
-              <button
-                type="button"
-                className="cp-explore-more-btn"
-                onClick={() => setShowAllColleges(true)}
-              >
-                Show all {filteredColleges.length} colleges <Icon name="arrow" size={18} />
-              </button>
-            </div>
-          )}
-
-          {shouldShowAll &&
-            filteredColleges.length > 9 &&
-            !normalizedSearch &&
-            activeCategory === "All" &&
-            activeDistrict === "All" && (
-              <div className="cp-explore-more-wrap">
-                <button
-                  type="button"
-                  className="cp-explore-more-btn secondary"
-                  onClick={() => setShowAllColleges(false)}
-                >
-                  Show less
-                </button>
-              </div>
-            )}
-
-          {filteredColleges.length === 0 && (
-            <div className="cp-empty">
-              <h3>No colleges found</h3>
-              <p>Try a different search, district or category, or add the college yourself.</p>
-              <button
-                className="cp-primary-btn"
-                onClick={() => navigate("/college/register")}
-              >
-                Add new college
-              </button>
-            </div>
-          )}
-        </section>
-      </main>
-
-      {/* ---------- Learn more modal ---------- */}
+  const modals = (
+    <>
       {selectedCollege && !editingCollege && (
         <div className="cp-modal-overlay" onClick={() => setSelectedCollege(null)}>
           <div
@@ -9492,6 +9548,430 @@ function CollegeProfile() {
           {toast}
         </div>
       )}
+    </>
+  );
+
+  const body = (
+      <main className="cp-main">
+        <section className="cp-saved-section">
+          <div className="cp-section-heading">
+            <div>
+              <h2>Explore colleges</h2>
+              <p>Browse by district and category. Every profile can be edited.</p>
+            </div>
+            {embedded ? (
+              <button
+                type="button"
+                className="cp-count cp-count-link"
+                onClick={goAll}
+                title="Open the full college list"
+              >
+                <span className="cp-live-dot" /> {filteredColleges.length} colleges <Icon name="arrow" size={16} />
+              </button>
+            ) : (
+              <div className="cp-count">
+                <span className="cp-live-dot" /> {filteredColleges.length} colleges
+              </div>
+            )}
+          </div>
+
+          <div className="cp-search-wrap" ref={searchRef}>
+            <span className="cp-search-icon">
+              <Icon name="search" size={22} />
+            </span>
+            <input
+              className="cp-search-input"
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={SEARCH_HINTS[hintIndex]}
+              aria-label="Search colleges"
+              onFocus={() => setSearchOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setSearchOpen(false);
+              }}
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className="cp-search-clear"
+                onClick={() => setSearchTerm("")}
+                aria-label="Clear search"
+              >
+                <Icon name="close" size={16} />
+              </button>
+            )}
+
+            {searchOpen && (
+              <div className="cp-suggest" role="listbox" aria-label="Best colleges" onMouseDown={(e) => e.preventDefault()}>
+                <div className="cp-suggest-pin">
+                  <span><Icon name="star" size={17} /> Best colleges</span>
+                  <em>Pinned</em>
+                </div>
+                <ul className="cp-best-list">
+                  {bestColleges.map((c, i) => (
+                    <li key={c.id} style={{ "--i": `${i * 45}ms` }}>
+                      <button type="button" onClick={() => pickBest(c)}>
+                        <b className="cp-best-rank">{i + 1}</b>
+                        <span className="cp-best-name">{c.name}</span>
+                        <small>{cleanValue(c.district)} · {c.category}</small>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+
+                {normalizedSearch && (
+                  <>
+                    <div className="cp-suggest-title">
+                      {suggestions.length ? `Matches for "${searchTerm.trim()}"` : `No matches for "${searchTerm.trim()}"`}
+                    </div>
+                    {suggestions.length > 0 && (
+                      <ul className="cp-match-list">
+                        {suggestions.map((c, i) => (
+                          <li key={c.id} style={{ "--i": `${i * 35}ms` }}>
+                            <button type="button" onClick={() => pickBest(c)}>
+                              <span className="cp-best-name">{c.name}</span>
+                              <small>{cleanValue(c.district)} · {c.category}</small>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="cp-filter-row">
+            <div className="cp-district-select-wrap">
+              <label htmlFor="stateFilter">State</label>
+              <select
+                id="stateFilter"
+                className="cp-district-select"
+                value={activeState}
+                onChange={(e) => pickState(e.target.value)}
+              >
+                <option value="All">All India ({INDIA_STATES.length} states and UTs)</option>
+                {INDIA_STATES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}{s === DATA_STATE ? ` (${colleges.length} colleges)` : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="cp-district-select-wrap">
+              <label htmlFor="districtFilter">District</label>
+              <select
+                id="districtFilter"
+                className="cp-district-select"
+                value={activeDistrict}
+                onChange={(e) => pickDistrict(e.target.value)}
+              >
+                <option value="All">
+                  All districts ({activeState === "All" ? TOTAL_DISTRICTS : stateDistricts.length})
+                </option>
+                {activeState === "All"
+                  ? INDIA_STATES.map((st) => (
+                      <optgroup key={st} label={st}>
+                        {(INDIA_DISTRICTS[st] || []).map((district) => (
+                          <option key={`${st}::${district}`} value={`${st}::${district}`}>{district}</option>
+                        ))}
+                      </optgroup>
+                    ))
+                  : stateDistricts.map((district) => (
+                      <option key={district} value={district}>{district}</option>
+                    ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="cp-tabs" role="group" aria-label="Category">
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                className={activeCategory === category ? "active" : ""}
+                onClick={() => setActiveCategory(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          <div className="cp-college-grid">
+            {visibleColleges.map((college, cardIndex) => {
+              const theme = themeOf(college.category);
+              return (
+                <article
+                  className="cp-college-card"
+                  key={college.id}
+                  style={{ "--accent": theme.color, "--accent-soft": theme.soft, "--i": `${(cardIndex % 9) * 70}ms` }}
+                >
+                  <div className="cp-card-top">
+                    <div className="cp-college-logo">
+                      <LogoBadge key={logoKey(college)} college={college} />
+                    </div>
+                    <div className="cp-card-heading">
+                      <span className="cp-category">{college.category}</span>
+                      <h3>{college.name}</h3>
+                      <p className="cp-location">
+                        <Icon name="pin" size={16} />
+                        <span>{college.location}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="cp-card-details">
+                    <DetailItem label="Type" value={cleanValue(college.type)} />
+                    <DetailItem label="Affiliation" value={cleanValue(college.affiliation)} />
+                    <DetailItem label="District" value={cleanValue(college.district)} />
+                    <DetailItem label="Pincode" value={cleanValue(college.pincode)} />
+                  </div>
+
+                  <div className="cp-card-footer">
+                    {cleanValue(college.established) && (
+                      <span className="cp-established">
+                        Est. {cleanValue(college.established)}
+                      </span>
+                    )}
+                    <div className="cp-card-actions">
+                      <button
+                        type="button"
+                        className="cp-edit-btn"
+                        onClick={() => setEditingCollege(college)}
+                      >
+                        <Icon name="edit" size={16} /> Edit profile
+                      </button>
+                      <button
+                        type="button"
+                        className="cp-learn-btn"
+                        onClick={() => setSelectedCollege(college)}
+                      >
+                        Learn more <Icon name="arrow" size={17} />
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {!shouldShowAll && filteredColleges.length > 9 && (
+            <div className="cp-explore-more-wrap">
+              <button
+                type="button"
+                className="cp-explore-more-btn"
+                onClick={embedded ? goAll : () => setShowAllColleges(true)}
+              >
+                Show all {filteredColleges.length} colleges <Icon name="arrow" size={18} />
+              </button>
+            </div>
+          )}
+
+          {shouldShowAll &&
+            filteredColleges.length > 9 &&
+            !normalizedSearch &&
+            activeCategory === "All" &&
+            activeDistrict === "All" && (
+              <div className="cp-explore-more-wrap">
+                <button
+                  type="button"
+                  className="cp-explore-more-btn secondary"
+                  onClick={() => setShowAllColleges(false)}
+                >
+                  Show less
+                </button>
+              </div>
+            )}
+
+          {filteredColleges.length === 0 && isOtherState && (
+            <div className="cp-empty">
+              <div className="cp-empty-ic" aria-hidden="true">🗺️</div>
+              <h3>{activeState} colleges are coming soon</h3>
+              <p>We currently list colleges from {DATA_STATE}. More states will be added soon.</p>
+              <button className="cp-primary-btn" onClick={() => pickState(DATA_STATE)}>
+                View {DATA_STATE} colleges
+              </button>
+            </div>
+          )}
+
+          {filteredColleges.length === 0 && !isOtherState && (
+            <div className="cp-empty">
+              <h3>No colleges found</h3>
+              <p>Try a different search, district or category, or add the college yourself.</p>
+              <button
+                className="cp-primary-btn"
+                onClick={() => navigate("/college/register")}
+              >
+                Add new college
+              </button>
+            </div>
+          )}
+        </section>
+      </main>
+  );
+
+  /* embedded inside the home page: modals + toast go to <body> so they are never clipped or shifted by page animations */
+  if (embedded) {
+    return (
+      <div className="cp-page cp-embedded">
+        <style>{styles}</style>
+        {body}
+        {createPortal(<div className="cp-page cp-embedded cp-portal">{modals}</div>, document.body)}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {body}
+      {modals}
+    </>
+  );
+}
+
+/* =========================
+   PAGE  (route: /college/profile  and  /college/profile/new)
+========================= */
+
+function CollegeProfile() {
+  const navigate = useNavigate();
+  const isAddPage = window.location.pathname.endsWith("/new");
+
+  /* /college/profile?district=Salem opens already filtered */
+  let initialDistrict = "All";
+  let initialState = "All";
+  let initialCategory = "All";
+  let initialSearch = "";
+  let initialShowAll = false;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const pick = (list, key) => {
+      const wanted = (params.get(key) || "").trim().toLowerCase();
+      return list.find((item) => item.toLowerCase() === wanted) || "All";
+    };
+    initialDistrict = pick(ALL_DISTRICTS, "district");
+    initialState = pick(INDIA_STATES, "state");
+    if (initialState === "All" && initialDistrict !== "All") {
+      initialState = INDIA_STATES.find((st) => (INDIA_DISTRICTS[st] || []).includes(initialDistrict)) || "All";
+    }
+    initialCategory = pick(categories, "category");
+    initialSearch = (params.get("q") || "").trim();
+    initialShowAll = params.get("all") === "1";
+  } catch {
+    /* keep defaults */
+  }
+
+  /* always open the page from the top (e.g. after clicking "442 colleges" on the home page) */
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, []);
+
+  const saveNewCollege = (form) => {
+    const fields = formToFields(form);
+    const newCollege = {
+      id: Date.now(),
+      ...fields,
+      scholarships: [
+        "Government scholarships",
+        "Merit scholarships",
+        "Institutional financial assistance",
+      ],
+      placements: ["Placement support", "Career guidance", "Industry interaction"],
+    };
+    try {
+      const saved = readJSON(STORAGE_KEY, []);
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify([newCollege, ...(Array.isArray(saved) ? saved : [])])
+      );
+      navigate("/college/profile");
+    } catch {
+      alert("Could not save this college. Please check your browser storage.");
+    }
+  };
+
+  const brandButton = (target) => (
+    <button className="cp-brand" onClick={() => navigate(target)}>
+      <CampusLogo />
+      <div>
+        <strong>CampusConnect</strong>
+        <span>Student leads, better admissions</span>
+      </div>
+    </button>
+  );
+
+  /* ---------- Add college page ---------- */
+  /* ---------- Add college page ---------- */
+  if (isAddPage) {
+    return (
+      <div className="cp-page">
+        <style>{styles}</style>
+        <header className="cp-header">
+          <div className="cp-header-inner">
+            {brandButton("/college/profile")}
+            <button
+              className="cp-secondary-btn"
+              onClick={() => navigate("/college/profile")}
+            >
+              Back to colleges
+            </button>
+          </div>
+        </header>
+
+        <main className="cp-add-page">
+          <div className="cp-add-heading">
+            <h1>Add a new college</h1>
+            <p>Add institution details to the college directory.</p>
+          </div>
+          <CollegeForm
+            initial={emptyForm}
+            submitLabel="Add college"
+            onSubmit={saveNewCollege}
+            onCancel={() => navigate("/college/profile")}
+          />
+        </main>
+      </div>
+    );
+  }
+
+  /* ---------- Directory page ---------- */
+  return (
+    <div className="cp-page">
+      <style>{styles}</style>
+
+      <header className="cp-header">
+        <div className="cp-header-inner">
+          <div className="cp-header-left">
+            <button
+              type="button"
+              className="cp-back-btn"
+              onClick={() => navigate("/college/home")}
+              aria-label="Back to home"
+              title="Back to home"
+            >
+              <Icon name="back" size={22} />
+            </button>
+            {brandButton("/college/home")}
+          </div>
+          <button
+            className="cp-primary-btn cp-add-btn"
+            onClick={() => navigate("/college/register")}
+          >
+            <Icon name="plus" size={18} /> Add new college
+          </button>
+        </div>
+      </header>
+
+      <CollegeExplorer
+        initialDistrict={initialDistrict}
+        initialState={initialState}
+        initialCategory={initialCategory}
+        initialSearch={initialSearch}
+        initialShowAll={initialShowAll}
+      />
     </div>
   );
 }
@@ -9661,6 +10141,7 @@ body { overflow-x: hidden; }
 /* ---------- Search + filters ---------- */
 .cp-search-wrap {
   position: relative;
+  width: 100%; /* search bar full width. 75% venumna idha 75% nu maathunga */
   margin: 22px 0 18px;
   border: 1.5px solid #c9d9ec;
   border-radius: 16px;
@@ -10286,6 +10767,143 @@ body { overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .cp-modal { animation: none; }
 }
+
+/* =====================================================
+   NEW: back arrow, state chips, best-colleges dropdown, animations
+===================================================== */
+.cp-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.cp-back-btn {
+  width: 46px; height: 46px; flex: 0 0 auto; display: grid; place-items: center;
+  border-radius: 50%; border: 1px solid #d3e3fb; background: #edf4ff; color: #1349c2; cursor: pointer;
+  transition: background .2s, color .2s, transform .2s, box-shadow .2s;
+}
+.cp-back-btn svg { transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+.cp-back-btn:hover { background: #1349c2; color: #fff; box-shadow: 0 10px 22px -10px rgba(21,88,214,.7); }
+.cp-back-btn:hover svg { transform: translateX(-4px); }
+.cp-back-btn:active { transform: scale(.92); }
+
+/* count badge (clickable on the home page) */
+.cp-count { display: inline-flex; align-items: center; gap: 9px; }
+.cp-count-link { border: 1.5px solid #bcd6ff; cursor: pointer; font-family: inherit; transition: background .2s, color .2s, transform .2s, box-shadow .2s; }
+.cp-count-link svg { transition: transform .25s; }
+.cp-count-link:hover { background: #1349c2; color: #fff; transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(21,88,214,.7); }
+.cp-count-link:hover svg { transform: translateX(5px); }
+.cp-live-dot { width: 9px; height: 9px; border-radius: 50%; background: #16a34a; animation: cpPing 1.8s ease-out infinite; }
+
+/* heading shimmer */
+.cp-section-heading h2 {
+  background: linear-gradient(90deg, var(--ink) 0%, var(--blue) 35%, #19b3e6 50%, var(--ink) 80%, var(--ink) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: cpShimmer 7s linear infinite;
+}
+
+/* search bar */
+.cp-search-wrap:focus-within { animation: cpGlow 2.6s ease-in-out infinite; }
+.cp-search-wrap:focus-within .cp-search-icon { color: var(--blue); animation: cpWiggle .7s ease; }
+.cp-search-input::placeholder { transition: opacity .3s; }
+
+/* best colleges dropdown (pinned) */
+.cp-suggest {
+  position: absolute; left: -1.5px; right: -1.5px; top: calc(100% + 10px); z-index: 70;
+  padding: 14px 14px 12px; border-radius: 18px; background: #fff; border: 1.5px solid #cddff4;
+  box-shadow: 0 30px 60px -20px rgba(21, 60, 140, .4);
+  transform-origin: top center; animation: cpDropIn .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.cp-suggest-pin { display: flex; align-items: center; justify-content: space-between; margin: 0 4px 10px; }
+.cp-suggest-pin span { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; color: var(--ink); }
+.cp-suggest-pin svg { color: #f59e0b; fill: #fbbf24; animation: cpWiggle 2.8s ease-in-out infinite; }
+.cp-suggest-pin em { font-style: normal; padding: 3px 10px; border-radius: 99px; background: #fef3c7; color: #92400e; font-size: 12px; font-weight: 800; }
+.cp-best-list, .cp-match-list { list-style: none; margin: 0; padding: 0; }
+.cp-best-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.cp-best-list li, .cp-match-list li { animation: cpItemIn .4s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: var(--i, 0ms); }
+.cp-best-list button, .cp-match-list button {
+  width: 100%; display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; align-items: center; text-align: left;
+  padding: 8px 10px; border: 1px solid transparent; border-radius: 12px; background: #f6f9ff; color: var(--ink); cursor: pointer;
+  transition: background .2s, transform .2s, border-color .2s;
+}
+.cp-match-list button { grid-template-columns: minmax(0, 1fr); background: #fff; }
+.cp-best-list button:hover, .cp-match-list button:hover { background: #e8f1ff; border-color: #bcd6ff; transform: translateX(4px); }
+.cp-best-rank {
+  grid-row: 1 / span 2; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #fff; font-size: 13px; font-weight: 800;
+}
+.cp-best-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 800; }
+.cp-best-list small, .cp-match-list small { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 12.5px; font-weight: 600; }
+.cp-suggest-title { margin: 12px 4px 6px; color: var(--muted); font-size: 13px; font-weight: 800; letter-spacing: .3px; }
+.cp-match-list { max-height: 230px; overflow-y: auto; }
+
+/* state + district dropdowns: 50% + 50% under the search bar (same total width as the search bar) */
+.cp-filter-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+  margin: 0 0 20px;
+}
+.cp-filter-row .cp-district-select-wrap { width: 100%; margin: 0; }
+.cp-filter-row .cp-district-select-wrap:only-child { grid-column: 1 / -1; } /* another state picked -> state dropdown takes the full row */
+.cp-filter-row .cp-district-select-wrap label { font-size: 15px; margin-bottom: 8px; }
+.cp-filter-row .cp-district-select {
+  min-height: 58px;
+  padding: 0 48px 0 18px;
+  border-radius: 14px;
+  font-size: 17px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231349c2' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+}
+.cp-filter-row .cp-district-select:hover { border-color: #8db4ee; transform: translateY(-1px); }
+@media (max-width: 600px) {
+  .cp-filter-row { grid-template-columns: 1fr; gap: 14px; }
+}
+
+/* tabs */
+.cp-tabs button { transition: background .2s, color .2s, border-color .2s, transform .2s; }
+.cp-tabs button:hover { transform: translateY(-2px); }
+.cp-tabs button.active { animation: cpPop .35s ease; }
+
+/* cards */
+.cp-college-card {
+  transition: box-shadow .25s ease, border-color .25s ease, transform .25s cubic-bezier(.2,.8,.2,1);
+  animation: cpCardIn .65s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: var(--i, 0ms);
+}
+.cp-college-card:hover { transform: translateY(-7px); box-shadow: 0 24px 44px -18px rgba(34, 74, 117, .35); }
+.cp-college-logo { transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
+.cp-college-card:hover .cp-college-logo { transform: rotate(-5deg) scale(1.08); box-shadow: 0 12px 24px -12px rgba(21,88,214,.45); }
+.cp-learn-btn svg, .cp-explore-more-btn svg { transition: transform .25s; }
+.cp-learn-btn:hover svg, .cp-explore-more-btn:hover svg { transform: translateX(5px); }
+.cp-explore-more-btn { transition: transform .2s, box-shadow .2s, filter .2s; }
+.cp-explore-more-btn:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -14px rgba(21,88,214,.7); }
+
+.cp-empty-ic { font-size: 56px; line-height: 1; margin-bottom: 8px; animation: cpFloat 3.2s ease-in-out infinite; }
+
+@keyframes cpCardIn { from { opacity: 0; transform: translateY(34px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes cpItemIn { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+@keyframes cpDropIn { from { opacity: 0; transform: translateY(-10px) scaleY(.94); } to { opacity: 1; transform: none; } }
+@keyframes cpPop { 0% { transform: scale(.9); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+@keyframes cpPing { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.6); } 80%, 100% { box-shadow: 0 0 0 10px rgba(22,163,74,0); } }
+@keyframes cpShimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+@keyframes cpGlow { 0%, 100% { box-shadow: 0 0 0 4px rgba(21,88,214,.12); } 50% { box-shadow: 0 0 0 8px rgba(25,179,230,.2); } }
+@keyframes cpWiggle { 0%, 100% { rotate: 0deg; } 30% { rotate: -18deg; } 60% { rotate: 14deg; } }
+@keyframes cpFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+@media (max-width: 700px) {
+  .cp-best-list { grid-template-columns: 1fr; }
+  .cp-header-left { gap: 8px; }
+  .cp-back-btn { width: 40px; height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-page *, .cp-page *::before, .cp-page *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .001s !important; }
+}
+
+/* ---------- embedded in the home page / portal ---------- */
+.cp-page.cp-embedded { min-height: 0; background: transparent; overflow: visible; }
+.cp-page.cp-embedded .cp-main { padding-top: 0; padding-bottom: 0; }
+.cp-page.cp-portal { width: 0; height: 0; min-height: 0; overflow: visible; background: none; }
 `;
 
 export default CollegeProfile;

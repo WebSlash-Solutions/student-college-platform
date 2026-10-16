@@ -14,13 +14,11 @@ function AdminSidebar() {
     ["Dashboard", "⌂", "/admin/dashboard"],
     ["Students", "♙", "/admin/students"],
     ["Colleges", "▥", "/admin/colleges"],
-    ["Courses", "▤", "/admin/courses"],
-    ["Leads", "★", "/admin/leads"],
-    ["Applications", "▣", "/admin/applications"],
+    ["Courses", "▱", "/admin/courses"],
+    ["Applications", "✉", "/admin/applications"],
     ["Transactions", "₹", "/admin/transactions"],
-    ["Reports", "▥", "/admin/reports"],
-    ["Notifications", "♢", "/admin/notifications"],
-    ["Users", "♙", "/admin/users"],
+    ["Reports", "◑", "/admin/reports"],
+    ["Users", "♧", "/admin/users"],
     ["Settings", "⚙", "/admin/settings"],
   ];
 
@@ -52,7 +50,6 @@ function AdminSidebar() {
           >
             <span className="sidebar-icon">{icon}</span>
             <span>{name}</span>
-            {name === "Leads" && <span className="lead-star">★</span>}
           </button>
         ))}
       </div>
@@ -481,7 +478,6 @@ function StudentManagement() {
   return (
     <>
       <style>{`
-
         * {
           box-sizing: border-box;
         }
@@ -505,7 +501,8 @@ function StudentManagement() {
         }
 
         .app-shell {
-          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
           display: flex;
           width: 100%;
         }
@@ -544,37 +541,159 @@ function StudentManagement() {
           font-size: 20px;
         }
 
-        .sidebar-brand h1 { margin: 0; font-size: 16px; line-height: 1.2; color: #fff; }
-        .sidebar-brand h1 span { color: #58a1ff; }
-        .sidebar-brand p { margin: 3px 0 0; color: #91a5c2; font-size: 9px; }
-        .sidebar-menu { flex: 1; padding: 24px 12px; overflow-y: auto; }
-        .menu-title { margin: 0 12px 10px; color: #6f86a7; font-size: 9px; font-weight: 700; letter-spacing: 1px; }
-        .sidebar-item { width: 100%; height: 43px; margin-bottom: 4px; padding: 0 13px; border: 0; border-radius: 8px; background: transparent; color: #afbdd1; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; font-size: 12px; }
-        .sidebar-item:hover { color: #fff; background: rgba(255,255,255,.07); }
-        .sidebar-item.active { color: #fff; background: #2177e8; box-shadow: 0 6px 18px rgba(33,119,232,.2); }
-        .sidebar-icon { width: 20px; text-align: center; font-size: 16px; }
-        .lead-star { margin-left: auto; color: #f4c44f; font-size: 10px; }
-        .sidebar-bottom { padding: 14px; border-top: 1px solid rgba(255,255,255,.07); flex-shrink: 0; }
-        .sidebar-admin-card { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 10px; background: rgba(255,255,255,.055); }
-        .sidebar-avatar { width: 34px; height: 34px; border-radius: 50%; background: #28558e; color: #fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
-        .sidebar-admin-card strong { display:block; color:#fff; font-size:12px; }
-        .sidebar-admin-card span { display:block; margin-top:2px; color:#8196b5; font-size:9px; }
-        .logout-button { width:100%; margin-top:8px; height:34px; border:0; border-radius:8px; background:transparent; color:#93a6c0; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; }
-        .logout-button:hover { color:#fff; background:rgba(255,255,255,.07); }
-
-        .student-main-area {
-          flex: 1;
-          min-width: 0;
-          min-height: 100vh;
-          background: #f4f7fb;
+        .sidebar-brand h1 {
+          margin: 0;
+          font-size: 16px;
+          line-height: 1.2;
+          color: #fff;
         }
 
+        .sidebar-brand h1 span {
+          color: #58a1ff;
+        }
+
+        .sidebar-brand p {
+          margin: 3px 0 0;
+          color: #91a5c2;
+          font-size: 9px;
+        }
+
+        .sidebar-menu {
+          flex: 1;
+          padding: 24px 12px;
+          overflow-y: auto;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+
+        .sidebar-menu::-webkit-scrollbar {
+          display: none;
+        }
+
+        .menu-title {
+          margin: 0 12px 10px;
+          color: #6f86a7;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 1px;
+        }
+
+        .sidebar-item {
+          width: 100%;
+          height: 43px;
+          margin-bottom: 4px;
+          padding: 0 13px;
+          border: 0;
+          border-radius: 8px;
+          background: transparent;
+          color: #afbdd1;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          text-align: left;
+          cursor: pointer;
+          font-size: 12px;
+        }
+
+        .sidebar-item:hover {
+          color: #fff;
+          background: rgba(255,255,255,.07);
+        }
+
+        .sidebar-item.active {
+          color: #fff;
+          background: #2177e8;
+          box-shadow: 0 6px 18px rgba(33,119,232,.2);
+        }
+
+        .sidebar-icon {
+          width: 20px;
+          text-align: center;
+          font-size: 16px;
+        }
+
+        .lead-star {
+          margin-left: auto;
+          color: #f4c44f;
+          font-size: 10px;
+        }
+
+        .sidebar-bottom {
+          padding: 14px;
+          border-top: 1px solid rgba(255,255,255,.07);
+          flex-shrink: 0;
+        }
+
+        .sidebar-admin-card {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px;
+          border-radius: 10px;
+          background: rgba(255,255,255,.055);
+        }
+
+        .sidebar-avatar {
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          background: #28558e;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .sidebar-admin-card strong {
+          display: block;
+          color: #fff;
+          font-size: 12px;
+        }
+
+        .sidebar-admin-card span {
+          display: block;
+          margin-top: 2px;
+          color: #8196b5;
+          font-size: 9px;
+        }
+
+        .logout-button {
+          width: 100%;
+          margin-top: 8px;
+          height: 34px;
+          border: 0;
+          border-radius: 8px;
+          background: transparent;
+          color: #93a6c0;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          font-size: 11px;
+        }
+
+        .logout-button:hover {
+          color: #fff;
+          background: rgba(255,255,255,.07);
+        }
+
+        .student-main-area {
+          height: 100vh;
+          overflow-y: auto;
+          flex: 1;
+          min-width: 0;
+          background: #f4f7fb;
+        }
 
         /* ==============================
            TOP NAVBAR
         ============================== */
 
         .top-navbar {
+          z-index: 100;
           height: 64px;
           background: #ffffff;
           border-bottom: 1px solid #e7edf5;
@@ -584,7 +703,6 @@ function StudentManagement() {
           padding: 0 28px;
           position: sticky;
           top: 0;
-          z-index: 20;
         }
 
         .search-box {
@@ -765,51 +883,49 @@ function StudentManagement() {
           margin-bottom: 18px;
         }
 
-     
-.filter-search {
-  flex: 1;
-  min-width: 0;
-  height: 42px;
-  border: 1px solid #dce5f0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  background: #ffffff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
+        .filter-search {
+          flex: 1;
+          min-width: 0;
+          height: 42px;
+          border: 1px solid #dce5f0;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          padding: 0 14px;
+          background: #ffffff;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
 
-.filter-search:focus-within {
-  border-color: #287ddd;
-  box-shadow: 0 0 0 3px rgba(40, 125, 221, 0.10);
-}
+        .filter-search:focus-within {
+          border-color: #287ddd;
+          box-shadow: 0 0 0 3px rgba(40, 125, 221, 0.10);
+        }
 
-.filter-search-icon {
-  color: #8a9bb1;
-  margin-right: 12px;
-  font-size: 15px;
-  flex-shrink: 0;
-}
+        .filter-search-icon {
+          color: #8a9bb1;
+          margin-right: 12px;
+          font-size: 15px;
+          flex-shrink: 0;
+        }
 
-.filter-search input {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
-  background: transparent !important;
-  box-shadow: none;
-  font-size: 14px;
-  color: #17375f;
-  -webkit-text-fill-color: #17375f;
-}
+        .filter-search input {
+          flex: 1;
+          min-width: 0;
+          width: 100%;
+          height: 100%;
+          border: none;
+          outline: none;
+          background: transparent !important;
+          box-shadow: none;
+          font-size: 14px;
+          color: #17375f;
+          -webkit-text-fill-color: #17375f;
+        }
 
-.filter-search input::placeholder {
-  color: #9aa9bb;
-  opacity: 1;
-}
-
+        .filter-search input::placeholder {
+          color: #9aa9bb;
+          opacity: 1;
+        }
 
         .filter-select {
           height: 38px;
@@ -1320,8 +1436,10 @@ function StudentManagement() {
           background: #ffdadd;
         }
 
+        .more-action-wrap {
+          position: relative;
+        }
 
-        .more-action-wrap { position: relative; }
         .more-menu {
           position: absolute;
           top: 34px;
@@ -1334,6 +1452,7 @@ function StudentManagement() {
           padding: 5px;
           z-index: 30;
         }
+
         .more-menu button {
           width: 100%;
           border: 0;
@@ -1345,7 +1464,12 @@ function StudentManagement() {
           font-size: 10px;
           cursor: pointer;
         }
-        .more-menu button:hover { background: #f2f6fb; color: #287ddd; }
+
+        .more-menu button:hover {
+          background: #f2f6fb;
+          color: #287ddd;
+        }
+
         .modal-overlay {
           position: fixed;
           inset: 0;
@@ -1356,6 +1480,7 @@ function StudentManagement() {
           padding: 20px;
           z-index: 100;
         }
+
         .edit-modal {
           width: min(520px, 100%);
           background: #fff;
@@ -1364,17 +1489,85 @@ function StudentManagement() {
           box-shadow: 0 20px 50px rgba(20,45,75,.2);
           padding: 22px;
         }
-        .edit-modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
-        .edit-modal-header h3 { margin:0; color:#17375f; font-size:16px; }
-        .modal-close { border:0; background:#f2f5f8; width:30px; height:30px; border-radius:7px; cursor:pointer; color:#647a92; }
-        .edit-form { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
-        .edit-field label { display:block; margin-bottom:5px; color:#8192a6; font-size:9px; }
-        .edit-field input, .edit-field select { width:100%; height:36px; border:1px solid #dfe7ef; border-radius:7px; padding:0 10px; outline:none; color:#38536f; font-size:10px; }
-        .edit-field input:focus, .edit-field select:focus { border-color:#72a9e8; }
-        .edit-modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:18px; }
-        .modal-cancel, .modal-save { border:0; border-radius:7px; padding:9px 16px; font-size:10px; cursor:pointer; }
-        .modal-cancel { background:#eef2f6; color:#63788f; }
-        .modal-save { background:#287ddd; color:#fff; }
+
+        .edit-modal-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 18px;
+        }
+
+        .edit-modal-header h3 {
+          margin: 0;
+          color: #17375f;
+          font-size: 16px;
+        }
+
+        .modal-close {
+          border: 0;
+          background: #f2f5f8;
+          width: 30px;
+          height: 30px;
+          border-radius: 7px;
+          cursor: pointer;
+          color: #647a92;
+        }
+
+        .edit-form {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 13px;
+        }
+
+        .edit-field label {
+          display: block;
+          margin-bottom: 5px;
+          color: #8192a6;
+          font-size: 9px;
+        }
+
+        .edit-field input,
+        .edit-field select {
+          width: 100%;
+          height: 36px;
+          border: 1px solid #dfe7ef;
+          border-radius: 7px;
+          padding: 0 10px;
+          outline: none;
+          color: #38536f;
+          font-size: 10px;
+        }
+
+        .edit-field input:focus,
+        .edit-field select:focus {
+          border-color: #72a9e8;
+        }
+
+        .edit-modal-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 8px;
+          margin-top: 18px;
+        }
+
+        .modal-cancel,
+        .modal-save {
+          border: 0;
+          border-radius: 7px;
+          padding: 9px 16px;
+          font-size: 10px;
+          cursor: pointer;
+        }
+
+        .modal-cancel {
+          background: #eef2f6;
+          color: #63788f;
+        }
+
+        .modal-save {
+          background: #287ddd;
+          color: #fff;
+        }
 
         /* ==============================
            EMPTY STATE
@@ -1419,14 +1612,25 @@ function StudentManagement() {
           width: 100%;
           border-collapse: collapse;
         }
-        .marks-table th, .marks-table td {
+
+        .marks-table th,
+        .marks-table td {
           padding: 11px 10px;
           border-bottom: 1px solid #edf1f5;
           text-align: left;
           font-size: 13px;
         }
-        .marks-table th { color: #7f91a7; font-weight: 600; }
-        .marks-table td { color: #365473; font-weight: 600; }
+
+        .marks-table th {
+          color: #7f91a7;
+          font-weight: 600;
+        }
+
+        .marks-table td {
+          color: #365473;
+          font-weight: 600;
+        }
+
         .cutoff-box {
           margin-top: 14px;
           padding: 12px 14px;
@@ -1436,34 +1640,79 @@ function StudentManagement() {
           justify-content: space-between;
           align-items: center;
         }
-        .cutoff-box span { color:#71859c; font-size:13px; }
-        .cutoff-box strong { color:#1670d2; font-size:16px; }
-        .edit-modal-subtitle { margin: 4px 0 0; color:#8a9aae; font-size:11px; }
-        .edit-field input, .edit-field select {
+
+        .cutoff-box span {
+          color: #71859c;
+          font-size: 13px;
+        }
+
+        .cutoff-box strong {
+          color: #1670d2;
+          font-size: 16px;
+        }
+
+        .edit-modal-subtitle {
+          margin: 4px 0 0;
+          color: #8a9aae;
+          font-size: 11px;
+        }
+
+        .edit-field input,
+        .edit-field select {
           background: #ffffff !important;
           color: #284a6e !important;
           -webkit-text-fill-color: #284a6e !important;
           font-size: 13px !important;
         }
-        .edit-field input::placeholder { color:#9aa8b8 !important; opacity:1; }
+
+        .edit-field input::placeholder {
+          color: #9aa8b8 !important;
+          opacity: 1;
+        }
 
         /* ==============================
            RESPONSIVE
         ============================== */
 
-
         @media (max-width: 1100px) {
-          .admin-sidebar { width: 76px; min-width: 76px; }
-          .sidebar-brand { justify-content:center; padding:0; }
-          .sidebar-brand > div:last-child, .menu-title, .sidebar-item span:not(.sidebar-icon), .sidebar-admin-card > div:last-child, .logout-button span { display:none; }
-          .sidebar-item { justify-content:center; padding:0; }
-          .sidebar-icon { font-size:18px; }
-          .sidebar-bottom { padding:10px; }
-          .sidebar-admin-card { justify-content:center; padding:9px; }
+          .admin-sidebar {
+            width: 76px;
+            min-width: 76px;
+          }
+
+          .sidebar-brand {
+            justify-content: center;
+            padding: 0;
+          }
+
+          .sidebar-brand > div:last-child,
+          .menu-title,
+          .sidebar-item span:not(.sidebar-icon),
+          .sidebar-admin-card > div:last-child,
+          .logout-button span {
+            display: none;
+          }
+
+          .sidebar-item {
+            justify-content: center;
+            padding: 0;
+          }
+
+          .sidebar-icon {
+            font-size: 18px;
+          }
+
+          .sidebar-bottom {
+            padding: 10px;
+          }
+
+          .sidebar-admin-card {
+            justify-content: center;
+            padding: 9px;
+          }
         }
 
         @media (max-width: 1000px) {
-
           .stats-grid {
             grid-template-columns: repeat(2, 1fr);
           }
@@ -1471,16 +1720,27 @@ function StudentManagement() {
           .details-grid {
             grid-template-columns: 1fr;
           }
+
           .academic-grid {
             grid-template-columns: 1fr;
           }
-
         }
 
         @media (max-width: 700px) {
-          .admin-sidebar { width: 58px; min-width: 58px; }
-          .sidebar-brand { height: 64px; }
-          .brand-icon { width: 34px; height: 34px; font-size: 17px; }
+          .admin-sidebar {
+            width: 58px;
+            min-width: 58px;
+          }
+
+          .sidebar-brand {
+            height: 64px;
+          }
+
+          .brand-icon {
+            width: 34px;
+            height: 34px;
+            font-size: 17px;
+          }
 
           .top-navbar {
             padding: 0 14px;
@@ -1569,11 +1829,9 @@ function StudentManagement() {
           .block-button {
             flex: 1;
           }
-
         }
 
         @media (max-width: 450px) {
-
           .search-box {
             width: 145px;
           }
@@ -1604,11 +1862,14 @@ function StudentManagement() {
             gap: 10px;
           }
 
-          .edit-form { grid-template-columns: 1fr; }
-          .edit-modal { padding: 18px; }
+          .edit-form {
+            grid-template-columns: 1fr;
+          }
 
+          .edit-modal {
+            padding: 18px;
+          }
         }
-
       `}</style>
 
       <div className="app-shell">
