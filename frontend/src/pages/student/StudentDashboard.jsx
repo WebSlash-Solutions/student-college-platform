@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import dbData from "./db.json";
 import artsData from "./arts.json";
 import medicalData from "./medical.json";
+import nursingData from "./nursing.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
@@ -1943,6 +1944,12 @@ export default function StudentDashboard() {
     const medicalCourses = Array.isArray(medicalData?.courses)
       ? medicalData.courses
       : [];
+    const nursingList = Array.isArray(nursingData?.colleges)
+      ? nursingData.colleges
+      : [];
+    const nursingCourses = Array.isArray(nursingData?.courses)
+      ? nursingData.courses
+      : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
       : [];
@@ -1977,8 +1984,9 @@ export default function StudentDashboard() {
       ...engList.map((college) => decorate(college, true)),
       ...artsList.map((college) => decorate(college, false)),
       ...medicalList.map((college) => decorate(college, false)),
+      ...nursingList.map((college) => decorate(college, false)),
     ]);
-    setCourses([...engCourses, ...artsCourses, ...medicalCourses]);
+    setCourses([...engCourses, ...artsCourses, ...medicalCourses, ...nursingCourses]);
     setLoading(false);
   }, []);
 
@@ -2036,7 +2044,7 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
-  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Medical"];
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Medical", "Nursing"];
 
   const categoryCounts = useMemo(() => {
     const counts = {};
