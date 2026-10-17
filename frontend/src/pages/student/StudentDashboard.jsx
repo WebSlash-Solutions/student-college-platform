@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import dbData from "./db.json";
 import artsData from "./arts.json";
+import medicalData from "./medical.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
@@ -1936,6 +1937,12 @@ export default function StudentDashboard() {
     const artsCourses = Array.isArray(artsData?.courses)
       ? artsData.courses
       : [];
+    const medicalList = Array.isArray(medicalData?.colleges)
+      ? medicalData.colleges
+      : [];
+    const medicalCourses = Array.isArray(medicalData?.courses)
+      ? medicalData.courses
+      : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
       : [];
@@ -1969,8 +1976,9 @@ export default function StudentDashboard() {
     setColleges([
       ...engList.map((college) => decorate(college, true)),
       ...artsList.map((college) => decorate(college, false)),
+      ...medicalList.map((college) => decorate(college, false)),
     ]);
-    setCourses([...engCourses, ...artsCourses]);
+    setCourses([...engCourses, ...artsCourses, ...medicalCourses]);
     setLoading(false);
   }, []);
 
