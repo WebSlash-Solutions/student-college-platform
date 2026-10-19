@@ -24152,7 +24152,7 @@ collegesData.forEach((college) => {
    ADMIN SIDEBAR
 ========================================================= */
 
-function AdminSidebar({ onCollegesClick }) {
+function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -24176,7 +24176,7 @@ function AdminSidebar({ onCollegesClick }) {
   };
 
   return (
-    <aside className="college-sidebar">
+    <aside className={`college-sidebar ${isOpen ? "is-open" : ""}`}>
       <div className="college-brand">
         <div className="brand-icon">🎓</div>
 
@@ -24202,6 +24202,7 @@ function AdminSidebar({ onCollegesClick }) {
                 : ""
             }`}
             onClick={() => {
+              onClose();
               if (name === "Colleges") onCollegesClick?.();
               navigate(path);
             }}
@@ -24234,7 +24235,7 @@ function AdminSidebar({ onCollegesClick }) {
    TOP BAR
 ========================================================= */
 
-function TopBar({ search, onSearchChange }) {
+function TopBar({ search, onSearchChange, onMenuClick }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -24246,13 +24247,24 @@ function TopBar({ search, onSearchChange }) {
 
   return (
     <header className="college-topbar">
-      <div className="global-search">
-        <span>⌕</span>
-        <input
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search students, colleges, leads..."
-        />
+      <div className="topbar-left">
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-label="Toggle menu"
+          onClick={onMenuClick}
+        >
+          ☰
+        </button>
+
+        <div className="global-search">
+          <span>⌕</span>
+          <input
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Search students, colleges, leads..."
+          />
+        </div>
       </div>
 
       <div className="top-admin">
@@ -27710,6 +27722,7 @@ export default function CollegeManagement() {
   const [colleges, setColleges] = useState(collegesData);
   const [selectedId, setSelectedId] = useState(null);
   const [search, setSearch] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const selectedCollege =
     colleges.find((college) => college.id === selectedId) || null;
@@ -27738,10 +27751,23 @@ export default function CollegeManagement() {
       <style>{collegeStyles}</style>
 
       <div className="college-admin-app">
-        <AdminSidebar onCollegesClick={() => setSelectedCollege(null)} />
+        <div
+          className={`sidebar-overlay ${sidebarOpen ? "is-open" : ""}`}
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+
+        <AdminSidebar
+          onCollegesClick={() => setSelectedCollege(null)}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
 
         <div className="college-main">
-          <TopBar search={search} onSearchChange={handleSearchChange} />
+          <TopBar
+            search={search}
+            onSearchChange={handleSearchChange}
+            onMenuClick={() => setSidebarOpen((prev) => !prev)}
+          />
 
           <main>
             {selectedCollege ? (
@@ -27825,6 +27851,18 @@ button {
   background: #f5f8fc;
 }
 
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.menu-toggle,
+.sidebar-overlay {
+  display: none;
+}
 
 .college-main {
   min-width: 0;
@@ -29152,68 +29190,66 @@ button {
     display: block;
   }
 
-  /* Keep the admin navigation visible on mobile as a compact icon rail */
+  /* Mobile: sidebar hidden by default, opens with the hamburger button */
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #17345d;
+    font-size: 22px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .topbar-left {
+    flex: 1;
+  }
+
+  .topbar-left .global-search {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 40, .5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+    z-index: 999;
+  }
+
+  .sidebar-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .college-sidebar {
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
-    width: 62px;
-    min-width: 62px;
+    width: 236px;
     z-index: 1000;
-    overflow-x: hidden;
-    transition: width .25s;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
   }
 
-  .college-brand {
-    justify-content: center;
-    padding: 12px 5px;
-  }
-
-  .college-brand > div:last-child,
-  .college-sidebar .menu-title,
-  .college-sidebar-item > span:not(.sidebar-icon):not(.lead-star),
-  .college-sidebar .lead-star,
-  .sidebar-admin-card > div:last-child,
-  .logout-button > span {
-    display: none;
-  }
-
-  .college-sidebar .sidebar-scroll {
-    padding: 8px 5px;
-  }
-
-  .college-sidebar-item {
-    justify-content: center;
-    gap: 0;
-    padding: 0;
-    min-height: 44px;
-  }
-
-  .college-sidebar-item .sidebar-icon {
-    width: 100%;
-    text-align: center;
-    font-size: 17px;
-  }
-
-  .sidebar-bottom {
-    padding: 8px 5px;
-  }
-
-  .sidebar-admin-card {
-    justify-content: center;
-    padding: 5px 0;
-  }
-
-  .logout-button {
-    justify-content: center;
-    width: 100%;
-    padding: 10px 0;
+  .college-sidebar.is-open {
+    transform: translateX(0);
   }
 
   .college-main {
-    margin-left: 62px;
-    width: calc(100% - 62px);
+    margin-left: 0;
+    width: 100%;
     min-width: 0;
   }
 

@@ -233,12 +233,12 @@ const SIDEBAR_MENU = [
   ["Settings", "⚙", "/admin/settings"],
 ];
 
-function CourseSidebar() {
+function CourseSidebar({ isOpen = false, onClose = () => {} }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
-    <aside className="cmx-sidebar">
+    <aside className={`cmx-sidebar ${isOpen ? "is-open" : ""}`}>
       <div className="cmx-brand">
         <div className="cmx-brand-icon">🎓</div>
         <div>
@@ -256,7 +256,10 @@ function CourseSidebar() {
             key={name}
             type="button"
             className={`cmx-item ${location.pathname === path ? "active" : ""}`}
-            onClick={() => navigate(path)}
+            onClick={() => {
+              onClose();
+              navigate(path);
+            }}
           >
             <span className="cmx-item-icon">{icon}</span>
             <span>{name}</span>
@@ -510,6 +513,11 @@ body {
   color: #fff;
 }
 
+.cmx-mobilebar,
+.cmx-overlay {
+  display: none;
+}
+
 @media (max-width: 1100px) {
   .cmx-sidebar {
     width: 76px;
@@ -545,9 +553,86 @@ body {
 }
 
 @media (max-width: 700px) {
+  .cmx-mobilebar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .cmx-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    background: #fff;
+    color: #17345d;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(23, 52, 93, .12);
+  }
+
+  .cmx-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 40, .5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+    z-index: 190;
+  }
+
+  .cmx-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .cmx-sidebar {
-    width: 58px;
-    min-width: 58px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 236px;
+    min-width: 236px;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+  }
+
+  .cmx-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .cmx-brand {
+    justify-content: flex-start;
+    padding: 0 20px;
+  }
+
+  .cmx-brand > div:last-child,
+  .cmx-menu-title,
+  .cmx-admin-card > div:last-child {
+    display: block;
+  }
+
+  .cmx-item span:not(.cmx-item-icon),
+  .cmx-logout span {
+    display: inline;
+  }
+
+  .cmx-item {
+    justify-content: flex-start;
+    padding: 0 13px;
+  }
+
+  .cmx-bottom {
+    padding: 14px;
+  }
+
+  .cmx-admin-card {
+    justify-content: flex-start;
+    padding: 12px;
   }
 
   .cmx-main {
@@ -558,11 +643,32 @@ body {
 
 // Page layout for /admin/courses: sidebar on the left + course page on the right.
 function StandaloneShell({ children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="cmx-shell">
       <style>{SHELL_CSS}</style>
-      <CourseSidebar />
-      <main className="cmx-main">{children}</main>
+      <div
+        className={`cmx-overlay ${sidebarOpen ? "is-open" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      ></div>
+      <CourseSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      <main className="cmx-main">
+        <div className="cmx-mobilebar">
+          <button
+            type="button"
+            className="cmx-menu-toggle"
+            aria-label="Toggle menu"
+            onClick={() => setSidebarOpen((prev) => !prev)}
+          >
+            ☰
+          </button>
+        </div>
+        {children}
+      </main>
     </div>
   );
 }

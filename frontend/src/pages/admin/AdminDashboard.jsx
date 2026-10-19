@@ -2115,6 +2115,100 @@ font-size: 14px;
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Mobile navigation toggle: keep the existing desktop layout unchanged. */
+.mobile-menu-toggle {
+  display: none;
+  border: 0;
+  background: transparent;
+  color: #18304f;
+  font-size: 23px;
+  line-height: 1;
+  padding: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mobile-sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .admin-topbar {
+    gap: 10px;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1002;
+    width: 236px;
+    height: 100dvh;
+    min-height: 100dvh;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 12px 0 32px rgba(12, 30, 52, 0.18);
+  }
+
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .admin-sidebar.mobile-open .sidebar-brand {
+    justify-content: flex-start;
+    padding: 0 22px;
+  }
+
+  .admin-sidebar.mobile-open .sidebar-brand > div:last-child,
+  .admin-sidebar.mobile-open .menu-title,
+  .admin-sidebar.mobile-open .sidebar-item span:not(.sidebar-icon),
+  .admin-sidebar.mobile-open .sidebar-admin-card > div:last-child,
+  .admin-sidebar.mobile-open .logout-button span:last-child {
+    display: block;
+  }
+
+  .admin-sidebar.mobile-open .menu-title {
+    display: block;
+  }
+
+  .admin-sidebar.mobile-open .sidebar-item {
+    justify-content: flex-start;
+    padding: 0 13px;
+  }
+
+  .admin-sidebar.mobile-open .sidebar-bottom {
+    padding: 15px;
+  }
+
+  .admin-sidebar.mobile-open .sidebar-admin-card {
+    justify-content: flex-start;
+    padding: 12px;
+  }
+
+  .admin-sidebar.mobile-open .logout-button {
+    font-size: 11px;
+  }
+
+  .admin-sidebar.mobile-open .logout-button::after {
+    content: none;
+  }
+
+  .mobile-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    border: 0;
+    background: rgba(12, 24, 40, 0.48);
+    cursor: pointer;
+  }
+}
 `;
 
 /* =========================================================
@@ -2268,7 +2362,7 @@ function AdminLogin({ onLogin }) {
    ADMIN SIDEBAR
 ========================================================= */
 
-function AdminSidebar({ activePage, setActivePage, onLogout, navigate }) {
+function AdminSidebar({ activePage, setActivePage, onLogout, navigate, isSidebarOpen, setIsSidebarOpen }) {
   const menuItems = [
     { name: "Dashboard", icon: "⌂" },
     { name: "Students", icon: "♙" },
@@ -2282,7 +2376,7 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate }) {
   ];
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar ${isSidebarOpen ? "mobile-open" : ""}`}>
       <div className="sidebar-brand">
         <div className="brand-icon">🎓</div>
 
@@ -2305,10 +2399,13 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate }) {
               activePage === item.name ? "active" : ""
             }`}
             onClick={() => {
+              setIsSidebarOpen(false);
               if (item.name === "Students") {
                 navigate("/admin/students");
               } else if (item.name === "Colleges") {
                 navigate("/admin/colleges");
+              } else if (item.name === "Applications") {
+                navigate("/admin/applications");
               } else {
                 setActivePage(item.name);
               }
@@ -2506,7 +2603,7 @@ function SearchResult({ item, onSelect }) {
    TOP HEADER
 ========================================================= */
 
-function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage }) {
+function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage, onToggleSidebar }) {
   const navigate = useNavigate();
   const [showSearchResults, setShowSearchResults] = useState(false);
 
@@ -2539,11 +2636,25 @@ function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage }) {
       return;
     }
 
+    if (item.page === "Applications") {
+      navigate("/admin/applications");
+      return;
+    }
+
     setActivePage(item.page);
   };
 
   return (
     <header className="admin-topbar">
+      <button
+        type="button"
+        className="mobile-menu-toggle"
+        onClick={onToggleSidebar}
+        aria-label="Toggle navigation menu"
+        aria-expanded={undefined}
+      >
+        ☰
+      </button>
       <div className="top-search-container">
         <div className="top-search">
           <span>⌕</span>
@@ -3353,6 +3464,7 @@ function AdminDashboard() {
 
   const [activePage, setActivePage] = useState("Dashboard");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogin = () => {
     sessionStorage.setItem("adminLoggedIn", "true");
@@ -3380,11 +3492,21 @@ function AdminDashboard() {
     <>
       <style>{adminStyles}</style>
       <div className="admin-app">
+        {isSidebarOpen && (
+          <button
+            type="button"
+            className="mobile-sidebar-overlay"
+            aria-label="Close navigation menu"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
         <AdminSidebar
           activePage={activePage}
           setActivePage={setActivePage}
           onLogout={handleLogout}
           navigate={navigate}
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
         />
 
         <div className="admin-main">
@@ -3393,6 +3515,7 @@ function AdminDashboard() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             setActivePage={setActivePage}
+            onToggleSidebar={() => setIsSidebarOpen((open) => !open)}
           />
 
           <main className="admin-content">

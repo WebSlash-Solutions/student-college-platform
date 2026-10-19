@@ -11,12 +11,8 @@ import { CollegeExplorer, INDIA_DISTRICTS, TOTAL_DISTRICTS } from "./CollegeProf
       -> opens inside this same page when a logged-in college clicks "View Plans & Prices".
       -> not logged in: the prices are never rendered and the college is sent to the login page.
 
-   COLLEGE SEARCH: the "Explore colleges" section on this page is the <CollegeExplorer embedded /> component
-   exported from CollegeProfile.jsx (search box, district dropdown, category tabs, college cards, Learn more / Edit profile).
-   The full page is still available at /college/profile (and /college/profile?district=Salem).
-
-   NAV ORDER: Home · Downloads · Dream Campus (= Explore colleges) · Subscription (4th) · How It Works · Pricing · Benefits · About · Contact
-   SUBSCRIPTION (4th menu item): logged in -> opens the prices page. Not logged in -> a "Please login" popup is shown and NO price is rendered.
+   NAV ORDER (the page sections scroll in this SAME order, one after another):
+   Start Here · Student Pool · College Radar · Boost Plans · How We Work · Just ₹100 · Why Us · Our Mission · Reach Us
 
    NOTE: the login check here only controls what the screen shows. Real protection must be on the backend:
    plans/prices API and payment API must require the college's JWT, and payment success must be verified by the backend. */
@@ -24,23 +20,20 @@ import { CollegeExplorer, INDIA_DISTRICTS, TOTAL_DISTRICTS } from "./CollegeProf
 const SESSION_KEY = "campusconnect_college_session"; // same key used by Registeration.jsx
 const AFTER_LOGIN_KEY = "campusconnect_after_login"; // login page can read this and redirect back (value: "/college/home?view=plans")
 
-/* menu: [section id, label, kind]
-   kind "fancy" = animated highlight item (Explore colleges section, id "districts")
-   kind "plans" = Subscription: opens the login-only prices page (or the "Please login" popup) instead of scrolling */
 const MENU = [
-  ["home", "Home"],
-  ["downloads", "Downloads"],
-  ["districts", "Dream Campus", "fancy"],
-  ["plans", "Subscription", "plans"],
-  ["how", "How It Works"],
-  ["pricing", "Pricing"],
-  ["benefits", "Benefits"],
-  ["about", "About"],
-  ["contact", "Contact"],
+  ["home", "Start Here", "", "🏁"],
+  ["downloads", "Student Pool", "", "🎯"],
+  ["districts", "College Radar", "fancy", "🎓"],
+  ["plans", "Boost Plans", "", "🚀"],
+  ["how", "How We Work", "", "⚙️"],
+  ["pricing", "Just ₹100", "", "💸"],
+  ["benefits", "Why Us", "", "🏆"],
+  ["about", "Our Mission", "", "🌱"],
+  ["contact", "Reach Us", "", "📞"],
 ];
 const SPY_IDS = MENU.map(([id]) => id);
 
-/* Counter numbers — SAMPLE values, change to your real numbers or load from API.  [value, suffix, label, ring %, hue] */
+/* Counter numbers — SAMPLE values.  [value, suffix, label, ring %, hue] */
 const STATS = [
   [12450, "+", "student leads downloaded", 0.86, "#19c3e6"],
   [325, "+", "colleges registered", 0.68, "#a78bfa"],
@@ -98,7 +91,7 @@ const LEADS = [
   ["STU10234", "88%", "B.Com", "Erode", "B"],
 ];
 
-/* SAMPLE prices (monthly base, ₹) and discounts — change to your real pricing. Shown ONLY after login. */
+/* SAMPLE prices (monthly base, ₹) and discounts. Shown ONLY after login. */
 const MONTHLY = { elite: 999, gold: 1999, diamond: 3999 };
 // [id, label, months, discount %]
 const PERIODS = [
@@ -108,14 +101,14 @@ const PERIODS = [
 ];
 const rupee = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
-const RIBBON_A = ["Search by district", "₹100 per lead", "Verified colleges", "Consent-based leads", "Secure payments", `${TOTAL_DISTRICTS} districts`];
-const RIBBON_B = ["Coimbatore", "Chennai", "Erode", "Salem", "Tiruppur", "Madurai", "Trichy", "Vellore", "Tirunelveli"];
+const RIBBON_A = ["Search by district", "₹100 per lead", "Verified colleges", "Consent-based leads", "Secure payments", "Instant unlock"];
+const RIBBON_B = ["🎯 Course-matched students", "📲 Direct mobile numbers", "⚡ Unlock in one tap", "🧾 Receipt for every lead", "🎓 Fresh after 12th results", "🔒 Server-verified payments", "📈 Track every follow-up"];
 
 const SPARKS = [
   [6, 14], [14, 62], [22, 30], [31, 80], [41, 12], [52, 70], [60, 22], [68, 88], [76, 40], [84, 10], [90, 66], [95, 30], [47, 46], [10, 90],
 ];
 
-/* ---------- logo (replaces the "CC" text) ---------- */
+/* ---------- logo ---------- */
 function CCLogo() {
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -204,7 +197,7 @@ function StatRing({ to, suffix, label, pct, hue }) {
   );
 }
 
-/* animated campus illustration: sun, clouds, birds, swaying trees, waving flag */
+/* animated campus illustration */
 function Campus() {
   return (
     <svg viewBox="0 0 480 360" preserveAspectRatio="xMidYMax slice" className="cs-campus" aria-hidden="true">
@@ -308,10 +301,131 @@ function Wave({ fill, pos = "top" }) {
   );
 }
 
+/* ---------- scroll-reveal helpers ---------- */
+
+/* splits heading text into words: each word slides up (masked) one after another */
+function Words({ children }) {
+  let k = 0;
+  const out = [];
+  React.Children.toArray(children).forEach((c) => {
+    if (typeof c === "string" || typeof c === "number") {
+      String(c).split(/(\s+)/).forEach((t) => {
+        if (!t) return;
+        if (/^\s+$/.test(t)) {
+          out.push(" ");
+          return;
+        }
+        out.push(<span key={k} className="cs-wd" style={{ "--wi": k }}><span>{t}</span></span>);
+        k += 1;
+      });
+    } else {
+      out.push(<span key={k} className="cs-wd" style={{ "--wi": k }}><span>{c}</span></span>);
+      k += 1;
+    }
+  });
+  return <>{out}</>;
+}
+
+/* one line of a paragraph: lines appear one by one */
+function Ln({ i = 0, children }) {
+  return <span className="cs-ln" style={{ "--li": i }}>{children}</span>;
+}
+
+/* ---------- hero: Live Admission Pulse (live bars + unlock ticker + travelling ₹ coin) ---------- */
+const HP_STEPS = [["🎓", "Student shows interest"], ["💳", "College pays ₹100"], ["📲", "Admission call"]];
+const HP_FEED = [
+  ["Salem", "B.Tech CSE", "STU10235"],
+  ["Coimbatore", "MBBS", "STU10236"],
+  ["Erode", "B.Com", "STU10237"],
+  ["Chennai", "B.Sc Nursing", "STU10238"],
+  ["Tiruppur", "B.E ECE", "STU10239"],
+];
+const HP_BARS = 12;
+const rndBars = () => Array.from({ length: HP_BARS }, () => 25 + Math.round(Math.random() * 70));
+
+function HeroPulse() {
+  const [step, setStep] = useState(0);
+  const [bars, setBars] = useState(rndBars);
+  const [feed, setFeed] = useState(0);
+  const [today, setToday] = useState(186);
+
+  useEffect(() => {
+    const t = setInterval(() => setStep((s) => (s + 1) % HP_STEPS.length), 1500);
+    return () => clearInterval(t);
+  }, []);
+  useEffect(() => {
+    const t = setInterval(() => setBars(rndBars()), 2600);
+    return () => clearInterval(t);
+  }, []);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setFeed((f) => (f + 1) % HP_FEED.length);
+      setToday((n) => n + 1 + Math.floor(Math.random() * 3));
+    }, 3200);
+    return () => clearInterval(t);
+  }, []);
+
+  const [city, course, id] = HP_FEED[feed];
+
+  return (
+    <div className="hp">
+      <div className="hp-card">
+        <span className="hp-glow" aria-hidden="true" />
+        <div className="hp-head">
+          <span className="hp-live"><i /> LIVE · ADMISSION PULSE</span>
+          <span className="hp-today"><b><AnimatedNumber value={today} /></b>leads unlocked today</span>
+        </div>
+
+        <div className="hp-bars" aria-hidden="true">
+          {bars.map((h, k) => (
+            <i key={k} className={k === bars.length - 1 ? "last" : ""} style={{ "--h": `${h}%`, "--k": k }} />
+          ))}
+        </div>
+        <div className="hp-axis"><span>9 AM</span><span>Now</span></div>
+
+        <div className="hp-feed" key={feed}>
+          <span className="hp-pin">📍</span>
+          <p><b>{city}</b> college unlocked <em>{id}</em> · {course}</p>
+          <span className="hp-rs">₹100</span>
+        </div>
+      </div>
+
+      <div className="hp-track" aria-label="How a lead works">
+        <span className="hp-rail">
+          <i style={{ width: `${step * 50}%` }} />
+          <span className="hp-coin" style={{ left: `${step * 50}%` }}>₹</span>
+        </span>
+        {HP_STEPS.map(([ic, t], k) => (
+          <div key={t} className={`hp-st ${k <= step ? "on" : ""} ${k === step ? "now" : ""}`.trim()}>
+            <b>{ic}</b>
+            <span>{t}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* fixed side rail: a line that fills section by section, in nav order, as you scroll */
+function SideRail({ active, show, onGo }) {
+  const idx = Math.max(SPY_IDS.indexOf(active), 0);
+  const pct = (idx / (MENU.length - 1)) * 100;
+  return (
+    <aside className={`cs-rail ${show ? "show" : ""}`} aria-label="Page sections">
+      <span className="rl-line"><i style={{ height: `${pct}%` }} /></span>
+      {MENU.map(([id, label, , icon], i) => (
+        <button key={id} className={`rl-dot ${i < idx ? "done" : ""} ${i === idx ? "on" : ""}`.trim()} onClick={() => onGo(id)} aria-label={label}>
+          <i className="rl-pt" />
+          <span>{String(i + 1).padStart(2, "0")} · {icon} {label}</span>
+        </button>
+      ))}
+    </aside>
+  );
+}
+
 /* ---------- LEAD DOWNLOADS (counter page between Home and Colleges) ----------
    "Download" = a college pays Rs.100 to UNLOCK one student's full details (name, mobile, email) and save them.
-   (Student_Lead.docx -> sections 13, 14, 15.)  Numbers below are SAMPLE values from the spec's admin dashboard:
-   12,450 transactions x Rs.100 = Rs.12,45,000. Replace with your API values.  The demo rows use fake data only. */
+   Numbers below are SAMPLE values. Replace with your API values.  The demo rows use fake data only. */
 const DL_BASE = { downloads: 12450, students: 25430, leads: 18250, colleges: 325, price: 100 };
 
 const DL_LEADS = [
@@ -392,11 +506,11 @@ function DownloadsSection({ onRegister, onBrowse }) {
     <section id="downloads" className="dl">
       <span className="cs-blob b4" /><span className="cs-blob b5" />
       <div className="cs-wrap cs-sec">
-        <span className="cs-eyebrow cs-rv">LEAD DOWNLOADS</span>
-        <h2 className="cs-h2 cs-rv">Every download is a <span className="cs-grad">student ready to talk</span></h2>
+        <span className="cs-eyebrow cs-rv">STUDENT POOL</span>
+        <h2 className="cs-h2 cs-rv"><Words>Every download is a <span className="cs-grad">student ready to talk</span></Words></h2>
         <p className="cs-sub cs-rv">
-          A <b>download</b> means a college unlocks one student's full contact details for <b>₹{DL_BASE.price}</b> and saves
-          them. Here is the live counter, how it works, and a sample you can try.
+          <Ln i={0}>A <b>download</b> means a college unlocks one student's full contact details for <b>₹{DL_BASE.price}</b> and saves them.</Ln>
+          <Ln i={1}>Here is the live counter, how it works, and a sample you can try.</Ln>
         </p>
 
         <div className="dl-grid">
@@ -469,8 +583,7 @@ function DownloadsSection({ onRegister, onBrowse }) {
   );
 }
 
-/* ---------- "Please login" popup (shown instead of subscription prices when the college is not logged in) ----------
-   No real price is ever rendered here — only blurred placeholders. */
+/* ---------- "Please login" popup (shown instead of subscription prices when the college is not logged in) ---------- */
 function LoginGate({ onLogin, onRegister, onClose }) {
   const btn = useRef(null);
   useEffect(() => {
@@ -597,9 +710,6 @@ function CollegeSite() {
     }
   };
 
-  // one handler for the menu and the footer links
-  const onNav = (id, kind) => (kind === "plans" ? goPlans() : scrollTo(id));
-
   /* ---- subscription pricing (login only) ---- */
   const showPricing = view === "pricing" && loggedIn;
   const navActive = showPricing ? "plans" : active; // Subscription stays highlighted on the prices page
@@ -618,8 +728,7 @@ function CollegeSite() {
   };
 
   useEffect(() => {
-    // reveal on scroll (robust: threshold 0, picks up elements added later, shows anything already scrolled past,
-    // and a safety sweep so no section can stay invisible)
+    // reveal on scroll
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
@@ -651,20 +760,35 @@ function CollegeSite() {
     );
     secs.forEach((el) => spy.observe(el));
 
-    // progress bar + header + timeline line
+    // progress bar + header + travelling timeline circle
     const onScroll = () => {
       const h = document.documentElement;
       const pct = (h.scrollTop / Math.max(h.scrollHeight - h.clientHeight, 1)) * 100;
       if (barRef.current) barRef.current.style.width = `${pct}%`;
       setScrolled(h.scrollTop > 400);
+
       const tl = lineRef.current;
       if (tl) {
-        const r = tl.getBoundingClientRect();
-        const p = Math.min(Math.max((window.innerHeight * 0.62 - r.top) / r.height, 0), 1);
-        tl.style.setProperty("--p", p.toFixed(3));
+        const steps = tl.querySelectorAll(".cs-step");
+        const centers = Array.from(steps).map((s) => {
+          const n = s.querySelector(".cs-num");
+          return s.offsetTop + n.offsetTop + n.offsetHeight / 2; // not affected by reveal animations
+        });
+        if (centers.length) {
+          const y0 = centers[0];
+          const y1 = centers[centers.length - 1];
+          const r = tl.getBoundingClientRect();
+          const headY = window.innerHeight * 0.6; // the glowing circle sits here while you scroll
+          const p = Math.min(Math.max((headY - r.top - y0) / Math.max(y1 - y0, 1), 0), 1);
+          tl.style.setProperty("--y0", `${y0}px`);
+          tl.style.setProperty("--len", `${y1 - y0}px`);
+          tl.style.setProperty("--p", p.toFixed(4));
+          steps.forEach((s, i) => s.classList.toggle("hit", r.top + centers[i] <= headY));
+        }
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     onScroll();
 
     // soft light that follows the mouse
@@ -673,13 +797,29 @@ function CollegeSite() {
     };
     window.addEventListener("pointermove", onMove, { passive: true });
 
+    // click ripple on buttons
+    const onDown = (e) => {
+      const b = e.target.closest ? e.target.closest(".cs-solid,.cs-ghost,.cs-white,.cs-outline,.dl-btn,.cs-unlock,.cs-unlock-btn") : null;
+      if (!b || b.disabled) return;
+      const r = b.getBoundingClientRect();
+      const size = Math.max(r.width, r.height) * 1.7;
+      const s = document.createElement("span");
+      s.className = "cs-ripple";
+      s.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - r.left - size / 2}px;top:${e.clientY - r.top - size / 2}px`;
+      b.appendChild(s);
+      setTimeout(() => s.remove(), 700);
+    };
+    window.addEventListener("pointerdown", onDown, { passive: true });
+
     return () => {
       io.disconnect();
       mo.disconnect();
       clearInterval(sweepTimer);
       spy.disconnect();
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
     };
   }, [view]);
 
@@ -698,6 +838,7 @@ function CollegeSite() {
       <style>{styles}</style>
       <div className="cs-bar" ref={barRef} />
       <div className="cs-glow" ref={glowRef} aria-hidden="true" />
+      {!showPricing && <SideRail active={active} show={scrolled} onGo={scrollTo} />}
 
       {/* FLOATING PILL NAV */}
       <header className={`cs-header ${scrolled ? "sc" : ""}`}>
@@ -711,21 +852,20 @@ function CollegeSite() {
           </button>
 
           <nav className={menu ? "open" : ""}>
-            {MENU.map(([id, label, kind]) => (
+            {MENU.map(([id, label, kind, icon], i) => (
               <button
                 key={id}
-                className={`${navActive === id ? "on" : ""} ${kind === "fancy" ? "cs-fancy" : ""} ${kind === "plans" ? "cs-subnav" : ""}`.trim()}
-                onClick={() => onNav(id, kind)}
+                className={`${navActive === id ? "on" : ""} ${kind === "fancy" ? "cs-fancy" : ""}`.trim()}
+                style={{ "--k": i }}
+                onClick={() => scrollTo(id)}
               >
-                {kind === "fancy" && <span className="cs-fi" aria-hidden="true">🎓</span>}
+                {kind === "fancy" ? <span className="cs-fi" aria-hidden="true">🎓</span> : <span className="cs-ni" aria-hidden="true">{icon}</span>}
                 <span className="cs-nl">{label}</span>
                 {kind === "fancy" && <em className="cs-new">NEW</em>}
-                {kind === "plans" && <span className={`cs-key ${loggedIn ? "ok" : "lk"}`} aria-hidden="true">{loggedIn ? "💎" : "🔒"}</span>}
               </button>
             ))}
             <span className="cs-navcta">
-              <button className="cs-ghost" onClick={goLogin}>College Login</button>
-              <button className="cs-solid" onClick={goRegister}>Register College</button>
+              <button className="cs-solid" onClick={goRegister}>Register College <i className="cs-arr">→</i></button>
             </span>
           </nav>
 
@@ -738,11 +878,11 @@ function CollegeSite() {
         <main className="sp-main">
           <span className="cs-blob b4" /><span className="cs-blob b5" /><span className="cs-blob b3" />
           <div className="cs-wrap sp-in">
-            <button className="cs-ghost sp-back" onClick={() => scrollTo("home")}>← Back to Home</button>
+            <button className="cs-ghost sp-back" onClick={() => scrollTo("plans")}>← Back to Plans</button>
 
             <div className="sp-head cs-rv">
               <span className="cs-tag"><i className="cs-dot" /> REGISTERED COLLEGES ONLY</span>
-              <h1>Pick a plan and a duration</h1>
+              <h1>Pick a plan and a <span className="cs-grad">duration</span></h1>
               <p>Longer plans cost less per month. Switch between 1 month, 6 months and 1 year.</p>
             </div>
 
@@ -831,19 +971,7 @@ function CollegeSite() {
                   Browse interested students, unlock their contact details for just <b>₹100 per lead</b> and
                   start your admission conversation.
                 </p>
-                <div className="cs-row">
-                  <button className="cs-solid big" onClick={loggedIn ? goDashboard : goRegister}>
-                    {loggedIn ? "Open Dashboard" : "Register Your College"} <i className="cs-arr">→</i>
-                  </button>
-                  <button className="cs-ghost big" onClick={() => scrollTo("districts")}>
-                    <span className="cs-mag">🔍</span> Search Colleges
-                  </button>
-                </div>
-                <div className="cs-trust">
-                  <span><b>₹100</b> per lead</span>
-                  <span><b>{TOTAL_DISTRICTS}</b> districts</span>
-                  <span><b>100%</b> consent-based</span>
-                </div>
+                <HeroPulse />
               </div>
 
               <div className="cs-stage">
@@ -886,10 +1014,10 @@ function CollegeSite() {
             </div>
           </div>
 
-          {/* ================= LEAD DOWNLOADS COUNTER (after Home, before Colleges) ================= */}
+          {/* ================= LEAD DOWNLOADS COUNTER ================= */}
           <DownloadsSection onRegister={goRegister} onBrowse={() => scrollTo("districts")} />
 
-          {/* ================= EXPLORE COLLEGES (same page as /college/profile) ================= */}
+          {/* ================= EXPLORE COLLEGES ================= */}
           <section id="districts" className="cs-districts">
             <span className="cs-blob b4" /><span className="cs-blob b5" />
             <CollegeExplorer embedded />
@@ -913,7 +1041,7 @@ function CollegeSite() {
           <section className="cs-light cs-why">
             <div className="cs-wrap cs-sec">
               <span className="cs-eyebrow cs-rv">WHY CAMPUSCONNECT</span>
-              <h2 className="cs-h2 cs-rv">Why colleges use <span className="cs-grad">CampusConnect</span></h2>
+              <h2 className="cs-h2 cs-rv"><Words>Why colleges use <span className="cs-grad">CampusConnect</span></Words></h2>
               <div className="cs-bento">
                 <Tilt className="bn bn1 cs-rv zoom">
                   <span className="bn-ic">🎯</span>
@@ -949,15 +1077,45 @@ function CollegeSite() {
             </div>
           </section>
 
+          {/* ================= PLANS (prices only after login) ================= */}
+          <section id="plans" className="cs-light">
+            <div className="cs-wrap cs-sec">
+              <span className="cs-eyebrow cs-rv">BOOST PLANS</span>
+              <h2 className="cs-h2 cs-rv"><Words>Choose a plan that <span className="cs-grad">fits your college</span></Words></h2>
+              <div className="cs-plans">
+                {PLANS.map((p, i) => (
+                  <Tilt key={p.id} className={`cs-plan ${p.id} cs-rv zoom`} style={{ "--d": `${i * 0.12}s` }} max={6}>
+                    {p.id === "gold" && <span className="cs-pop-badge">★ Most chosen</span>}
+                    <span className="cs-plan-ic">{p.icon}</span>
+                    <h3>{p.name}</h3>
+                    <p className="cs-plan-tag">{p.tagline}</p>
+                    <ul>
+                      {p.features.map((f) => (
+                        <li key={f}><i>✓</i>{f}</li>
+                      ))}
+                    </ul>
+                    <button className="cs-solid" onClick={goPlans}>
+                      {loggedIn ? "View Plans & Prices →" : "🔒 Login to view prices"}
+                    </button>
+                  </Tilt>
+                ))}
+              </div>
+              <p className="cs-plans-note cs-rv">
+                Plans are available for 1 month, 6 months and 1 year. {loggedIn ? "Open any plan to compare durations." : "Prices are shown to registered colleges after login."}
+              </p>
+            </div>
+          </section>
+
           {/* ================= HOW IT WORKS ================= */}
           <section id="how" className="cs-how">
             <span className="cs-blob b4" />
             <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow cs-rv">HOW IT WORKS</span>
-              <h2 className="cs-h2 cs-rv">From registration to student contact in <span className="cs-grad">six steps</span></h2>
+              <span className="cs-eyebrow cs-rv">HOW WE WORK</span>
+              <h2 className="cs-h2 cs-rv"><Words>From registration to student contact in <span className="cs-grad">six steps</span></Words></h2>
 
               <div className="cs-tl" ref={lineRef}>
                 <span className="cs-tl-line"><i /></span>
+                <span className="cs-tl-dot" aria-hidden="true" />
                 {STEPS.map(([t, d, ic], i) => (
                   <article key={t} className={`cs-step ${i % 2 ? "r" : "l"} cs-rv ${i % 2 ? "right" : "left"}`}>
                     <span className="cs-num"><b>{i + 1}</b></span>
@@ -1011,43 +1169,14 @@ function CollegeSite() {
             </div>
           </section>
 
-          {/* ================= PLANS (prices only after login) ================= */}
-          <section id="plans" className="cs-light">
-            <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow cs-rv">SUBSCRIPTION</span>
-              <h2 className="cs-h2 cs-rv">Choose a plan that <span className="cs-grad">fits your college</span></h2>
-              <div className="cs-plans">
-                {PLANS.map((p, i) => (
-                  <Tilt key={p.id} className={`cs-plan ${p.id} cs-rv zoom`} style={{ "--d": `${i * 0.12}s` }} max={6}>
-                    {p.id === "gold" && <span className="cs-pop-badge">★ Most chosen</span>}
-                    <span className="cs-plan-ic">{p.icon}</span>
-                    <h3>{p.name}</h3>
-                    <p className="cs-plan-tag">{p.tagline}</p>
-                    <ul>
-                      {p.features.map((f) => (
-                        <li key={f}><i>✓</i>{f}</li>
-                      ))}
-                    </ul>
-                    <button className="cs-solid" onClick={goPlans}>
-                      {loggedIn ? "View Plans & Prices →" : "🔒 Login to view prices"}
-                    </button>
-                  </Tilt>
-                ))}
-              </div>
-              <p className="cs-plans-note cs-rv">
-                Plans are available for 1 month, 6 months and 1 year. {loggedIn ? "Open any plan to compare durations." : "Prices are shown to registered colleges after login."}
-              </p>
-            </div>
-          </section>
-
           {/* ================= PRICING (per lead) ================= */}
           <section id="pricing" className="cs-pricing">
             <Wave fill="#f5f8ff" />
             <Wave fill="#f5f8ff" pos="bottom" />
             <span className="cs-blob b6" /><span className="cs-blob b7" />
             <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow dark cs-rv">PRICING</span>
-              <h2 className="cs-h2 light cs-rv">One simple price for every <span className="cs-grad">student lead</span></h2>
+              <span className="cs-eyebrow dark cs-rv">JUST ₹100</span>
+              <h2 className="cs-h2 light cs-rv"><Words>One simple price for every <span className="cs-grad">student lead</span></Words></h2>
               <div className="cs-price">
                 <div className="cs-coinwrap cs-rv zoom">
                   <span className="cs-coin-ring" />
@@ -1080,8 +1209,8 @@ function CollegeSite() {
           {/* ================= BENEFITS ================= */}
           <section id="benefits" className="cs-light">
             <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow cs-rv">BENEFITS</span>
-              <h2 className="cs-h2 cs-rv">Why colleges choose <span className="cs-grad">CampusConnect</span></h2>
+              <span className="cs-eyebrow cs-rv">WHY US</span>
+              <h2 className="cs-h2 cs-rv"><Words>Why colleges choose <span className="cs-grad">CampusConnect</span></Words></h2>
               <div className="cs-grid3">
                 {BENEFITS.map(([ic, t, d], i) => (
                   <Tilt key={t} className="cs-ben cs-rv zoom" style={{ "--d": `${(i % 3) * 0.12}s`, "--k": i }}>
@@ -1099,10 +1228,15 @@ function CollegeSite() {
             <span className="cs-blob b4" />
             <div className="cs-wrap cs-sec cs-about">
               <div className="cs-rv left">
-                <span className="cs-eyebrow">ABOUT US</span>
-                <h2 className="cs-h2 left">Connecting <span className="cs-grad">students and colleges</span></h2>
-                <p>Students who finish 12th create a profile, search colleges and courses, and show interest. Colleges that register on our platform see those interested students and can pay ₹100 to access the complete contact details of the students they want to reach.</p>
-                <p>We protect student privacy: contact details are hidden until purchase, and students agree to share their profile for admission purposes only.</p>
+                <span className="cs-eyebrow">OUR MISSION</span>
+                <h2 className="cs-h2 left"><Words>Connecting <span className="cs-grad">students and colleges</span></Words></h2>
+                <p>
+                  <Ln i={0}>Students who finish 12th create a profile, search colleges and courses, and show interest.</Ln>
+                  <Ln i={1}>Colleges that register on our platform see those interested students and can pay ₹100 to access the complete contact details of the students they want to reach.</Ln>
+                </p>
+                <p>
+                  <Ln i={2}>We protect student privacy: contact details are hidden until purchase, and students agree to share their profile for admission purposes only.</Ln>
+                </p>
                 <div className="cs-pills">
                   <span>🔒 Privacy first</span><span>✅ Verified colleges</span><span>🤝 Consent based</span>
                 </div>
@@ -1118,8 +1252,8 @@ function CollegeSite() {
           {/* ================= CONTACT ================= */}
           <section id="contact" className="cs-light">
             <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow cs-rv">CONTACT</span>
-              <h2 className="cs-h2 cs-rv">We'd love to <span className="cs-grad">hear from you</span></h2>
+              <span className="cs-eyebrow cs-rv">REACH US</span>
+              <h2 className="cs-h2 cs-rv"><Words>We'd love to <span className="cs-grad">hear from you</span></Words></h2>
               <div className="cs-contact cs-rv zoom">
                 <div className="cs-contact-side">
                   <span className="cs-env">✉️</span>
@@ -1175,7 +1309,7 @@ function CollegeSite() {
                 <p>Student contact details are shared only with consent and after purchase.</p>
               </div>
               <div className="cs-flinks">
-                {MENU.map(([id, l, kind]) => <button key={id} onClick={() => onNav(id, kind)}>{l}</button>)}
+                {MENU.map(([id, l]) => <button key={id} onClick={() => scrollTo(id)}>{l}</button>)}
                 <button onClick={goLogin}>College Login</button>
                 <button onClick={goRegister}>Register</button>
               </div>
@@ -1219,7 +1353,7 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 
 /* ---------- floating pill nav ---------- */
 .cs-header{position:fixed;top:14px;left:0;right:0;z-index:300;padding-inline:clamp(10px,2vw,28px);pointer-events:none}
-.cs-pill{pointer-events:auto;position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1680px;margin:0 auto;height:var(--nav);padding:0 14px 0 12px;border-radius:999px;background:rgba(255,255,255,.76);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 40px rgba(21,60,140,.14);transition:background .35s,box-shadow .35s}
+.cs-pill{pointer-events:auto;position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;max-width:2600px;margin:0 auto;height:var(--nav);padding:0 18px 0 14px;border-radius:999px;background:rgba(255,255,255,.76);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 40px rgba(21,60,140,.14);transition:background .35s,box-shadow .35s}
 .cs-header.sc .cs-pill{background:rgba(255,255,255,.93);box-shadow:0 18px 50px rgba(21,60,140,.24)}
 .cs-brand{display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;text-align:left;color:inherit}
 .cs-logo svg{width:66%;height:66%;display:block}
@@ -1395,8 +1529,14 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 /* ---------- how it works ---------- */
 .cs-how{position:relative;overflow:hidden;margin:0 clamp(10px,2vw,28px);border-radius:clamp(36px,6vw,84px);background:linear-gradient(160deg,#e3eeff 0%,#f0f6ff 50%,#e1f4ff 100%)}
 .cs-tl{--p:0;position:relative;display:grid;gap:clamp(26px,3.4vw,50px);margin-top:70px}
-.cs-tl-line{position:absolute;left:50%;top:0;bottom:0;width:7px;margin-left:-3.5px;border-radius:7px;background:#cbdcf4}
+.cs-tl-line{position:absolute;left:50%;top:var(--y0,0px);height:var(--len,0px);width:7px;margin-left:-3.5px;border-radius:7px;background:#cbdcf4}
 .cs-tl-line i{display:block;width:100%;height:calc(var(--p) * 100%);border-radius:7px;background:linear-gradient(#1558d6,#19b3e6,#8b5cf6);box-shadow:0 0 18px rgba(21,88,214,.5)}
+.cs-tl-dot{position:absolute;z-index:1;left:50%;top:calc(var(--y0,0px) + var(--len,0px) * var(--p,0));width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 35% 30%,#fff,#7fd6ff 45%,#1558d6);animation:tlPing 1.6s infinite}
+.cs-step .cs-num{transition:background .5s,color .5s,border-color .5s,box-shadow .5s}
+.cs-step.hit .cs-num{background:linear-gradient(135deg,#1349c2,#19b3e6);color:#fff;border-color:#fff;box-shadow:0 0 0 12px rgba(21,88,214,.2),0 16px 34px rgba(21,88,214,.5)}
+.cs-step .cs-step-card{transition:border-color .5s,box-shadow .5s}
+.cs-step.hit .cs-step-card{border-color:#9cc3f5;box-shadow:0 30px 60px -22px rgba(21,88,214,.5)}
+@keyframes tlPing{0%{box-shadow:0 0 0 0 rgba(25,179,230,.85),0 0 18px 4px rgba(25,179,230,.7)}80%,100%{box-shadow:0 0 0 22px rgba(25,179,230,0),0 0 18px 4px rgba(25,179,230,.7)}}
 .cs-step{display:grid;grid-template-columns:1fr 96px 1fr;align-items:center;position:relative;z-index:2}
 .cs-num{grid-column:2;grid-row:1;display:grid;place-items:center;width:76px;height:76px;margin:auto;border-radius:50% 50% 50% 14%;background:#fff;border:5px solid var(--blue);color:var(--blue);box-shadow:0 0 0 12px rgba(21,88,214,.12),0 16px 30px rgba(21,88,214,.25)}
 .cs-num b{font-family:"Bricolage Grotesque",sans-serif;font-size:30px;font-weight:800}
@@ -1443,7 +1583,7 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .cs-plan.diamond{color:#fff;background:linear-gradient(160deg,#0c1f55,#1b3f9a);--spot:rgba(255,255,255,.22)}
 .cs-pop-badge{position:absolute;top:18px;left:50%;transform:translateX(-50%);padding:7px 18px;border-radius:999px;background:linear-gradient(90deg,#f59e0b,#ff7a59);color:#fff;font-size:13.5px;font-weight:800;letter-spacing:.6px;white-space:nowrap;box-shadow:0 10px 20px rgba(245,158,11,.4)}
 .cs-plan-ic{font-size:60px;line-height:1;animation:bob 4s ease-in-out infinite}
-.cs-plan h3{margin:12px 0 6px!important;font-size:38px;font-weight:800;letter-spacing:-.6px}
+.cs-plan h3{color:inherit;margin:12px 0 6px!important;font-size:38px;font-weight:800;letter-spacing:-.6px}
 .cs-plan-tag{margin-bottom:6px!important;color:var(--muted);font-size:18px}.cs-plan.diamond .cs-plan-tag{color:#bcd2f2}
 .cs-plan ul,.sp-plan ul{list-style:none;display:grid;gap:13px;margin:24px 0 30px;padding:0;text-align:left;flex:1}
 .cs-plan li,.sp-plan li{display:flex;align-items:flex-start;gap:12px;font-size:17.5px;font-weight:600;line-height:1.4}
@@ -1530,7 +1670,7 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .sp-in{position:relative;z-index:2}
 .sp-back{margin-bottom:26px}
 .sp-head{text-align:center}
-.sp-head h1{margin:20px 0 12px!important;font-size:clamp(36px,5vw,70px);line-height:1.05;font-weight:800;letter-spacing:-1.6px;text-align:center!important}
+.sp-head h1{color:var(--ink)!important;margin:20px 0 12px!important;font-size:clamp(36px,5vw,70px);line-height:1.05;font-weight:800;letter-spacing:-1.6px;text-align:center!important}
 .sp-head p{color:var(--muted);font-size:20px;text-align:center!important}
 .sp-toggle{position:relative;display:grid;grid-template-columns:repeat(3,1fr);width:min(100%,600px);margin:34px auto 52px;padding:7px;border-radius:999px;background:#fff;border:1px solid #d7e5f7;box-shadow:0 18px 40px -22px rgba(21,60,140,.4)}
 .sp-pill{position:absolute;top:7px;bottom:7px;left:7px;width:calc((100% - 14px) / 3);border-radius:999px;background:linear-gradient(100deg,#1349c2,#19b3e6);box-shadow:0 10px 22px rgba(21,88,214,.35);transform:translateX(calc(var(--i) * 100%));transition:transform .45s cubic-bezier(.2,.8,.2,1)}
@@ -1543,7 +1683,7 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .sp-plan.sel{border-color:var(--blue);box-shadow:0 0 0 7px rgba(21,88,214,.14),0 36px 70px -26px rgba(21,60,140,.5);transform:translateY(-12px)}
 .sp-ribbon{position:absolute;top:-15px;left:50%;transform:translateX(-50%);padding:7px 18px;border-radius:999px;background:linear-gradient(90deg,#f59e0b,#ff7a59);color:#fff;font-size:13.5px;font-weight:800;white-space:nowrap}
 .sp-ic{font-size:56px;line-height:1;animation:bob 4s ease-in-out infinite}
-.sp-plan h3{margin:10px 0 4px!important;font-size:36px;font-weight:800}
+.sp-plan h3{color:var(--ink);margin:10px 0 4px!important;font-size:36px;font-weight:800}
 .sp-tg{color:var(--muted);font-size:17.5px}
 .sp-price{display:flex;align-items:baseline;justify-content:center;gap:8px;margin-top:18px}
 .sp-price strong{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(40px,3.6vw,54px);font-weight:800;color:var(--ink)}
@@ -1620,18 +1760,14 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
   .dl-btn{width:100%}
 }
 
-/* ---------- nav: Dream Campus (explore colleges) + Subscription ---------- */
-.cs-header nav>button.cs-fancy,.cs-header nav>button.cs-subnav{display:inline-flex;align-items:center;gap:6px}
+/* ---------- nav: College Radar (explore colleges) ---------- */
+.cs-header nav>button.cs-fancy{display:inline-flex;align-items:center;gap:6px}
 .cs-header nav>button.cs-fancy{isolation:isolate;margin-inline:2px;color:#fff;background:linear-gradient(100deg,#1349c2,#8b5cf6,#19b3e6,#1349c2);background-size:300% 100%;animation:grad 6s linear infinite;box-shadow:0 8px 20px rgba(21,88,214,.3)}
 .cs-header nav>button.cs-fancy::before{content:"";position:absolute;inset:-4px;z-index:-1;border-radius:999px;background:conic-gradient(from var(--ang),#19b3e6,#8b5cf6,#ffc83d,#ff7a59,#19b3e6);filter:blur(7px);opacity:.55;animation:ang 4s linear infinite;transition:opacity .3s}
 .cs-header nav>button.cs-fancy:hover,.cs-header nav>button.cs-fancy.on{color:#fff;background:linear-gradient(100deg,#1349c2,#8b5cf6,#19b3e6,#1349c2);background-size:300% 100%;transform:translateY(-3px) scale(1.05)}
 .cs-header nav>button.cs-fancy:hover::before,.cs-header nav>button.cs-fancy.on::before{opacity:.95}
 .cs-fi{display:inline-block;font-size:18px;line-height:1;animation:capToss 3.6s ease-in-out infinite}
 .cs-new{position:absolute;top:-7px;right:-6px;font-style:normal;padding:2px 7px;border-radius:999px;background:linear-gradient(90deg,#ffc83d,#ff7a59);color:#5a2200;font-size:10.5px;font-weight:800;letter-spacing:.8px;animation:newPing 2s infinite}
-.cs-key{display:inline-block;font-size:14px;line-height:1}
-.cs-key.lk{animation:lockShake 3.6s ease-in-out infinite}
-.cs-key.ok{animation:bob 3s ease-in-out infinite}
-.cs-header nav>button.cs-subnav:hover .cs-key{animation:keyPop .5s cubic-bezier(.2,.8,.2,1)}
 
 /* ---------- "Please login" popup ---------- */
 .lg-back{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(8,21,56,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);animation:lgFade .3s both}
@@ -1656,6 +1792,67 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 .lg-actions{display:grid;gap:12px}
 .lg-actions .cs-solid,.lg-actions .cs-ghost{width:100%}
 
+/* ================= MOTION LAYER (sections arrive one by one, in nav order) ================= */
+
+.cs-why + .cs-light>.cs-sec{padding-top:clamp(10px,2vw,30px)}
+
+/* headings: word by word (masked slide-up + de-blur) */
+.cs-h2.cs-rv,.cs-sub.cs-rv{opacity:1;translate:0 0}
+.cs-wd{display:inline-block;overflow:hidden;vertical-align:top;padding:.05em .03em .16em;margin:-.05em -.03em -.16em}
+.cs-wd>span{display:inline-block;opacity:0;filter:blur(7px);transform:translateY(115%) rotate(5deg);transform-origin:0 100%;transition:transform .95s cubic-bezier(.2,.8,.2,1),opacity .7s ease,filter .8s ease;transition-delay:calc(var(--wi) * .085s + .2s)}
+.cs-rv.in .cs-wd>span{opacity:1;filter:blur(0);transform:none}
+
+/* paragraphs: line by line */
+.cs-ln{display:block;opacity:0;filter:blur(5px);transform:translateY(22px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.8,.2,1),filter .8s ease;transition-delay:calc(var(--li) * .24s + .55s)}
+.cs-rv.in .cs-ln{opacity:1;filter:blur(0);transform:none}
+
+/* eyebrow chips */
+.cs-eyebrow{position:relative;overflow:hidden}
+.cs-eyebrow::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);animation:shine 4.4s infinite}
+.cs-eyebrow.in{animation:eyeIn 1.1s cubic-bezier(.2,.8,.2,1) both}
+
+/* side rail: a line that fills section by section */
+.cs-rail{position:fixed;right:clamp(10px,1.3vw,24px);top:50%;z-index:240;display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:min(58vh,440px);padding:4px 0;opacity:0;translate:40px -50%;pointer-events:none;transition:opacity .5s ease,translate .7s cubic-bezier(.2,.8,.2,1)}
+.cs-rail.show{opacity:1;translate:0 -50%;pointer-events:auto}
+.rl-line{position:absolute;left:50%;top:15px;bottom:15px;width:4px;margin-left:-2px;border-radius:4px;background:rgba(21,88,214,.18)}
+.rl-line i{display:block;width:100%;border-radius:4px;background:linear-gradient(#1558d6,#19b3e6,#8b5cf6);box-shadow:0 0 12px rgba(21,88,214,.55);transition:height .9s cubic-bezier(.2,.8,.2,1)}
+.rl-dot{position:relative;z-index:1;display:grid;place-items:center;width:26px;height:26px;padding:0;border:0;background:none}
+.rl-pt{display:block;width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid #b7cdee;box-shadow:0 0 0 2px rgba(255,255,255,.85);transition:width .4s cubic-bezier(.2,1.3,.3,1),height .4s cubic-bezier(.2,1.3,.3,1),background .35s,border-color .35s,transform .25s}
+.rl-dot.done .rl-pt{background:#1558d6;border-color:#1558d6}
+.rl-dot.on .rl-pt{width:20px;height:20px;border-color:#fff;background:linear-gradient(135deg,#1349c2,#19b3e6);animation:railPing 2s infinite}
+.rl-dot:hover .rl-pt{transform:scale(1.3)}
+.rl-dot span{position:absolute;right:34px;top:50%;translate:14px -50%;padding:7px 15px;border-radius:999px;background:#0f2a5c;color:#fff;font-size:13.5px;font-weight:800;white-space:nowrap;opacity:0;pointer-events:none;box-shadow:0 12px 24px rgba(8,21,56,.35);transition:opacity .25s ease,translate .35s cubic-bezier(.2,.8,.2,1)}
+.rl-dot:hover span,.rl-dot:focus-visible span{opacity:1;translate:0 -50%}
+
+/* nav: unique names slide in one by one, animated underline, icons in the mobile menu */
+.cs-header nav>button{animation:navIn .65s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--k,0) * .06s + .5s)}
+.cs-header nav>button:not(.cs-fancy)::after{content:"";position:absolute;left:50%;bottom:5px;width:0;height:3px;border-radius:3px;background:linear-gradient(90deg,#1558d6,#19b3e6);translate:-50% 0;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.cs-header nav>button:not(.cs-fancy):hover::after{width:28%}
+.cs-header nav>button.on:not(.cs-fancy)::after{width:48%}
+.cs-ni{display:none;margin-right:10px;font-size:18px;line-height:1}
+
+/* button click ripple */
+.dl-btn,.cs-unlock,.cs-unlock-btn{position:relative;overflow:hidden}
+.cs-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);pointer-events:none;transform:scale(0);animation:ripple .65s ease-out forwards}
+.cs-ghost .cs-ripple,.cs-white .cs-ripple{background:rgba(21,88,214,.22)}
+
+/* things inside each section also arrive one by one */
+.dl-flow.in li{animation:liIn .6s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i) + .45s)}
+.cs-plan.in li{animation:liIn .6s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--d,0s) + .5s + var(--n,0) * .11s)}
+.cs-plan li:nth-child(2){--n:1}.cs-plan li:nth-child(3){--n:2}.cs-plan li:nth-child(4){--n:3}
+.cs-preview.in .cs-leadrow{animation:rowIn .75s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i) * .15s + .35s)}
+.cs-flow>*:nth-child(1){--fd:.1s}.cs-flow>*:nth-child(2){--fd:.35s}.cs-flow>*:nth-child(3){--fd:.5s}.cs-flow>*:nth-child(4){--fd:.75s}.cs-flow>*:nth-child(5){--fd:.9s}.cs-flow>*:nth-child(6){--fd:1.15s}.cs-flow>*:nth-child(7){--fd:1.3s}
+.cs-flow.in>div{animation:pop .7s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:var(--fd,0s)}
+.cs-flow i{scale:0 1;transform-origin:left;transition:scale .7s cubic-bezier(.2,.8,.2,1) var(--fd,0s)}
+.cs-flow.in i{scale:1 1}
+.cs-rv.in .cs-pills span{animation:pop .6s cubic-bezier(.2,1.2,.3,1) backwards}
+.cs-rv.in .cs-pills span:nth-child(1){animation-delay:1s}.cs-rv.in .cs-pills span:nth-child(2){animation-delay:1.15s}.cs-rv.in .cs-pills span:nth-child(3){animation-delay:1.3s}
+.cs-contact.in .cs-form>:not(.cs-ok){animation:liIn .6s cubic-bezier(.2,.8,.2,1) backwards}
+.cs-contact.in .cs-form>:nth-child(1){animation-delay:.4s}.cs-contact.in .cs-form>:nth-child(2){animation-delay:.52s}.cs-contact.in .cs-form>:nth-child(3){animation-delay:.64s}.cs-contact.in .cs-form>:nth-child(4){animation-delay:.76s}.cs-contact.in .cs-form>:nth-child(5){animation-delay:.88s}.cs-contact.in .cs-form>:nth-child(6){animation-delay:1s}
+.cs-est>div.in{animation:bobS 6s ease-in-out infinite}
+.cs-est>div:nth-child(2).in{animation-delay:-1.5s}.cs-est>div:nth-child(3).in{animation-delay:-3s}.cs-est>div:nth-child(4).in{animation-delay:-4.5s}
+.cs-privacy.in .shield{animation:ping2 2.4s infinite,shieldIn 1s cubic-bezier(.2,1.3,.3,1) backwards .3s}
+
 /* ---------- keyframes ---------- */
 @keyframes morph{0%,100%{border-radius:58% 42% 52% 48%/48% 56% 44% 52%}33%{border-radius:42% 58% 40% 60%/56% 42% 58% 44%}66%{border-radius:52% 48% 60% 40%/42% 60% 40% 58%}}
 @keyframes drift{0%,100%{translate:0 0}50%{translate:40px 30px}}
@@ -1668,6 +1865,43 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 @keyframes pop{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(16,185,129,.65)}80%,100%{box-shadow:0 0 0 12px rgba(16,185,129,0)}}
 @keyframes ping2{0%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}80%,100%{box-shadow:0 0 0 22px rgba(255,255,255,0)}}
+
+/* ---------- hero: Live Admission Pulse ---------- */
+.hp{display:grid;gap:22px;max-width:600px;animation:pop 1s 1.1s cubic-bezier(.2,.8,.2,1) both}
+.hp-card{position:relative;overflow:hidden;padding:20px 22px 16px;border-radius:34px 34px 34px 10px;color:#fff;background:linear-gradient(145deg,#0a1744,#0e3283 65%,#0b4f9e);box-shadow:0 34px 64px -28px rgba(10,23,68,.85)}
+.hp-glow{position:absolute;width:260px;height:260px;right:-80px;top:-100px;border-radius:50%;background:radial-gradient(circle,rgba(25,179,230,.55),transparent 70%);animation:drift 12s ease-in-out infinite;pointer-events:none}
+.hp-card>*{position:relative;z-index:1}
+.hp-card>.hp-glow{position:absolute}
+.hp-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+.hp-live{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:800;letter-spacing:1.6px;color:#a9dcff}
+.hp-live i{width:9px;height:9px;border-radius:50%;background:#34d399;animation:ping 1.6s infinite}
+.hp-today{font-size:14px;font-weight:600;color:#cfe0fa}
+.hp-today b{margin-right:8px;font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(28px,2.8vw,40px);font-weight:800;color:#ffd66b}
+.hp-bars{display:flex;align-items:flex-end;gap:7px;height:100px;margin-top:18px}
+.hp-bars i{flex:1;height:var(--h);border-radius:9px 9px 4px 4px;background:linear-gradient(#19b3e6,#1558d6);opacity:.9;transition:height 1.1s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--k) * .04s)}
+.hp-bars i.last{background:linear-gradient(#ffd66b,#ff7a59);animation:hpGlow 1.8s infinite}
+.hp-axis{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;font-weight:700;color:#8fb0e0}
+.hp-feed{display:flex;align-items:center;gap:12px;margin-top:14px;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);animation:swapIn .55s cubic-bezier(.2,.8,.2,1) both}
+.hp-pin{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.18);font-size:16px}
+.hp-feed p{flex:1;min-width:0;font-size:14.5px;line-height:1.3;color:#e6f0ff;text-align:left!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hp-feed p b{color:#fff}
+.hp-feed p em{font-style:normal;font-weight:800;color:#ffd66b}
+.hp-rs{flex:none;padding:5px 12px;border-radius:999px;background:linear-gradient(90deg,#34d399,#10b981);font-size:13.5px;font-weight:800}
+
+.hp-track{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:0 4px}
+.hp-rail{position:absolute;left:16.66%;right:16.66%;top:26px;height:6px;margin-top:-3px;border-radius:6px;background:#cfe0fa}
+.hp-rail>i{position:absolute;left:0;top:0;height:100%;border-radius:6px;background:linear-gradient(90deg,#1558d6,#19b3e6,#8b5cf6);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.hp-coin{position:absolute;top:50%;z-index:3;display:grid;place-items:center;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:linear-gradient(145deg,#ffd66b,#f59e0b);color:#7a4a00;font-weight:900;font-size:19px;box-shadow:0 10px 22px rgba(245,158,11,.55);transition:left 1s cubic-bezier(.2,.8,.2,1);animation:hpCoin 1.5s ease-in-out infinite}
+.hp-st{position:relative;z-index:2;display:grid;justify-items:center;gap:8px;text-align:center}
+.hp-st b{display:grid;place-items:center;width:52px;height:52px;border-radius:50% 50% 50% 14%;background:#fff;border:2px solid #cfe0fa;font-size:24px;filter:grayscale(.8);opacity:.75;transition:all .5s cubic-bezier(.2,.8,.2,1)}
+.hp-st span{font-size:13.5px;font-weight:800;line-height:1.25;color:#6f86a8;transition:color .4s}
+.hp-st.on b{filter:none;opacity:1;border-color:#19b3e6;box-shadow:0 12px 24px -10px rgba(21,88,214,.6)}
+.hp-st.on span{color:#1349c2}
+.hp-st.now b{transform:translateY(-6px) scale(1.1)}
+@keyframes hpGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,200,61,.6)}60%{box-shadow:0 0 0 10px rgba(255,200,61,0)}}
+@keyframes hpCoin{0%,100%{rotate:-8deg}50%{rotate:8deg;scale:1.1}}
+@media(max-width:560px){.hp-st span{font-size:12px}.hp-st b{width:46px;height:46px;font-size:21px}.hp-rail{top:23px}.hp-card{padding:16px}}
+
 @keyframes marq{to{transform:translateX(-33.3333%)}}
 @keyframes grad{to{background-position:300% 0}}
 @keyframes gradMove{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -1691,11 +1925,19 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 @keyframes waveflag{0%,100%{transform:skewY(-6deg) scaleX(1)}50%{transform:skewY(6deg) scaleX(.84)}}
 @keyframes capToss{0%,60%,100%{transform:translateY(0) rotate(0)}70%{transform:translateY(-7px) rotate(-18deg)}80%{transform:translateY(-3px) rotate(14deg)}90%{transform:translateY(0) rotate(-4deg)}}
 @keyframes newPing{0%{box-shadow:0 0 0 0 rgba(255,200,61,.8)}80%,100%{box-shadow:0 0 0 9px rgba(255,200,61,0)}}
-@keyframes keyPop{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(-14deg)}100%{transform:scale(1)}}
 @keyframes lgFade{from{opacity:0}to{opacity:1}}
 @keyframes lgPop{0%{opacity:0;transform:translateY(60px) scale(.82) rotate(-2deg)}100%{opacity:1;transform:none}}
 @keyframes lgRing{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.55);opacity:0}}
 @keyframes winBlink{0%,70%,100%{fill:#bfd9fb}80%,90%{fill:#ffe9a8}}
+
+/* ---------- new keyframes ---------- */
+@keyframes navIn{from{opacity:0;transform:translateY(-16px) scale(.88)}}
+@keyframes eyeIn{from{letter-spacing:9px;opacity:.2}to{letter-spacing:2.2px;opacity:1}}
+@keyframes railPing{0%{box-shadow:0 0 0 0 rgba(25,179,230,.7),0 8px 16px rgba(21,88,214,.45)}80%,100%{box-shadow:0 0 0 13px rgba(25,179,230,0),0 8px 16px rgba(21,88,214,.45)}}
+@keyframes ripple{from{opacity:.9;transform:scale(0)}to{opacity:0;transform:scale(1)}}
+@keyframes rowIn{from{opacity:0;transform:translateX(-70px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes bobS{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes shieldIn{from{transform:scale(0) rotate(-90deg)}to{transform:none}}
 
 /* ---------- responsive ---------- */
 @media (max-width:2000px){
@@ -1704,12 +1946,17 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
   .cs-navcta .cs-ghost,.cs-navcta .cs-solid{min-height:46px;padding:0 18px;font-size:15px}
   .cs-brand small{display:none}
 }
+@media (min-width:1900px) and (max-width:2000px){
+  .cs-header nav>button{padding:11px 13px;font-size:16px}
+  .cs-navcta .cs-ghost,.cs-navcta .cs-solid{min-height:48px;padding:0 22px;font-size:16px}
+  .cs-brand small{display:block}
+}
 @media (max-width:1660px){
   .cs-burger{display:grid}
   .cs-header nav{position:absolute;top:calc(100% + 12px);left:0;right:0;display:none;flex-direction:column;align-items:stretch;gap:4px;padding:16px;border-radius:36px;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);box-shadow:0 30px 60px rgba(21,60,140,.28);animation:pop .25s both}
   .cs-header nav.open{display:flex}
   .cs-header nav>button{text-align:left;padding:14px 20px}
-  .cs-header nav>button.cs-fancy,.cs-header nav>button.cs-subnav{justify-content:flex-start;margin-inline:0}
+  .cs-header nav>button.cs-fancy{justify-content:flex-start;margin-inline:0}
   .cs-navcta{flex-direction:column;align-items:stretch;margin:8px 0 0}
   .cs-navcta .cs-ghost,.cs-navcta .cs-solid{width:100%}
 }
@@ -1732,6 +1979,7 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
 @media (max-width:760px){
   .cs{font-size:17px}
   .cs-tl-line{left:34px}
+  .cs-tl-dot{left:34px}
   .cs-step{grid-template-columns:70px 1fr;gap:8px}
   .cs-num{grid-column:1;width:62px;height:62px;box-shadow:0 0 0 8px rgba(21,88,214,.12)}
   .cs-step.l .cs-step-card,.cs-step.r .cs-step-card{grid-column:2;border-radius:30px 30px 30px 8px;padding:22px 22px 24px}
@@ -1763,6 +2011,7 @@ body{display:block!important;background:#f5f8ff!important;color-scheme:light;mar
   .cs *,.cs *::before,.cs *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
   .cs-w{opacity:1}
   .cs-rv{opacity:1;translate:0 0;scale:1}
+  .cs-ln,.cs-wd>span{opacity:1!important;transform:none!important;filter:none!important}
 }
 `;
 

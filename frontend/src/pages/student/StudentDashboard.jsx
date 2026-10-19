@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import dbData from "./db.json";
 import artsData from "./arts.json";
+import medicalData from "./medical.json";
+import nursingData from "./nursing.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
@@ -1936,6 +1938,18 @@ export default function StudentDashboard() {
     const artsCourses = Array.isArray(artsData?.courses)
       ? artsData.courses
       : [];
+    const medicalList = Array.isArray(medicalData?.colleges)
+      ? medicalData.colleges
+      : [];
+    const medicalCourses = Array.isArray(medicalData?.courses)
+      ? medicalData.courses
+      : [];
+    const nursingList = Array.isArray(nursingData?.colleges)
+      ? nursingData.colleges
+      : [];
+    const nursingCourses = Array.isArray(nursingData?.courses)
+      ? nursingData.courses
+      : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
       : [];
@@ -1954,18 +1968,25 @@ export default function StudentDashboard() {
       byCollege[key].push(courseId);
     });
 
-    const decorate = (college) => ({
+    // The collegeCourses join table only maps engineering colleges, so it must
+    // not be applied to arts colleges (their ids overlap with engineering ids).
+    const decorate = (college, withLinks) => ({
       ...college,
       courseIds: [
         ...new Set([
           ...toList(college.courseIds),
-          ...(byCollege[String(college.id)] || []),
+          ...(withLinks ? byCollege[String(college.id)] || [] : []),
         ]),
       ],
     });
 
-    setColleges([...engList.map(decorate), ...artsList.map(decorate)]);
-    setCourses([...engCourses, ...artsCourses]);
+    setColleges([
+      ...engList.map((college) => decorate(college, true)),
+      ...artsList.map((college) => decorate(college, false)),
+      ...medicalList.map((college) => decorate(college, false)),
+      ...nursingList.map((college) => decorate(college, false)),
+    ]);
+    setCourses([...engCourses, ...artsCourses, ...medicalCourses, ...nursingCourses]);
     setLoading(false);
   }, []);
 
@@ -2023,7 +2044,7 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
-  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Medical"];
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Medical", "Nursing"];
 
   const categoryCounts = useMemo(() => {
     const counts = {};

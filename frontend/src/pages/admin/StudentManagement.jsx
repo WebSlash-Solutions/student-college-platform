@@ -7,7 +7,7 @@ const handleAdminLogout = () => {
   window.location.replace("/admin/login");
 };
 
-function AdminSidebar() {
+function AdminSidebar({ isOpen = false, onClose = () => {} }) {
   const navigate = useNavigate();
   const location = useLocation();
   const menuItems = [
@@ -23,7 +23,7 @@ function AdminSidebar() {
   ];
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar ${isOpen ? "is-open" : ""}`}>
       <div className="sidebar-brand">
         <div className="brand-icon">🎓</div>
         <div>
@@ -41,6 +41,7 @@ function AdminSidebar() {
             key={name}
             className={`sidebar-item ${location.pathname === path ? "active" : ""}`}
             onClick={() => {
+              onClose();
               if (name === "Dashboard") {
                 navigate("/admin/dashboard");
                 return;
@@ -384,6 +385,7 @@ function StudentManagement() {
   const [editForm, setEditForm] = useState(null);
   const [openMoreId, setOpenMoreId] = useState(null);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const studentsPerPage = 5;
 
@@ -678,6 +680,18 @@ function StudentManagement() {
         .logout-button:hover {
           color: #fff;
           background: rgba(255,255,255,.07);
+        }
+
+        .nav-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          min-width: 0;
+        }
+
+        .menu-toggle,
+        .sidebar-overlay {
+          display: none;
         }
 
         .student-main-area {
@@ -1727,13 +1741,81 @@ function StudentManagement() {
         }
 
         @media (max-width: 700px) {
+          .menu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: #17345d;
+            font-size: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+          }
+
+          .sidebar-overlay {
+            display: block;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 20, 40, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 190;
+          }
+
+          .sidebar-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+          }
+
           .admin-sidebar {
-            width: 58px;
-            min-width: 58px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 236px;
+            min-width: 236px;
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+            z-index: 200;
+          }
+
+          .admin-sidebar.is-open {
+            transform: translateX(0);
           }
 
           .sidebar-brand {
-            height: 64px;
+            height: 82px;
+            justify-content: flex-start;
+            padding: 0 20px;
+          }
+
+          .sidebar-brand > div:last-child,
+          .menu-title,
+          .sidebar-admin-card > div:last-child {
+            display: block;
+          }
+
+          .sidebar-item span:not(.sidebar-icon),
+          .logout-button span {
+            display: inline;
+          }
+
+          .sidebar-item {
+            justify-content: flex-start;
+            padding: 0 13px;
+          }
+
+          .sidebar-bottom {
+            padding: 14px;
+          }
+
+          .sidebar-admin-card {
+            justify-content: flex-start;
+            padding: 12px;
           }
 
           .brand-icon {
@@ -1873,22 +1955,40 @@ function StudentManagement() {
       `}</style>
 
       <div className="app-shell">
-        <AdminSidebar />
+        <div
+          className={`sidebar-overlay ${sidebarOpen ? "is-open" : ""}`}
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+        <AdminSidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
         <div className="student-main-area student-page">
           {/* ==============================
             TOP NAVBAR
         ============================== */}
 
           <div className="top-navbar">
-            <div className="search-box">
-              <span>⌕</span>
+            <div className="nav-left">
+              <button
+                type="button"
+                className="menu-toggle"
+                aria-label="Toggle menu"
+                onClick={() => setSidebarOpen((prev) => !prev)}
+              >
+                ☰
+              </button>
 
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search students, colleges, leads..."
-              />
+              <div className="search-box">
+                <span>⌕</span>
+
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder="Search students, colleges, leads..."
+                />
+              </div>
             </div>
 
             <div className="admin-area">
