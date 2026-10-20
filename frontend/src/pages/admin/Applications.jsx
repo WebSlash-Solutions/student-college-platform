@@ -1697,6 +1697,58 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(20,33,61,.1);
 }
+/* smoke effect on hover (stat cards) */
+.dm-stat {
+  position: relative;
+  isolation: isolate;
+  --smoke: rgba(120,130,150,.45);
+}
+.dm-stat--blue { --smoke: rgba(36,120,240,.45); }
+.dm-stat--green { --smoke: rgba(24,168,118,.45); }
+.dm-stat--red { --smoke: rgba(229,56,75,.42); }
+.dm-stat--orange { --smoke: rgba(240,140,0,.45); }
+.dm-stat--indigo { --smoke: rgba(79,102,230,.45); }
+.dm-stat--purple { --smoke: rgba(124,77,255,.45); }
+.dm-stat::before,
+.dm-stat::after {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: -4px;
+  height: 85%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(11px);
+}
+.dm-stat::before {
+  background:
+    radial-gradient(circle at 18% 80%, var(--smoke) 0, transparent 38%),
+    radial-gradient(circle at 52% 68%, var(--smoke) 0, transparent 42%),
+    radial-gradient(circle at 86% 82%, var(--smoke) 0, transparent 36%);
+}
+.dm-stat::after {
+  background:
+    radial-gradient(circle at 32% 76%, var(--smoke) 0, transparent 40%),
+    radial-gradient(circle at 70% 72%, var(--smoke) 0, transparent 38%);
+}
+.dm-stat:hover::before {
+  animation: dm-smoke-a 2.4s ease-out infinite;
+}
+.dm-stat:hover::after {
+  animation: dm-smoke-b 2.4s ease-out 1.2s infinite;
+}
+@keyframes dm-smoke-a {
+  0% { transform: translate(0,14px) scale(.7); opacity: 0; }
+  25% { opacity: .95; }
+  100% { transform: translate(10px,-38px) scale(1.5); opacity: 0; }
+}
+@keyframes dm-smoke-b {
+  0% { transform: translate(0,14px) scale(.7); opacity: 0; }
+  25% { opacity: .85; }
+  100% { transform: translate(-12px,-44px) scale(1.6); opacity: 0; }
+}
 .dm-stat__icon {
   width: 42px;
   height: 42px;
@@ -3005,6 +3057,24 @@ body {
 .dm-alert:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(20,33,61,.08);
+}
+.dm-alerts__grid > .dm-alert {
+  animation: dm-seesaw 2.4s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.dm-alerts__grid > .dm-alert:nth-child(even) {
+  animation-direction: alternate-reverse;
+}
+.dm-alerts__grid > .dm-alert:hover {
+  animation-play-state: paused;
+}
+@keyframes dm-seesaw {
+  from {
+    transform: translateY(-7px);
+  }
+  to {
+    transform: translateY(7px);
+  }
 }
 .dm-alert--red {
   background: #fdeaec;

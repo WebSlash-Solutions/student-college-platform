@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import StudentManagement from "./StudentManagement";
 import CourseManagement from "./CourseManagement";
+import Transactions from "./Transactions";
 
 const adminStyles = String.raw`/* =========================================================
    GLOBAL ADMIN
@@ -2209,6 +2210,155 @@ font-size: 14px;
     cursor: pointer;
   }
 }
+
+/* =========================================================
+   STAT CARDS - SMOKE ON HOVER
+========================================================= */
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card .stat-icon,
+.stat-card .stat-content {
+  position: relative;
+  z-index: 1;
+}
+
+.stat-card::before,
+.stat-card::after {
+  content: "";
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  bottom: -45%;
+  height: 130%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(13px);
+  will-change: transform, opacity;
+}
+
+.stat-card::before {
+  background:
+    radial-gradient(circle at 18% 78%, rgba(120, 138, 168, 0.55) 0 14%, transparent 42%),
+    radial-gradient(circle at 52% 88%, rgba(150, 165, 190, 0.50) 0 16%, transparent 46%),
+    radial-gradient(circle at 84% 74%, rgba(125, 142, 170, 0.50) 0 13%, transparent 40%);
+}
+
+.stat-card::after {
+  background:
+    radial-gradient(circle at 32% 85%, rgba(165, 178, 200, 0.55) 0 15%, transparent 44%),
+    radial-gradient(circle at 68% 80%, rgba(135, 150, 178, 0.45) 0 14%, transparent 42%),
+    radial-gradient(circle at 92% 90%, rgba(160, 174, 196, 0.45) 0 12%, transparent 38%);
+}
+
+.stat-card:hover::before {
+  animation: smokeRiseA 2.4s ease-out infinite;
+}
+
+.stat-card:hover::after {
+  animation: smokeRiseB 3.1s ease-out infinite;
+  animation-delay: 0.7s;
+}
+
+@keyframes smokeRiseA {
+  0%   { opacity: 0;    transform: translateY(35%) translateX(0) scale(0.8); }
+  25%  { opacity: 0.85; }
+  100% { opacity: 0;    transform: translateY(-48%) translateX(7%) scale(1.35); }
+}
+
+@keyframes smokeRiseB {
+  0%   { opacity: 0;    transform: translateY(40%) translateX(0) scale(0.85); }
+  30%  { opacity: 0.75; }
+  100% { opacity: 0;    transform: translateY(-55%) translateX(-8%) scale(1.45); }
+}
+
+/* =========================================================
+   LEAD STATUS - RADIAL BAR CHART
+========================================================= */
+
+.radial-chart {
+  position: relative;
+  width: 145px;
+  height: 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: donutReveal 0.75s ease both;
+}
+
+.radial-chart svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.radial-track {
+  fill: none;
+  stroke: #eef2f7;
+  stroke-width: 7;
+}
+
+.radial-arc {
+  fill: none;
+  stroke-width: 7;
+  stroke-linecap: round;
+  animation: radialGrow 1.1s ease-out both;
+}
+
+.radial-arc:nth-of-type(2) { animation-delay: 0.05s; }
+.radial-arc:nth-of-type(4) { animation-delay: 0.15s; }
+.radial-arc:nth-of-type(6) { animation-delay: 0.25s; }
+.radial-arc:nth-of-type(8) { animation-delay: 0.35s; }
+
+@keyframes radialGrow {
+  from { stroke-dasharray: 0 100; }
+}
+
+.radial-center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.radial-center strong {
+  display: block;
+  color: #1b3555;
+  font-size: 17px;
+}
+
+.radial-center span {
+  display: block;
+  margin-top: 2px;
+  color: #8b99aa;
+  font-size: 9px;
+}
+
+/* =========================================================
+   QUICK ACTIONS - SEA WAVE UP & DOWN
+========================================================= */
+
+.quick-actions button {
+  animation: seaWave 3s ease-in-out infinite;
+}
+
+.quick-actions button:nth-child(1) { animation-delay: 0s; }
+.quick-actions button:nth-child(2) { animation-delay: -0.45s; }
+.quick-actions button:nth-child(3) { animation-delay: -0.9s; }
+.quick-actions button:nth-child(4) { animation-delay: -1.35s; }
+
+@keyframes seaWave {
+  0%   { transform: translateY(0); }
+  25%  { transform: translateY(-7px); }
+  50%  { transform: translateY(0); }
+  75%  { transform: translateY(7px); }
+  100% { transform: translateY(0); }
+}
 `;
 
 /* =========================================================
@@ -2406,6 +2556,10 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate, isSidebar
                 navigate("/admin/colleges");
               } else if (item.name === "Applications") {
                 navigate("/admin/applications");
+              } else if (item.name === "Transactions") {
+                navigate("/admin/transactions");
+              } else if (item.name === "Dashboard") {
+                navigate("/admin/dashboard");
               } else {
                 setActivePage(item.name);
               }
@@ -3232,8 +3386,35 @@ function DashboardHome() {
 
           <div className="status-content">
             <div className="donut-wrapper">
-              <div className="donut-chart">
-                <div className="donut-center">
+              <div className="radial-chart">
+                <svg viewBox="0 0 150 150" aria-hidden="true">
+                  {[
+                    { r: 66, pct: 34, color: "#f3b436" },
+                    { r: 56, pct: 28, color: "#2f80ed" },
+                    { r: 46, pct: 24, color: "#19bb7d" },
+                    { r: 36, pct: 14, color: "#ef626c" },
+                  ].flatMap((ring) => [
+                    <circle
+                      key={`track-${ring.r}`}
+                      className="radial-track"
+                      cx="75"
+                      cy="75"
+                      r={ring.r}
+                    />,
+                    <circle
+                      key={`arc-${ring.r}`}
+                      className="radial-arc"
+                      cx="75"
+                      cy="75"
+                      r={ring.r}
+                      pathLength="100"
+                      stroke={ring.color}
+                      style={{ strokeDasharray: `${ring.pct} 100` }}
+                    />,
+                  ])}
+                </svg>
+
+                <div className="radial-center">
                   <strong>18,250</strong>
                   <span>Total Leads</span>
                 </div>
@@ -3453,18 +3634,45 @@ function AdminSection({ title }) {
 }
 
 /* =========================================================
+   URL -> PAGE MAP
+========================================================= */
+
+const PATH_TO_PAGE = {
+  "/admin": "Dashboard",
+  "/admin/dashboard": "Dashboard",
+  "/admin/students": "Students",
+  "/admin/transactions": "Transactions",
+};
+
+function getPageFromPath(pathname) {
+  const clean = pathname.replace(/\/+$/, "") || "/";
+  return PATH_TO_PAGE[clean] || null;
+}
+
+/* =========================================================
    MAIN ADMIN DASHBOARD
 ========================================================= */
 function AdminDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return sessionStorage.getItem("adminLoggedIn") === "true";
   });
 
-  const [activePage, setActivePage] = useState("Dashboard");
+  const [activePage, setActivePage] = useState(
+    () => getPageFromPath(location.pathname) || "Dashboard"
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // URL always decides the active page. location.key is included so that
+  // clicking a sidebar item for the SAME url (e.g. Courses -> Transactions
+  // while already on /admin/transactions) still re-syncs the page.
+  useEffect(() => {
+    const page = getPageFromPath(location.pathname);
+    if (page) setActivePage(page);
+  }, [location.key, location.pathname]);
 
   const handleLogin = () => {
     sessionStorage.setItem("adminLoggedIn", "true");
@@ -3521,8 +3729,12 @@ function AdminDashboard() {
           <main className="admin-content">
             {activePage === "Dashboard" ? (
               <DashboardHome />
+            ) : activePage === "Students" ? (
+              <StudentManagement embedded />
             ) : activePage === "Courses" ? (
               <CourseManagement />
+            ) : activePage === "Transactions" ? (
+              <Transactions embedded />
             ) : (
               <AdminSection title={activePage} />
             )}
