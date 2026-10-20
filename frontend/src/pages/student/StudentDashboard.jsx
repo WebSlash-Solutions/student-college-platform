@@ -3,6 +3,7 @@ import dbData from "./db.json";
 import artsData from "./arts.json";
 import medicalData from "./medical.json";
 import nursingData from "./nursing.json";
+import alliedData from "./allied.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
@@ -1114,6 +1115,36 @@ html {
   color: #fff;
 }
 
+/* SUB-CATEGORY DROPDOWN */
+
+.cc-subcategory-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: -4px 0 18px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--blue-25);
+}
+
+.cc-subcategory-label {
+  font-size: .84rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--muted-dark);
+}
+
+.cc-subcategory-select {
+  flex: 0 1 280px;
+  background: #fff;
+  border-color: var(--brand);
+  font-weight: 700;
+  color: var(--deep);
+}
+
 /* SEARCH */
 
 .cc-tools {
@@ -1916,6 +1947,7 @@ export default function StudentDashboard() {
   const [city, setCity] = useState("");
   const [type, setType] = useState("");
   const [category, setCategory] = useState("Engineering");
+  const [healthSub, setHealthSub] = useState("Medical");
   const [sort, setSort] = useState("rating-desc");
 
   const [selected, setSelected] = useState(null);
@@ -1949,6 +1981,12 @@ export default function StudentDashboard() {
       : [];
     const nursingCourses = Array.isArray(nursingData?.courses)
       ? nursingData.courses
+      : [];
+    const alliedList = Array.isArray(alliedData?.colleges)
+      ? alliedData.colleges
+      : [];
+    const alliedCourses = Array.isArray(alliedData?.courses)
+      ? alliedData.courses
       : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
@@ -1985,8 +2023,15 @@ export default function StudentDashboard() {
       ...artsList.map((college) => decorate(college, false)),
       ...medicalList.map((college) => decorate(college, false)),
       ...nursingList.map((college) => decorate(college, false)),
+      ...alliedList.map((college) => decorate(college, false)),
     ]);
-    setCourses([...engCourses, ...artsCourses, ...medicalCourses, ...nursingCourses]);
+    setCourses([
+      ...engCourses,
+      ...artsCourses,
+      ...medicalCourses,
+      ...nursingCourses,
+      ...alliedCourses,
+    ]);
     setLoading(false);
   }, []);
 
@@ -2044,7 +2089,24 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
-  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Medical", "Nursing"];
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Healthcare & Medical Sciences"];
+
+  // subcategories shown under the "Healthcare & Medical Sciences" umbrella
+  const HEALTH_SUBCATEGORIES = ["Medical", "Nursing", "Allied Health"];
+
+  // maps a subcategory tab to the `category` value stored on the colleges
+  const HEALTH_SUB_TO_CATEGORY = {
+    Medical: "Medical",
+    Nursing: "Nursing",
+    "Allied Health": "Allied",
+  };
+
+  const isHealthGroup = category === "Healthcare & Medical Sciences";
+
+  // the concrete category used for filtering/headings
+  const activeCategory = isHealthGroup
+    ? HEALTH_SUB_TO_CATEGORY[healthSub] ?? "Medical"
+    : category;
 
   const categoryCounts = useMemo(() => {
     const counts = {};
@@ -2054,6 +2116,12 @@ export default function StudentDashboard() {
     });
     return counts;
   }, [colleges]);
+
+  // count of all healthcare colleges combined (for the umbrella tab)
+  const healthGroupCount =
+    (categoryCounts.Medical ?? 0) +
+    (categoryCounts.Nursing ?? 0) +
+    (categoryCounts.Allied ?? 0);
 
   /* =======================================================
      FILTER + SORT
@@ -2071,7 +2139,7 @@ export default function StudentDashboard() {
         return false;
       }
 
-      if (category && getCategory(college) !== category) {
+      if (activeCategory && getCategory(college) !== activeCategory) {
         return false;
       }
 
@@ -2103,7 +2171,7 @@ export default function StudentDashboard() {
     }
 
     return result;
-  }, [colleges, courseIndex, search, city, type, category, sort]);
+  }, [colleges, courseIndex, search, city, type, activeCategory, sort]);
 
   /* =======================================================
      PAGINATION
@@ -2111,7 +2179,7 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, city, type, category, sort]);
+  }, [search, city, type, activeCategory, sort]);
 
   const totalPages = Math.ceil(visibleColleges.length / ITEMS_PER_PAGE);
 
@@ -2178,6 +2246,7 @@ export default function StudentDashboard() {
     setCity("");
     setType("");
     setCategory("Engineering");
+    setHealthSub("Medical");
   };
 
   /* =======================================================
@@ -2499,7 +2568,7 @@ export default function StudentDashboard() {
             <div className="cc-col-head">
               <span className="cc-eyebrow">College Directory</span>
 
-              <h2>Explore {category} Colleges</h2>
+              <h2>Explore {activeCategory} Colleges</h2>
 
               <p>
                 Search colleges and view complete information including basic
@@ -2522,11 +2591,36 @@ export default function StudentDashboard() {
                 >
                   {cat}
                   <span className="cc-cat-count">
-                    {categoryCounts[cat] ?? 0}
+                    {cat === "Healthcare & Medical Sciences"
+                      ? healthGroupCount
+                      : categoryCounts[cat] ?? 0}
                   </span>
                 </button>
               ))}
             </div>
+
+            {/* SUB-CATEGORY DROPDOWN (Healthcare & Medical Sciences) */}
+
+            {isHealthGroup && (
+              <div className="cc-subcategory-bar">
+                <label className="cc-subcategory-label" htmlFor="cc-subcat">
+                  Choose specialisation
+                </label>
+
+                <select
+                  id="cc-subcat"
+                  className="cc-select cc-subcategory-select"
+                  value={healthSub}
+                  onChange={(event) => setHealthSub(event.target.value)}
+                >
+                  {HEALTH_SUBCATEGORIES.map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub} ({categoryCounts[HEALTH_SUB_TO_CATEGORY[sub]] ?? 0})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* SEARCH/FILTER */}
 
@@ -2637,14 +2731,14 @@ export default function StudentDashboard() {
                 <Icon name="search" size={26} />
 
                 <strong>
-                  {(categoryCounts[category] ?? 0) === 0
-                    ? `${category} colleges are not added yet`
+                  {(categoryCounts[activeCategory] ?? 0) === 0
+                    ? `${activeCategory} colleges are not added yet`
                     : "No colleges found"}
                 </strong>
 
-                {(categoryCounts[category] ?? 0) === 0 ? (
+                {(categoryCounts[activeCategory] ?? 0) === 0 ? (
                   <span style={{ color: "#64748B", fontSize: ".9rem" }}>
-                    {category} colleges will be added soon. Engineering
+                    {activeCategory} colleges will be added soon. Engineering
                     colleges are available now.
                   </span>
                 ) : (

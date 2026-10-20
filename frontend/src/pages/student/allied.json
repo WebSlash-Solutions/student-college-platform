@@ -7667,79 +7667,6 @@
     },
     {
       "id": 106,
-      "name": "Government Regional Training Centre: Jt Director of Public Health and Preventive Medicine & Head",
-      "city": "Krishnagiri",
-      "district": "Krishnagiri",
-      "locality": "Krishnagiri",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Jt Director of Public Health and Preventive Medicine & Head is an allied health science institution in Krishnagiri, Krishnagiri district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Krishnagiri",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 107,
       "name": "Santhi Paramedical Institute",
       "city": "Krishnagiri",
       "district": "Krishnagiri",
@@ -7812,7 +7739,7 @@
       ]
     },
     {
-      "id": 108,
+      "id": 107,
       "name": "St.Peterâs College of Allied Health Sciences & Research Institute",
       "city": "Krishnagiri",
       "district": "Krishnagiri",
@@ -7885,7 +7812,7 @@
       ]
     },
     {
-      "id": 109,
+      "id": 108,
       "name": "TCR Hospital & Charitable Trust",
       "city": "Krishnagiri",
       "district": "Krishnagiri",
@@ -7958,7 +7885,7 @@
       ]
     },
     {
-      "id": 110,
+      "id": 109,
       "name": "Glanis Institute of Allied Health SciencesGlanis Place",
       "city": "Madurai",
       "district": "Madurai",
@@ -8031,80 +7958,7 @@
       ]
     },
     {
-      "id": 111,
-      "name": "Government Regional Training Centre: Health and Family Welfare Training Centre",
-      "city": "Madurai",
-      "district": "Madurai",
-      "locality": "Madurai",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Health and Family Welfare Training Centre is an allied health science institution in Madurai, Madurai district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Madurai",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 112,
+      "id": 110,
       "name": "Guru Hospital",
       "city": "Madurai",
       "district": "Madurai",
@@ -8177,7 +8031,7 @@
       ]
     },
     {
-      "id": 113,
+      "id": 111,
       "name": "Madurai Medical College & Hospital",
       "city": "Madurai",
       "district": "Madurai",
@@ -8250,7 +8104,7 @@
       ]
     },
     {
-      "id": 114,
+      "id": 112,
       "name": "Meenakshi College of Allied Health Sciences",
       "city": "Madurai",
       "district": "Madurai",
@@ -8323,7 +8177,7 @@
       ]
     },
     {
-      "id": 115,
+      "id": 113,
       "name": "Preethi Institute of Health Sciences",
       "city": "Madurai",
       "district": "Madurai",
@@ -8396,7 +8250,7 @@
       ]
     },
     {
-      "id": 116,
+      "id": 114,
       "name": "Shri Indra Ganesan Institute Of Medical Science",
       "city": "Madurai",
       "district": "Madurai",
@@ -8469,7 +8323,7 @@
       ]
     },
     {
-      "id": 117,
+      "id": 115,
       "name": "Vadamalayan Institute Of Medical And Allied Health Sciences",
       "city": "Madurai",
       "district": "Madurai",
@@ -8542,7 +8396,7 @@
       ]
     },
     {
-      "id": 118,
+      "id": 116,
       "name": "Velammal Medical College Hospital & Research Institute",
       "city": "Madurai",
       "district": "Madurai",
@@ -8615,7 +8469,7 @@
       ]
     },
     {
-      "id": 119,
+      "id": 117,
       "name": "Government Medical College",
       "city": "Nagapattinam",
       "district": "Nagapattinam",
@@ -8688,7 +8542,7 @@
       ]
     },
     {
-      "id": 120,
+      "id": 118,
       "name": "Sir Issac Newton College of Physiotherapy",
       "city": "Nagapattinam",
       "district": "Nagapattinam",
@@ -8761,7 +8615,7 @@
       ]
     },
     {
-      "id": 121,
+      "id": 119,
       "name": "Annai J K K Sampoorani Ammal College Of Allied Health Sciences",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -8834,7 +8688,7 @@
       ]
     },
     {
-      "id": 122,
+      "id": 120,
       "name": "Dhanvantri College Of Nursing",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -8907,7 +8761,7 @@
       ]
     },
     {
-      "id": 123,
+      "id": 121,
       "name": "Government Medical College & Hospital",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -8980,7 +8834,7 @@
       ]
     },
     {
-      "id": 124,
+      "id": 122,
       "name": "J.K.K.Nattraja Dental College & Hospital",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9053,7 +8907,7 @@
       ]
     },
     {
-      "id": 125,
+      "id": 123,
       "name": "Jayamadhi College of Allied Health Sciences",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9126,7 +8980,7 @@
       ]
     },
     {
-      "id": 126,
+      "id": 124,
       "name": "K.S. Rangaswamy College of Allied Health Science",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9199,7 +9053,7 @@
       ]
     },
     {
-      "id": 127,
+      "id": 125,
       "name": "PGP Institute Of Allied Health Sciences",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9272,7 +9126,7 @@
       ]
     },
     {
-      "id": 128,
+      "id": 126,
       "name": "Paavai Institute Of Allied Health Sciences",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9345,7 +9199,7 @@
       ]
     },
     {
-      "id": 129,
+      "id": 127,
       "name": "Sengunthar College of Allied Health Sciences",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9418,7 +9272,7 @@
       ]
     },
     {
-      "id": 130,
+      "id": 128,
       "name": "Swamy Vivekanandha College Of Pharmacy",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9491,7 +9345,7 @@
       ]
     },
     {
-      "id": 131,
+      "id": 129,
       "name": "Thangam Hospital",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9564,7 +9418,7 @@
       ]
     },
     {
-      "id": 132,
+      "id": 130,
       "name": "Vivekanandha Medical Care Hospital Tiruchengodu",
       "city": "Namakkal",
       "district": "Namakkal",
@@ -9637,7 +9491,7 @@
       ]
     },
     {
-      "id": 133,
+      "id": 131,
       "name": "Mother Teresa Institute of Paramedical & Allied Health Science",
       "city": "Pudukkottai",
       "district": "Pudukkottai",
@@ -9710,7 +9564,7 @@
       ]
     },
     {
-      "id": 134,
+      "id": 132,
       "name": "Annapoorna Medical College & Hospital",
       "city": "Salem",
       "district": "Salem",
@@ -9783,7 +9637,7 @@
       ]
     },
     {
-      "id": 135,
+      "id": 133,
       "name": "Dharan Institute Of Health Sciences",
       "city": "Salem",
       "district": "Salem",
@@ -9856,7 +9710,7 @@
       ]
     },
     {
-      "id": 136,
+      "id": 134,
       "name": "Govt.Mohan Kumaramangalam Medical College",
       "city": "Salem",
       "district": "Salem",
@@ -9929,7 +9783,7 @@
       ]
     },
     {
-      "id": 137,
+      "id": 135,
       "name": "Mahendra College of Allied health Sciences",
       "city": "Salem",
       "district": "Salem",
@@ -10002,7 +9856,7 @@
       ]
     },
     {
-      "id": 138,
+      "id": 136,
       "name": "Salem Polyclinic",
       "city": "Salem",
       "district": "Salem",
@@ -10075,7 +9929,7 @@
       ]
     },
     {
-      "id": 139,
+      "id": 137,
       "name": "Shanmuga College of Allied Health Science",
       "city": "Salem",
       "district": "Salem",
@@ -10148,7 +10002,7 @@
       ]
     },
     {
-      "id": 140,
+      "id": 138,
       "name": "Sri Gokulam Hospital",
       "city": "Salem",
       "district": "Salem",
@@ -10221,7 +10075,7 @@
       ]
     },
     {
-      "id": 141,
+      "id": 139,
       "name": "Sri Shanmugha Institute of Allied Health Science",
       "city": "Salem",
       "district": "Salem",
@@ -10294,7 +10148,7 @@
       ]
     },
     {
-      "id": 142,
+      "id": 140,
       "name": "Sri Shanmugha Institute of Medical Science And Research",
       "city": "Salem",
       "district": "Salem",
@@ -10367,7 +10221,7 @@
       ]
     },
     {
-      "id": 143,
+      "id": 141,
       "name": "Vasan Institute of Ophthalmology & Research",
       "city": "Salem",
       "district": "Salem",
@@ -10440,80 +10294,7 @@
       ]
     },
     {
-      "id": 144,
-      "name": "Government Regional Training Centre: Government Training Institute",
-      "city": "Sivaganga",
-      "district": "Sivaganga",
-      "locality": "Sivaganga",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Government Training Institute is an allied health science institution in Sivaganga, Sivaganga district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Sivaganga",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 145,
+      "id": 142,
       "name": "Government Sivagangai Medical College",
       "city": "Sivaganga",
       "district": "Sivaganga",
@@ -10586,7 +10367,7 @@
       ]
     },
     {
-      "id": 146,
+      "id": 143,
       "name": "Annamalaiyar Paramedical College",
       "city": "Tamil Nadu",
       "district": "Tamil Nadu",
@@ -10659,7 +10440,7 @@
       ]
     },
     {
-      "id": 147,
+      "id": 144,
       "name": "Excel Institute Of Health Science",
       "city": "Tamil Nadu",
       "district": "Tamil Nadu",
@@ -10732,591 +10513,7 @@
       ]
     },
     {
-      "id": 148,
-      "name": "Government Regional Training Centre: Government Training Institute",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Government Training Institute is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 149,
-      "name": "Government Regional Training Centre: Government Training Institute",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Government Training Institute is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 150,
-      "name": "Government Regional Training Centre: Health Manpower Development Institute",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Health Manpower Development Institute is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 151,
-      "name": "Government Regional Training Centre: Health Manpower Development Institute (HMDI) Tiruchy Trunk Road",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Health Manpower Development Institute (HMDI) Tiruchy Trunk Road is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 152,
-      "name": "Government Regional Training Centre: Health and Family Welfare Training Centre",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Health and Family Welfare Training Centre is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 153,
-      "name": "Government Regional Training Centre: Institute of Public Health",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Institute of Public Health is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 154,
-      "name": "Government Regional Training Centre: Regional Training Institute of Public Health",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Regional Training Institute of Public Health is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 155,
-      "name": "Government Regional Training Centre: The Gandhigram Institute of Rural Health and Family Welfare Trust",
-      "city": "Tamil Nadu",
-      "district": "Tamil Nadu",
-      "locality": "Tamil Nadu",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: The Gandhigram Institute of Rural Health and Family Welfare Trust is an allied health science institution in Tamil Nadu, Tamil Nadu district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tamil Nadu",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 156,
+      "id": 145,
       "name": "Govt Medical College & Hospital",
       "city": "Tamil Nadu",
       "district": "Tamil Nadu",
@@ -11389,7 +10586,7 @@
       ]
     },
     {
-      "id": 157,
+      "id": 146,
       "name": "Sree Mookambika Institute of Medical Sciences",
       "city": "Tamil Nadu",
       "district": "Tamil Nadu",
@@ -11462,7 +10659,7 @@
       ]
     },
     {
-      "id": 158,
+      "id": 147,
       "name": "White Memorial College of Allied Health Science",
       "city": "Tamil Nadu",
       "district": "Tamil Nadu",
@@ -11535,7 +10732,7 @@
       ]
     },
     {
-      "id": 159,
+      "id": 148,
       "name": "Thanjavur Medical College & Hospital",
       "city": "Thanjavur",
       "district": "Thanjavur",
@@ -11608,7 +10805,7 @@
       ]
     },
     {
-      "id": 160,
+      "id": 149,
       "name": "Government Theni Medical College",
       "city": "Theni",
       "district": "Theni",
@@ -11681,7 +10878,7 @@
       ]
     },
     {
-      "id": 161,
+      "id": 150,
       "name": "N.R. Thiagarajan Paramedical College",
       "city": "Theni",
       "district": "Theni",
@@ -11754,7 +10951,7 @@
       ]
     },
     {
-      "id": 162,
+      "id": 151,
       "name": "Thiravium Para Medical College",
       "city": "Theni",
       "district": "Theni",
@@ -11827,7 +11024,7 @@
       ]
     },
     {
-      "id": 163,
+      "id": 152,
       "name": "Govt. Thoothukudi Medical College & Hospital",
       "city": "Thoothukudi",
       "district": "Thoothukudi",
@@ -11900,7 +11097,7 @@
       ]
     },
     {
-      "id": 164,
+      "id": 153,
       "name": "Sundaram Arulrhai Hospital",
       "city": "Thoothukudi",
       "district": "Thoothukudi",
@@ -11973,7 +11170,7 @@
       ]
     },
     {
-      "id": 165,
+      "id": 154,
       "name": "Doctor's Institute of Laboratory Sciences",
       "city": "Tiruchirappalli",
       "district": "Tiruchirappalli",
@@ -12046,7 +11243,7 @@
       ]
     },
     {
-      "id": 166,
+      "id": 155,
       "name": "Institute of Ophthalmology",
       "city": "Tiruchirappalli",
       "district": "Tiruchirappalli",
@@ -12119,7 +11316,7 @@
       ]
     },
     {
-      "id": 167,
+      "id": 156,
       "name": "KAP Viswanatham Govt. Medical College & Hospital",
       "city": "Tiruchirappalli",
       "district": "Tiruchirappalli",
@@ -12192,7 +11389,7 @@
       ]
     },
     {
-      "id": 168,
+      "id": 157,
       "name": "KMC Speciality Hospitals (I) Ltd.",
       "city": "Tiruchirappalli",
       "district": "Tiruchirappalli",
@@ -12265,7 +11462,7 @@
       ]
     },
     {
-      "id": 169,
+      "id": 158,
       "name": "Kaveri Medical Centre and Hospital",
       "city": "Tiruchirappalli",
       "district": "Tiruchirappalli",
@@ -12338,7 +11535,7 @@
       ]
     },
     {
-      "id": 170,
+      "id": 159,
       "name": "Krishna College of Paramedical & Allied Health Science",
       "city": "Tiruchirappalli",
       "district": "Tiruchirappalli",
@@ -12411,7 +11608,7 @@
       ]
     },
     {
-      "id": 171,
+      "id": 160,
       "name": "Srinivasan Institute Of Medical Sciences",
       "city": "Tiruchirappalli",
       "district": "Tiruchirappalli",
@@ -12484,80 +11681,7 @@
       ]
     },
     {
-      "id": 172,
-      "name": "Government Regional Training Centre: Government Training Institute",
-      "city": "Tirunelveli",
-      "district": "Tirunelveli",
-      "locality": "Tirunelveli",
-      "state": "Tamil Nadu",
-      "category": "Allied",
-      "type": "Private",
-      "autonomyNote": "Self-financing allied health college",
-      "affiliation": "Tamil Nadu Dr. M.G.R. Medical University",
-      "autonomous": false,
-      "established": 2026,
-      "rating": 4.1,
-      "fee": 90000,
-      "about": "Government Regional Training Centre: Government Training Institute is an allied health science institution in Tirunelveli, Tirunelveli district, Tamil Nadu, offering paramedical and allied health programmes affiliated to Tamil Nadu Dr. M.G.R. Medical University.",
-      "facilities": [
-        "Library",
-        "Skill / Simulation Lab",
-        "Clinical Training Hospital",
-        "Hostel",
-        "Sports Ground",
-        "Smart Classrooms",
-        "Transport"
-      ],
-      "eligibility": "Passed 10+2 with Physics, Chemistry, Biology and English (45% aggregate in PCB; 40% for SC/SCA/ST). NEET is not required for allied health courses in Tamil Nadu.",
-      "courseIds": [
-        501,
-        502,
-        503,
-        504,
-        505,
-        506,
-        507,
-        508
-      ],
-      "website": null,
-      "locality2": "Tirunelveli",
-      "branches": [
-        {
-          "code": "B.Sc MLT",
-          "name": "B.Sc. Medical Laboratory Technology"
-        },
-        {
-          "code": "B.Sc OT",
-          "name": "B.Sc. Operation Theatre & Anaesthesia Technology"
-        },
-        {
-          "code": "B.Sc Optometry",
-          "name": "B.Sc. Optometry"
-        },
-        {
-          "code": "BPT",
-          "name": "B.Sc. Physiotherapy (Bachelor of Physiotherapy)"
-        },
-        {
-          "code": "B.Sc Audiology",
-          "name": "B.Sc. Audiology & Speech Language Pathology"
-        },
-        {
-          "code": "B.Sc RT",
-          "name": "B.Sc. Respiratory Therapy"
-        },
-        {
-          "code": "B.Sc RIT",
-          "name": "B.Sc. Radiography & Imaging Technology"
-        },
-        {
-          "code": "B.Sc CCT",
-          "name": "B.Sc. Emergency & Critical Care Technology"
-        }
-      ]
-    },
-    {
-      "id": 173,
+      "id": 161,
       "name": "Rajas Institute of Allied Health Sciences (Selvam Educational & Charitable Trust)",
       "city": "Tirunelveli",
       "district": "Tirunelveli",
@@ -12630,7 +11754,7 @@
       ]
     },
     {
-      "id": 174,
+      "id": 162,
       "name": "St. Mariam College of Allied Health Science",
       "city": "Tirunelveli",
       "district": "Tirunelveli",
@@ -12703,7 +11827,7 @@
       ]
     },
     {
-      "id": 175,
+      "id": 163,
       "name": "St. Mary's College of Health Science Sacred Heart Convent Near Rajapuram Colony Thenpothai",
       "city": "Tirunelveli",
       "district": "Tirunelveli",
@@ -12776,7 +11900,7 @@
       ]
     },
     {
-      "id": 176,
+      "id": 164,
       "name": "Tirunelveli Medical College & Hospital",
       "city": "Tirunelveli",
       "district": "Tirunelveli",
@@ -12849,7 +11973,7 @@
       ]
     },
     {
-      "id": 177,
+      "id": 165,
       "name": "AMC College Of Allied Health Sciences",
       "city": "Tiruppur",
       "district": "Tiruppur",
@@ -12922,7 +12046,7 @@
       ]
     },
     {
-      "id": 178,
+      "id": 166,
       "name": "Government Medical College",
       "city": "Tiruppur",
       "district": "Tiruppur",
@@ -12995,7 +12119,7 @@
       ]
     },
     {
-      "id": 179,
+      "id": 167,
       "name": "Revathi College of Paramedical Sciences",
       "city": "Tiruppur",
       "district": "Tiruppur",
@@ -13068,7 +12192,7 @@
       ]
     },
     {
-      "id": 180,
+      "id": 168,
       "name": "Sri Kumaran Institute of Paramedical Science",
       "city": "Tiruppur",
       "district": "Tiruppur",
@@ -13141,7 +12265,7 @@
       ]
     },
     {
-      "id": 181,
+      "id": 169,
       "name": "Indira College of Allied Health Sciences",
       "city": "Tiruvallur",
       "district": "Tiruvallur",
@@ -13214,7 +12338,7 @@
       ]
     },
     {
-      "id": 182,
+      "id": 170,
       "name": "Arunai Paramedical College",
       "city": "Tiruvannamalai",
       "district": "Tiruvannamalai",
@@ -13287,7 +12411,7 @@
       ]
     },
     {
-      "id": 183,
+      "id": 171,
       "name": "Government Thiruvannamalai Medical College",
       "city": "Tiruvannamalai",
       "district": "Tiruvannamalai",
@@ -13360,7 +12484,7 @@
       ]
     },
     {
-      "id": 184,
+      "id": 172,
       "name": "Thiruvarur Medical College",
       "city": "Tiruvarur",
       "district": "Tiruvarur",
@@ -13433,7 +12557,7 @@
       ]
     },
     {
-      "id": 185,
+      "id": 173,
       "name": "Arun Educational Trust",
       "city": "Vellore",
       "district": "Vellore",
@@ -13506,7 +12630,7 @@
       ]
     },
     {
-      "id": 186,
+      "id": 174,
       "name": "Christian Medical College",
       "city": "Vellore",
       "district": "Vellore",
@@ -13579,7 +12703,7 @@
       ]
     },
     {
-      "id": 187,
+      "id": 175,
       "name": "Govt. Vellore Medical College & Hospital",
       "city": "Vellore",
       "district": "Vellore",
@@ -13652,7 +12776,7 @@
       ]
     },
     {
-      "id": 188,
+      "id": 176,
       "name": "Prana Institute Of Allied Medical Science Kinginiamman Koil Stop",
       "city": "Vellore",
       "district": "Vellore",
@@ -13725,7 +12849,7 @@
       ]
     },
     {
-      "id": 189,
+      "id": 177,
       "name": "Sandhya College of Health Sciences",
       "city": "Vellore",
       "district": "Vellore",
@@ -13798,7 +12922,7 @@
       ]
     },
     {
-      "id": 190,
+      "id": 178,
       "name": "Schieffelin Institute Of Health - Research Leprosy Centre",
       "city": "Vellore",
       "district": "Vellore",
@@ -13871,7 +12995,7 @@
       ]
     },
     {
-      "id": 191,
+      "id": 179,
       "name": "Scudder Institute of Allied Health Sciences",
       "city": "Vellore",
       "district": "Vellore",
@@ -13944,7 +13068,7 @@
       ]
     },
     {
-      "id": 192,
+      "id": 180,
       "name": "Sri Sakthi Amma Institute Of Allied Health Sciences",
       "city": "Vellore",
       "district": "Vellore",
@@ -14017,7 +13141,7 @@
       ]
     },
     {
-      "id": 193,
+      "id": 181,
       "name": "St.John's College of Medical Sciences",
       "city": "Vellore",
       "district": "Vellore",
@@ -14090,7 +13214,7 @@
       ]
     },
     {
-      "id": 194,
+      "id": 182,
       "name": "VP. College of Paramedical Sciences",
       "city": "Vellore",
       "district": "Vellore",
@@ -14163,7 +13287,7 @@
       ]
     },
     {
-      "id": 195,
+      "id": 183,
       "name": "Govt. Villupuram Medical College & Hospital",
       "city": "Viluppuram",
       "district": "Viluppuram",
@@ -14236,7 +13360,7 @@
       ]
     },
     {
-      "id": 196,
+      "id": 184,
       "name": "Government Medical College",
       "city": "Virudhunagar",
       "district": "Virudhunagar",
