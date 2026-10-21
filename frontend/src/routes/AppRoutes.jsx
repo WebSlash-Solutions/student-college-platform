@@ -12,6 +12,8 @@ import StudentDashboard from "../pages/student/StudentDashboard";
 import CollegeDashboard from "../pages/college/CollegeDashboard";
 import CollegeProfile from "../pages/college/CollegeProfile";
 import CollegeRegistration from "../pages/college/Registeration";
+import CollegeSite from "../pages/college/CollegeSite";
+
 
 
 function AppRoutes() {
@@ -51,8 +53,13 @@ function AppRoutes() {
           path="/college/registration"
           element={<CollegeRegistration />}
         />
+        <Route
+          path="/college/registration"
+          element={<CollegeSite />}
+        />
    
       </Routes>
+      
     </BrowserRouter>
   );
 }
