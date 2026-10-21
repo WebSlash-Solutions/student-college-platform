@@ -829,7 +829,7 @@ const CSS = `
   animation: uoSmokeB 8s ease-in-out infinite alternate;
 }
 
-.quick-panel { align-self: start; } /* panel is only as tall as its buttons */
+.quick-panel { align-self: stretch; } /* full column width, same as Recent Admin Activity */
 .quick-panel .panel-head { margin-bottom: 12px; }
 .quick-list { display: flex; flex-direction: column; gap: 8px; }
 .qa {
@@ -984,6 +984,11 @@ const CSS = `
 .st-green { --smoke-rgb: 22, 160, 91; }
 .st-orange { --smoke-rgb: 232, 137, 12; }
 .st-red { --smoke-rgb: 224, 56, 74; }
+/* Subscription Plans: each plan card smokes in its own colour
+   (.smoke above would otherwise override the plan colour with blue) */
+.plan-card-elite.smoke { --smoke-rgb: 59, 130, 246; }
+.plan-card-gold.smoke { --smoke-rgb: 245, 170, 30; }
+.plan-card-diamond.smoke { --smoke-rgb: 139, 92, 246; }
 
 /* ---------- 13c. Download menu (PDF / Excel) ---------- */
 .dl { position: relative; display: inline-flex; }
@@ -1102,6 +1107,452 @@ const CSS = `
   .app *, .app *::before, .app *::after { animation: none !important; transition: none !important; }
 }
 
+/* ---------- 9. Upcoming Renewals / Payment Alerts / Top Colleges / Admin Activity ---------- */
+.tx-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.side-extra { order: 8; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; min-width: 0; }
+.renew-panel, .alerts-panel, .top-panel, .act-panel { animation: rowIn 0.55s ease both; }
+.alerts-panel { animation-delay: 0.08s; }
+.act-panel { animation-delay: 0.12s; }
+
+.renew-panel .panel-head > div:first-child,
+.alerts-panel .panel-head > div:first-child,
+.top-panel .panel-head > div:first-child,
+.act-panel .panel-head > div:first-child { flex: 1 1 150px; min-width: 0; }
+
+.link-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 5px 11px;
+  border-radius: 8px;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+.link-btn:hover { background: var(--blue-soft); transform: translateX(2px); }
+
+.chip { flex-shrink: 0; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.chip-soon { background: var(--orange-soft); color: var(--orange); animation: chipPulse 2s ease-in-out infinite; }
+.chip-upcoming { background: var(--blue-soft); color: var(--blue); }
+.chip-expired { background: var(--red-soft); color: var(--red); }
+
+.soft-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.soft-list.is-scroll { max-height: 330px; overflow-y: auto; padding-right: 4px; }
+.empty-note { padding: 16px; border-radius: 10px; background: #f6f9fd; color: var(--muted); font-size: 12.5px; text-align: center; }
+
+/* --- Upcoming renewals --- */
+.renew-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.renew-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.renew-tile b { font-size: 26px; line-height: 1; letter-spacing: -0.01em; }
+.renew-tile:hover { transform: translateY(-2px); }
+.renew-tile.soon { --smoke-rgb: 37, 99, 235; background: var(--blue-soft); }
+.renew-tile.soon b { color: var(--blue); }
+.renew-tile.soon.on { border-color: var(--blue); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.16); }
+.renew-tile.exp { --smoke-rgb: 224, 56, 74; background: var(--red-soft); }
+.renew-tile.exp b { color: var(--red); }
+.renew-tile.exp.on { border-color: var(--red); box-shadow: 0 6px 16px rgba(224, 56, 74, 0.16); }
+
+.renew-item,
+.al-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  animation: rowIn 0.4s ease calc(var(--i, 0) * 60ms) both;
+}
+.renew-item:last-child,
+.al-item:last-child { border-bottom: 0; }
+.renew-name {
+  flex: 1;
+  min-width: 0;
+  margin: -3px -6px;
+  padding: 3px 6px;
+  border-radius: 8px;
+  text-align: left;
+  transition: background 0.2s;
+}
+.renew-name:hover { background: var(--blue-soft); }
+.renew-name strong, .al-info strong { display: block; font-size: 13px; line-height: 1.3; overflow-wrap: anywhere; }
+.renew-panel .btn-toggle { margin-top: 12px; }
+
+/* --- Payment alerts --- */
+.al-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.al-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 12px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.3;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: rowIn 0.45s ease calc(var(--i, 0) * 70ms) both;
+}
+.al-tile b { color: var(--text); font-size: 22px; line-height: 1.1; }
+.al-tile em { font-size: 12px; font-style: normal; font-weight: 600; }
+button.al-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15, 36, 71, 0.09); }
+.al-red { --smoke-rgb: 224, 56, 74; background: var(--red-soft); } .al-red em { color: var(--red); }
+.al-orange { --smoke-rgb: 232, 137, 12; background: var(--orange-soft); } .al-orange em { color: var(--orange); }
+.al-purple { --smoke-rgb: 139, 92, 246; background: #f3ebff; } .al-purple em { color: #7b3fd0; }
+.al-green { --smoke-rgb: 22, 160, 91; background: var(--green-soft); } .al-green em { color: var(--green); }
+.al-red, .al-orange { animation: rowIn 0.45s ease calc(var(--i, 0) * 70ms) both, alertPulse 2.2s ease-in-out calc(0.6s + var(--i, 0) * 0.4s) infinite; }
+.btn-remind:not(.sent) { animation: alertPulse 2s ease-in-out calc(var(--i, 0) * 0.3s) infinite; }
+.al-subtitle { margin-bottom: 2px; font-size: 13px; font-weight: 700; }
+.al-info { flex: 1; min-width: 0; }
+.al-info small.late { color: var(--red); }
+.btn-remind {
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+.btn-remind:hover { --smoke-rgb: 255, 255, 255; background: var(--blue); color: #fff; transform: translateY(-1px); }
+.btn-remind.sent { --smoke-rgb: 22, 160, 91; background: var(--green-soft); color: var(--green); cursor: default; transform: none; animation: popIn 0.3s ease; }
+.btn-bulk {
+  --smoke-rgb: 255, 255, 255;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--blue), #4f8bff);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: box-shadow 0.2s, transform 0.2s, opacity 0.2s;
+}
+.btn-bulk:hover:not(:disabled) { box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35); transform: translateY(-1px); }
+.btn-bulk:disabled { opacity: 0.75; cursor: default; }
+.spin { width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, 0.45); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+/* --- Recent admin activity --- */
+.act-list { gap: 10px; }
+.act-list > li { animation: rowIn 0.45s ease calc(var(--i, 0) * 70ms) both; }
+.act-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.act-item:hover { transform: translateX(3px); border-color: #cfdcf5; box-shadow: 0 6px 16px rgba(15, 36, 71, 0.07); }
+.act-ico { display: grid; place-items: center; flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; font-size: 16px; font-weight: 700; transition: transform 0.25s; }
+.act-ico { animation: qaIconRing 2.6s ease-out calc(var(--i, 0) * 0.35s) infinite; }
+.act-new { margin-left: 8px; padding: 1px 8px; font-size: 10px; vertical-align: middle; }
+.act-item:hover .act-ico { transform: scale(1.12) rotate(-6deg); }
+.ico-green { --smoke-rgb: 22, 160, 91; background: var(--green-soft); color: var(--green); }
+.ico-blue { --smoke-rgb: 37, 99, 235; background: var(--blue-soft); color: var(--blue); }
+.ico-purple { --smoke-rgb: 123, 63, 208; background: #f0e6ff; color: #7b3fd0; }
+.ico-orange { --smoke-rgb: 232, 137, 12; background: var(--orange-soft); color: var(--orange); }
+.ico-red { --smoke-rgb: 224, 56, 74; background: var(--red-soft); color: var(--red); }
+.act-body { flex: 1; min-width: 0; }
+.act-body strong { display: block; font-size: 13px; line-height: 1.3; }
+.act-body small { overflow-wrap: anywhere; }
+.act-body small.act-time { font-size: 11.5px; opacity: 0.85; }
+.act-arrow { color: var(--muted); font-size: 18px; transition: transform 0.2s; }
+.act-item:hover .act-arrow { transform: translateX(3px); }
+
+/* --- Top paying colleges --- */
+.top-panel { container: tp / inline-size; }
+.tc-head { display: none; }
+.tc-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  grid-template-areas: "rank name rev" "rank bar plan";
+  align-items: center;
+  gap: 6px 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  animation: rowIn 0.4s ease calc(var(--i, 0) * 60ms) both;
+}
+.tc-row:last-child { border-bottom: 0; }
+.tc-rank { grid-area: rank; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #eef3fb; color: var(--muted); font-size: 12px; font-weight: 700; }
+.tc-rank.r1 { background: linear-gradient(135deg, #f8c75a, #e8a40c); color: #fff; }
+.tc-rank.r2 { background: linear-gradient(135deg, #cfd7e4, #9aa8bd); color: #fff; }
+.tc-rank.r3 { background: linear-gradient(135deg, #e9b98c, #c78248); color: #fff; }
+.tc-name { grid-area: name; min-width: 0; margin: -3px -6px; padding: 3px 6px; border-radius: 8px; text-align: left; transition: background 0.2s; }
+.tc-name:hover { background: var(--blue-soft); }
+.tc-name strong { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 13px; line-height: 1.3; }
+.tc-rev { grid-area: rev; justify-self: end; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.tc-txn { grid-area: txn; display: none; justify-self: center; color: var(--muted); font-size: 12.5px; }
+.tc-plan { grid-area: plan; justify-self: end; }
+.tc-bar { grid-area: bar; height: 5px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.tc-bar i { display: block; width: var(--w); height: 100%; border-radius: 99px; background: var(--c, var(--blue)); transform-origin: left; animation: barGrow 0.9s cubic-bezier(0.22, 0.9, 0.3, 1) calc(var(--i, 0) * 80ms + 0.2s) both; }
+@container tp (min-width: 440px) {
+  .tc-head,
+  .tc-row { grid-template-columns: 28px minmax(0, 1fr) 88px 48px 74px; }
+  .tc-row { grid-template-areas: "rank name rev txn plan" ". bar bar bar bar"; }
+  .tc-head { display: grid; gap: 10px; padding: 0 0 8px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 11.5px; font-weight: 600; }
+  .tc-head span:nth-child(3), .tc-head span:nth-child(5) { text-align: right; }
+  .tc-head span:nth-child(4) { text-align: center; }
+  .tc-txn { display: block; }
+}
+
+/* --- toast --- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 120;
+  max-width: calc(100vw - 32px);
+  padding: 11px 18px;
+  border-radius: 12px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 13px;
+  box-shadow: 0 12px 30px rgba(10, 18, 36, 0.35);
+  transform: translateX(-50%);
+  animation: toastIn 0.3s ease;
+}
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes alertPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--smoke-rgb), 0.4); } 50% { box-shadow: 0 0 0 5px rgba(var(--smoke-rgb), 0); } }
+@keyframes chipPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(232, 137, 12, 0.35); } 50% { box-shadow: 0 0 0 5px rgba(232, 137, 12, 0); } }
+@keyframes bulkShine { 0%, 60% { left: -40%; } 100% { left: 130%; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- 10. Create Subscription (custom plan) ---------- */
+.modal-form { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.fld { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; }
+.fld-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+textarea.field { height: auto; min-height: 88px; padding: 10px 14px; line-height: 1.45; resize: vertical; }
+.field.invalid { border-color: var(--red); }
+.fld-err { color: var(--red); font-size: 12px; font-style: normal; font-weight: 500; }
+.fld-hint { color: var(--muted); font-size: 12px; font-weight: 400; }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatch {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: rgb(var(--c));
+  box-shadow: 0 0 0 1.5px var(--line);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.swatch:hover { transform: scale(1.12); }
+.swatch.on { box-shadow: 0 0 0 2.5px rgb(var(--c)); }
+.custom-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(var(--pc-rgb), 0.14);
+  color: rgb(var(--pc-rgb));
+  font-size: 11px;
+  font-weight: 700;
+}
+.plan-card-custom { cursor: default; }
+button.plan-cta { width: 100%; background: transparent; }
+button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
+@media (max-width: 420px) { .fld-row { grid-template-columns: 1fr; } }
+
+/* ---------- 11. Quick Actions (card design) ---------- */
+.qk-panel { container: qk / inline-size; padding: 14px; background: linear-gradient(180deg, #ffffff, #f8faff); }
+.qk-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px 64px 14px 14px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f4f8ff, #e9f0ff);
+  animation: qkRise 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+.qk-head::before,
+.qk-head::after { content: ""; position: absolute; border-radius: 50%; background: rgba(37, 99, 235, 0.07); }
+.qk-head::before { right: -26px; top: -34px; width: 130px; height: 130px; }
+.qk-head::after { right: 46px; bottom: -44px; width: 90px; height: 90px; }
+.qk-head-ico {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #dce9ff;
+  color: var(--blue);
+  animation: qkZap 2.6s ease-out infinite;
+}
+.qk-head-ico svg { width: 22px; height: 22px; }
+.qk-head-text { position: relative; z-index: 1; min-width: 0; }
+.qk-head-text h2 { font-size: 18px; line-height: 1.2; }
+.qk-head-text p { margin-top: 3px; color: var(--muted); font-size: 12.5px; }
+.qk-gear { position: absolute; z-index: 1; right: 18px; top: 50%; width: 34px; height: 34px; margin-top: -17px; color: #7da2f5; animation: qkSpin 14s linear infinite; }
+.qk-gear svg { width: 100%; height: 100%; }
+
+.qk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.qk-card {
+  --smoke-rgb: 37, 99, 235;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 32px;
+  grid-template-areas: "ico text go";
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1.5px solid rgba(var(--smoke-rgb), 0.26);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(var(--smoke-rgb), 0.08), #ffffff 62%);
+  color: var(--text);
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.25s, border-color 0.25s;
+  animation: qkRise 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) calc(0.1s + var(--i, 0) * 0.09s) backwards;
+}
+.qk-card.qk-blue { --smoke-rgb: 37, 99, 235; }
+.qk-card.qk-green { --smoke-rgb: 22, 160, 91; }
+.qk-card.qk-purple { --smoke-rgb: 124, 58, 237; }
+.qk-card.qk-orange { --smoke-rgb: 232, 137, 12; }
+.qk-card.qk-teal { --smoke-rgb: 20, 170, 160; }
+.qk-card:hover { transform: translateY(-2px); border-color: rgba(var(--smoke-rgb), 0.6); box-shadow: 0 10px 22px rgba(var(--smoke-rgb), 0.16); }
+.qk-card:active { transform: scale(0.985); }
+.qk-ico {
+  grid-area: ico;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(var(--smoke-rgb), 0.14);
+  color: rgb(var(--smoke-rgb));
+  animation: qkFloat 3.6s ease-in-out calc(var(--i, 0) * 0.4s) infinite;
+}
+.qk-ico svg { width: 24px; height: 24px; }
+.qk-text { grid-area: text; min-width: 0; }
+.qk-text strong { display: block; font-size: 14.5px; line-height: 1.25; }
+.qk-text small { margin-top: 3px; font-size: 12px; line-height: 1.4; }
+.qk-go {
+  grid-area: go;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(var(--smoke-rgb), 0.14);
+  color: rgb(var(--smoke-rgb));
+  transition: background 0.2s, color 0.2s;
+}
+.qk-go svg { width: 16px; height: 16px; animation: qkNudge 1.6s ease-in-out calc(var(--i, 0) * 0.2s) infinite; }
+.qk-card:hover .qk-go { background: rgb(var(--smoke-rgb)); color: #fff; }
+@keyframes qkRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes qkFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+@keyframes qkSpin { to { transform: rotate(360deg); } }
+@keyframes qkNudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+@keyframes qkZap { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); } 70%, 100% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); } }
+@container qk (max-width: 330px) { .qk-gear { display: none; } .qk-head { padding-right: 14px; } }
+@container qk (min-width: 520px) {
+  .qk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .qk-card:last-child { grid-column: 1 / -1; }
+}
+@container qk (min-width: 720px) {
+  .qk-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .qk-card { grid-column: span 2; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "ico ." "text go"; align-items: end; gap: 14px 12px; min-height: 150px; padding: 16px; }
+  .qk-card:nth-child(-n + 2) { grid-column: span 3; }
+  .qk-card:last-child { grid-column: span 2; }
+  .qk-ico { width: 54px; height: 54px; border-radius: 14px; }
+  .qk-ico svg { width: 28px; height: 28px; }
+  .qk-text strong { font-size: 16px; }
+}
+
+/* ---------- 12. Download Reports modal ---------- */
+.modal.modal-wide { max-width: 860px; }
+.rp-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.rp-stat { padding: 12px 14px; border-radius: 12px; background: var(--blue-soft); animation: rowIn 0.4s ease calc(var(--i, 0) * 70ms) both; }
+.rp-stat span { display: block; color: var(--muted); font-size: 12px; }
+.rp-stat b { display: block; margin-top: 2px; font-size: 20px; letter-spacing: -0.01em; }
+.rp-stat:nth-child(2) { background: #f0e6ff; }
+.rp-stat:nth-child(3) { background: var(--green-soft); }
+.rp-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.rp-search { flex: 1 1 200px; min-width: 0; }
+.rp-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rp-chip { padding: 7px 13px; border-radius: 999px; background: var(--bg); color: var(--muted); font-size: 12.5px; font-weight: 600; transition: background 0.2s, color 0.2s, transform 0.15s; }
+.rp-chip:hover { transform: translateY(-1px); color: var(--text); }
+.rp-chip.on { background: var(--blue); color: #fff; }
+.rp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.rp-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.rp-btn:disabled { opacity: 0.5; cursor: default; }
+.rp-btn.ghost { color: var(--blue); }
+.rp-btn.ghost:hover { background: var(--blue-soft); border-color: var(--blue); }
+.rp-btn.xls { color: var(--green); }
+.rp-btn.xls:hover:not(:disabled) { background: var(--green-soft); border-color: var(--green); }
+.rp-btn.pdf { color: var(--red); }
+.rp-btn.pdf:hover:not(:disabled) { background: var(--red-soft); border-color: var(--red); }
+.rp-btn.done { border-color: var(--green); background: var(--green-soft); color: var(--green); animation: popIn 0.3s ease; }
+.rp-btn .chev { display: inline-block; transition: transform 0.25s; }
+.rp-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.rp-dl { display: flex; gap: 6px; margin-left: auto; }
+.rp-list { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.rp-item { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; transition: box-shadow 0.2s, border-color 0.2s; animation: rowIn 0.4s ease calc(var(--i, 0) * 50ms) both; }
+.rp-item:hover { border-color: #cfdcf5; box-shadow: 0 8px 20px rgba(15, 36, 71, 0.07); }
+.rp-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.rp-info { flex: 1 1 220px; min-width: 0; }
+.rp-info strong { display: block; font-size: 14px; line-height: 1.3; overflow-wrap: anywhere; }
+.rp-meta { display: flex; gap: 20px; }
+.rp-meta span { display: block; color: var(--muted); font-size: 11.5px; }
+.rp-meta b { font-size: 14px; }
+.rp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.rp-students { margin-top: 12px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; animation: rpOpen 0.3s ease both; }
+.rp-tablewrap { max-height: 260px; overflow: auto; }
+.rp-table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 12.5px; }
+.rp-table th { position: sticky; top: 0; padding: 8px 10px; background: #f3f7fd; color: var(--muted); font-size: 11.5px; font-weight: 600; text-align: left; }
+.rp-table td { padding: 8px 10px; border-top: 1px solid var(--line); }
+@keyframes rpOpen { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (max-width: 520px) {
+  .rp-stats { grid-template-columns: 1fr 1fr; }
+  .rp-stat:last-child { grid-column: 1 / -1; }
+  .rp-dl { margin-left: 0; }
+}
+.plans-panel .panel-head > div:first-child { flex: 1 1 150px; min-width: 0; }
+
 /* ============================================================
    RESPONSIVE - viewport based (shell: sidebar, topbar, modal)
    ============================================================ */
@@ -1189,6 +1640,13 @@ const CSS = `
 
 @container tx (min-width: 1500px) {
   .usage { flex-direction: row; }
+}
+
+@container tx (min-width: 760px) {
+  .side-extra { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+@container tx (min-width: 1240px) {
+  .side-extra { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ============================================================
@@ -1775,6 +2233,85 @@ const STATUS_COUNT = Object.fromEntries(
 );
 
 /* ------------------------------------------------------------------ */
+/* 2c. RENEWALS / PAYMENT ALERTS / TOP COLLEGES / ADMIN ACTIVITY       */
+/* ------------------------------------------------------------------ */
+// NOTE: all of this is derived from the demo data above. Swap these
+// constants for real API data when the backend is ready.
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const daysFromNow = (d) => Math.ceil((d - AS_OF) / DAY_MS);
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+const pad2 = (n) => String(n).padStart(2, "0");
+
+// Upcoming renewals
+const RENEW_ACTIVE = SUBSCRIPTIONS.filter((s) => s.status === "Active").sort((a, b) => a.end - b.end);
+const RENEW_SOON = RENEW_ACTIVE.filter((s) => daysFromNow(s.end) <= 7);
+const RENEW_EXPIRED = SUBSCRIPTIONS.filter((s) => s.status === "Expired").sort((a, b) => b.end - a.end);
+const RENEW_ALL = [...RENEW_ACTIVE, ...RENEW_EXPIRED];
+const RENEW_PREVIEW = 3;
+
+const renewLabel = (s) => {
+  const n = daysFromNow(s.end);
+  if (s.status === "Expired") return n < 0 ? `Expired ${plural(-n, "day")} ago` : "Expired today";
+  return n <= 0 ? "Expires today" : `Expires in ${plural(n, "day")}`;
+};
+const renewChip = (s) =>
+  s.status === "Expired" ? ["Expired", "expired"] : daysFromNow(s.end) <= 3 ? ["Soon", "soon"] : ["Upcoming", "upcoming"];
+
+// Payment alerts
+const sumAmt = (list) => list.reduce((n, t) => n + t.amount, 0);
+const PENDING_TX = TRANSACTIONS.filter((t) => t.status === "Pending")
+  .map((t) => ({ tx: t, due: new Date(t.date.getTime() + 7 * DAY_MS) }))
+  .sort((a, b) => a.due - b.due);
+const FAILED_TX = TRANSACTIONS.filter((t) => t.status === "Failed");
+const REFUNDED_TX = TRANSACTIONS.filter((t) => t.status === "Refunded");
+const ALERT_PREVIEW = 3;
+const dueLabel = (due) => {
+  const n = daysFromNow(due);
+  return n < 0 ? "Overdue" : n === 0 ? "Due today" : `Due in ${plural(n, "day")}`;
+};
+
+// Recent admin activity
+const ACT_SRC = [
+  ["↺", "green", "Refund approved", REFUNDED_TX[0], (t) => `${t.id} - ${t.college}`, 15],
+  ["＋", "blue", "Subscription created", SUBSCRIPTIONS[1]?.tx, (t) => t.college, 165],
+  ["▲", "purple", "Plan upgraded", SUBSCRIPTIONS[2]?.tx, (t) => t.college, 400],
+  ["₹", "green", "Payment received", SUBSCRIPTIONS[0]?.tx, (t) => t.college, 1500],
+  ["✉", "orange", "Reminder sent", PENDING_TX[0]?.tx, (t) => `${t.college} - ${rupee(t.amount)}`, 2000],
+  ["✕", "red", "Payment failed", FAILED_TX[0], (t) => `${t.id} - ${t.college}`, 2900],
+  ["↺", "green", "Refund approved", REFUNDED_TX[1], (t) => `${t.id} - ${t.college}`, 4300],
+  ["⟳", "blue", "Subscription renewed", SUBSCRIPTIONS[3]?.tx, (t) => t.college, 5800],
+];
+const ACTIVITY = ACT_SRC.filter((r) => r[3]).map(([icon, tone, title, tx, fn, mins], i) => ({
+  key: `${title}-${tx.id}-${i}`,
+  icon,
+  tone,
+  title,
+  tx,
+  text: fn(tx),
+  when: new Date(AS_OF.getTime() - mins * 60000),
+}));
+const ACT_PREVIEW = 4;
+
+// Top paying colleges (successful payments only)
+const TOP_COLLEGES = (() => {
+  const map = new Map();
+  TRANSACTIONS.filter((t) => t.status === "Success").forEach((t) => {
+    const e = map.get(t.college) || { college: t.college, district: t.district, revenue: 0, count: 0, plans: {}, tx: t };
+    e.revenue += t.amount;
+    e.count += 1;
+    e.plans[t.plan] = (e.plans[t.plan] || 0) + t.amount;
+    map.set(t.college, e);
+  });
+  return [...map.values()]
+    .map((e) => ({ ...e, plan: Object.entries(e.plans).sort((a, b) => b[1] - a[1])[0][0] }))
+    .sort((a, b) => b.revenue - a.revenue || a.college.localeCompare(b.college));
+})();
+const TOP_MAX = TOP_COLLEGES[0]?.revenue || 1;
+const TOP_PREVIEW = 5;
+const TOP_LIMIT = 10;
+
+/* ------------------------------------------------------------------ */
 /* 3. SMALL COMPONENTS                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -2322,8 +2859,440 @@ function DetailsModal({ tx, onClose }) {
 
 // embedded=true  -> only the page content (use inside your existing admin layout)
 // embedded=false -> full page with its own sidebar + top bar
+/* ---------- Download Reports: paid colleges + the students they bought ---------- */
+const FIRST_NAMES = ["Arun", "Divya", "Karthik", "Meena", "Suresh", "Priya", "Vignesh", "Anitha", "Hari", "Nandhini", "Ravi", "Kavya", "Mohan", "Sandhya"];
+const LAST_NAMES = ["Kumar", "Bharathi", "Raja", "Lakshmi", "Babu", "Dharshini", "Waran", "Selvam", "Prasad", "Devi", "Murugan", "Priya"];
+const COURSES = ["B.E. CSE", "B.Tech IT", "B.E. ECE", "B.E. Mechanical", "MBA", "B.Sc Computer Science", "B.Com", "B.E. EEE"];
+const slug = (v) => String(v).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+
+// Students whose details a college bought (demo data - replace with your API)
+function reportStudents(sub) {
+  return Array.from({ length: sub.used }, (_, k) => {
+    const n = sub.tx.no * 7 + k;
+    return {
+      no: k + 1,
+      id: `STU${1000 + ((sub.tx.no * 53 + k * 17) % 9000)}`,
+      name: `${FIRST_NAMES[(n * 3) % FIRST_NAMES.length]} ${LAST_NAMES[(n * 5 + k) % LAST_NAMES.length]}`,
+      phone: `+91 9${String(100000000 + ((n * 7654321) % 800000000))}`,
+      course: COURSES[n % COURSES.length],
+      date: new Date(sub.start.getTime() + k * 37 * 60000),
+    };
+  });
+}
+
+const STUDENT_HEAD = ["#", "Student ID", "Student name", "Phone", "Course interest", "Purchased on"];
+const studentCells = (st) => [st.no, st.id, st.name, st.phone, st.course, `${fmtDate(st.date)} ${fmtTime(st.date)}`];
+
+// One college: payment details + purchased students -> Excel or PDF
+function exportCollegeReport(sub, format) {
+  const tx = sub.tx;
+  const students = reportStudents(sub);
+  const name = `${slug(sub.college)}-report-${stamp()}`;
+  const rows = [
+    ["Transaction ID", tx.id],
+    ["College", sub.college],
+    ["District", tx.district],
+    ["College email", tx.email],
+    ["College phone", tx.phone],
+    ["Plan", `${sub.plan} (${sub.total} profiles / month)`],
+    ["Amount paid", rupee(sub.amount)],
+    ["Payment method", tx.method],
+    ["Paid on", `${fmtDate(sub.start)} ${fmtTime(sub.start)}`],
+    ["Valid till", fmtDate(sub.end)],
+    ["Subscription status", sub.status],
+    ["Students purchased", `${sub.used} of ${sub.total}`],
+  ];
+  const kv = rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("");
+  if (format === "excel") {
+    const head = STUDENT_HEAD.map((h) => `<th>${esc(h)}</th>`).join("");
+    const body = students.map((st) => `<tr>${studentCells(st).map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`).join("");
+    saveExcel(name, "College Report", `<table>${kv}</table><br/><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`);
+    return;
+  }
+  const body = students.map((st) => `<tr>${studentCells(st).map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`).join("");
+  printPdf(
+    name,
+    `<div class="hd"><div><h1>College Report</h1><p>${esc(sub.college)} · ${esc(tx.district)} · ${esc(fmtDate(new Date()))}</p></div><div class="tot"><span>Amount paid</span><strong>${esc(rupee(sub.amount))}</strong></div></div>` +
+      `<h2>Payment details</h2><table class="kv"><tbody>${kv}</tbody></table>` +
+      `<h2>Students purchased (${students.length})</h2><table><thead><tr>${STUDENT_HEAD.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table>` +
+      `<p class="foot">StudentCollege Admission Platform</p>`,
+  );
+}
+
+// All paid colleges (current filter) -> Excel or PDF
+function exportAllReports(list, format) {
+  const name = `paid-colleges-report-${stamp()}`;
+  const head = ["College", "District", "Plan", "Amount (INR)", "Paid on", "Valid till", "Students purchased", "Profile limit", "Status"];
+  const cells = (s) => [s.college, s.tx.district, s.plan, s.amount, fmtDate(s.start), fmtDate(s.end), s.used, s.total, s.status];
+  if (format === "excel") {
+    const body = list.map((s) => `<tr>${cells(s).map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`).join("");
+    saveExcel(name, "Paid Colleges", `<table><thead><tr>${head.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table>`);
+    return;
+  }
+  const revenue = list.reduce((n, s) => n + s.amount, 0);
+  const body = list
+    .map((s) => `<tr><td>${esc(s.college)}<br/>${esc(s.tx.district)}</td><td>${esc(s.plan)}</td><td>${esc(rupee(s.amount))}</td><td>${esc(fmtDate(s.start))}</td><td>${esc(s.used)} / ${esc(s.total)}</td><td><span class="b ${s.status.toLowerCase()}">${esc(s.status)}</span></td></tr>`)
+    .join("");
+  printPdf(
+    name,
+    `<div class="hd"><div><h1>Paid Colleges Report</h1><p>StudentCollege Admission Platform · ${esc(fmtDate(new Date()))} · ${list.length} colleges</p></div><div class="tot"><span>Total paid</span><strong>${esc(rupee(revenue))}</strong></div></div>` +
+      `<table><thead><tr><th>College</th><th>Plan</th><th>Amount</th><th>Paid on</th><th>Students</th><th>Status</th></tr></thead><tbody>${body}</tbody></table>`,
+  );
+}
+
+function QkIcon({ name }) {
+  const common = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" };
+  switch (name) {
+    case "bolt":
+      return (<svg {...common} fill="currentColor" stroke="none"><path d="M13.5 2 5 13.5h6L10 22l9-12h-6z" /></svg>);
+    case "gear":
+      return (<svg {...common} strokeWidth="2.2"><circle cx="12" cy="12" r="3.2" /><circle cx="12" cy="12" r="6.6" /><path d="M12 1.8v3M12 19.2v3M1.8 12h3M19.2 12h3M4.8 4.8l2.1 2.1M17.1 17.1l2.1 2.1M4.8 19.2l2.1-2.1M17.1 6.9l2.1-2.1" /></svg>);
+    case "history":
+      return (<svg {...common}><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4" /><path d="M13 3l5 5v2" /><path d="M8 11h4M8 15h2" /><circle cx="17" cy="17" r="4" /><path d="M17 15v2l1.4 1" /></svg>);
+    case "refund":
+      return (<svg {...common}><path d="M4 12a8 8 0 1 0 2.6-5.9" /><path d="M4 3.5v4.2h4.2" /><path d="M9.5 9.5h5M9.5 12h5M10 9.5c3.4 0 3.4 4.2 0 4.2l3.5 3" /></svg>);
+    case "report":
+      return (<svg {...common}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 18v-3M12 18v-5M15 18v-2" /></svg>);
+    case "users":
+      return (<svg {...common}><circle cx="9" cy="8" r="3.2" /><path d="M3 19.5c0-3.2 2.7-5.2 6-5.2s6 2 6 5.2" /><circle cx="17" cy="9" r="2.5" /><path d="M17.2 14.2c2.4 0 4.3 1.6 4.3 4.3" /></svg>);
+    case "shield":
+      return (<svg {...common}><path d="M12 3l7 3v5.3c0 4.4-3 7.9-7 9.7-4-1.8-7-5.3-7-9.7V6z" /><path d="M9 12l2.2 2.2L15.5 10" /></svg>);
+    default:
+      return (<svg {...common}><path d="M5 12h14M13 6l6 6-6 6" /></svg>);
+  }
+}
+
+const QK_ITEMS = [
+  ["history", "blue", "history", "Transaction History", "View payments, invoices and transaction details."],
+  ["refunds", "green", "refund", "Manage Refunds", "Review refund requests and process refunds."],
+  ["reports", "purple", "report", "Download Reports", "Get college payment and purchased student reports."],
+  ["users", "orange", "users", "Manage Users", "View, edit and manage admin and user accounts."],
+  ["audit", "teal", "shield", "Audit Logs", "Track admin activities and system changes."],
+];
+
+function ReportsModal({ onClose, onDone }) {
+  const [q, setQ] = useState("");
+  const [plan, setPlan] = useState("All");
+  const [open, setOpen] = useState(null);
+  const [done, setDone] = useState("");
+
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  const list = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    return SUBSCRIPTIONS.filter(
+      (s) => (plan === "All" || s.plan === plan) && (!t || s.college.toLowerCase().includes(t) || s.tx.district.toLowerCase().includes(t)),
+    );
+  }, [q, plan]);
+
+  const flag = (key) => {
+    setDone(key);
+    setTimeout(() => setDone((d) => (d === key ? "" : d)), 1600);
+  };
+  const label = (f) => (f === "excel" ? "Excel" : "PDF");
+  const run = (s, f) => {
+    exportCollegeReport(s, f);
+    flag(`${s.tx.id}-${f}`);
+    onDone(f === "excel" ? `Excel report downloaded - ${s.college}` : `PDF report ready - ${s.college}`);
+  };
+  const runAll = (f) => {
+    exportAllReports(list, f);
+    flag(`all-${f}`);
+    onDone(f === "excel" ? "Excel report downloaded" : "PDF report ready");
+  };
+  const btn = (key, f, onClick, disabled) => (
+    <button type="button" className={`rp-btn ${f === "excel" ? "xls" : "pdf"} ${done === key ? "done" : ""}`} disabled={disabled} onClick={onClick}>
+      {done === key ? "✓" : "⬇"} {label(f)}
+    </button>
+  );
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal modal-wide" role="dialog" aria-modal="true" aria-label="Download reports" onClick={(e) => e.stopPropagation()}>
+        <header className="modal-head">
+          <div>
+            <h2>Download Reports</h2>
+            <p>Colleges that paid and the student details they bought</p>
+          </div>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </header>
+
+        <div className="modal-body">
+          <div className="rp-stats">
+            <div className="rp-stat" style={{ "--i": 0 }}>
+              <span>Paid colleges</span>
+              <b>{list.length}</b>
+            </div>
+            <div className="rp-stat" style={{ "--i": 1 }}>
+              <span>Students purchased</span>
+              <b>{list.reduce((n, s) => n + s.used, 0)}</b>
+            </div>
+            <div className="rp-stat" style={{ "--i": 2 }}>
+              <span>Total paid</span>
+              <b>{rupee(list.reduce((n, s) => n + s.amount, 0))}</b>
+            </div>
+          </div>
+
+          <div className="rp-tools">
+            <input className="field rp-search" placeholder="Search college or district" value={q} onChange={(e) => setQ(e.target.value)} />
+            <div className="rp-chips">
+              {["All", ...PLAN_NAMES].map((p) => (
+                <button key={p} type="button" className={`rp-chip ${plan === p ? "on" : ""}`} aria-pressed={plan === p} onClick={() => setPlan(p)}>
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rp-tools">
+            <span className="muted">All listed colleges:</span>
+            <div className="rp-dl" style={{ marginLeft: 0 }}>
+              {btn("all-excel", "excel", () => runAll("excel"), !list.length)}
+              {btn("all-pdf", "pdf", () => runAll("pdf"), !list.length)}
+            </div>
+          </div>
+
+          {list.length === 0 ? (
+            <p className="empty-note">No paid colleges match your search.</p>
+          ) : (
+            <ul className="rp-list">
+              {list.map((s, i) => {
+                const isOpen = open === s.tx.id;
+                return (
+                  <li key={s.tx.id} className="rp-item" style={{ "--i": Math.min(i, 10) }}>
+                    <div className="rp-top">
+                      <div className="rp-info">
+                        <strong>{s.college}</strong>
+                        <small>
+                          {s.tx.district} · Paid {fmtDate(s.start)}
+                        </small>
+                      </div>
+                      <span className={`plan plan-${s.plan.toLowerCase()}`}>{s.plan}</span>
+                      <div className="rp-meta">
+                        <div>
+                          <span>Amount paid</span>
+                          <b>{rupee(s.amount)}</b>
+                        </div>
+                        <div>
+                          <span>Students</span>
+                          <b>
+                            {s.used} / {s.total}
+                          </b>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rp-actions">
+                      <button type="button" className="rp-btn ghost" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : s.tx.id)}>
+                        {isOpen ? "Hide students" : "View students"} <span className="chev" aria-hidden="true">▾</span>
+                      </button>
+                      <div className="rp-dl">
+                        {btn(`${s.tx.id}-excel`, "excel", () => run(s, "excel"))}
+                        {btn(`${s.tx.id}-pdf`, "pdf", () => run(s, "pdf"))}
+                      </div>
+                    </div>
+                    {isOpen && (
+                      <div className="rp-students">
+                        <div className="rp-tablewrap">
+                          <table className="rp-table">
+                            <thead>
+                              <tr>
+                                {STUDENT_HEAD.map((h) => (
+                                  <th key={h}>{h}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {reportStudents(s).map((st) => (
+                                <tr key={st.id}>
+                                  {studentCells(st).map((c, k) => (
+                                    <td key={k}>{c}</td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const PLAN_SWATCHES = [
+  ["Teal", "20, 184, 166"],
+  ["Pink", "236, 72, 153"],
+  ["Green", "34, 160, 90"],
+  ["Orange", "234, 120, 40"],
+];
+
+// Create Subscription: lets the admin add a brand-new plan next to Elite / Gold / Diamond
+function CreatePlanModal({ taken, onClose, onCreate }) {
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [limit, setLimit] = useState("");
+  const [features, setFeatures] = useState("");
+  const [swatch, setSwatch] = useState(0);
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  const submit = (e) => {
+    e.preventDefault();
+    const err = {};
+    const n = name.trim();
+    if (n.length < 2 || n.length > 20) err.name = "Enter a plan name (2-20 characters)";
+    else if (taken.some((t) => t.toLowerCase() === n.toLowerCase())) err.name = "A plan with this name already exists";
+    const pr = Number(price);
+    if (!Number.isInteger(pr) || pr < 1) err.price = "Enter the price in whole rupees";
+    const lm = Number(limit);
+    if (!Number.isInteger(lm) || lm < 1) err.limit = "Enter 1 or more profiles";
+    setErrors(err);
+    if (Object.keys(err).length) return;
+    const list = features.split("\n").map((f) => f.trim()).filter(Boolean).slice(0, 6);
+    onCreate({
+      name: n,
+      price: pr,
+      limit: lm,
+      features: list.length ? list : ["Custom plan benefits"],
+      rgb: PLAN_SWATCHES[swatch][1],
+    });
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Create subscription plan"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className="modal-head">
+          <div>
+            <h2>Create Subscription</h2>
+            <p>Add a new plan next to Elite, Gold and Diamond</p>
+          </div>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </header>
+
+        <form className="modal-form" onSubmit={submit} noValidate>
+          <div className="modal-body">
+            <label className="fld">
+              <span>Plan name</span>
+              <input
+                className={`field ${errors.name ? "invalid" : ""}`}
+                value={name}
+                maxLength={20}
+                placeholder="e.g. Platinum"
+                autoFocus
+                onChange={(e) => setName(e.target.value)}
+              />
+              {errors.name && <em className="fld-err">{errors.name}</em>}
+            </label>
+
+            <div className="fld-row">
+              <label className="fld">
+                <span>Price (₹ / month)</span>
+                <input
+                  className={`field ${errors.price ? "invalid" : ""}`}
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  value={price}
+                  placeholder="e.g. 5999"
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+                {errors.price && <em className="fld-err">{errors.price}</em>}
+              </label>
+              <label className="fld">
+                <span>Profiles / month</span>
+                <input
+                  className={`field ${errors.limit ? "invalid" : ""}`}
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  value={limit}
+                  placeholder="e.g. 100"
+                  onChange={(e) => setLimit(e.target.value)}
+                />
+                {errors.limit && <em className="fld-err">{errors.limit}</em>}
+              </label>
+            </div>
+
+            <label className="fld">
+              <span>Features</span>
+              <textarea
+                className="field"
+                value={features}
+                placeholder={"One feature per line\nAll Diamond features\nAccount manager"}
+                onChange={(e) => setFeatures(e.target.value)}
+              />
+              <span className="fld-hint">Optional, up to 6 lines.</span>
+            </label>
+
+            <div className="fld">
+              <span>Plan colour</span>
+              <div className="swatches" role="radiogroup" aria-label="Plan colour">
+                {PLAN_SWATCHES.map(([label, rgb], i) => (
+                  <button
+                    key={label}
+                    type="button"
+                    role="radio"
+                    aria-checked={swatch === i}
+                    aria-label={label}
+                    title={label}
+                    className={`swatch ${swatch === i ? "on" : ""}`}
+                    style={{ "--c": rgb }}
+                    onClick={() => setSwatch(i)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <footer className="modal-foot">
+            <button type="button" className="btn btn-outline" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary">
+              Create plan
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function TransactionsPage({ embedded = false }) {
   const logout = useLogout();
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All");
@@ -2335,6 +3304,17 @@ export default function TransactionsPage({ embedded = false }) {
   const [planSel, setPlanSel] = useState(null); // clicked subscription plan
   const [planHover, setPlanHover] = useState(null); // plan card under the mouse
   const [showAllRules, setShowAllRules] = useState(false);
+  const [renewTab, setRenewTab] = useState("soon"); // soon | expired
+  const [renewAll, setRenewAll] = useState(false);
+  const [alertsAll, setAlertsAll] = useState(false);
+  const [actAll, setActAll] = useState(false);
+  const [topAll, setTopAll] = useState(false);
+  const [sentIds, setSentIds] = useState([]); // reminders already sent
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [reportsOpen, setReportsOpen] = useState(false);
+  const [customPlans, setCustomPlans] = useState([]); // plans created from Quick Actions
 
   // Filtering + sorting
   const filtered = useMemo(() => {
@@ -2402,6 +3382,88 @@ export default function TransactionsPage({ embedded = false }) {
     const layout = document.querySelector(".tx-layout");
     if (layout && getComputedStyle(layout).display !== "grid") scrollToTable();
   };
+
+  // Auto-hide the small toast message
+  useEffect(() => {
+    if (!toast) return undefined;
+    const id = setTimeout(() => setToast(null), 2600);
+    return () => clearTimeout(id);
+  }, [toast]);
+
+  const notify = (msg) => setToast({ msg, k: Date.now() });
+
+  // Reminders (demo). Replace the body with your real API call.
+  const sendReminder = (tx) => {
+    if (sentIds.includes(tx.id)) return;
+    setSentIds((s) => [...s, tx.id]);
+    notify(`Reminder sent to ${tx.college}`);
+  };
+  const sendBulk = () => {
+    const targets = PENDING_TX.filter((p) => !sentIds.includes(p.tx.id));
+    if (bulkBusy) return;
+    if (!targets.length) {
+      notify("All reminders are already sent");
+      return;
+    }
+    setBulkBusy(true);
+    setTimeout(() => {
+      setSentIds((s) => [...s, ...targets.map((p) => p.tx.id)]);
+      setBulkBusy(false);
+      notify(`Reminders sent to ${plural(targets.length, "college")}`);
+    }, 900);
+  };
+  // Demo only: replace with your real "create plan" API call
+  const createPlan = (plan) => {
+    setCustomPlans((list) => [...list, plan]);
+    setCreateOpen(false);
+    notify(`${plan.name} plan created`);
+    setTimeout(
+      () => document.querySelector(".plans-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      80,
+    );
+  };
+  const removePlan = (name) => {
+    setCustomPlans((list) => list.filter((c) => c.name !== name));
+    notify(`${name} plan removed`);
+  };
+  // Audit Logs: open the full admin activity list
+  const openAudit = () => {
+    setActAll(true);
+    notify("Showing the full admin activity log");
+    setTimeout(
+      () => document.querySelector(".act-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      80,
+    );
+  };
+  const qkActions = {
+    history: () => {
+      resetFilters();
+      scrollToTable();
+    },
+    refunds: () => {
+      setStatus("Refunded");
+      setPage(1);
+      scrollToTable();
+    },
+    reports: () => setReportsOpen(true),
+    users: () => navigate("/admin/users"),
+    audit: openAudit,
+  };
+  const filterTable = (st) => {
+    resetFilters();
+    setStatus(st);
+    scrollToTable();
+  };
+
+  const renewList = renewAll ? RENEW_ALL : (renewTab === "soon" ? RENEW_SOON : RENEW_EXPIRED).slice(0, RENEW_PREVIEW);
+  const pickRenewTab = (t) => {
+    setRenewAll(false);
+    setRenewTab(t);
+  };
+  const alertList = alertsAll ? PENDING_TX : PENDING_TX.slice(0, ALERT_PREVIEW);
+  const allSent = PENDING_TX.every((p) => sentIds.includes(p.tx.id));
+  const topList = TOP_COLLEGES.slice(0, topAll ? TOP_LIMIT : TOP_PREVIEW);
+  const actList = actAll ? ACTIVITY : ACTIVITY.slice(0, ACT_PREVIEW);
 
   return (
     <div className={`app ${embedded ? "app-embedded" : ""}`}>
@@ -2812,61 +3874,149 @@ export default function TransactionsPage({ embedded = false }) {
                   </div>
                 </section>
 
+                <div className="tx-col">
                 <UsageOverview revenue={stats.revenue} planSel={planSel} planHover={planHover} />
 
-                <section className="panel quick-panel">
+                <section className="panel top-panel">
                   <div className="panel-head">
                     <div>
-                      <h2>Quick Actions</h2>
-                      <p className="panel-sub">Shortcuts for common tasks</p>
+                      <h2>Top Paying Colleges</h2>
+                      <p className="panel-sub">College-wise revenue overview</p>
                     </div>
+                    <button
+                      type="button"
+                      className="link-btn"
+                      aria-expanded={topAll}
+                      onClick={() => setTopAll((v) => !v)}
+                    >
+                      {topAll ? "Show Less" : "View All"}
+                    </button>
                   </div>
-                  <div className="quick-list">
-                    <button type="button" className="qa qa-primary smoke" {...smokeProps}>
-                      <span className="qa-ico">＋</span>
-                      <span className="qa-label">Create Subscription</span>
-                      <span className="qa-arrow">›</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="qa smoke"
-                      {...smokeProps}
-                      onClick={() => {
-                        resetFilters();
-                        scrollToTable();
-                      }}
-                    >
-                      <span className="qa-ico">◷</span>
-                      <span className="qa-label">View Transaction History</span>
-                      <span className="qa-arrow">›</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="qa qa-orange smoke"
-                      {...smokeProps}
-                      onClick={() => {
-                        setStatus("Refunded");
-                        setPage(1);
-                        scrollToTable();
-                      }}
-                    >
-                      <span className="qa-ico">↺</span>
-                      <span className="qa-label">Manage Refunds</span>
-                      <span className="qa-arrow">›</span>
-                    </button>
-                    <DownloadMenu
-                      block
-                      up
-                      triggerClass="qa qa-green smoke"
-                      triggerProps={smokeProps}
-                      onPick={(format) => exportTransactions(TRANSACTIONS, format)}
-                    >
-                      <span className="qa-ico">⬇</span>
-                      <span className="qa-label">Download Report</span>
-                      <span className="qa-arrow">›</span>
-                    </DownloadMenu>
+                  <div className="tc-head" aria-hidden="true">
+                    <span>#</span>
+                    <span>College</span>
+                    <span>Revenue</span>
+                    <span>Txns</span>
+                    <span>Top Plan</span>
+                  </div>
+                  <ul className="soft-list">
+                    {topList.map((c, i) => (
+                      <li
+                        key={c.college}
+                        className="tc-row"
+                        style={{
+                          "--i": i,
+                          "--w": `${Math.max(4, (c.revenue / TOP_MAX) * 100)}%`,
+                          "--c": PLAN_COLOR[c.plan],
+                        }}
+                      >
+                        <span className={`tc-rank r${i + 1}`}>{i + 1}</span>
+                        <button
+                          type="button"
+                          className="tc-name"
+                          title={c.college}
+                          onClick={() => setSelected(c.tx)}
+                        >
+                          <strong>{c.college}</strong>
+                          <small>{c.district}</small>
+                        </button>
+                        <span className="tc-rev">{rupee(c.revenue)}</span>
+                        <span className="tc-txn">{c.count}</span>
+                        <span className={`plan plan-${c.plan.toLowerCase()} tc-plan`}>
+                          {c.plan}
+                        </span>
+                        <span className="tc-bar">
+                          <i />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+                </div>
+
+                <div className="tx-col">
+
+                <section className="panel quick-panel qk-panel">
+                  <div className="qk-head">
+                    <span className="qk-head-ico">
+                      <QkIcon name="bolt" />
+                    </span>
+                    <div className="qk-head-text">
+                      <h2>Quick Actions</h2>
+                      <p>Access key admin tools to manage the platform efficiently.</p>
+                    </div>
+                    <span className="qk-gear">
+                      <QkIcon name="gear" />
+                    </span>
+                  </div>
+                  <div className="qk-grid">
+                    {QK_ITEMS.map(([key, tone, icon, title, desc], i) => (
+                      <button
+                        key={key}
+                        type="button"
+                        className={`qk-card qk-${tone} smoke`}
+                        style={{ "--i": i }}
+                        {...smokeProps}
+                        onClick={qkActions[key]}
+                      >
+                        <span className="qk-ico">
+                          <QkIcon name={icon} />
+                        </span>
+                        <span className="qk-text">
+                          <strong>{title}</strong>
+                          <small>{desc}</small>
+                        </span>
+                        <span className="qk-go">
+                          <QkIcon name="arrow" />
+                        </span>
+                      </button>
+                    ))}
                   </div>
                 </section>
+
+                <section className="panel act-panel">
+                  <div className="panel-head">
+                    <div>
+                      <h2>Recent Admin Activity</h2>
+                      <p className="panel-sub">Latest actions and updates</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="link-btn"
+                      aria-expanded={actAll}
+                      onClick={() => setActAll((v) => !v)}
+                    >
+                      {actAll ? "Show Less" : "View All"}
+                    </button>
+                  </div>
+                  <ul className={`soft-list act-list ${actAll ? "is-scroll" : ""}`}>
+                    {actList.map((a, i) => (
+                      <li key={a.key} style={{ "--i": i }}>
+                        <button type="button" className="act-item" onClick={() => setSelected(a.tx)}>
+                          <span className={`act-ico ico-${a.tone}`} aria-hidden="true">
+                            {a.icon}
+                          </span>
+                          <span className="act-body">
+                            <strong>
+                              {a.title}
+                              {i === 0 && <span className="chip chip-soon act-new">New</span>}
+                            </strong>
+                            <small>{a.text}</small>
+                            <small className="act-time">
+                              {fmtDate(a.when)} · {fmtTime(a.when)}
+                            </small>
+                          </span>
+                          <span className="act-arrow" aria-hidden="true">
+                            ›
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+                </div>
+
+
               </div>
             </div>
 
@@ -2880,6 +4030,14 @@ export default function TransactionsPage({ embedded = false }) {
                       Choose a plan to get student profile access
                     </p>
                   </div>
+                  <button
+                    type="button"
+                    className="link-btn smoke"
+                    {...smokeProps}
+                    onClick={() => setCreateOpen(true)}
+                  >
+                    ＋ Create
+                  </button>
                 </div>
                 <div className="plans-grid">
                   {PLAN_NAMES.map((p) => {
@@ -2931,6 +4089,35 @@ export default function TransactionsPage({ embedded = false }) {
                       </div>
                     );
                   })}
+                  {customPlans.map((c, k) => (
+                    <div
+                      key={c.name}
+                      className="plan-card plan-card-custom smoke"
+                      style={{ "--i": PLAN_NAMES.length + k, "--pc-rgb": c.rgb, "--smoke-rgb": c.rgb }}
+                      {...smokeProps}
+                    >
+                      <span className="custom-badge">Custom</span>
+                      <div className="plan-card-top">
+                        <span className="plan-icon">✦</span>
+                        <div>
+                          <h3>{c.name}</h3>
+                          <div className="plan-price">
+                            {rupee(c.price)}
+                            <small>/month</small>
+                          </div>
+                        </div>
+                      </div>
+                      <span className="plan-limit">{c.limit} profiles / month</span>
+                      <ul className="plan-features">
+                        {c.features.map((f) => (
+                          <li key={f}>{f}</li>
+                        ))}
+                      </ul>
+                      <button type="button" className="plan-cta" onClick={() => removePlan(c.name)}>
+                        Remove plan
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </section>
 
@@ -2965,6 +4152,182 @@ export default function TransactionsPage({ embedded = false }) {
                   </span>
                 </button>
               </section>
+
+              <div className="side-extra">
+                <section className="panel renew-panel">
+                  <div className="panel-head">
+                    <div>
+                      <h2>Upcoming Renewals</h2>
+                      <p className="panel-sub">
+                        {plural(RENEW_SOON.length, "subscription")} expiring soon
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      {...smokeProps}
+                      className="link-btn smoke"
+                      aria-expanded={renewAll}
+                      onClick={() => setRenewAll((v) => !v)}
+                    >
+                      {renewAll ? "Show Less" : "View All"}
+                    </button>
+                  </div>
+                  <div className="renew-tiles">
+                    <button
+                      type="button"
+                      {...smokeProps}
+                      className={`renew-tile soon smoke ${!renewAll && renewTab === "soon" ? "on" : ""}`}
+                      aria-pressed={!renewAll && renewTab === "soon"}
+                      onClick={() => pickRenewTab("soon")}
+                    >
+                      <span>Expiring in 7 days</span>
+                      <b>{pad2(RENEW_SOON.length)}</b>
+                    </button>
+                    <button
+                      type="button"
+                      {...smokeProps}
+                      className={`renew-tile exp smoke ${!renewAll && renewTab === "expired" ? "on" : ""}`}
+                      aria-pressed={!renewAll && renewTab === "expired"}
+                      onClick={() => pickRenewTab("expired")}
+                    >
+                      <span>Expired</span>
+                      <b>{pad2(RENEW_EXPIRED.length)}</b>
+                    </button>
+                  </div>
+                  {renewList.length === 0 ? (
+                    <p className="empty-note">No subscriptions here right now.</p>
+                  ) : (
+                    <ul className={`soft-list ${renewAll ? "is-scroll" : ""}`}>
+                      {renewList.map((s, i) => {
+                        const [chipText, chipTone] = renewChip(s);
+                        return (
+                          <li key={s.tx.id} className="renew-item" style={{ "--i": i }}>
+                            <button type="button" className="renew-name smoke" {...smokeProps} onClick={() => setSelected(s.tx)}>
+                              <strong>{s.college}</strong>
+                              <small>
+                                {s.plan} - {renewLabel(s)}
+                              </small>
+                            </button>
+                            <span className={`chip chip-${chipTone}`}>{chipText}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                  <button
+                    type="button"
+                    {...smokeProps}
+                    className="btn btn-outline btn-block btn-toggle smoke"
+                    aria-expanded={renewAll}
+                    onClick={() => setRenewAll((v) => !v)}
+                  >
+                    {renewAll ? "Show Less" : "View All Renewals"}
+                    <span className="chev" aria-hidden="true">
+                      ▾
+                    </span>
+                  </button>
+                </section>
+
+                <section className="panel alerts-panel">
+                  <div className="panel-head">
+                    <div>
+                      <h2>Payment Alerts &amp; Follow-ups</h2>
+                      <p className="panel-sub">Manage pending payments and send reminders</p>
+                    </div>
+                    <button
+                      type="button"
+                      {...smokeProps}
+                      className="link-btn smoke"
+                      aria-expanded={alertsAll}
+                      onClick={() => setAlertsAll((v) => !v)}
+                    >
+                      {alertsAll ? "Show Less" : "View All"}
+                    </button>
+                  </div>
+                  <div className="al-tiles">
+                    <button
+                      type="button"
+                      {...smokeProps}
+                      className="al-tile al-red smoke"
+                      style={{ "--i": 0 }}
+                      onClick={() => filterTable("Pending")}
+                    >
+                      <span>Pending Payments</span>
+                      <b>{PENDING_TX.length}</b>
+                      <em>{rupee(sumAmt(PENDING_TX.map((p) => p.tx)))}</em>
+                    </button>
+                    <button
+                      type="button"
+                      {...smokeProps}
+                      className="al-tile al-orange smoke"
+                      style={{ "--i": 1 }}
+                      onClick={() => filterTable("Failed")}
+                    >
+                      <span>Failed Transactions</span>
+                      <b>{FAILED_TX.length}</b>
+                      <em>{rupee(sumAmt(FAILED_TX))}</em>
+                    </button>
+                    <div className="al-tile al-purple smoke" {...smokeProps} style={{ "--i": 2 }}>
+                      <span>Unpaid Subscriptions</span>
+                      <b>{RENEW_EXPIRED.length}</b>
+                      <em>{rupee(sumAmt(RENEW_EXPIRED))}</em>
+                    </div>
+                    <div className="al-tile al-green smoke" {...smokeProps} style={{ "--i": 3 }}>
+                      <span>Follow-ups Sent</span>
+                      <b>{sentIds.length}</b>
+                      <em>Today</em>
+                    </div>
+                  </div>
+
+                  <h3 className="al-subtitle">Recent Pending Payments</h3>
+                  {alertList.length === 0 ? (
+                    <p className="empty-note">No pending payments. All clear!</p>
+                  ) : (
+                    <ul className={`soft-list ${alertsAll ? "is-scroll" : ""}`}>
+                      {alertList.map((p, i) => {
+                        const sent = sentIds.includes(p.tx.id);
+                        const late = daysFromNow(p.due) < 0;
+                        return (
+                          <li key={p.tx.id} className="al-item" style={{ "--i": i }}>
+                            <div className="al-info">
+                              <strong>{p.tx.college}</strong>
+                              <small className={late ? "late" : ""}>
+                                {rupee(p.tx.amount)} · {dueLabel(p.due)}
+                              </small>
+                            </div>
+                            <button
+                              type="button"
+                              {...smokeProps}
+                              className={`btn-remind smoke ${sent ? "sent" : ""}`}
+                              disabled={sent}
+                              onClick={() => sendReminder(p.tx)}
+                            >
+                              {sent ? "Sent ✓" : "Reminder"}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                  <button
+                    type="button"
+                    {...smokeProps}
+                    className="btn-bulk smoke"
+                    disabled={bulkBusy || PENDING_TX.length === 0}
+                    onClick={sendBulk}
+                  >
+                    {bulkBusy ? (
+                      <>
+                        <span className="spin" aria-hidden="true" /> Sending...
+                      </>
+                    ) : allSent && PENDING_TX.length > 0 ? (
+                      "All Reminders Sent ✓"
+                    ) : (
+                      "➤ Send Bulk Reminders"
+                    )}
+                  </button>
+                </section>
+              </div>
             </aside>
           </div>
         </main>
@@ -2972,6 +4335,24 @@ export default function TransactionsPage({ embedded = false }) {
 
       {selected && (
         <DetailsModal tx={selected} onClose={() => setSelected(null)} />
+      )}
+
+      {reportsOpen && (
+        <ReportsModal onClose={() => setReportsOpen(false)} onDone={notify} />
+      )}
+
+      {createOpen && (
+        <CreatePlanModal
+          taken={[...PLAN_NAMES, ...customPlans.map((c) => c.name)]}
+          onClose={() => setCreateOpen(false)}
+          onCreate={createPlan}
+        />
+      )}
+
+      {toast && (
+        <div key={toast.k} className="toast" role="status">
+          {toast.msg}
+        </div>
       )}
     </div>
   );

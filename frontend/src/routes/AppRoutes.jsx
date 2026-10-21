@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import StudentManagement from "../pages/admin/StudentManagement";
 import CollegeManagement from "../pages/admin/CollegeManagement";
+import Transactions from "./pages/admin/Transactions";
 
 // STUDENT
 import StudentDashboard from "../pages/student/StudentDashboard";
@@ -33,6 +34,9 @@ function AppRoutes() {
           path="/admin/college-management"
           element={<CollegeManagement />}
         />
+       <Route 
+           path="/admin/transactions"
+           element={<Transactions />} />
 
         {/* STUDENT */}
         <Route
