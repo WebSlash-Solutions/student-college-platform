@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const leads = [
   { id: "STU10234", name: "Keerthi", course: "B.Tech CSE", location: "Coimbatore", score: "82%", status: "New" },
@@ -52,6 +53,7 @@ function Icon({ name, size = 20 }) {
 }
 
 export default function CollegeDashboard() {
+  const routerNavigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Dashboard");
   const [search, setSearch] = useState("");
@@ -93,12 +95,38 @@ export default function CollegeDashboard() {
   };
 
   const navigate = (item) => {
-    setActive(item);
-    setMobileOpen(false);
-    if (item !== "Dashboard") {
-      notify(`${item} section selected`);
-    }
-  };
+  setActive(item);
+  setMobileOpen(false);
+
+  if (item === "College Profile") {
+    routerNavigate("/college/profile");
+    return;
+  }
+
+  if (item === "Student Leads") {
+    routerNavigate("/college/leads");
+    return;
+  }
+
+  if (item === "Courses") {
+    routerNavigate("/college/courses");
+    return;
+  }
+
+  if (item === "Purchased Profiles") {
+    routerNavigate("/college/purchased");
+    return;
+  }
+
+  if (item === "Transactions") {
+    routerNavigate("/college/transactions");
+    return;
+  }
+
+  if (item !== "Dashboard") {
+    notify(`${item} section selected`);
+  }
+};
 
   const menu = [
     ["Dashboard", "dashboard"],
@@ -468,6 +496,98 @@ export default function CollegeDashboard() {
           .college-stat-label{font-size:11px}
           .college-welcome h1{font-size:28px}
           .college-primary{font-size:13px}
+        }
+
+        /* ===== UI upgrade v2: bigger text + animations + responsive ===== */
+        .college-brand-name{font-size:25px}
+        .college-brand-sub{font-size:13.5px}
+        .college-nav-label{font-size:13.5px}
+        .college-nav-item{font-size:17px;min-height:56px}
+        .college-nav-item.active{border-left:5px solid #10a5df}
+        .college-side-user strong{font-size:16px}
+        .college-side-user span{font-size:13.5px}
+        .college-top-title{font-size:26px}
+        .college-top-sub{font-size:14px}
+        .college-user strong{font-size:16px}
+        .college-user span{font-size:13.5px}
+        .college-search input{font-size:17px}
+        .college-notification strong,.college-notification p{font-size:15px}
+        .college-welcome{
+          padding:30px 32px;border-radius:22px;color:#fff;
+          background:linear-gradient(120deg,#0a3f9e,#0b6bdc,#12a7e0,#0b6bdc,#0a3f9e);
+          background-size:300% 100%;animation:gradMove 9s ease infinite,fadeUp .7s ease both;
+          box-shadow:0 18px 40px rgba(9,86,190,.25)
+        }
+        .college-welcome h1{color:#fff;font-size:clamp(28px,3vw,40px)}
+        .college-welcome p{color:#e1eeff;font-size:18px}
+        .college-welcome .college-primary{background:#fff;color:#0a58c4;font-size:16px;padding:16px 24px}
+        .college-stat{border-top:5px solid #1677ee}
+        .college-stat:nth-child(2){border-top-color:#10b981}
+        .college-stat:nth-child(3){border-top-color:#f59e0b}
+        .college-stat:nth-child(4){border-top-color:#8b5cf6}
+        .college-stat:hover{transform:translateY(-6px)!important;box-shadow:0 18px 38px rgba(30,66,110,.14);transition:.25s}
+        .college-stat:hover .college-stat-icon{animation:bounce .6s ease}
+        .college-stat-change{font-size:13.5px}
+        .college-stat-value{font-size:40px}
+        .college-stat-label{font-size:18px;font-weight:650}
+        .college-card{animation:fadeUp .6s ease both;transition:transform .25s,box-shadow .25s}
+        .college-card:hover{box-shadow:0 14px 34px rgba(30,66,110,.11)}
+        .college-card-header h2{font-size:24px}
+        .college-card-header p{font-size:16px}
+        .college-link{font-size:16px}
+        .college-link:hover{text-decoration:underline}
+        .college-table th{font-size:14px}
+        .college-table td{font-size:17px}
+        .college-table tbody tr{animation:fadeUp .5s ease both}
+        .college-table tbody tr:nth-child(1){animation-delay:.05s}.college-table tbody tr:nth-child(2){animation-delay:.1s}
+        .college-table tbody tr:nth-child(3){animation-delay:.15s}.college-table tbody tr:nth-child(4){animation-delay:.2s}
+        .college-table tbody tr:nth-child(5){animation-delay:.25s}.college-table tbody tr:nth-child(6){animation-delay:.3s}
+        .college-student strong{font-size:17px}
+        .college-student span{font-size:15px}
+        .college-student-avatar{width:40px;height:40px;font-size:13px}
+        .college-status{font-size:14px;padding:8px 14px}
+        .college-primary{font-size:16px}
+        .college-unlock{font-size:15px;padding:11px 16px;animation:pulseRing 2.4s infinite}
+        .college-balance small{font-size:13.5px}
+        .college-balance-row span{font-size:15px}
+        .college-add-money{font-size:15px;padding:12px 18px}
+        .college-quick strong{font-size:17px}
+        .college-quick span{font-size:15px}
+        .college-quick:hover{background:#f6faff;padding-left:8px;transition:.2s}
+        .college-quick:hover .college-quick-arrow{transform:translateX(4px)}
+        .college-quick-arrow{transition:.2s}
+        .college-course-top strong,.college-course-top span{font-size:16px}
+        .college-activity strong{font-size:16px}
+        .college-activity p{font-size:15px}
+        .college-activity time{font-size:13.5px}
+        .college-activity-item{animation:fadeUp .5s ease both}
+        .college-activity-dot{animation:dotPulse 2s infinite}
+        .college-notification-dot{animation:dotPulse 1.8s infinite}
+        .college-toast{font-size:15px}
+        .college-footer{font-size:14px}
+        .college-table-wrap{-webkit-overflow-scrolling:touch}
+        .college-sidebar{animation:slideIn .5s ease both}
+        .college-nav-item{animation:fadeUp .5s ease both}
+        .college-nav-item:nth-child(2){animation-delay:.05s}.college-nav-item:nth-child(3){animation-delay:.1s}
+        .college-nav-item:nth-child(4){animation-delay:.15s}.college-nav-item:nth-child(5){animation-delay:.2s}
+        .college-nav-item:nth-child(6){animation-delay:.25s}.college-nav-item:nth-child(7){animation-delay:.3s}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes gradMove{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+        @keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}70%{transform:translateY(-3px)}}
+        @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(8,105,216,.35)}70%{box-shadow:0 0 0 10px rgba(8,105,216,0)}100%{box-shadow:0 0 0 0 rgba(8,105,216,0)}}
+        @keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+        @media(prefers-reduced-motion:reduce){.college-dashboard *{animation:none!important;transition:none!important}}
+        @media(max-width:980px){
+          .college-welcome{flex-direction:column;align-items:flex-start;padding:22px}
+          .college-content{padding:26px 18px 40px}
+          .college-top-title{font-size:21px}
+        }
+        @media(max-width:560px){
+          .college-welcome h1{font-size:26px}
+          .college-stat-value{font-size:32px}
+          .college-card-header{padding:18px}
+          .college-table td,.college-table th{padding:14px 14px}
         }
       `}</style>
 
