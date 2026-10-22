@@ -1033,7 +1033,7 @@ function CollegeSite() {
                   </p>
                   <div className="cs-row">
                     <button className="cs-solid hx-btn" onClick={goRegister}>Register College <i className="cs-arr">→</i></button>
-                    <button className="cs-ghost hx-btn" onClick={() => scrollTo("how")}><span className="hx-play"><Ico n="play" /></span> Explore How It Works</button>
+                    <button className="cs-ghost hx-btn" onClick={() => scrollTo("how")}>Explore How It Works</button>
                   </div>
                   <div className="hx-trust">
                     {HX_TRUST.map(([ic, t, s]) => (
@@ -2350,7 +2350,7 @@ body {
   position:relative;
   z-index:6;
   height:150px;
-  margin-top:-86px;
+  margin-top:0;
   overflow:hidden;
   pointer-events:none;
 }
@@ -6052,7 +6052,7 @@ body {
     display:block;
   }
 }
-@media (max-width:1660px) {
+@media (max-width:1500px) {
   .cs-burger {
     display:grid;
   }
@@ -6294,6 +6294,21 @@ body {
 }
 
 /* ---------- CAMPUSCONNECT HOME: PREMIUM VISUAL REFRESH ---------- */
+/* Live badge: wrap aagaama irukka */
+.hx .cs-live {
+  flex:none;
+  white-space:nowrap;
+  margin-left:auto;
+}
+.hx .cs-lead-top > div {
+  flex:1;
+  overflow-wrap:normal;
+}
+
+/* Matching Students chip: avatar mela overlap aagaama keela thalluthu */
+.hx-chip {
+  margin-top:34px;
+}
 .hx {
   position:relative;
   isolation:isolate;
@@ -6362,6 +6377,9 @@ body {
   max-width:620px;
   font-size:clamp(16px,1.05vw,18px);
   line-height:1.75;
+  text-align:justify !important;
+  text-justify:inter-word;
+  hyphens:auto;
 }
 .hx .cs-row {
   gap:12px;
@@ -6574,6 +6592,1222 @@ body {
   }
   .hx-btn,.hx-trust > *, .hx-step { transition:none!important; }
 }
+
+
+/* ---------- responsive sizing fixes: keep the original design ---------- */
+.cs,
+.cs *,
+.cs *::before,
+.cs *::after {
+  box-sizing:border-box;
+}
+.cs {
+  width:100%;
+  max-width:100%;
+  overflow-x:clip;
+}
+.cs-wrap,
+.cs-header,
+.cs-pill,
+.hx-in,
+.hx-copy,
+.hx-stage,
+.hx-ob,
+.hx-card {
+  min-width:0;
+}
+.cs-wrap {
+  padding-left:clamp(20px,3.2vw,56px);
+  padding-right:clamp(20px,3.2vw,56px);
+}
+.hx {
+  min-height:auto;
+  padding-top:calc(var(--nav) + 34px);
+  padding-bottom:clamp(42px,4vw,66px);
+}
+.hx h1 {
+  font-size:clamp(40px,3.2vw,54px);
+  line-height:1.06;
+  margin:20px 0 20px!important;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+.hx-copy,
+.hx-lede,
+.hx .cs-lede {
+  min-width:0;
+  max-width:100%;
+}
+.hx .cs-lede {
+  margin-bottom:24px!important;
+}
+.hx-stage {
+  width:100%;
+  max-width:900px;
+}
+.hx-card,
+.hx .cs-lead {
+  max-width:100%;
+}
+.cs-pill nav {
+  min-width:0;
+}
+.cs-pill nav button {
+  white-space:nowrap;
+}
+@media (min-width:1501px) {
+  .cs-burger {
+    display:none!important;
+  }
+  .cs-header nav {
+    position:static!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    gap:0!important;
+    padding:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    animation:none!important;
+  }
+  .cs-header nav>button {
+    padding:9px 8px;
+    font-size:clamp(12px,.82vw,14px);
+  }
+  .cs-navcta {
+    margin-left:5px;
+  }
+  .cs-navcta .cs-solid,
+  .cs-navcta .cs-ghost {
+    min-height:42px;
+    padding:0 14px;
+    font-size:13px;
+  }
+  .cs-brand strong {
+    font-size:clamp(17px,1.1vw,21px);
+  }
+  .hx-in {
+    grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);
+    gap:clamp(22px,2vw,34px);
+  }
+  .hx h1 {
+    font-size:clamp(44px,3.2vw,54px);
+  }
+  .hx-stage {
+    max-width:820px;
+  }
+  .hx-ob {
+    max-width:480px;
+  }
+}
+@media (min-width:1180px) and (max-width:1500px) {
+  .hx-in {
+    grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);
+    gap:clamp(22px,2.2vw,32px);
+  }
+  .hx h1 {
+    font-size:clamp(42px,3.8vw,54px);
+  }
+  .hx-stage {
+    max-width:760px;
+  }
+}
+@media (max-width:1500px) {
+  .cs-burger {
+    display:grid;
+  }
+  .cs-header nav {
+    position:absolute;
+    top:calc(100% + 12px);
+    left:0;
+    right:0;
+    display:none;
+    flex-direction:column;
+    align-items:stretch;
+    gap:4px;
+    padding:16px;
+    border-radius:36px;
+    background:rgba(255,255,255,.97);
+    backdrop-filter:blur(18px);
+    box-shadow:0 30px 60px rgba(21,60,140,.28);
+  }
+  .cs-header nav.open {
+    display:flex;
+  }
+}
+@media (max-width:1179px) {
+  .hx {
+    min-height:auto;
+    padding-top:calc(var(--nav) + 34px);
+  }
+  .hx h1 {
+    font-size:clamp(38px,5.2vw,58px);
+  }
+}
+@media (max-width:620px) {
+  .cs-wrap {
+    padding-left:18px;
+    padding-right:18px;
+  }
+  .hx {
+    padding-top:calc(var(--nav) + 28px);
+  }
+  .hx h1 {
+    font-size:clamp(34px,8.5vw,48px);
+  }
+}
+
+
+/* ---------- final 100% zoom fit: preserve existing visual design ---------- */
+@media (min-width:1501px) {
+  .hx {
+    min-height:calc(100vh - 108px);
+    padding-top:calc(var(--nav) + 18px);
+    padding-bottom:30px;
+  }
+  .hx-in {
+    grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+    gap:clamp(18px,1.5vw,26px);
+    align-items:center;
+  }
+  .hx-copy { min-width:0; }
+  .hx h1 {
+    font-size:clamp(40px,2.85vw,48px);
+    line-height:1.07;
+    margin:18px 0 18px!important;
+    letter-spacing:-.045em;
+  }
+  .hx-tag {
+    font-size:15px;
+    padding:9px 16px 9px 12px;
+  }
+  .hx .cs-lede,
+  .hx-lede {
+    font-size:15.5px;
+    line-height:1.65;
+    margin-bottom:20px!important;
+  }
+  .hx-stage {
+    width:100%;
+    max-width:740px;
+    transform:scale(.88);
+    transform-origin:center center;
+  }
+  .hx-ob { max-width:420px; }
+  .hx-card { max-width:300px; }
+  .hx-btn { min-height:52px; }
+  .hx-trust { margin-top:24px; gap:12px; }
+}
+@media (min-width:1180px) and (max-width:1500px) {
+  .hx {
+    padding-top:calc(var(--nav) + 24px);
+    padding-bottom:38px;
+  }
+  .hx-in {
+    grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+    gap:20px;
+  }
+  .hx h1 {
+    font-size:clamp(38px,3.3vw,48px);
+    line-height:1.07;
+    margin:18px 0!important;
+  }
+  .hx .cs-lede,
+  .hx-lede { font-size:15px; line-height:1.6; }
+  .hx-stage {
+    max-width:680px;
+    transform:scale(.9);
+    transform-origin:center center;
+  }
+}
+
+
+/* ===== FINAL PAGE-BY-PAGE NORMAL-SIZE / EQUAL-GUTTER PASS ===== */
+.cs {
+  --pad:clamp(20px,3.1vw,48px);
+  --nav:66px;
+  font-size:16px;
+  line-height:1.55;
+}
+.cs-wrap {width:100%;max-width:1440px;margin-inline:auto;padding-inline:clamp(20px,3.2vw,48px)}
+.cs-sec {padding-block:clamp(42px,5vw,72px)}
+.cs-sec > .cs-wrap > h2,
+.cs-light .cs-wrap > h2,
+.cs-how .cs-wrap > h2,
+.cs-about-sec .cs-wrap > h2,
+.cs-districts .cs-wrap > h2,
+.cs-pricing .cs-wrap > h2 {font-size:clamp(28px,2.8vw,40px);line-height:1.12;letter-spacing:-.035em}
+.cs-sub,.cs-sec .cs-sub {font-size:clamp(14px,1.15vw,16px);line-height:1.65;max-width:760px}
+.cs-header {top:10px;padding-inline:clamp(10px,1.8vw,24px)}
+.cs-pill {height:var(--nav);padding:0 14px 0 12px;gap:10px;max-width:1440px}
+.cs-logo {width:44px;height:44px}
+.cs-brand {gap:9px}
+.cs-brand strong {font-size:clamp(16px,1.25vw,20px)}
+.cs-brand small {font-size:11px}
+.cs-header nav {gap:0}
+.cs-header nav>button {font-size:clamp(11px,.85vw,13px);padding:9px clamp(5px,.55vw,9px)}
+.cs-navcta {gap:6px;margin-left:5px}
+.cs-navcta .cs-solid,.cs-navcta .cs-ghost {min-height:40px;padding-inline:12px;font-size:12px}
+.cs-bar {height:3px}
+.cs-glow {width:340px;height:340px;margin:-170px 0 0 -170px}
+
+/* Start Here / hero: compact enough that the next section starts on the first screen */
+.hx {min-height:0;padding-top:calc(var(--nav) + 28px);padding-bottom:clamp(24px,3vw,38px)}
+.cs-wrap.hx-wrap {padding-top:0;padding-bottom:0}
+.hx-in {grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr);gap:clamp(18px,2vw,30px);align-items:center}
+.hx h1 {font-size:clamp(36px,3.05vw,48px);line-height:1.06;margin:16px 0!important;letter-spacing:-.045em}
+.hx-tag {font-size:13px;padding:8px 13px 8px 10px}
+.hx .cs-lede,.hx-lede {font-size:14px;line-height:1.6;margin-bottom:18px!important}
+.hx-btn {min-height:46px;padding:0 20px;font-size:14px}
+.hx-play {width:34px;height:34px}
+.hx-trust {margin-top:18px;gap:10px}
+.hx-tr {gap:9px;padding-right:10px}
+.hx-tr>span {width:40px;height:40px;padding:10px}
+.hx-tr b {font-size:13px;line-height:1.25}
+.hx-tr small {font-size:11px}
+.hx-stage {max-width:700px;transform:none;min-width:0}
+.hx-ob {max-width:390px}
+.hx-card {max-width:270px}
+.hx-chip {font-size:12px}
+.hx-works {margin-top:0!important}
+
+/* Shared section cards and layouts */
+.cs-bento {margin-top:32px;gap:18px}
+.bn {min-height:240px;padding:clamp(22px,2.2vw,32px)}
+.bn h3,.cs-card h3,.cs-plan h3 {font-size:clamp(19px,1.7vw,24px);line-height:1.2}
+.bn p,.cs-card p,.cs-plan p {font-size:14px;line-height:1.65}
+.cs-stats {padding-block:42px}
+.cs-stats-in {gap:18px}
+.cs-stat strong,.cs-stat .num {font-size:clamp(30px,3vw,44px)}
+.cs-stat>span {font-size:14px}
+.cs-districts {padding-block:clamp(42px,5vw,72px)}
+.cs-districts .cs-wrap {max-width:1440px}
+.cs-plans,.sp-plans {gap:20px}
+.cs-plan {padding:26px;border-radius:24px}
+.cs-plans-note {margin-top:24px!important;font-size:14px}
+.cs-how {padding-block:clamp(34px,4vw,54px)}
+.cs-how .cs-wrap {max-width:1440px}
+.hx-steps {gap:16px;margin-top:24px}
+.hx-step {padding:18px;min-width:0}
+.hx-step h4 {font-size:15px;line-height:1.3}
+.hx-step p {font-size:12px;line-height:1.5}
+.hx-ic {width:54px;height:54px;padding:12px}
+.cs-pricing {padding:38px 0}
+.cs-pricing .cs-sec {padding-block:clamp(38px,4.5vw,62px)}
+.cs-price {margin-top:30px;gap:clamp(24px,3vw,48px)}
+.cs-coinwrap {max-width:340px}
+.cs-about-sec {padding-block:clamp(42px,5vw,72px)}
+.cs-contact,.cs-contact .cs-sec {padding-block:clamp(42px,5vw,72px)}
+.cs-footer {padding-block:28px}
+.dl {padding-block:clamp(42px,5vw,72px)}
+.dl .cs-sec {padding-block:0}
+.dl-grid {gap:22px}
+.dl-total,.dl-flow,.dl-demo {padding:clamp(20px,2.2vw,30px);border-radius:28px}
+.dl-big {font-size:clamp(44px,5vw,68px)}
+.dl-flow h3,.dl-demo-head h3 {font-size:clamp(20px,1.8vw,26px)}
+.dl-flow li {padding:12px}
+.dl-flow li b {font-size:14px}
+.dl-flow li small {font-size:12px;line-height:1.5}
+
+/* Anchor positions account for the fixed floating navigation */
+#home,#downloads,#districts,#plans,#how,#pricing,#benefits,#about,#contact {scroll-margin-top:calc(var(--nav) + 28px)}
+
+@media (min-width:1501px) {
+  .cs-burger {display:none!important}
+  .cs-header nav {position:static!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:0!important;padding:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;animation:none!important}
+  .cs-header nav>button {font-size:12px;padding:8px 6px}
+  .cs-navcta .cs-solid,.cs-navcta .cs-ghost {font-size:12px;padding-inline:11px}
+  .hx {min-height:0;padding-top:calc(var(--nav) + 28px);padding-bottom:28px}
+  .hx-in {grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr);gap:24px}
+  .hx h1 {font-size:clamp(40px,2.8vw,48px)}
+  .hx-stage {max-width:700px}
+}
+@media (min-width:1180px) and (max-width:1500px) {
+  .hx-in {grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);gap:22px}
+  .hx h1 {font-size:clamp(36px,3.2vw,46px)}
+  .hx-stage {max-width:620px}
+  .cs-wrap {padding-inline:clamp(24px,3vw,42px)}
+}
+@media (max-width:1179px) {
+  .cs {--nav:62px}
+  .cs-sec {padding-block:42px}
+  .hx {padding-top:calc(var(--nav) + 28px);padding-bottom:30px}
+  .hx-in {grid-template-columns:minmax(0,1fr);gap:20px}
+  .hx-copy {max-width:760px}
+  .hx h1 {font-size:clamp(36px,5vw,48px)}
+  .hx-stage {max-width:740px;margin-inline:auto;transform:none}
+  .cs-header nav>button {font-size:14px;padding:12px 16px}
+  .cs-bento {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bn1,.bn2,.bn3,.bn4 {grid-column:span 1}
+  .cs-price {grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+  .cs-coinwrap {max-width:280px}
+  .dl-grid {grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px) {
+  .cs {--pad:18px;font-size:15px}
+  .cs-wrap,.cs-wrap.hx-wrap {padding-inline:18px}
+  .cs-sec {padding-block:34px}
+  .cs-header {top:8px;padding-inline:10px}
+  .cs-pill {height:58px;padding-inline:10px;border-radius:30px}
+  .cs-logo {width:40px;height:40px}
+  .cs-brand strong {font-size:17px}
+  .cs-brand small {display:none}
+  .cs-header nav {top:calc(100% + 8px);padding:12px;border-radius:22px;max-height:calc(100vh - 90px);overflow-y:auto}
+  .cs-header nav>button {font-size:14px;padding:11px 14px}
+  .cs-navcta .cs-solid,.cs-navcta .cs-ghost {min-height:42px;font-size:14px}
+  .hx {padding-top:calc(var(--nav) + 30px);padding-bottom:24px}
+  .hx h1 {font-size:clamp(34px,7.5vw,44px);line-height:1.08;margin:14px 0!important}
+  .hx .cs-lede,.hx-lede {font-size:14px;line-height:1.65}
+  .hx-stage {width:100%;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;gap:12px}
+  .hx-ob {grid-column:1;grid-row:1;width:min(88%,340px);margin-inline:auto}
+  .hx-chip {grid-column:1;grid-row:2;justify-self:center;margin:0 auto 8px}
+  .hx-card {grid-column:1;grid-row:3;width:min(100%,300px);max-width:300px;margin-inline:auto}
+  .hx-btn {width:100%;min-height:46px}
+  .hx .cs-row {display:grid;grid-template-columns:1fr;gap:10px}
+  .hx-trust {display:grid;grid-template-columns:1fr;gap:12px}
+  .hx-tr {border-right:0!important;padding-right:0}
+  .cs-bento {grid-template-columns:1fr;gap:14px;margin-top:24px}
+  .bn {grid-column:1!important;min-height:0;padding:22px;border-radius:24px!important}
+  .cs-stats-in {grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px}
+  .cs-plans,.sp-plans {grid-template-columns:1fr}
+  .cs-plan {padding:22px}
+  .cs-price {grid-template-columns:1fr;gap:22px}
+  .cs-coinwrap {max-width:220px}
+  .dl-grid {grid-template-columns:1fr;gap:16px}
+  .dl-total,.dl-flow,.dl-demo {padding:20px;border-radius:22px}
+  .dl-mini {grid-template-columns:1fr}
+  .hx-steps {grid-template-columns:1fr;gap:12px}
+  .hx-step {padding:16px}
+  .cs-sec h2,.cs-light .cs-wrap>h2,.cs-how .cs-wrap>h2,.cs-about-sec .cs-wrap>h2 {font-size:clamp(26px,7vw,34px)}
+}
+@media (max-width:420px) {
+  .cs-wrap,.cs-wrap.hx-wrap {padding-inline:14px}
+  .cs-brand strong {font-size:15px}
+  .cs-logo {width:36px;height:36px}
+  .cs-pill {gap:6px}
+  .hx h1 {font-size:33px}
+  .hx-tag {font-size:12px}
+  .cs-stats-in {grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce) {
+  .cs *, .cs *::before, .cs *::after {scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* ---------- HOME FIRST SCREEN: clean spacing and balanced scale ---------- */
+@media (min-width:1180px) {
+  .hx {
+    padding-top:calc(var(--nav) - 8px);
+    padding-bottom:24px;
+  }
+  .hx-wrap {
+    padding-inline:clamp(28px,3.2vw,52px);
+  }
+  .hx-in {
+    grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr);
+    gap:clamp(24px,2.4vw,38px);
+  }
+  .hx-tag {
+    padding:8px 15px 8px 12px;
+    gap:8px;
+    font-size:14px;
+  }
+  .hx-tag .hx-ico {width:21px;height:21px}
+  .hx h1 {
+    font-size:clamp(36px,2.75vw,46px);
+    line-height:1.08;
+    letter-spacing:-.048em;
+    margin:16px 0 16px!important;
+  }
+  .hx .cs-lede {
+    max-width:590px;
+    margin-bottom:20px!important;
+    font-size:15px;
+    line-height:1.55;
+  }
+  .hx .cs-row {gap:10px}
+  .hx-btn {
+    min-height:46px;
+    padding-inline:23px;
+    font-size:15px;
+  }
+  .hx-play {width:29px;height:29px}
+  .hx-trust {margin-top:20px;gap:8px}
+  .hx-tr {gap:9px;padding-right:12px}
+  .hx-tr+.hx-tr {padding-left:12px}
+  .hx-tr>span {width:38px;height:38px}
+  .hx-tr b {font-size:12.5px;line-height:1.2}
+  .hx-tr small {font-size:11px;white-space:normal}
+  .hx-stage {
+    max-width:790px;
+    grid-template-columns:minmax(0,1fr) minmax(220px,.58fr);
+    grid-template-rows:auto auto;
+    gap:10px 14px;
+    padding:0;
+  }
+  .hx-ob {
+    width:100%;
+    max-width:405px;
+    margin:0 auto;
+  }
+  .hx-card {max-width:270px}
+  .hx .cs-lead {padding:15px}
+  .hx-chip {margin:0;gap:9px;padding:10px 14px}
+  .hx-chip>.hx-ico {width:34px;height:34px}
+  .hx-chip b {font-size:13px}
+  .hx-chip small {font-size:11px}
+  .hx-works {
+    margin-top:22px;
+    padding:17px 24px 19px;
+    border-radius:25px;
+  }
+  .hx-works h3 {
+    margin:0;
+    font-size:20px;
+    line-height:1.3;
+  }
+  .hx-steps {
+    margin-top:12px;
+    gap:8px 10px;
+  }
+  .hx-step {gap:10px;min-width:0}
+  .hx-ic {width:56px;height:56px;padding:14px}
+  .hx-ic b {width:21px;height:21px;font-size:11px}
+  .hx-step h4 {font-size:13px;line-height:1.25;margin-bottom:3px}
+  .hx-step p {font-size:11px;line-height:1.35;margin:0}
+  .hx-arrow {font-size:18px}
+  .hx-sea {height:35px}
+  .hx-sea.s2 {height:26px}
+}
+@media (min-width:1180px) and (max-height:850px) {
+  .hx {padding-top:calc(var(--nav) - 14px);padding-bottom:18px}
+  .hx h1 {font-size:clamp(34px,2.55vw,43px);margin:13px 0!important}
+  .hx .cs-lede {font-size:14px;line-height:1.48;margin-bottom:16px!important}
+  .hx-btn {min-height:43px}
+  .hx-trust {margin-top:16px}
+  .hx-ob {max-width:370px}
+  .hx-card {max-width:255px}
+  .hx-works {margin-top:16px;padding-top:14px;padding-bottom:15px}
+  .hx-steps {margin-top:9px}
+  .hx-ic {width:50px;height:50px;padding:12px}
+  .hx-step h4 {font-size:12px}
+  .hx-step p {font-size:10.5px}
+}
+@media (max-width:1179px) {
+  .hx-works {margin-top:26px;padding:20px 20px 22px}
+  .hx-works h3 {margin:0;font-size:clamp(19px,2.5vw,23px)}
+  .hx-steps {margin-top:14px}
+  .hx-ic {width:64px;height:64px;padding:16px}
+  .hx-step {gap:12px}
+}
+@media (max-width:760px) {
+  .hx {padding-top:calc(var(--nav) + 20px);padding-bottom:26px}
+  .hx-works {margin-top:22px;padding:18px 16px 20px}
+  .hx-steps {grid-template-columns:1fr;gap:10px}
+  .hx-step p {font-size:12px;line-height:1.45}
+  .hx-ic {width:54px;height:54px;padding:13px}
+}
+
+/* ---------- FINAL HOME HERO SPACING PATCH: preserve the existing design ---------- */
+@media (min-width:1180px) {
+  .hx {
+    min-height:0;
+    padding-top:calc(var(--nav) + 22px);
+    padding-bottom:34px;
+  }
+  .hx-wrap {max-width:1540px;padding-inline:clamp(28px,3.2vw,52px)}
+  .hx-in {
+    grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr);
+    align-items:center;
+    gap:clamp(26px,2.4vw,38px);
+  }
+  .hx-copy {position:relative;z-index:2;min-width:0}
+  .hx h1 {font-size:clamp(36px,2.65vw,45px);line-height:1.08;margin:14px 0 16px!important}
+  .hx .cs-lede {max-width:600px;font-size:15px;line-height:1.55;margin-bottom:18px!important}
+  .hx-stage {
+    max-width:700px;
+    grid-template-columns:minmax(0,1fr) minmax(205px,.56fr);
+    grid-template-rows:auto auto;
+    gap:10px 18px;
+    align-items:center;
+    padding:0;
+    overflow:visible;
+  }
+  .hx-ob {width:100%;max-width:365px;margin:0 auto;}
+  .hx-sphere {border-width:6px;box-shadow:0 0 0 8px rgba(255,255,255,.5),0 0 0 18px rgba(120,180,255,.16),0 25px 48px rgba(21,88,214,.24)}
+  .hx-it {width:21%}
+  .hx-av {border-width:4px}
+  .hx-int {font-size:11px;padding:4px 8px;gap:4px}
+  .hx-int i {width:7px;height:7px}
+  .hx-card {
+    grid-column:2;grid-row:1 / span 2;
+    width:100%;max-width:248px;min-width:0;
+    justify-self:end;align-self:center;margin:0;
+    animation:none;
+  }
+  .hx .cs-lead {padding:13px 14px 14px;border-radius:22px;box-shadow:0 16px 38px rgba(31,82,156,.14),0 0 0 5px rgba(255,255,255,.2)}
+  .hx .cs-lead-top {gap:8px;margin-bottom:12px}
+  .hx .cs-lead-top .cs-av {width:36px;height:36px;flex:0 0 36px}
+  .hx .cs-lead-top b {font-size:14px;line-height:1.25}
+  .hx .cs-lead-top small {font-size:11px;line-height:1.35}
+  .hx .cs-live {font-size:10px;padding:5px 7px}
+  .hx .cs-lead p {font-size:12px;line-height:1.35;padding:8px 0;gap:8px}
+  .hx .cs-lead p em {font-size:12px;text-align:right}
+  .hx .cs-lead .cs-unlock-btn {min-height:42px;padding:10px 9px;font-size:13px;white-space:normal;line-height:1.25}
+  .hx-chip {grid-column:1;grid-row:2;justify-self:center;max-width:100%;padding:8px 12px;gap:8px}
+  .hx-chip>.hx-ico {width:32px;height:32px;padding:7px}
+  .hx-chip b {font-size:12px}
+  .hx-chip small {font-size:10px}
+  .hx-works {margin-top:22px!important;padding:16px 24px 18px;border-radius:24px}
+  .hx-works h3 {font-size:20px;line-height:1.3;margin:0}
+  .hx-steps {margin-top:12px;gap:8px 10px}
+  .hx-step {padding:0;gap:9px}
+  .hx-ic {width:48px;height:48px;padding:11px;flex:0 0 48px}
+  .hx-ic b {width:19px;height:19px;font-size:10px}
+  .hx-step h4 {font-size:12px;line-height:1.25;margin-bottom:3px}
+  .hx-step p {font-size:10.5px;line-height:1.4;margin:0}
+  .hx-arrow {font-size:16px}
+  .hx-sea {height:25px}
+  .hx-sea.s2 {height:19px}
+  .cs-ribbons {margin-top:18px}
+}
+@media (min-width:1180px) and (max-height:850px) {
+  .hx {padding-top:calc(var(--nav) + 14px);padding-bottom:26px}
+  .hx h1 {font-size:clamp(34px,2.45vw,41px);margin:12px 0 13px!important}
+  .hx .cs-lede {font-size:14px;line-height:1.48;margin-bottom:14px!important}
+  .hx-ob {max-width:330px}
+  .hx-card {max-width:235px}
+  .hx-works {margin-top:17px!important;padding:13px 20px 15px}
+  .hx-ic {width:44px;height:44px;flex-basis:44px;padding:10px}
+  .hx-step h4 {font-size:11.5px}
+  .hx-step p {font-size:10px}
+}
+@media (min-width:761px) and (max-width:1179px) {
+  .hx {padding-top:calc(var(--nav) + 28px);padding-bottom:34px}
+  .hx-in {grid-template-columns:minmax(0,1fr);gap:24px}
+  .hx-copy {max-width:780px}
+  .hx h1 {font-size:clamp(36px,4.5vw,48px);line-height:1.08}
+  .hx-stage {width:100%;max-width:760px;grid-template-columns:minmax(0,1fr) minmax(210px,.58fr);grid-template-rows:auto auto;gap:12px 18px;padding:0}
+  .hx-ob {grid-column:1;grid-row:1;width:100%;max-width:390px;margin:0 auto}
+  .hx-card {grid-column:2;grid-row:1 / span 2;width:100%;max-width:270px;align-self:center;}
+  .hx-chip {grid-column:1;grid-row:2;justify-self:center}
+  .hx .cs-lead {padding:15px;border-radius:22px}
+  .hx .cs-lead-top b {font-size:14px}
+  .hx .cs-lead p {font-size:12px;padding:8px 0}
+  .hx .cs-lead .cs-unlock-btn {min-height:42px;font-size:13px}
+  .hx-works {margin-top:26px!important}
+}
+@media (max-width:760px) {
+  .hx {padding-top:calc(var(--nav) + 26px);padding-bottom:28px}
+  .hx-stage {overflow:visible}
+  .hx-ob {width:min(84%,330px);max-width:330px}
+  .hx-card {width:min(100%,290px);max-width:290px}
+  .hx .cs-lead {padding:16px;border-radius:22px}
+  .hx .cs-lead-top b {font-size:14px}
+  .hx .cs-lead p {font-size:12px;padding:8px 0}
+  .hx .cs-lead .cs-unlock-btn {min-height:42px;font-size:13px}
+  .hx-works {margin-top:22px!important}
+  .cs-ribbons {margin-top:10px}
+}
+
+
+
+/* ---------- FINAL 100% ZOOM / ALL-PAGES ALIGNMENT FIX ----------
+   Keeps the existing visual design; normalizes scale, spacing and responsive widths. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-padding-top: 100px;
+  -webkit-text-size-adjust: 100%;
+}
+.cs {
+  font-size: 16px;
+  line-height: 1.55;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+.cs-wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(24px, 4vw, 64px);
+}
+.cs-sec {
+  padding-block: clamp(54px, 6vw, 86px);
+}
+.cs-header {
+  max-width: 100%;
+}
+.cs-header,
+.cs-pill {
+  min-width: 0;
+}
+.cs-sec h2,
+.cs-light .cs-wrap > h2,
+.cs-how .cs-wrap > h2,
+.cs-about-sec .cs-wrap > h2,
+.cs-districts .cs-wrap > h2,
+.cs-pricing .cs-wrap > h2 {
+  font-size: clamp(27px, 2.35vw, 36px);
+  line-height: 1.16;
+  overflow-wrap: anywhere;
+}
+.cs-sub,
+.cs-sec .cs-sub {
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.65;
+}
+.cs-grid3,
+.cs-bento,
+.cs-plans,
+.sp-plans,
+.cs-stats-in,
+.dl-grid,
+.cs-contact,
+.cs-price,
+.cs-about {
+  min-width: 0;
+}
+
+/* Keep the home content comfortably below the navigation and centered. */
+.hx {
+  min-height: auto;
+  padding-top: calc(var(--nav, 76px) + 36px);
+  padding-bottom: clamp(30px, 3.5vw, 48px);
+}
+.hx-wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(24px, 4vw, 64px);
+}
+.hx-in {
+  align-items: center;
+  min-width: 0;
+}
+.hx-copy,
+.hx-stage {
+  min-width: 0;
+}
+.hx h1 {
+  font-size: clamp(35px, 3vw, 46px);
+  line-height: 1.08;
+  overflow-wrap: normal;
+}
+/* These decorative blue wave lines were appearing too high in the first screen. */
+.hx-sea {
+  display: none !important;
+}
+.cs-ribbons {
+  margin-top: clamp(22px, 3vw, 38px);
+}
+
+/* Section anchors should not tuck under the sticky navigation. */
+.cs section[id] {
+  scroll-margin-top: 100px;
+}
+.cs-rail {
+  max-height: calc(100vh - 40px);
+}
+
+/* Laptop and desktop: keep content balanced instead of oversized at 100% zoom. */
+@media (min-width: 1180px) {
+  .cs-wrap,
+  .hx-wrap {
+    padding-inline: clamp(32px, 4vw, 64px);
+  }
+  .cs-sec {
+    padding-block: clamp(56px, 5.2vw, 78px);
+  }
+  .hx {
+    padding-top: calc(var(--nav, 76px) + 38px);
+    padding-bottom: 38px;
+  }
+  .hx-in {
+    gap: clamp(28px, 3vw, 44px);
+  }
+  .hx h1 {
+    font-size: clamp(36px, 2.8vw, 45px);
+  }
+  .hx-works {
+    margin-top: 28px !important;
+  }
+}
+@media (min-width: 761px) and (max-width: 1179px) {
+  .cs-wrap,
+  .hx-wrap {
+    padding-inline: clamp(24px, 4vw, 44px);
+  }
+  .cs-sec {
+    padding-block: 48px;
+  }
+  .hx {
+    padding-top: calc(var(--nav, 76px) + 30px);
+    padding-bottom: 32px;
+  }
+  .hx h1 {
+    font-size: clamp(34px, 4.2vw, 44px);
+  }
+}
+@media (max-width: 760px) {
+  .cs-wrap,
+  .cs-wrap.hx-wrap,
+  .hx-wrap {
+    padding-inline: 20px;
+  }
+  .cs-sec {
+    padding-block: 36px;
+  }
+  .hx {
+    padding-top: calc(var(--nav, 76px) + 24px);
+    padding-bottom: 28px;
+  }
+  .hx h1 {
+    font-size: clamp(31px, 7vw, 40px);
+    line-height: 1.1;
+  }
+  .cs-sec h2,
+  .cs-light .cs-wrap > h2,
+  .cs-how .cs-wrap > h2,
+  .cs-about-sec .cs-wrap > h2,
+  .cs-districts .cs-wrap > h2,
+  .cs-pricing .cs-wrap > h2 {
+    font-size: clamp(25px, 6vw, 32px);
+  }
+  .cs-grid3,
+  .cs-bento,
+  .cs-plans,
+  .sp-plans,
+  .cs-stats-in,
+  .dl-grid,
+  .cs-price,
+  .cs-about,
+  .cs-contact {
+    width: 100%;
+    max-width: 100%;
+  }
+  .cs-contact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dl-row {
+    min-width: 0;
+  }
+}
+@media (max-width: 420px) {
+  .cs-wrap,
+  .cs-wrap.hx-wrap,
+  .hx-wrap {
+    padding-inline: 16px;
+  }
+  .cs-sec {
+    padding-block: 30px;
+  }
+  .hx {
+    padding-top: calc(var(--nav, 76px) + 20px);
+  }
+}
+
+
+/* ---------- final targeted layout refinements ---------- */
+.cs-wrap,
+.hx-wrap {
+  width: min(100%, 1480px);
+  margin-inline: auto;
+}
+.hx-wrap {
+  padding-inline: clamp(28px, 5vw, 76px);
+}
+.hx-in {
+  align-items: center;
+  justify-content: center;
+}
+.hx-copy,
+.hx-stage {
+  min-width: 0;
+}
+.hx-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hx-works {
+  margin-top: 30px !important;
+  padding: 20px clamp(18px, 2.5vw, 32px) 22px;
+}
+
+/* Make the two marquee ribbons slimmer and less visually heavy. */
+.cs-ribbons {
+  height: 104px;
+  margin-top: 8px;
+}
+.cs-ribbon {
+  left: -2%;
+  width: 104%;
+  padding: 8px 0;
+  box-shadow: 0 7px 16px rgba(13, 33, 80, .16);
+}
+.cs-ribbon.a {
+  top: 15px;
+  rotate: -1deg;
+}
+.cs-ribbon.b {
+  top: 48px;
+  rotate: .8deg;
+}
+.cs-track span {
+  padding-inline: 20px;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight: 650;
+}
+
+/* Student Pool: reduce oversized cards, headings, and body text. */
+.dl .cs-sec {
+  padding-block: clamp(38px, 4vw, 58px);
+}
+.dl .cs-sub {
+  max-width: 780px;
+  margin-bottom: 26px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.dl .cs-h2 {
+  font-size: clamp(27px, 2.6vw, 38px);
+  line-height: 1.16;
+}
+.dl-grid {
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+  margin-bottom: 24px;
+}
+.dl-total {
+  padding: clamp(22px, 2.4vw, 32px);
+  border-radius: 30px 30px 30px 12px;
+  box-shadow: 0 20px 42px -24px rgba(21, 60, 140, .5);
+}
+.dl-total small {
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  line-height: 1.45;
+}
+.dl-big {
+  margin: 10px 0 5px;
+  font-size: clamp(44px, 5vw, 70px);
+  letter-spacing: -1px;
+}
+.dl-sub {
+  font-size: 15px;
+  line-height: 1.45;
+}
+.dl-mini {
+  gap: 8px;
+  margin-top: 20px;
+}
+.dl-mini div {
+  padding: 10px 11px;
+  border-radius: 15px;
+}
+.dl-mini b {
+  font-size: clamp(17px, 1.6vw, 23px);
+}
+.dl-mini span {
+  font-size: 11px;
+  line-height: 1.35;
+}
+.dl-flow {
+  padding: clamp(20px, 2.3vw, 30px);
+  border-radius: 26px;
+}
+.dl-flow h3 {
+  font-size: 19px;
+  margin-bottom: 16px;
+}
+.dl-flow li {
+  gap: 12px;
+  padding: 10px 0;
+}
+.dl-flow li b {
+  font-size: 14px;
+}
+.dl-flow li small {
+  font-size: 12px;
+  line-height: 1.4;
+}
+.dl-ic {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+}
+.dl-demo {
+  padding: clamp(18px, 2vw, 26px);
+  border-radius: 24px;
+}
+.dl-demo-head h3 {
+  font-size: 18px;
+}
+.dl-demo-head small {
+  font-size: 12px;
+  line-height: 1.45;
+}
+.dl-session {
+  gap: 8px;
+}
+.dl-row {
+  gap: 12px;
+  padding: 13px 14px;
+}
+.dl-c small {
+  font-size: 10px;
+}
+.dl-c b {
+  font-size: 12px;
+}
+.dl-btn,
+.dl-reset,
+.dl-session .cs-ghost {
+  font-size: 12px;
+  padding: 10px 13px;
+}
+
+@media (max-width: 1179px) {
+  .hx-wrap { padding-inline: clamp(24px, 4vw, 42px); }
+  .hx-in { gap: 28px; }
+  .cs-ribbons { height: 96px; }
+  .dl-total { padding: 24px; }
+}
+@media (max-width: 760px) {
+  .hx-wrap { padding-inline: 20px; }
+  .hx-in { grid-template-columns: minmax(0, 1fr); }
+  .hx-stage { width: 100%; }
+  .hx-works { margin-top: 22px !important; padding: 18px 16px; }
+  .cs-ribbons { height: 82px; margin-top: 4px; }
+  .cs-ribbon.a { top: 12px; }
+  .cs-ribbon.b { top: 42px; }
+  .cs-ribbon { padding: 6px 0; }
+  .cs-track span { padding-inline: 14px; font-size: 12px; }
+  .dl .cs-sec { padding-block: 32px; }
+  .dl-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .dl-total { padding: 22px; }
+  .dl-big { font-size: clamp(42px, 12vw, 62px); }
+  .dl-demo { padding: 16px; }
+  .dl-demo-head { gap: 14px; }
+  .dl-session { flex-wrap: wrap; }
+  .dl-row { grid-template-columns: auto minmax(0, 1fr); }
+}
+@media (max-width: 420px) {
+  .hx-wrap { padding-inline: 16px; }
+  .cs-track span { padding-inline: 11px; font-size: 11px; }
+  .dl-mini { grid-template-columns: 1fr; }
+  .dl-mini div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+}
+
+
+/* ---------- final fixes requested: hero position, ribbons, Student Pool demo, How We Work ---------- */
+.hx {
+  padding-top: calc(var(--nav, 76px) + clamp(34px, 4.5vh, 62px)) !important;
+  padding-bottom: clamp(44px, 6vh, 76px) !important;
+}
+.hx-wrap {
+  min-height: min(760px, calc(100vh - var(--nav, 76px) - 24px));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hx-in {
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  width: 100%;
+}
+/* Keep decorative marquee ribbons below the first-screen hero content. */
+.cs-ribbons {
+  margin-top: clamp(52px, 8vh, 100px) !important;
+  height: 76px !important;
+  overflow: hidden;
+}
+.cs-ribbon {
+  padding-block: 5px !important;
+  box-shadow: 0 4px 10px rgba(13, 33, 80, .12) !important;
+}
+.cs-ribbon.a { top: 12px !important; }
+.cs-ribbon.b { top: 36px !important; }
+.cs-track span {
+  padding-inline: 16px !important;
+  font-size: clamp(11px, .85vw, 13px) !important;
+  line-height: 1.25 !important;
+}
+/* Normalise the How We Work panel so it doesn't dominate the home screen. */
+.hx-works {
+  width: 100%;
+  max-width: 1280px;
+  margin: clamp(22px, 3vh, 34px) auto 0 !important;
+  padding: clamp(14px, 1.5vw, 20px) clamp(16px, 2vw, 26px) !important;
+  border-radius: 24px;
+  transform: none !important;
+}
+.hx-works h2,
+.hx-works h3 {
+  font-size: clamp(17px, 1.45vw, 22px) !important;
+  line-height: 1.25 !important;
+}
+.hx-works p,
+.hx-works small,
+.hx-works span {
+  font-size: clamp(11px, .9vw, 13px);
+  line-height: 1.4;
+}
+/* Student Pool: make the sample-leads panel, copy and controls compact. */
+.dl-demo {
+  padding: clamp(14px, 1.5vw, 20px) !important;
+  border-radius: 20px !important;
+}
+.dl-demo-head {
+  gap: 12px !important;
+  align-items: center;
+}
+.dl-demo-head h3 {
+  font-size: clamp(16px, 1.25vw, 19px) !important;
+  line-height: 1.3 !important;
+  margin-bottom: 5px !important;
+}
+.dl-demo-head small {
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+.dl-session {
+  gap: 7px !important;
+  align-items: center;
+}
+.dl-session > span {
+  font-size: 12px !important;
+}
+.dl-session > span b {
+  font-size: 14px !important;
+}
+.dl-session .cs-ghost,
+.dl-session .dl-reset {
+  font-size: 11px !important;
+  padding: 8px 11px !important;
+  min-height: 34px;
+}
+.dl-row {
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  border-radius: 14px;
+}
+.dl-c small { font-size: 9px !important; }
+.dl-c b { font-size: 11px !important; line-height: 1.35; }
+.dl-btn,
+.dl-reset {
+  font-size: 11px !important;
+  padding: 8px 10px !important;
+  min-height: 32px;
+}
+.dl-cta .big {
+  font-size: 14px !important;
+  padding: 12px 18px !important;
+}
+@media (max-width: 900px) {
+  .hx { padding-top: calc(var(--nav, 76px) + 28px) !important; }
+  .hx-wrap { min-height: auto; }
+  .cs-ribbons { margin-top: 38px !important; }
+  .hx-works { margin-top: 22px !important; }
+  .dl-demo-head { align-items: flex-start; flex-direction: column; }
+  .dl-session { width: 100%; flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  .hx { padding-top: calc(var(--nav, 76px) + 22px) !important; padding-bottom: 34px !important; }
+  .hx-wrap { padding-inline: 16px !important; }
+  .cs-ribbons { margin-top: 28px !important; height: 64px !important; }
+  .cs-ribbon.a { top: 9px !important; }
+  .cs-ribbon.b { top: 30px !important; }
+  .cs-track span { padding-inline: 10px !important; font-size: 10px !important; }
+  .hx-works { padding: 14px !important; border-radius: 18px; }
+  .dl-demo { padding: 13px !important; }
+  .dl-session .cs-ghost,
+  .dl-session .dl-reset { padding: 7px 9px !important; }
+  .dl-row { padding: 10px !important; }
+}
+
+
+/* ---------- targeted final refinements: ribbons, how-it-works, hero badges ---------- */
+/* Keep the marquee directly after the home section without a large blank gap. */
+.cs-ribbons {
+  margin-top: 0 !important;
+  height: 66px !important;
+  overflow: hidden !important;
+}
+.cs-ribbon { padding-block: 4px !important; }
+.cs-ribbon.a { top: 7px !important; }
+.cs-ribbon.b { top: 31px !important; }
+.cs-track span {
+  padding-inline: 13px !important;
+  font-size: clamp(10px, .78vw, 12px) !important;
+  line-height: 1.2 !important;
+}
+/* Keep How CampusConnect Works compact and readable at normal browser zoom. */
+.hx-works {
+  width: 100% !important;
+  max-width: 1240px !important;
+  margin: 16px auto 0 !important;
+  padding: 13px 18px !important;
+  border-radius: 22px !important;
+  transform: none !important;
+  scale: 1 !important;
+}
+.hx-works h3 { font-size: clamp(16px, 1.25vw, 20px) !important; margin: 0 0 8px !important; }
+.hx-works .hx-steps { gap: 10px !important; }
+.hx-works .hx-step { gap: 8px !important; min-width: 0; }
+.hx-works .hx-step h4 { font-size: clamp(11px, .9vw, 13px) !important; line-height: 1.3 !important; }
+.hx-works .hx-step p { font-size: clamp(10px, .78vw, 12px) !important; line-height: 1.35 !important; margin: 2px 0 0 !important; }
+.hx-works .hx-ic { flex: 0 0 auto; }
+/* Slightly enlarge the main campus illustration on the right. */
+@media (min-width: 1180px) {
+  .hx-stage .hx-ob { width: min(100%, 440px) !important; }
+  .hx-stage .hx-sphere { transform: scale(1.08); }
+}
+/* Put Matching Students below the illustration rather than beside/over it. */
+.hx-stage { position: relative; }
+.hx-stage .hx-chip {
+  position: absolute !important;
+  left: 50% !important;
+  top: auto !important;
+  bottom: -10px !important;
+  transform: translateX(-50%) !important;
+  z-index: 5;
+  white-space: nowrap;
+  max-width: calc(100% - 20px);
+  padding: 9px 14px !important;
+  font-size: 12px !important;
+}
+.hx-stage .hx-chip b { font-size: 12px !important; }
+.hx-stage .hx-chip small { font-size: 10px !important; }
+/* Reduce the Sample Student Lead card without changing its content. */
+.hx-stage .hx-card { transform: scale(.91); transform-origin: top right; }
+.hx-stage .hx-card .cs-lead-card,
+.hx-stage .hx-card .hx-lead-card { max-width: 260px !important; }
+@media (max-width: 900px) {
+  .cs-ribbons { margin-top: 0 !important; height: 60px !important; }
+  .hx-works { margin-top: 14px !important; padding: 13px 14px !important; }
+  .hx-stage .hx-chip { bottom: -6px !important; }
+  .hx-stage .hx-card { transform: scale(.96); transform-origin: top center; }
+}
+@media (max-width: 600px) {
+  .cs-ribbons { height: 54px !important; }
+  .cs-ribbon.a { top: 5px !important; }
+  .cs-ribbon.b { top: 26px !important; }
+  .cs-track span { padding-inline: 9px !important; font-size: 10px !important; }
+  .hx-works { padding: 12px !important; margin-top: 12px !important; }
+  .hx-works .hx-steps { grid-template-columns: 1fr !important; }
+  .hx-works .hx-arrow { display: none !important; }
+  .hx-stage .hx-chip { bottom: -4px !important; white-space: normal; }
+  .hx-stage .hx-card { transform: none; }
+}
+
 
 `;
 
