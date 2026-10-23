@@ -24,7 +24,7 @@ const MENU = [
 ];
 
 const STATS = [
-  { label: "Total Leads", value: 2480, trend: 12, icon: "👥", tone: "violet" },
+  { label: "Total Leads", value: 4114, trend: 12, icon: "👥", tone: "violet" },
   {
     label: "Purchased Profiles",
     value: 612,
@@ -34,7 +34,7 @@ const STATS = [
   },
   {
     label: "Conversion Rate",
-    value: 24.7,
+    value: 14.9,
     trend: 6.3,
     icon: "%",
     tone: "blue",
@@ -68,20 +68,20 @@ const STATS = [
 const FUNNEL = [
   {
     label: "Total Leads",
-    value: 2480,
+    value: 4114,
     pct: "100%",
     width: 100,
     color: "violet",
   },
-  { label: "Interested", value: 1892, pct: "76.4%", width: 84, color: "blue" },
+  { label: "Interested", value: 3143, pct: "76.4%", width: 84, color: "blue" },
   {
     label: "Profile Viewed",
-    value: 1246,
+    value: 2065,
     pct: "50.2%",
     width: 68,
     color: "green",
   },
-  { label: "Purchased", value: 612, pct: "24.7%", width: 52, color: "orange" },
+  { label: "Purchased", value: 612, pct: "14.9%", width: 52, color: "orange" },
 ];
 
 /* Lead Drop-off Analysis: worked out from the funnel stages above */
@@ -98,6 +98,16 @@ const DROPOFF = FUNNEL.slice(1).map((f, i) => {
   };
 });
 const DROP_WORST = DROPOFF.reduce((a, b) => (b.pct > a.pct ? b : a));
+
+/* Key Metrics shown at the bottom of the Lead Drop-off card */
+const KEY_METRICS = [
+  { label: "Total Leads", value: "4,120", icon: "👥", tone: "violet" },
+  { label: "Interested Leads", value: "3,149", icon: "♥", tone: "green" },
+  { label: "Profiles Viewed", value: "2,071", icon: "◉", tone: "blue" },
+  { label: "Contacts Unlocked", value: "618", icon: "▭", tone: "orange" },
+  { label: "Total Revenue", value: "₹61,800", icon: "₹", tone: "indigo" },
+  { label: "Pending Payments", value: "42", icon: "◔", tone: "red" },
+];
 
 const REVENUE = [
   {
@@ -161,7 +171,7 @@ const COLLEGES = [
     conv: "28.9%",
   },
   {
-    name: "RVS College of Engineering",
+    name: "SNS College of Technology",
     district: "Coimbatore",
     profiles: 42,
     conv: "25.4%",
@@ -182,6 +192,11 @@ const COURSE_DEMAND = [
   { name: "B.Tech AI & Data Science", value: 9, color: "#ff6fb1" },
   { name: "B.Tech ECE", value: 7, color: "#a08cf5" },
   { name: "B.Sc IT", value: 5, color: "#4aa8ff" },
+  { name: "MBA", value: 3, color: "#ffb02e" },
+  { name: "MCA", value: 2, color: "#25d3a2" },
+  { name: "MBBS", value: 1, color: "#ff9f43" },
+  { name: "B.Pharm", value: 1, color: "#00b8d9" },
+  { name: "B.Sc Nursing", value: 1, color: "#b57edc" },
 ];
 
 /* bubble layouts: card = small chart (viewBox 200 x 190), big = modal chart (viewBox 260 x 240) */
@@ -271,6 +286,202 @@ const DISTRICTS = [
     growth: "+2%",
     big: { x: 190, y: 200 },
   },
+  {
+    name: "Tiruvallur",
+    short: "Tiruvallur",
+    pct: 3,
+    leads: 74,
+    growth: "+2%",
+  },
+  {
+    name: "Chengalpattu",
+    short: "Chengalpattu",
+    pct: 3,
+    leads: 74,
+    growth: "+2%",
+  },
+  {
+    name: "Kancheepuram",
+    short: "Kancheepuram",
+    pct: 2.5,
+    leads: 62,
+    growth: "+2%",
+  },
+  {
+    name: "Dindigul",
+    short: "Dindigul",
+    pct: 2.5,
+    leads: 62,
+    growth: "+2%",
+  },
+  {
+    name: "Cuddalore",
+    short: "Cuddalore",
+    pct: 2,
+    leads: 50,
+    growth: "+2%",
+  },
+  {
+    name: "Viluppuram",
+    short: "Viluppuram",
+    pct: 2,
+    leads: 50,
+    growth: "+2%",
+  },
+  {
+    name: "Tiruvannamalai",
+    short: "Tiruvannamalai",
+    pct: 2,
+    leads: 50,
+    growth: "+2%",
+  },
+  {
+    name: "Namakkal",
+    short: "Namakkal",
+    pct: 2,
+    leads: 50,
+    growth: "+2%",
+  },
+  {
+    name: "Karur",
+    short: "Karur",
+    pct: 1.5,
+    leads: 37,
+    growth: "+1%",
+  },
+  {
+    name: "Kanyakumari",
+    short: "Kanyakumari",
+    pct: 1.5,
+    leads: 37,
+    growth: "+1%",
+  },
+  {
+    name: "Virudhunagar",
+    short: "Virudhunagar",
+    pct: 1.5,
+    leads: 37,
+    growth: "+1%",
+  },
+  {
+    name: "Thoothukudi",
+    short: "Thoothukudi",
+    pct: 1.5,
+    leads: 37,
+    growth: "+1%",
+  },
+  {
+    name: "Dharmapuri",
+    short: "Dharmapuri",
+    pct: 1.5,
+    leads: 37,
+    growth: "+1%",
+  },
+  {
+    name: "Krishnagiri",
+    short: "Krishnagiri",
+    pct: 1.5,
+    leads: 37,
+    growth: "+1%",
+  },
+  {
+    name: "Pudukkottai",
+    short: "Pudukkottai",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Nagapattinam",
+    short: "Nagapattinam",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Ramanathapuram",
+    short: "Ramanathapuram",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Sivaganga",
+    short: "Sivaganga",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Theni",
+    short: "Theni",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Ranipet",
+    short: "Ranipet",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Tirupathur",
+    short: "Tirupathur",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Kallakurichi",
+    short: "Kallakurichi",
+    pct: 1,
+    leads: 25,
+    growth: "+1%",
+  },
+  {
+    name: "Tiruvarur",
+    short: "Tiruvarur",
+    pct: 0.5,
+    leads: 12,
+    growth: "+1%",
+  },
+  {
+    name: "Mayiladuthurai",
+    short: "Mayiladuthurai",
+    pct: 0.5,
+    leads: 12,
+    growth: "+1%",
+  },
+  {
+    name: "Tenkasi",
+    short: "Tenkasi",
+    pct: 0.5,
+    leads: 12,
+    growth: "+1%",
+  },
+  {
+    name: "Ariyalur",
+    short: "Ariyalur",
+    pct: 0.5,
+    leads: 12,
+    growth: "+1%",
+  },
+  {
+    name: "Perambalur",
+    short: "Perambalur",
+    pct: 0.5,
+    leads: 12,
+    growth: "+1%",
+  },
+  {
+    name: "Nilgiris",
+    short: "Nilgiris",
+    pct: 0.5,
+    leads: 12,
+    growth: "+1%",
+  },
 ];
 
 const BUBBLE_COLORS = [
@@ -318,6 +529,7 @@ const LEADERBOARD = [
     pct: 8.1,
     color: "#6c5ce7",
   },
+  { name: "MBBS", interests: "420 interests", pct: 6.3, color: "#6c5ce7" },
 ];
 
 const INSIGHTS = [
@@ -344,6 +556,12 @@ const INSIGHTS = [
     sub: "₹61,200 this month",
     icon: "₹",
     tone: "orange",
+  },
+  {
+    title: "Payment success rate is 84%",
+    sub: "Only 11% failed, 5% refunded",
+    icon: "✔",
+    tone: "blue",
   },
 ];
 
@@ -619,56 +837,6 @@ function Card({
       </header>
       {children}
     </section>
-  );
-}
-
-function Donut({ segments, total, label }) {
-  const ready = useReady();
-  const R = 42;
-  const C = 2 * Math.PI * R;
-  let offset = 0;
-
-  return (
-    <div className="ra-donut">
-      <svg viewBox="0 0 100 100">
-        <circle className="ra-donut-bg" cx="50" cy="50" r={R} />
-        {segments.map((s) => {
-          const len = (s.value / 100) * C;
-          const dashOffset = -offset;
-          offset += len;
-          return (
-            <circle
-              key={s.label}
-              className="ra-donut-seg"
-              cx="50"
-              cy="50"
-              r={R}
-              stroke={s.color}
-              strokeDasharray={`${ready ? Math.max(len - 1.2, 0) : 0} ${C}`}
-              strokeDashoffset={dashOffset}
-            />
-          );
-        })}
-      </svg>
-      <div className="ra-donut-center">
-        <strong>{total}</strong>
-        <span>{label}</span>
-      </div>
-    </div>
-  );
-}
-
-function Legend({ items, dot = "square" }) {
-  return (
-    <ul className="ra-legend">
-      {items.map((i) => (
-        <li key={i.label}>
-          <i className={dot} style={{ background: i.color }} />
-          <span>{i.label}</span>
-          <b>{i.value}%</b>
-        </li>
-      ))}
-    </ul>
   );
 }
 
@@ -1014,6 +1182,23 @@ function LeadDropoffCard() {
           <small>Review lead quality and the purchase flow.</small>
         </div>
       </div>
+
+      <div className="ra-km">
+        <h4>Key Metrics</h4>
+        <div className="ra-km-grid">
+          {KEY_METRICS.map((m, i) => (
+            <div className="ra-km-item" key={m.label}>
+              <span className={`ra-badge round ${m.tone}`}>
+                <i className="ra-blink" style={{ animationDelay: `${i * 0.25}s` }}>
+                  {m.icon}
+                </i>
+              </span>
+              <small>{m.label}</small>
+              <b>{m.value}</b>
+            </div>
+          ))}
+        </div>
+      </div>
     </Card>
   );
 }
@@ -1025,6 +1210,7 @@ function RevenueCard() {
       sub="Total revenue and payment status"
       icon="▥"
       delay={180}
+      className="ra-fill"
     >
       <div className="ra-revenue">
         {REVENUE.map((r, i) => (
@@ -1061,6 +1247,7 @@ function RevenueCard() {
           <span className="ra-rev-trend">↑ +{STATS[3].trend}% vs. last month</span>
         </div>
 
+        <div className="ra-rev-dist">
         <p className="ra-rev-label">Revenue Distribution</p>
         <div className="ra-rev-bar">
           {REVENUE.map((r) => (
@@ -1080,6 +1267,7 @@ function RevenueCard() {
             </span>
           ))}
         </div>
+        </div>
 
         <div className="ra-rev-stats">
           <div>
@@ -1091,12 +1279,34 @@ function RevenueCard() {
             <b>{TXN_HEALTH[0].value}%</b>
           </div>
         </div>
+
+        <div className="ra-rev-stats">
+          <div>
+            <small>Profiles Sold</small>
+            <b>{num(STATS[1].value)}</b>
+          </div>
+          <div>
+            <small>Pending Payments</small>
+            <b>{KEY_METRICS[5].value}</b>
+          </div>
+        </div>
+
+        <div className="ra-rev-stats">
+          <div>
+            <small>Failed Payments</small>
+            <b>{REVENUE[2].pct}</b>
+          </div>
+          <div>
+            <small>Refund Rate</small>
+            <b>{REVENUE[3].pct}</b>
+          </div>
+        </div>
       </div>
     </Card>
   );
 }
 
-const LEAD_TOTAL = 2480;
+const LEAD_TOTAL = STATS[0].value;
 /* turns the % values into lead counts (last one takes the remainder so the sum is exact) */
 const LEAD_ROWS = (() => {
   let left = LEAD_TOTAL;
@@ -1109,6 +1319,10 @@ const LEAD_ROWS = (() => {
     return { ...l, count };
   });
 })();
+
+/* values for the two graph boxes at the bottom of Lead Status Distribution */
+const LEAD_TOP = LEAD_ROWS.reduce((a, b) => (b.value > a.value ? b : a));
+const LEAD_PURCHASED = LEAD_ROWS[LEAD_ROWS.length - 1];
 
 /* Lead Status Distribution: interactive donut + status rows + detail popup */
 function LeadStatusCard() {
@@ -1141,6 +1355,7 @@ function LeadStatusCard() {
       sub="Current status of all student leads"
       icon="◔"
       delay={260}
+      className="ra-fill"
     >
       <div className="ra-ld">
         <div className="ra-ld-donut">
@@ -1206,6 +1421,41 @@ function LeadStatusCard() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="ra-rev-stats ra-ld-tiles">
+          <div>
+            <small>Conversion Rate</small>
+            <b>{STATS[2].value}%</b>
+          </div>
+          <div>
+            <small>Hot Leads (Interested + Purchased)</small>
+            <b>{LEAD_ROWS[2].value + LEAD_ROWS[3].value}%</b>
+          </div>
+        </div>
+
+        <div className="ra-rev-stats ra-ld-tiles">
+          <div>
+            <small>New Leads</small>
+            <b>{LEAD_ROWS[0].count.toLocaleString("en-IN")}</b>
+          </div>
+          <div>
+            <small>Purchased Leads</small>
+            <b>{LEAD_ROWS[3].count.toLocaleString("en-IN")}</b>
+          </div>
+        </div>
+
+        <div className="ra-rev-stats ra-ld-tiles">
+          <div>
+            <small>Top Status</small>
+            <b>
+              {LEAD_TOP.label} · {LEAD_TOP.value}%
+            </b>
+          </div>
+          <div>
+            <small>Purchase Share</small>
+            <b>{LEAD_PURCHASED.value}%</b>
+          </div>
         </div>
 
         {picked && (
@@ -1342,6 +1592,35 @@ const PIN_POS = {
   Vellore: { x: 137, y: 40, lx: -9, ly: 3, anchor: "end" },
   Thanjavur: { x: 137, y: 136, lx: 9, ly: 3, anchor: "start" },
   Tiruppur: { x: 56, y: 122, lx: 8, ly: 14, anchor: "start" },
+  /* remaining districts: smaller pins, name shows on hover / tap */
+  Tiruvallur: { x: 168, y: 31 },
+  Chengalpattu: { x: 171, y: 51 },
+  Kancheepuram: { x: 159, y: 45 },
+  Dindigul: { x: 85, y: 156 },
+  Cuddalore: { x: 162, y: 94 },
+  Viluppuram: { x: 150, y: 85 },
+  Tiruvannamalai: { x: 132, y: 72 },
+  Namakkal: { x: 93, y: 117 },
+  Karur: { x: 89, y: 129 },
+  Kanyakumari: { x: 63, y: 249 },
+  Virudhunagar: { x: 84, y: 190 },
+  Thoothukudi: { x: 92, y: 224 },
+  Dharmapuri: { x: 93, y: 77 },
+  Krishnagiri: { x: 95, y: 59 },
+  Pudukkottai: { x: 121, y: 155 },
+  Nagapattinam: { x: 165, y: 137 },
+  Ramanathapuram: { x: 122, y: 200 },
+  Sivaganga: { x: 107, y: 179 },
+  Theni: { x: 63, y: 172 },
+  Ranipet: { x: 143, y: 41 },
+  Tirupathur: { x: 110, y: 60 },
+  Kallakurichi: { x: 127, y: 94 },
+  Tiruvarur: { x: 157, y: 137 },
+  Mayiladuthurai: { x: 157, y: 123 },
+  Tenkasi: { x: 63, y: 205 },
+  Ariyalur: { x: 133, y: 121 },
+  Perambalur: { x: 124, y: 117 },
+  Nilgiris: { x: 41, y: 112 },
 };
 
 function BubbleCluster({ items, mode }) {
@@ -1373,16 +1652,18 @@ function BubbleCluster({ items, mode }) {
         const p = PIN_POS[d.name];
         if (!p) return null;
         const color = BUBBLE_COLORS[i % BUBBLE_COLORS.length];
+        const minor = big && i >= 10;
+        const sc = minor ? 0.55 : scale;
         return (
           <g
             key={d.name}
-            className="ra-pin"
+            className={`ra-pin ${minor ? "minor" : ""}`}
             transform={`translate(${p.x} ${p.y})`}
-            style={{ "--pd": `${i * 0.28}s` }}
+            style={{ "--pd": `${(i % 10) * 0.28}s` }}
           >
             <ellipse className="ra-pin-ripple" cx="0" cy="0" rx="7" ry="3" fill={color} />
             <ellipse cx="0" cy="0" rx="2.6" ry="1.2" fill={color} opacity="0.55" />
-            <g transform={`scale(${scale})`}>
+            <g transform={`scale(${sc})`}>
               <g className="ra-pin-body">
                 <path
                   d="M0 0 C-2 -5 -8 -9 -8 -16 A8 8 0 1 1 8 -16 C8 -9 2 -5 0 0 Z"
@@ -1394,10 +1675,18 @@ function BubbleCluster({ items, mode }) {
                 <circle cx="0" cy="-16" r="3.2" fill="#fff" />
               </g>
             </g>
-            {big && (
+            {big && !minor && (
               <text className="ra-pin-label" x={p.lx} y={p.ly - 8} textAnchor={p.anchor}>
                 {d.short}
               </text>
+            )}
+            {minor && (
+              <>
+                <circle cx="0" cy="-9" r="7" fill="transparent" />
+                <text className="ra-pin-label ra-pin-label-hover" x="0" y="-20" textAnchor="middle">
+                  {d.short}
+                </text>
+              </>
             )}
             <title>{`${d.name} - ${d.pct}% (${d.leads} leads)`}</title>
           </g>
@@ -1435,7 +1724,45 @@ function DistrictCard({ onViewAll }) {
   );
 }
 
+const TXN_TOTAL = STATS[5].value;
+/* turns the % values into transaction counts (last one takes the remainder so the sum is exact) */
+const TXN_ROWS = (() => {
+  let left = TXN_TOTAL;
+  return TXN_HEALTH.map((t, i) => {
+    const count =
+      i === TXN_HEALTH.length - 1
+        ? left
+        : Math.round((t.value / 100) * TXN_TOTAL);
+    left -= count;
+    return { ...t, count };
+  });
+})();
+
+/* Transaction Health: same interactive donut + status rows + detail popup as Lead Status */
 function TransactionCard() {
+  const ready = useReady();
+  const [hover, setHover] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const toggle = (label) => setSelected((cur) => (cur === label ? null : label));
+
+  const shown = hover || selected;
+  const R = 56;
+  const C = 2 * Math.PI * R;
+  const GAP = 3;
+
+  let acc = 0;
+  const segs = TXN_ROWS.map((t) => {
+    const len = (t.value / 100) * C;
+    const seg = { ...t, len, offset: acc };
+    acc += len;
+    return seg;
+  });
+
+  const active = TXN_ROWS.find((t) => t.label === shown);
+  const picked = selected
+    ? TXN_ROWS.find((t) => t.label === (hover || selected))
+    : null;
+
   return (
     <Card
       title="Transaction Health"
@@ -1443,16 +1770,124 @@ function TransactionCard() {
       icon="▤"
       delay={100}
     >
-      <div className="ra-split">
-        <Donut segments={TXN_HEALTH} total="642" label="Total Transactions" />
-        <Legend items={TXN_HEALTH} />
+      <div className="ra-ld">
+        <div className="ra-ld-donut">
+          <svg viewBox="0 0 140 140" role="img" aria-label="Transaction health">
+            <circle className="ra-ld-track" cx="70" cy="70" r={R} />
+            {segs.map((sg) => (
+              <circle
+                key={sg.label}
+                className={`ra-ld-seg ${shown === sg.label ? "on" : ""} ${
+                  shown && shown !== sg.label ? "dim" : ""
+                }`}
+                cx="70"
+                cy="70"
+                r={R}
+                stroke={sg.color}
+                strokeDasharray={`${ready ? Math.max(sg.len - GAP, 0) : 0} ${C}`}
+                strokeDashoffset={-sg.offset}
+                onMouseEnter={() => setHover(sg.label)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => toggle(sg.label)}
+              />
+            ))}
+          </svg>
+          <div
+            className="ra-ld-center"
+            style={active ? { "--c": active.color } : undefined}
+          >
+            <strong>
+              {(active ? active.count : TXN_TOTAL).toLocaleString("en-IN")}
+            </strong>
+            <span>{active ? active.label : "Transactions"}</span>
+            <b>{active ? `${active.value}% of total` : "All statuses"}</b>
+          </div>
+        </div>
+
+        <div className="ra-ld-list">
+          {TXN_ROWS.map((t, i) => (
+            <div
+              key={t.label}
+              className={`ra-ld-row ${shown === t.label ? "on" : ""}`}
+              style={{ "--c": t.color, animationDelay: `${i * 70}ms` }}
+              role="button"
+              tabIndex={0}
+              onMouseEnter={() => setHover(t.label)}
+              onMouseLeave={() => setHover(null)}
+              onFocus={() => setHover(t.label)}
+              onBlur={() => setHover(null)}
+              onClick={() => toggle(t.label)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  toggle(t.label);
+                }
+              }}
+            >
+              <div className="ra-ld-row-top">
+                <i />
+                {t.label}
+                <b>{t.value}%</b>
+              </div>
+              <div className="ra-ld-bar">
+                <i style={{ width: `${t.value}%`, animationDelay: `${i * 70}ms` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {picked && (
+          <div className="ra-ld-pop" style={{ "--c": picked.color }} role="status">
+            <div className="ra-ld-pop-head">
+              <i />
+              <strong>{picked.label} transactions</strong>
+              <button
+                type="button"
+                className="ra-ld-pop-x"
+                aria-label="Close details"
+                onClick={() => setSelected(null)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="ra-ld-pop-grid">
+              <div>
+                <span>Transactions</span>
+                <b>{picked.count.toLocaleString("en-IN")}</b>
+              </div>
+              <div>
+                <span>Share</span>
+                <b>{picked.value}%</b>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Card>
   );
 }
 
+function BoardValue({ value }) {
+  const shown = useCountUp(value, 1, 1500);
+  return <b>{shown}%</b>;
+}
+
 function LeaderboardCard() {
   const ready = useReady();
+  /* 0-5 = that rank blinks (1s each), 6 = smoke runs over the list, then back to 0 */
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    let i = 0;
+    let timer;
+    const step = () => {
+      setPhase(i);
+      const wait = i === 6 ? 3200 : 1000;
+      i = (i + 1) % 7;
+      timer = setTimeout(step, wait);
+    };
+    step();
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <Card
       title="Course Popularity Leaderboard"
@@ -1460,10 +1895,13 @@ function LeaderboardCard() {
       icon="▥"
       delay={180}
     >
-      <ul className="ra-board">
+      <ul className={`ra-board ${phase === 6 ? "smoking" : ""}`}>
         {LEADERBOARD.map((l, i) => (
-          <li key={l.name}>
-            <span className={`ra-rank-no n${i + 1}`}>{i + 1}</span>
+          <li
+            key={l.name}
+            style={{ animationDelay: `${i * 90}ms`, "--sd": `${1.2 + i * 0.35}s` }}
+          >
+            <span className={`ra-rank-no n${i + 1} ${phase === i ? "blink" : ""}`}>{i + 1}</span>
             <div className="ra-board-body">
               <div className="ra-board-top">
                 <strong>{l.name}</strong>
@@ -1480,7 +1918,7 @@ function LeaderboardCard() {
                 />
               </div>
             </div>
-            <b>{l.pct}%</b>
+            <BoardValue value={l.pct} />
           </li>
         ))}
       </ul>
@@ -1490,11 +1928,23 @@ function LeaderboardCard() {
 
 function InsightsCard() {
   return (
-    <Card title="Quick Insights" icon="💡" delay={260} className="plain-icon">
+    <Card
+      title="Quick Insights"
+      icon="💡"
+      delay={260}
+      className="plain-icon ra-wide-md"
+    >
       <ul className="ra-insights">
-        {INSIGHTS.map((n) => (
-          <li key={n.title}>
-            <span className={`ra-badge round ${n.tone}`}>{n.icon}</span>
+        {INSIGHTS.map((n, i) => (
+          <li
+            key={n.title}
+            style={{ animationDelay: `${i * 110}ms`, "--nd": `${i * 0.3}s` }}
+          >
+            <span className={`ra-badge round ${n.tone}`}>
+              <i className="ra-blink" style={{ animationDelay: `${i * 0.25}s` }}>
+                {n.icon}
+              </i>
+            </span>
             <div>
               <strong>{n.title}</strong>
               <small>{n.sub}</small>
@@ -1699,7 +2149,7 @@ function DistrictModal({ onClose }) {
 
           <ul className="ra-modal-list">
             {DISTRICTS.map((d, i) => (
-              <li key={d.name} style={{ animationDelay: `${i * 50}ms` }}>
+              <li key={d.name} style={{ animationDelay: `${Math.min(i, 12) * 50}ms` }}>
                 <span className="no">{i + 1}</span>
                 <div className="info">
                   <div className="row">
@@ -1711,7 +2161,7 @@ function DistrictModal({ onClose }) {
                       className="ra-bar-fill"
                       style={{
                         width: ready ? `${(d.pct / 28) * 100}%` : "0%",
-                        transitionDelay: `${i * 70}ms`,
+                        transitionDelay: `${Math.min(i, 12) * 70}ms`,
                       }}
                     />
                   </div>
@@ -1744,6 +2194,62 @@ export default function ReportsAnalytics({ embedded = false }) {
     return () => clearTimeout(t);
   }, [toast]);
 
+  /* Lead Status small boxes line up with the Revenue Breakdown small boxes next to them */
+  useEffect(() => {
+    const root = document.querySelector(".ra-app");
+    if (!root) return undefined;
+    let raf = 0;
+
+    const align = () => {
+      const rev = [...root.querySelectorAll(".ra-rev-stats:not(.ra-ld-tiles)")];
+      const ld = [...root.querySelectorAll(".ra-ld-tiles")];
+      /* reset everything this function sets, so it can re-measure from scratch */
+      [...rev, ...ld].forEach((el) => {
+        el.style.marginTop = "";
+        [...el.children].forEach((c) => {
+          c.style.minHeight = "";
+        });
+      });
+      if (!ld.length || rev.length < ld.length) return;
+      const revCard = rev[0].closest(".ra-card");
+      const ldCard = ld[0].closest(".ra-card");
+      /* only when the two cards sit side by side (3-column layout) */
+      if (!revCard || !ldCard || Math.abs(revCard.offsetTop - ldCard.offsetTop) > 2) return;
+      /* 1) every pair of boxes gets the same height (long labels wrap on one side only) */
+      ld.forEach((el, i) => {
+        const h = Math.max(rev[i].offsetHeight, el.offsetHeight);
+        [...rev[i].children, ...el.children].forEach((c) => {
+          c.style.minHeight = `${h}px`;
+        });
+      });
+      /* 2) same top line: push down whichever card's box sits higher */
+      ld.forEach((el, i) => {
+        const want = rev[i].getBoundingClientRect().top - revCard.getBoundingClientRect().top;
+        const have = el.getBoundingClientRect().top - ldCard.getBoundingClientRect().top;
+        const diff = Math.round(want - have);
+        if (diff > 0) el.style.marginTop = `${diff}px`;
+        else if (diff < 0) rev[i].style.marginTop = `${-diff}px`;
+      });
+    };
+    const queue = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(align);
+    };
+
+    queue();
+    const timers = [300, 900, 1800].map((ms) => setTimeout(queue, ms));
+    window.addEventListener("resize", queue);
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(queue) : null;
+    root.querySelectorAll(".ra-fill").forEach((c) => ro && ro.observe(c));
+
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+      window.removeEventListener("resize", queue);
+      if (ro) ro.disconnect();
+    };
+  }, []);
+
   const runExport = (keys, format) => {
     if (!keys.length) return;
     exportReport(keys, format);
@@ -1755,7 +2261,9 @@ export default function ReportsAnalytics({ embedded = false }) {
   };
 
   return (
-    <div className={`ra-app ${embedded ? "ra-embedded" : ""}`}>
+    <div className={`ra-app ${embedded ? "ra-embedded" : ""} ${
+        showDistricts || showCustom ? "ra-paused" : ""
+      }`}>
       <style>{CSS}</style>
 
       {!embedded && (
@@ -1962,10 +2470,10 @@ const CSS = `
 }
 @keyframes raGlow {
   0%, 100% {
-    filter: brightness(1);
+    opacity: 1;
   }
   50% {
-    filter: brightness(1.12);
+    opacity: .88;
   }
 }
 @keyframes raBubble {
@@ -2240,8 +2748,7 @@ const CSS = `
   height: 72px;
   box-sizing: border-box;
   padding: 0 30px;
-  background: rgba(255,255,255,.88);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,.97);
   border-bottom: 1px solid var(--line);
 }
 .ra-burger {
@@ -2768,6 +3275,7 @@ const CSS = `
   border: 1px solid var(--line);
   border-radius: 14px;
   min-width: 0;
+  contain: layout paint;
   transition: transform .3s, box-shadow .3s;
   animation: raFadeUp .7s backwards;
 }
@@ -3010,6 +3518,100 @@ const CSS = `
 }
 .ra-do-tip small {
   font-size: 11.5px;
+}
+/* ===== fill: Revenue + Lead Status stretch to the height of the tall left column ===== */
+.ra-fill {
+  display: flex;
+  flex-direction: column;
+}
+.ra-fill > .ra-ld,
+.ra-fill > .ra-rev-summary {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.ra-fill > .ra-ld {
+  gap: 14px;
+  justify-content: flex-start;
+}
+
+.ra-fill .ra-rev-summary > * {
+  margin-top: 0;
+}
+.ra-fill .ra-rev-summary {
+  gap: 14px;
+}
+.ra-fill .ra-rev-dist .ra-rev-label {
+  margin: 0 0 8px;
+}
+.ra-fill .ra-ld-tiles {
+  width: 100%;
+  margin-top: 0;
+}
+.ra-ld-tiles small {
+  line-height: 1.3;
+}
+/* ===== key metrics (inside Lead Drop-off card) ===== */
+.ra-km {
+  container-type: inline-size;
+  margin-top: 12px;
+  padding: 12px 10px;
+  background: #fafbff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.ra-km h4 {
+  margin: 0 0 10px 2px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1d1a63;
+}
+.ra-km-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+}
+.ra-km-item {
+  min-width: 0;
+  padding: 0 6px;
+  border-left: 1px solid var(--line);
+}
+.ra-km-item:first-child {
+  border-left: 0;
+  padding-left: 2px;
+}
+.ra-km-item .ra-badge {
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+}
+.ra-km-item small {
+  display: block;
+  min-height: 26px;
+  margin-top: 8px;
+  font-size: 10px;
+  line-height: 1.3;
+}
+.ra-km-item b {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  color: var(--text);
+  white-space: nowrap;
+}
+/* narrow card: fall back to 3 x 2 */
+@container (max-width: 400px) {
+  .ra-km-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 14px;
+  }
+  .ra-km-item:nth-child(3n + 1) {
+    border-left: 0;
+    padding-left: 2px;
+  }
 }
 /* ===== revenue ===== */ .ra-revenue {
   display: flex;
@@ -3581,7 +4183,6 @@ const CSS = `
 .ra-pin-body {
   transform-box: fill-box;
   transform-origin: 50% 100%;
-  filter: drop-shadow(0 2px 2px rgba(60,50,150,.3));
   animation: raPinBlink 1.8s ease-in-out infinite;
   animation-delay: var(--pd, 0s);
 }
@@ -3591,6 +4192,17 @@ const CSS = `
   opacity: 0;
   animation: raPinRipple 1.8s ease-out infinite;
   animation-delay: var(--pd, 0s);
+}
+.ra-pin.minor .ra-pin-body,
+.ra-pin.minor .ra-pin-ripple {
+  animation: none;
+}
+.ra-pin-label-hover {
+  opacity: 0;
+  transition: opacity .2s;
+}
+.ra-pin:hover .ra-pin-label-hover {
+  opacity: 1;
 }
 .ra-pin-label {
   fill: #3f3597;
@@ -3713,12 +4325,20 @@ const CSS = `
   background: #dcecff;
 }
 .ra-rank-no.n3 {
-  color: #e8742a;
-  background: #ffe5d2;
+  color: var(--green);
+  background: #daf5ec;
 }
-.ra-rank-no.n4, .ra-rank-no.n5 {
-  color: var(--primary);
+.ra-rank-no.n4 {
+  color: #6c5ce7;
   background: #ece9ff;
+}
+.ra-rank-no.n5 {
+  color: #e0489a;
+  background: #ffe2f1;
+}
+.ra-rank-no.n6 {
+  color: var(--red);
+  background: #ffe3e3;
 }
 .ra-board-body {
   flex: 1;
@@ -3794,6 +4414,172 @@ const CSS = `
   transform: translateX(4px);
   color: var(--primary);
 }
+/* ===== leaderboard + insights animation ===== */
+.ra-board li {
+  animation: raSlide .6s backwards;
+}
+.ra-board .ra-bar-fill {
+  position: relative;
+  overflow: hidden;
+}
+.ra-board .ra-bar-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%);
+  transform: translateX(-130%);
+  animation: raShine 3.6s ease-in-out infinite;
+  animation-delay: var(--sd, 1.2s);
+}
+.ra-board li:hover .ra-bar-fill {
+  filter: brightness(1.12);
+}
+.ra-board li > b {
+  min-width: 44px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.ra-rank-no {
+  transition: transform .25s;
+}
+.ra-board li:hover .ra-rank-no {
+  transform: scale(1.12) rotate(-6deg);
+}
+.ra-rank-no {
+  position: relative;
+  isolation: isolate;
+}
+/* order (driven by LeaderboardCard): blink 1 -> 6, then smoke over the list, then blink 1 again */
+.ra-rank-no.blink::after {
+  animation: raRankOnce 1s ease-out;
+}
+@keyframes raRankOnce {
+  0% {
+    transform: scale(1);
+    opacity: .5;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+.ra-rank-no::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+}
+.ra-board {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  overflow-clip-margin: 8px;
+}
+.ra-board::before,
+.ra-board::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  filter: blur(18px);
+}
+.ra-board::before {
+  left: -60px;
+  top: 5%;
+  background: radial-gradient(circle, rgba(108,92,231,.45) 0%, rgba(108,92,231,.18) 45%, transparent 70%);
+}
+.ra-board::after {
+  right: -60px;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(45,140,255,.4) 0%, rgba(45,140,255,.16) 45%, transparent 70%);
+}
+.ra-board.smoking::before {
+  animation: raBoardSmokeA 3.2s ease-in-out both;
+}
+.ra-board.smoking::after {
+  animation: raBoardSmokeB 3.2s ease-in-out both;
+}
+@keyframes raBoardSmokeA {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(.6);
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: .85;
+    transform: translate(150px, 70px) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(240px, 120px) scale(1.35);
+  }
+}
+@keyframes raBoardSmokeB {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(.6);
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: .8;
+    transform: translate(-150px, -80px) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-230px, -130px) scale(1.35);
+  }
+}
+.ra-insights li {
+  animation: raFadeUp .6s backwards;
+}
+.ra-insights li > em {
+  animation: raNudge 2s ease-in-out infinite;
+  animation-delay: var(--nd, 0s);
+}
+.ra-insights li:hover > em {
+  animation: none;
+}
+@keyframes raNudge {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+.ra-insights .ra-badge {
+  transition: transform .25s;
+}
+.ra-insights li:hover .ra-badge {
+  transform: scale(1.1) rotate(-6deg);
+}
+.ra-card.plain-icon .ra-card-icon {
+  animation: raFloat 3s ease-in-out infinite;
+}
+/* tablet / small laptop (2 columns): Quick Insights spans the full row as a neat 2 x 2 grid */
+@media (min-width: 761px) and (max-width: 1180px) {
+  .ra-wide-md {
+    grid-column: 1 / -1;
+  }
+  .ra-wide-md .ra-insights {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ra-wide-md .ra-insights li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
 /* ===== download bar ===== */ .ra-download {
   display: flex;
   align-items: center;
@@ -3841,8 +4627,7 @@ const CSS = `
   display: grid;
   place-items: center;
   padding: 18px;
-  background: rgba(12, 22, 50, .55);
-  backdrop-filter: blur(6px);
+  background: rgba(12, 22, 50, .62);
   animation: raFadeIn .25s both;
 }
 .ra-modal {
@@ -3979,6 +4764,49 @@ const CSS = `
   font-size: 11px;
   font-weight: 600;
   color: var(--green);
+}
+/* ===== View all popup: map stays fixed, only the district list scrolls ===== */
+.ra-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  grid-template-rows: minmax(0, 1fr);
+}
+.ra-modal-map .ra-tamilnadu-map.big {
+  height: clamp(200px, calc(88vh - 240px), 380px);
+  max-height: none;
+}
+.ra-modal-list {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 8px;
+  scrollbar-width: thin;
+}
+@media (max-width: 760px) {
+  .ra-modal-body {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .ra-modal-map .ra-tamilnadu-map.big {
+    height: 240px;
+  }
+}
+/* very short screens (phone in landscape): fall back to scrolling the whole popup body */
+@media (max-height: 560px) {
+  .ra-modal-body {
+    overflow-y: auto;
+    grid-template-rows: none;
+  }
+  .ra-modal-list {
+    overflow: visible;
+  }
+}
+/* popup open: freeze the endless animations behind it so the popup scrolls smoothly */
+.ra-app.ra-paused .ra-main *,
+.ra-app.ra-paused .ra-main *::before,
+.ra-app.ra-paused .ra-main *::after {
+  animation-play-state: paused !important;
 }
 /* ===== responsive ===== */ @media (max-width: 1180px) {
   .ra-stats {
