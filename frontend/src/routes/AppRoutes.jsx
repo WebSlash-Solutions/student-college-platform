@@ -6,6 +6,7 @@ import CollegeManagement from "../pages/admin/CollegeManagement";
 
 import StudentDashboard from "../pages/student/StudentDashboard";
 
+
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -31,6 +32,16 @@ function AppRoutes() {
         {/* STUDENT */}
         <Route
           path="/student/dashboard"
+          element={<StudentDashboard />}
+        />
+
+        <Route
+          path="/student/colleges"
+          element={<StudentDashboard />}
+        />
+
+        <Route
+          path="/student/about"
           element={<StudentDashboard />}
         />
 
