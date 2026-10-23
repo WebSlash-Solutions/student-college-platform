@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import StudentManagement from "./StudentManagement";
 import CourseManagement from "./CourseManagement";
 import Transactions from "./Transactions";
+import ReportsAnalytics from "./Reportsanalytics";
 
 const adminStyles = String.raw`/* =========================================================
    GLOBAL ADMIN
@@ -2558,6 +2559,8 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate, isSidebar
                 navigate("/admin/applications");
               } else if (item.name === "Transactions") {
                 navigate("/admin/transactions");
+              } else if (item.name === "Reports") {
+                navigate("/admin/reports");
               } else if (item.name === "Dashboard") {
                 navigate("/admin/dashboard");
               } else {
@@ -3642,6 +3645,7 @@ const PATH_TO_PAGE = {
   "/admin/dashboard": "Dashboard",
   "/admin/students": "Students",
   "/admin/transactions": "Transactions",
+  "/admin/reports": "Reports",
 };
 
 function getPageFromPath(pathname) {
@@ -3735,6 +3739,8 @@ function AdminDashboard() {
               <CourseManagement />
             ) : activePage === "Transactions" ? (
               <Transactions embedded />
+            ) : activePage === "Reports" ? (
+              <ReportsAnalytics embedded />
             ) : (
               <AdminSection title={activePage} />
             )}

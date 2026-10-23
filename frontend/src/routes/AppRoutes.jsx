@@ -5,6 +5,7 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import StudentManagement from "../pages/admin/StudentManagement";
 import CollegeManagement from "../pages/admin/CollegeManagement";
 import Transactions from "./pages/admin/Transactions";
+import Reportsanalytics from "./pages/admin/Reportsanalytics"; 
 
 // STUDENT
 import StudentDashboard from "../pages/student/StudentDashboard";
@@ -37,6 +38,10 @@ function AppRoutes() {
        <Route 
            path="/admin/transactions"
            element={<Transactions />} />
+
+       <Route
+           path="/admin/reports" 
+           element={<Reportsanalytics />} />
 
         {/* STUDENT */}
         <Route

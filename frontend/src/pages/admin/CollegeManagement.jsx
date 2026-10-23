@@ -28215,6 +28215,15 @@ button {
   overflow-x: auto;
 }
 
+.college-tabs {
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* old Edge */
+}
+
+.college-tabs::-webkit-scrollbar {
+  display: none;              /* Chrome, Edge, Safari */
+}
+
 .college-tabs button {
   border: 1px solid #dfe7f0;
   background: white;

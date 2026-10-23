@@ -334,6 +334,8 @@ const CSS = `
 }
 .panel-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
 .panel-head h2 { font-size: 17px; }
+.subs-panel .panel-head h2,
+.act-panel .panel-head h2 { font-size: 17px; }
 .panel-sub { margin-top: 2px; color: var(--muted); font-size: 12.5px; }
 .count {
   padding: 3px 10px;
@@ -1647,6 +1649,153 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
 }
 @container tx (min-width: 1240px) {
   .side-extra { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+/* ---------- Reference dashboard layout: compact laptop / desktop ---------- */
+@container tx (min-width: 840px) and (max-width: 1239px) {
+  .tx-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.29fr);
+    gap: 12px;
+    align-items: start;
+  }
+  .tx-main,
+  .tx-side {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+  .tx-main > *,
+  .tx-side > * { order: 0; }
+  .content { padding: 12px 10px 28px; }
+  .page-head h1 { font-size: 21px; }
+  .tx-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .tx-stat { gap: 8px; padding: 10px 8px; border-radius: 10px; }
+  .tx-stat-icon { width: 32px; height: 32px; font-size: 15px; }
+  .stat-label { font-size: 10px; }
+  .stat-value { font-size: 16px; }
+  .stat-note { font-size: 9px; line-height: 1.3; }
+  .trend { top: 7px; right: 7px; font-size: 9px; }
+  .panel { padding: 10px; border-radius: 11px; }
+  .panel-head { gap: 6px; margin-bottom: 9px; }
+  .panel-head h2, .uo-head h2 { font-size: 13px; }
+  .panel-sub { font-size: 10px; }
+  .filters { grid-template-columns: minmax(0, 1.8fr) minmax(0, .9fr) minmax(0, .9fr) auto; gap: 6px; }
+  .field { height: 32px; padding: 0 8px; font-size: 10px; border-radius: 7px; }
+  .search-wrap .field { padding-left: 27px; }
+  .search-wrap .search-icon { left: 8px; font-size: 12px; }
+  .chips { gap: 5px; }
+  .chip { padding: 4px 7px; gap: 4px; font-size: 10px; }
+  .chip-count { min-width: 15px; padding: 0 4px; font-size: 9px; line-height: 14px; }
+  .btn { height: 30px; padding: 0 9px; font-size: 10px; border-radius: 7px; }
+  .table { min-width: 0; font-size: 9px; }
+  .table th { padding: 7px 5px; font-size: 8px; }
+  .table td { padding: 7px 5px; font-size: 8px; }
+  .table td .badge, .table td .plan { font-size: 8px; padding: 3px 5px; }
+  .btn-view { height: 24px; padding: 0 6px; font-size: 9px; }
+  .tx-bottom { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .tx-bottom .subs-panel { grid-column: 1 / -1; }
+  .usage { flex-direction: column; align-items: stretch; gap: 10px; }
+  .uo-donut { width: 112px; height: 112px; align-self: center; }
+  .uo-center strong { font-size: 17px; }
+  .uo-list { gap: 5px; }
+  .uo-row { padding: 7px 8px; }
+  .uo-row-top { font-size: 10px; }
+  .uo-row-top em, .uo-pct { font-size: 9px; }
+  .uo-rev { margin-top: 10px; padding: 10px; }
+  .uo-rev strong { font-size: 19px; }
+  .uo-split-legend { font-size: 9px; gap: 5px 8px; }
+  .plans-grid { grid-template-columns: 1fr; gap: 8px; }
+  .plan-card { gap: 6px; padding: 9px; }
+  .plan-card-top { gap: 7px; }
+  .plan-icon { width: 28px; height: 28px; font-size: 13px; }
+  .plan-card h3 { font-size: 11px; }
+  .plan-price { font-size: 16px; }
+  .plan-price small, .plan-limit, .plan-features li { font-size: 9px; }
+  .plan-features { gap: 4px; }
+  .plan-cta { height: 27px; font-size: 10px; }
+  .recommended { top: 7px; right: 7px; padding: 2px 5px; font-size: 8px; }
+  .rules-list { gap: 5px; margin: 8px 0; }
+  .rules-list li { gap: 6px; padding: 6px; font-size: 9px; }
+  .rules-list li::before { width: 16px; height: 16px; font-size: 9px; }
+  .side-extra { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .renew-panel, .alerts-panel { min-width: 0; }
+}
+@container tx (min-width: 1240px) {
+  .tx-layout { gap: 14px; grid-template-columns: minmax(0, 1fr) 280px; }
+  .tx-main, .tx-side { gap: 14px; }
+  .content { padding: 14px 12px 36px; }
+}
+
+/* ---------- Readable desktop sizing (leave Quick Actions, Upcoming Renewals and Payment Alerts unchanged) ---------- */
+@container tx (min-width: 840px) {
+  .content { padding: 20px 18px 42px; }
+  .tx-layout { gap: 18px; }
+  .page-head h1 { font-size: 25px; line-height: 1.3; }
+  .page-head p { font-size: 14px; margin-top: 7px; }
+  .tx-stats { gap: 12px; }
+  .tx-stat { gap: 12px; padding: 14px 12px; min-height: 76px; }
+  .tx-stat-icon { width: 38px; height: 38px; font-size: 18px; }
+  .stat-label { font-size: 12px; }
+  .stat-value { font-size: 20px; }
+  .stat-note { font-size: 11px; line-height: 1.35; }
+  .trend { top: 10px; right: 10px; font-size: 10px; }
+  .filters-panel, .table-panel, .subs-panel, .usage-panel, .top-panel, .act-panel, .rules-panel, .plans-panel { padding: 14px; }
+  .panel-head { gap: 9px; margin-bottom: 12px; }
+  .panel-head h2, .uo-head h2 { font-size: 15px; }
+  .table-panel .panel-head h2, .subs-panel .panel-head h2 { font-size: 18px; }
+  .panel-sub { font-size: 11.5px; }
+  .count { font-size: 11.5px; padding: 4px 9px; }
+  .field { height: 38px; padding: 0 11px; font-size: 12px; border-radius: 9px; }
+  .search-wrap .field { padding-left: 32px; }
+  .search-wrap .search-icon { left: 10px; font-size: 14px; }
+  .chips { gap: 7px; }
+  .chip { padding: 6px 10px; gap: 6px; font-size: 11.5px; }
+  .chip-count { min-width: 18px; font-size: 10px; line-height: 17px; }
+  .btn { height: 36px; padding: 0 12px; font-size: 12px; border-radius: 8px; }
+  .table { min-width: 850px; font-size: 11.5px; }
+  .table th { padding: 12px 10px; font-size: 12px; }
+  .table td { padding: 12px 10px; font-size: 13px; line-height: 1.45; }
+  .table td .badge, .table td .plan { font-size: 10px; padding: 4px 7px; }
+  .btn-view { height: 29px; padding: 0 9px; font-size: 11px; }
+  .pager { margin-top: 13px; }
+  .pager-btns button { min-width: 31px; height: 31px; font-size: 11px; }
+  .sub-table { min-width: 760px; font-size: 11.5px; }
+  .sub-table th { padding: 12px 10px; font-size: 12px; }
+  .sub-table td { padding: 12px 10px; font-size: 13px; line-height: 1.45; }
+  .meter { max-width: 100px; height: 7px; }
+  .uo-donut { width: 140px; height: 140px; }
+  .uo-center strong { font-size: 21px; }
+  .uo-center > span { font-size: 11px; }
+  .uo-row { padding: 9px 10px; }
+  .uo-row-top { font-size: 11.5px; }
+  .uo-row-top em, .uo-pct { font-size: 10.5px; }
+  .uo-rev { padding: 13px; }
+  .uo-rev strong { font-size: 22px; }
+  .uo-split-legend { font-size: 10.5px; }
+  .plans-grid { gap: 10px; }
+  .plan-card { gap: 9px; padding: 13px; }
+  .plan-card-top { gap: 10px; }
+  .plan-icon { width: 36px; height: 36px; font-size: 16px; }
+  .plan-card h3 { font-size: 13px; }
+  .plan-price { font-size: 20px; }
+  .plan-price small, .plan-limit, .plan-features li { font-size: 11px; }
+  .plan-features { gap: 5px; }
+  .plan-cta { height: 32px; font-size: 11.5px; }
+  .recommended { top: 10px; right: 10px; padding: 3px 7px; font-size: 9px; }
+  .rules-list { gap: 7px; margin: 10px 0 12px; }
+  .rules-list li { gap: 8px; padding: 8px; font-size: 11px; }
+  .rules-list li::before { width: 19px; height: 19px; font-size: 10px; }
+  .top-panel .panel-head, .act-panel .panel-head { margin-bottom: 12px; }
+  .table-wrap, .table-scroll { border-radius: 10px; }
+}
+@container tx (min-width: 1240px) {
+  .tx-layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; }
+  .content { padding: 20px 18px 42px; }
+  .tx-main, .tx-side { gap: 16px; }
+  .table { min-width: 850px; }
 }
 
 /* ============================================================
@@ -3989,7 +4138,7 @@ export default function TransactionsPage({ embedded = false }) {
                       {actAll ? "Show Less" : "View All"}
                     </button>
                   </div>
-                  <ul className={`soft-list act-list ${actAll ? "is-scroll" : ""}`}>
+                  <ul className="soft-list act-list">
                     {actList.map((a, i) => (
                       <li key={a.key} style={{ "--i": i }}>
                         <button type="button" className="act-item" onClick={() => setSelected(a.tx)}>
