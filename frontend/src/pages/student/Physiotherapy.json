@@ -1,0 +1,3290 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Government College of Physiotherapy",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Periyamilaguparai",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Government",
+      "autonomyNote": "Government physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1987,
+      "intake": 25,
+      "rating": 4.2,
+      "fee": 25000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/A_Beautiful_Rainbow.jpg/960px-A_Beautiful_Rainbow.jpg",
+      "about": "Government College of Physiotherapy is a government physiotherapy institution in Tiruchirappalli, Tiruchirappalli district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tiruchirappalli",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Government Institute of Rehabilitation Medicine",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "K.K. Nagar",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Government",
+      "autonomyNote": "Government physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2002,
+      "intake": 25,
+      "rating": 4.4,
+      "fee": 25000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Chennai_01.jpg/960px-Chennai_01.jpg",
+      "about": "Government Institute of Rehabilitation Medicine is a government physiotherapy institution in Chennai, Chennai district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Government Medical College & Hospital",
+      "city": "Chidambaram",
+      "district": "Cuddalore",
+      "locality": "Annamalai Nagar",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Government",
+      "autonomyNote": "Government physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 30,
+      "rating": 4.1,
+      "fee": 25000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Athena_Global_School.jpg",
+      "about": "Government Medical College & Hospital is a government physiotherapy institution in Chidambaram, Cuddalore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chidambaram",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "College of Physiotherapy, National Institute for Empowerment of Persons with Multiple Disabilities",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Muttukadu, ECR",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Government",
+      "autonomyNote": "Government physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2016,
+      "intake": 28,
+      "rating": 4.3,
+      "fee": 25000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Chengalpattu_Collector_office.jpg/960px-Chengalpattu_Collector_office.jpg",
+      "about": "College of Physiotherapy, National Institute for Empowerment of Persons with Multiple Disabilities is a government physiotherapy institution in Chennai, Chengalpattu district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Adhiparasakthi College of Physiotherapy and Paramedical Sciences",
+      "city": "Melmaruvathur",
+      "district": "Chengalpattu",
+      "locality": "Melmaruvathur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1994,
+      "intake": 80,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Chengalpat_lake.jpg/330px-Chengalpat_lake.jpg",
+      "about": "Adhiparasakthi College of Physiotherapy and Paramedical Sciences is a self-financing physiotherapy institution in Melmaruvathur, Chengalpattu district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Melmaruvathur",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Annai College of Physiotherapy",
+      "city": "Kumbakonam",
+      "district": "Thanjavur",
+      "locality": "Kovilacheri, Kumbakonam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2020,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Kumbakonam_corporation.jpg/960px-Kumbakonam_corporation.jpg",
+      "about": "Annai College of Physiotherapy is a self-financing physiotherapy institution in Kumbakonam, Thanjavur district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Kumbakonam",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Cherraan's College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Telugupalayam, Siruvani Road",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1994,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Amrita_university_coimbatore.jpg/960px-Amrita_university_coimbatore.jpg",
+      "about": "Cherraan's College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Christian College of Physiotherapy",
+      "city": "Colachel",
+      "district": "Kanyakumari",
+      "locality": "Colachel",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1999,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Kanyakumari_and_around_-_sautvmcc2k26_%281%29.jpg/960px-Kanyakumari_and_around_-_sautvmcc2k26_%281%29.jpg",
+      "about": "Christian College of Physiotherapy is a self-financing physiotherapy institution in Colachel, Kanyakumari district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Colachel",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "College of Physiotherapy, Christian Medical College",
+      "city": "Vellore",
+      "district": "Vellore",
+      "locality": "Bagayam, Thorapadi",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1982,
+      "intake": 10,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/TK_Puram_%28Don_Bosco_Rural_Centre%29.jpg/960px-TK_Puram_%28Don_Bosco_Rural_Centre%29.jpg",
+      "about": "College of Physiotherapy, Christian Medical College is a self-financing physiotherapy institution in Vellore, Vellore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Vellore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Grace Physiotherapy College",
+      "city": "Kaliakkavilai",
+      "district": "Kanyakumari",
+      "locality": "Kaliakkavilai, Vilavancode",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Kanyakumari_and_around_-_sautvmcc2k26_%2810%29.jpg/960px-Kanyakumari_and_around_-_sautvmcc2k26_%2810%29.jpg",
+      "about": "Grace Physiotherapy College is a self-financing physiotherapy institution in Kaliakkavilai, Kanyakumari district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Kaliakkavilai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Global College of Physiotherapy",
+      "city": "Nattalam",
+      "district": "Kanyakumari",
+      "locality": "Nattalam, Killiyoor",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2023,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Kanyakumari_and_around_-_sautvmcc2k26_%2811%29.jpg/960px-Kanyakumari_and_around_-_sautvmcc2k26_%2811%29.jpg",
+      "about": "Global College of Physiotherapy is a self-financing physiotherapy institution in Nattalam, Kanyakumari district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Nattalam",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "JKK Munirajah Medical Research Foundation College of Physiotherapy",
+      "city": "Komarapalayam",
+      "district": "Namakkal",
+      "locality": "Komarapalayam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1994,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Namakkal_view_from_hillock_fort_.jpg/960px-Namakkal_view_from_hillock_fort_.jpg",
+      "about": "JKK Munirajah Medical Research Foundation College of Physiotherapy is a self-financing physiotherapy institution in Komarapalayam, Namakkal district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Komarapalayam",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Sri Ramakrishna Institute of Paramedical Sciences",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Sarojini Naidu Road",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1986,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Amrita_university_garden.jpg/960px-Amrita_university_garden.jpg",
+      "about": "Sri Ramakrishna Institute of Paramedical Sciences is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Devendrar College of Physiotherapy",
+      "city": "Tirunelveli",
+      "district": "Tirunelveli",
+      "locality": "Ariyakulam, Maharaja Nagar",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1998,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/PalayamkottaiSm.jpg/960px-PalayamkottaiSm.jpg",
+      "about": "Devendrar College of Physiotherapy is a self-financing physiotherapy institution in Tirunelveli, Tirunelveli district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tirunelveli",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Excel College of Physiotherapy and Research Centre",
+      "city": "Komarapalayam",
+      "district": "Namakkal",
+      "locality": "Pallakapalayam, Sankari West",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2017,
+      "intake": 100,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/City_street_scene_in_Namakkal%2C_Tamil_Nadu.jpg/960px-City_street_scene_in_Namakkal%2C_Tamil_Nadu.jpg",
+      "about": "Excel College of Physiotherapy and Research Centre is a self-financing physiotherapy institution in Komarapalayam, Namakkal district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Komarapalayam",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "J.K. College of Nursing & Paramedicals",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Uppilipalayam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2020,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Aravind_Eye_Hospital%2C_Coimbatore_2.jpg/960px-Aravind_Eye_Hospital%2C_Coimbatore_2.jpg",
+      "about": "J.K. College of Nursing & Paramedicals is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Jaya College of Paramedical Sciences",
+      "city": "Tiruninravur",
+      "district": "Tiruvallur",
+      "locality": "Tiruninravur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2000,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Tiruvallur_HD_Image.jpg/960px-Tiruvallur_HD_Image.jpg",
+      "about": "Jaya College of Paramedical Sciences is a self-financing physiotherapy institution in Tiruninravur, Tiruvallur district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tiruninravur",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Kamalam Viswanathan College of Physiotherapy",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Murunganpettai, Srirangam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1999,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Aerial_photograph_of_Srirangam_Island_between_Kaveri_and_Kollidam_rivers.JPG/960px-Aerial_photograph_of_Srirangam_Island_between_Kaveri_and_Kollidam_rivers.JPG",
+      "about": "Kamalam Viswanathan College of Physiotherapy is a self-financing physiotherapy institution in Tiruchirappalli, Tiruchirappalli district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tiruchirappalli",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "KG College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Arts College Road",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1998,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Aravind_Eye_Hospital%2C_Coimbatore.jpg/960px-Aravind_Eye_Hospital%2C_Coimbatore.jpg",
+      "about": "KG College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "KMCH College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Kalapatti",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1994,
+      "intake": 100,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Coimbatore_2.jpg/960px-Coimbatore_2.jpg",
+      "about": "KMCH College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Krishna College of Paramedical and Allied Health Science",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Manachanallur, Samayapuram",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2019,
+      "intake": 100,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/A_free_Health_camp_organised_at_the_Bharat_Nirman_Public_Information_Campaign%2C_at_Tiruchirapalli%2C_Tamil_Nadu_on_February_23%2C_2013.jpg/960px-A_free_Health_camp_organised_at_the_Bharat_Nirman_Public_Information_Campaign%2C_at_Tiruchirapalli%2C_Tamil_Nadu_on_February_23%2C_2013.jpg",
+      "about": "Krishna College of Paramedical and Allied Health Science is a self-financing physiotherapy institution in Tiruchirappalli, Tiruchirappalli district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tiruchirappalli",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Madha College of Physiotherapy",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Kundrathur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1998,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Bridge_view_1.jpg/960px-Bridge_view_1.jpg",
+      "about": "Madha College of Physiotherapy is a self-financing physiotherapy institution in Chennai, Chennai district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Mahendra College of Physiotherapy",
+      "city": "Salem",
+      "district": "Salem",
+      "locality": "Minnampalli, Valappadi",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Amrita_university_coimbatore.jpg/960px-Amrita_university_coimbatore.jpg",
+      "about": "Mahendra College of Physiotherapy is a self-financing physiotherapy institution in Salem, Salem district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Salem",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Mannai Narayanaswamy Para Medical College",
+      "city": "Thanjavur",
+      "district": "Thanjavur",
+      "locality": "Mathur, Thandakorai",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1998,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Marshal_Hall%2C_Thanjavur.jpg/960px-Marshal_Hall%2C_Thanjavur.jpg",
+      "about": "Mannai Narayanaswamy Para Medical College is a self-financing physiotherapy institution in Thanjavur, Thanjavur district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Thanjavur",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Maria College of Physiotherapy",
+      "city": "Attoor",
+      "district": "Kanyakumari",
+      "locality": "Attoor, Thiruvattar",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2020,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Kanyakumari_and_around_-_sautvmcc2k26_%2812%29.jpg/960px-Kanyakumari_and_around_-_sautvmcc2k26_%2812%29.jpg",
+      "about": "Maria College of Physiotherapy is a self-financing physiotherapy institution in Attoor, Kanyakumari district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Attoor",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Mohamed Sathak A.J. College of Physiotherapy",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Nungambakkam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2002,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Chennai_%E2%9C%A8.jpg/960px-Chennai_%E2%9C%A8.jpg",
+      "about": "Mohamed Sathak A.J. College of Physiotherapy is a self-financing physiotherapy institution in Chennai, Chennai district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Mother Terasa College of Physiotherapy",
+      "city": "Pudukkottai",
+      "district": "Pudukkottai",
+      "locality": "Veerapatty, Illuppur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2020,
+      "intake": 100,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Mch-pdk.jpg/960px-Mch-pdk.jpg",
+      "about": "Mother Terasa College of Physiotherapy is a self-financing physiotherapy institution in Pudukkottai, Pudukkottai district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Pudukkottai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Nehru College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Thirumalayampalayam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2022,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Coimbatore_3.jpg/960px-Coimbatore_3.jpg",
+      "about": "Nehru College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Nandha College of Physiotherapy",
+      "city": "Erode",
+      "district": "Erode",
+      "locality": "Pitchandampalayam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1993,
+      "intake": 100,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Geethaanjali_school%2C_Erode.jpg/960px-Geethaanjali_school%2C_Erode.jpg",
+      "about": "Nandha College of Physiotherapy is a self-financing physiotherapy institution in Erode, Erode district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Erode",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Nightingale Institute of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Madukkarai",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/CHIL_SEZ.jpg/960px-CHIL_SEZ.jpg",
+      "about": "Nightingale Institute of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Paavai Physiotherapy Science College",
+      "city": "Namakkal",
+      "district": "Namakkal",
+      "locality": "Puduchatram, R.Puliampatty",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2022,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Night_view_of_Namakkal.jpg/960px-Night_view_of_Namakkal.jpg",
+      "about": "Paavai Physiotherapy Science College is a self-financing physiotherapy institution in Namakkal, Namakkal district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Namakkal",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "PGP College of Physiotherapy and Research Institute",
+      "city": "Namakkal",
+      "district": "Namakkal",
+      "locality": "Pillakalather",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2020,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Namakkal_Mountain.jpg",
+      "about": "PGP College of Physiotherapy and Research Institute is a self-financing physiotherapy institution in Namakkal, Namakkal district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Namakkal",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "name": "PPG College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Saravanampatty",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1998,
+      "intake": 100,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/CHIL_SEZ.jpg/330px-CHIL_SEZ.jpg",
+      "about": "PPG College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "PSG College of Para Medical Science",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Peelamedu",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1999,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Amrita_university_coimbatore.jpg/960px-Amrita_university_coimbatore.jpg",
+      "about": "PSG College of Para Medical Science is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Pachamuthu College of Physiotherapy",
+      "city": "Dharmapuri",
+      "district": "Dharmapuri",
+      "locality": "Semmandakuppam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2023,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Amrita_university_garden.jpg/960px-Amrita_university_garden.jpg",
+      "about": "Pachamuthu College of Physiotherapy is a self-financing physiotherapy institution in Dharmapuri, Dharmapuri district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Dharmapuri",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "name": "PERI College of Physiotherapy",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Mannivakkam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2024,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Chengalpattu_Collector_office.jpg/960px-Chengalpattu_Collector_office.jpg",
+      "about": "PERI College of Physiotherapy is a self-financing physiotherapy institution in Chennai, Chengalpattu district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Rathinam College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Kurichi",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Amrita_university_garden.jpg/960px-Amrita_university_garden.jpg",
+      "about": "Rathinam College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Revathi Institute of Physiotherapy",
+      "city": "Tiruppur",
+      "district": "Tiruppur",
+      "locality": "Velayuthampalayam, Avinashi",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/AVINASHI_NEW_BUS_STAND_.jpg/960px-AVINASHI_NEW_BUS_STAND_.jpg",
+      "about": "Revathi Institute of Physiotherapy is a self-financing physiotherapy institution in Tiruppur, Tiruppur district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tiruppur",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "name": "RVS College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Sulur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1993,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Aravind_Eye_Hospital%2C_Coimbatore_2.jpg/960px-Aravind_Eye_Hospital%2C_Coimbatore_2.jpg",
+      "about": "RVS College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "name": "Santhosh College of Physiotherapy",
+      "city": "Madurai",
+      "district": "Madurai",
+      "locality": "Thiru Nagar, Thirumangalam Road",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2013,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Thirumalai_Nayak_Palace%2C_MAdurai.jpg/960px-Thirumalai_Nayak_Palace%2C_MAdurai.jpg",
+      "about": "Santhosh College of Physiotherapy is a self-financing physiotherapy institution in Madurai, Madurai district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Madurai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Shree Venkateshwara College of Paramedical Sciences",
+      "city": "Gobichettipalayam",
+      "district": "Erode",
+      "locality": "Othakuthirai, Gobichettipalayam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2018,
+      "intake": 100,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Gobichettipalayam.jpg",
+      "about": "Shree Venkateshwara College of Paramedical Sciences is a self-financing physiotherapy institution in Gobichettipalayam, Erode district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Gobichettipalayam",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "name": "Shri Indra Ganesan Institute of Medical Science - College of Physiotherapy",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "K. Kallikudi, Srirangam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2018,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Avenue_of_Banyan_Trees%2C_Srirangam_%28Tamil_Nadu%29.jpg/960px-Avenue_of_Banyan_Trees%2C_Srirangam_%28Tamil_Nadu%29.jpg",
+      "about": "Shri Indra Ganesan Institute of Medical Science - College of Physiotherapy is a self-financing physiotherapy institution in Tiruchirappalli, Tiruchirappalli district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tiruchirappalli",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Sir Issac Newton College of Physiotherapy",
+      "city": "Nagapattinam",
+      "district": "Nagapattinam",
+      "locality": "Pappakovil, Anthanapettai",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2018,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/ADM_College.jpg/960px-ADM_College.jpg",
+      "about": "Sir Issac Newton College of Physiotherapy is a self-financing physiotherapy institution in Nagapattinam, Nagapattinam district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Nagapattinam",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "name": "SNS College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Saravanampatti",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2020,
+      "intake": 100,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Aravind_Eye_Hospital%2C_Coimbatore.jpg/960px-Aravind_Eye_Hospital%2C_Coimbatore.jpg",
+      "about": "SNS College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Sree Abirami College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Madukkarai Road",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2018,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Coimbatore_2.jpg/960px-Coimbatore_2.jpg",
+      "about": "Sree Abirami College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Sri Lakshmi College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Thudiyalur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Coimbatore_3.jpg/960px-Coimbatore_3.jpg",
+      "about": "Sri Lakshmi College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Sri Vijay Vidyalaya College of Physiotherapy",
+      "city": "Dharmapuri",
+      "district": "Dharmapuri",
+      "locality": "Gandhi Nagar",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2018,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Aravind_Eye_Hospital%2C_Coimbatore_2.jpg/960px-Aravind_Eye_Hospital%2C_Coimbatore_2.jpg",
+      "about": "Sri Vijay Vidyalaya College of Physiotherapy is a self-financing physiotherapy institution in Dharmapuri, Dharmapuri district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Dharmapuri",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "name": "SSM College of Physiotherapy",
+      "city": "Bhavani",
+      "district": "Erode",
+      "locality": "Jambai, Bhavani",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Erode%2C_Tamilnadu.JPG/960px-Erode%2C_Tamilnadu.JPG",
+      "about": "SSM College of Physiotherapy is a self-financing physiotherapy institution in Bhavani, Erode district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Bhavani",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Swamy Vivekanandha Physiotherapy College",
+      "city": "Tiruchengode",
+      "district": "Namakkal",
+      "locality": "Elayampalayam, Tiruchengode",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2020,
+      "intake": 100,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/%E0%AE%A8%E0%AE%BE%E0%AE%AE%E0%AE%95%E0%AF%8D%E0%AE%95%E0%AE%B2%E0%AE%BF%E0%AE%B2%E0%AF%8D_%E0%AE%89%E0%AE%B3%E0%AF%8D%E0%AE%B3_%E0%AE%A8%E0%AE%B0%E0%AE%9A%E0%AE%BF%E0%AE%AE%E0%AF%8D%E0%AE%AE%E0%AE%B0%E0%AF%8D_%E0%AE%86%E0%AE%B2%E0%AE%AF%E0%AE%AE%E0%AF%8D.jpg/330px-%E0%AE%A8%E0%AE%BE%E0%AE%AE%E0%AE%95%E0%AF%8D%E0%AE%95%E0%AE%B2%E0%AE%BF%E0%AE%B2%E0%AF%8D_%E0%AE%89%E0%AE%B3%E0%AF%8D%E0%AE%B3_%E0%AE%A8%E0%AE%B0%E0%AE%9A%E0%AE%BF%E0%AE%AE%E0%AF%8D%E0%AE%AE%E0%AE%B0%E0%AF%8D_%E0%AE%86%E0%AE%B2%E0%AE%AF%E0%AE%AE%E0%AF%8D.jpg",
+      "about": "Swamy Vivekanandha Physiotherapy College is a self-financing physiotherapy institution in Tiruchengode, Namakkal district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Tiruchengode",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Tagore College of Physiotherapy",
+      "city": "Chengalpattu",
+      "district": "Chengalpattu",
+      "locality": "Vengadamangalam, Chengalpattu",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2019,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Chengalpat_lake.jpg/330px-Chengalpat_lake.jpg",
+      "about": "Tagore College of Physiotherapy is a self-financing physiotherapy institution in Chengalpattu, Chengalpattu district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chengalpattu",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "name": "Thanthai Roever College of Physiotherapy",
+      "city": "Perambalur",
+      "district": "Perambalur",
+      "locality": "Roever Campus",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1994,
+      "intake": 100,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/4/4a/PERAMBALUR.jpg",
+      "about": "Thanthai Roever College of Physiotherapy is a self-financing physiotherapy institution in Perambalur, Perambalur district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Perambalur",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "name": "The Kavery Physiotherapy College",
+      "city": "Mecheri",
+      "district": "Salem",
+      "locality": "Mecheri, M. Kalipatti",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Chennai_01.jpg/960px-Chennai_01.jpg",
+      "about": "The Kavery Physiotherapy College is a self-financing physiotherapy institution in Mecheri, Salem district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Mecheri",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "name": "Trinity Mission and Medical Foundation College of Physiotherapy",
+      "city": "Madurai",
+      "district": "Madurai",
+      "locality": "Tahsildar Nagar",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1993,
+      "intake": 50,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Vaigai_River.jpg/960px-Vaigai_River.jpg",
+      "about": "Trinity Mission and Medical Foundation College of Physiotherapy is a self-financing physiotherapy institution in Madurai, Madurai district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Madurai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "name": "Thiravium Physiotherapy College",
+      "city": "Theni",
+      "district": "Theni",
+      "locality": "Kailasapatti, Thamaraikulam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2024,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Bridge_view_1.jpg/960px-Bridge_view_1.jpg",
+      "about": "Thiravium Physiotherapy College is a self-financing physiotherapy institution in Theni, Theni district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Theni",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "name": "UCA College of Paramedical Sciences",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Chetpet",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1998,
+      "intake": 50,
+      "rating": 4.0,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Chennai%2C_India_Jul_24%2C_2025_02-43-39_PM.jpeg/960px-Chennai%2C_India_Jul_24%2C_2025_02-43-39_PM.jpeg",
+      "about": "UCA College of Paramedical Sciences is a self-financing physiotherapy institution in Chennai, Chennai district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "name": "United College of Physiotherapy",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Periyanaickenpalayam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2021,
+      "intake": 50,
+      "rating": 4.2,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/CHIL_SEZ.jpg/960px-CHIL_SEZ.jpg",
+      "about": "United College of Physiotherapy is a self-financing physiotherapy institution in Coimbatore, Coimbatore district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Coimbatore",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "name": "Vellalar Physiotherapy College",
+      "city": "Erode",
+      "district": "Erode",
+      "locality": "Thindal",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2024,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/New-Bridge-over-Kaveri-from-Kumarapalayam.JPG/960px-New-Bridge-over-Kaveri-from-Kumarapalayam.JPG",
+      "about": "Vellalar Physiotherapy College is a self-financing physiotherapy institution in Erode, Erode district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Erode",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "name": "White Memorial College of Physiotherapy",
+      "city": "Attoor",
+      "district": "Kanyakumari",
+      "locality": "Attoor, Veeyannor",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Self-financing physiotherapy institution",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2000,
+      "intake": 100,
+      "rating": 4.1,
+      "fee": 70000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Kanyakumari_and_around_-_sautvmcc2k26_%2813%29.jpg/960px-Kanyakumari_and_around_-_sautvmcc2k26_%2813%29.jpg",
+      "about": "White Memorial College of Physiotherapy is a self-financing physiotherapy institution in Attoor, Kanyakumari district, Tamil Nadu. It offers BPT and MPT programmes affiliated to The Tamil Nadu Dr. M.G.R. Medical University.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology (45% aggregate; 40% for reserved categories). BPT admission is through Tamil Nadu paramedical counselling based on 10+2 marks.",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Attoor",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "name": "SRM College of Physiotherapy",
+      "city": "Kattankulathur",
+      "district": "Chengalpattu",
+      "locality": "SRM IST, Kattankulathur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "SRM Institute of Science and Technology",
+      "autonomous": true,
+      "established": 1993,
+      "intake": 50,
+      "rating": 4.6,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/IIITDM_Kancheepuram.jpg/960px-IIITDM_Kancheepuram.jpg",
+      "about": "SRM College of Physiotherapy is a physiotherapy institution in Kattankulathur, Chengalpattu district, Tamil Nadu, functioning under SRM Institute of Science and Technology. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Kattankulathur",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "name": "Sri Ramachandra Faculty of Physiotherapy",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Porur",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Sri Ramachandra Institute of Higher Education and Research",
+      "autonomous": true,
+      "established": 1993,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Chennai_01.jpg/960px-Chennai_01.jpg",
+      "about": "Sri Ramachandra Faculty of Physiotherapy is a physiotherapy institution in Chennai, Chennai district, Tamil Nadu, functioning under Sri Ramachandra Institute of Higher Education and Research. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "name": "Saveetha College of Physiotherapy",
+      "city": "Chennai",
+      "district": "Tiruvallur",
+      "locality": "Thandalam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Saveetha Institute of Medical and Technical Sciences",
+      "autonomous": true,
+      "established": 1993,
+      "intake": 50,
+      "rating": 4.5,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Bridge_view_1.jpg/960px-Bridge_view_1.jpg",
+      "about": "Saveetha College of Physiotherapy is a physiotherapy institution in Chennai, Tiruvallur district, Tamil Nadu, functioning under Saveetha Institute of Medical and Technical Sciences. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "name": "Meenakshi College of Physiotherapy",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "West K.K. Nagar",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Meenakshi Academy of Higher Education and Research",
+      "autonomous": true,
+      "established": 2001,
+      "intake": 50,
+      "rating": 4.7,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Chennai_%E2%9C%A8.jpg/960px-Chennai_%E2%9C%A8.jpg",
+      "about": "Meenakshi College of Physiotherapy is a physiotherapy institution in Chennai, Chennai district, Tamil Nadu, functioning under Meenakshi Academy of Higher Education and Research. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "name": "Faculty of Physiotherapy, Dr. M.G.R. Educational and Research Institute",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Velappanchavadi",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Dr. M.G.R. Educational and Research Institute",
+      "autonomous": true,
+      "established": 1998,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Chennai%2C_India_Jul_24%2C_2025_02-43-39_PM.jpeg/960px-Chennai%2C_India_Jul_24%2C_2025_02-43-39_PM.jpeg",
+      "about": "Faculty of Physiotherapy, Dr. M.G.R. Educational and Research Institute is a physiotherapy institution in Chennai, Chennai district, Tamil Nadu, functioning under Dr. M.G.R. Educational and Research Institute. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "name": "Vinayaka Mission's College of Physiotherapy",
+      "city": "Salem",
+      "district": "Salem",
+      "locality": "Sankari Main Road",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Vinayaka Mission's Research Foundation",
+      "autonomous": true,
+      "established": 1993,
+      "intake": 50,
+      "rating": 4.6,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Boys_hostel_periyar_university.jpg/960px-Boys_hostel_periyar_university.jpg",
+      "about": "Vinayaka Mission's College of Physiotherapy is a physiotherapy institution in Salem, Salem district, Tamil Nadu, functioning under Vinayaka Mission's Research Foundation. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Salem",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "name": "Chettinad School of Physiotherapy",
+      "city": "Kelambakkam",
+      "district": "Chengalpattu",
+      "locality": "Chettinad Health City, Kelambakkam",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Chettinad Academy of Research and Education",
+      "autonomous": true,
+      "established": 2019,
+      "intake": 50,
+      "rating": 4.3,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Chengalpattu_Collector_office.jpg/960px-Chengalpattu_Collector_office.jpg",
+      "about": "Chettinad School of Physiotherapy is a physiotherapy institution in Kelambakkam, Chengalpattu district, Tamil Nadu, functioning under Chettinad Academy of Research and Education. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Kelambakkam",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "name": "Vels College of Physiotherapy",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Pallavaram",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Vels Institute of Science, Technology & Advanced Studies",
+      "autonomous": true,
+      "established": 1992,
+      "intake": 50,
+      "rating": 4.5,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Chennai_Central.jpg/330px-Chennai_Central.jpg",
+      "about": "Vels College of Physiotherapy is a physiotherapy institution in Chennai, Chennai district, Tamil Nadu, functioning under Vels Institute of Science, Technology & Advanced Studies. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "name": "Sree Balaji College of Physiotherapy",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Chromepet",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Bharath Institute of Higher Education and Research",
+      "autonomous": true,
+      "established": 1999,
+      "intake": 50,
+      "rating": 4.7,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/A_Beautiful_Rainbow.jpg/960px-A_Beautiful_Rainbow.jpg",
+      "about": "Sree Balaji College of Physiotherapy is a physiotherapy institution in Chennai, Chennai district, Tamil Nadu, functioning under Bharath Institute of Higher Education and Research. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Chennai",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "name": "Noorul Islam College of Physiotherapy",
+      "city": "Kumaracoil",
+      "district": "Kanyakumari",
+      "locality": "Kumaracoil, Thuckalay",
+      "state": "Tamil Nadu",
+      "category": "Physiotherapy",
+      "type": "Private",
+      "autonomyNote": "Deemed university constituent college",
+      "affiliation": "Noorul Islam Centre for Higher Education",
+      "autonomous": true,
+      "established": 2008,
+      "intake": 50,
+      "rating": 4.4,
+      "fee": 125000,
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Kanyakumari_and_around_-_sautvmcc2k26_%281%29.jpg/960px-Kanyakumari_and_around_-_sautvmcc2k26_%281%29.jpg",
+      "about": "Noorul Islam College of Physiotherapy is a physiotherapy institution in Kumaracoil, Kanyakumari district, Tamil Nadu, functioning under Noorul Islam Centre for Higher Education. It offers BPT and MPT programmes.",
+      "facilities": [
+        "Physiotherapy Lab",
+        "Anatomy & Physiology Lab",
+        "Electrotherapy Lab",
+        "Exercise Therapy Lab",
+        "Library",
+        "Clinical Training Hospital",
+        "Hostel",
+        "Sports Ground",
+        "Smart Classrooms",
+        "Transport"
+      ],
+      "eligibility": "Passed 10+2 with Physics, Chemistry and Biology. BPT admission is merit-based (some universities conduct their own entrance test).",
+      "courseIds": [
+        601,
+        602
+      ],
+      "website": null,
+      "locality2": "Kumaracoil",
+      "branches": [
+        {
+          "code": "BPT",
+          "name": "Bachelor of Physiotherapy"
+        },
+        {
+          "code": "MPT",
+          "name": "Master of Physiotherapy"
+        }
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": 601,
+      "code": "BPT",
+      "name": "Bachelor of Physiotherapy",
+      "degree": "BPT",
+      "duration": "4 Years 6 Months",
+      "eligibility": "10+2 with Physics, Chemistry, Biology",
+      "entranceExam": "Merit (+2 marks)",
+      "category": "Physiotherapy"
+    },
+    {
+      "id": 602,
+      "code": "MPT",
+      "name": "Master of Physiotherapy",
+      "degree": "MPT",
+      "duration": "2 Years",
+      "eligibility": "BPT degree from a recognised university",
+      "entranceExam": "Merit (BPT marks)",
+      "category": "Physiotherapy"
+    }
+  ]
+}

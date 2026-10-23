@@ -4,8 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import StudentManagement from "../pages/admin/StudentManagement";
 import CollegeManagement from "../pages/admin/CollegeManagement";
-import Transactions from "./pages/admin/Transactions";
-import Reportsanalytics from "./pages/admin/Reportsanalytics"; 
+import Transactions from "../pages/admin/Transactions";
+import Reportsanalytics from "../pages/admin/Reportsanalytics";
 
 // STUDENT
 import StudentDashboard from "../pages/student/StudentDashboard";
@@ -46,6 +46,16 @@ function AppRoutes() {
         {/* STUDENT */}
         <Route
           path="/student/dashboard"
+          element={<StudentDashboard />}
+        />
+
+        <Route
+          path="/student/colleges"
+          element={<StudentDashboard />}
+        />
+
+        <Route
+          path="/student/about"
           element={<StudentDashboard />}
         />
 
