@@ -1,23 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// ADMIN
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import StudentManagement from "../pages/admin/StudentManagement";
-import CollegeManagement from "../pages/admin/CollegeManagement";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-// STUDENT
-import StudentDashboard from "../pages/student/StudentDashboard";
-
-// COLLEGE
-import CollegeDashboard from "../pages/college/CollegeDashboard";
-import CollegeProfile from "../pages/college/CollegeProfile";
-import CollegeRegistration from "../pages/college/Registeration";
-
+// Admin pages
+import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
+import StudentManagement from "../pages/admin/StudentManagement.jsx";
+import CollegeManagement from "../pages/admin/CollegeManagement.jsx";
+import CourseManagement from "../pages/admin/CourseManagement.jsx";
+import Applications from "../pages/admin/Applications.jsx";
+import Transactions from "../pages/admin/Transactions.jsx";
+import Reportsanalytics from "../pages/admin/Reportsanalytics.jsx";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Default Route */}
+        <Route
+          path="/"
+          element={<Navigate to="/admin/dashboard" replace />}
+        />
+
         {/* ADMIN */}
         <Route
           path="/admin/dashboard"
@@ -31,27 +33,28 @@ function AppRoutes() {
           path="/admin/college-management"
           element={<CollegeManagement />}
         />
-
-        {/* STUDENT */}
         <Route
-          path="/student/dashboard"
-          element={<StudentDashboard />}
+          path="/admin/courses"
+          element={<CourseManagement />}
+        />
+        <Route
+          path="/admin/applications"
+          element={<Applications />}
+        />
+        <Route
+          path="/admin/transactions"
+          element={<Transactions />}
+        />
+        <Route
+          path="/admin/reports"
+          element={<Reportsanalytics />}
         />
 
-        {/* COLLEGE */}
+        {/* Unknown Route */}
         <Route
-          path="/college/dashboard"
-          element={<CollegeDashboard />}
+          path="*"
+          element={<Navigate to="/admin/dashboard" replace />}
         />
-        <Route
-          path="/college/profile"
-          element={<CollegeProfile />}
-        />
-        <Route
-          path="/college/registration"
-          element={<CollegeRegistration />}
-        />
-   
       </Routes>
     </BrowserRouter>
   );
