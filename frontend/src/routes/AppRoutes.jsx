@@ -4,7 +4,7 @@ import CollegeDashboard from "../pages/college/CollegeDashboard";
 import CollegeProfile from "../pages/college/CollegeProfile";
 import CollegeRegistration from "../pages/college/Registeration";
 import CollegeSite from "../pages/college/CollegeSite";
-import CollegePayment from "./pages/college/CollegePayment";
+import CollegePayment from "../pages/college/CollegePayment";
 
 
 function AppRoutes() {
