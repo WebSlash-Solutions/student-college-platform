@@ -6,6 +6,7 @@ import medicalData from "./medical.json";
 import nursingData from "./nursing.json";
 import alliedData from "./allied.json";
 import physiotherapyData from "./Physiotherapy.json";
+import lawData from "./law.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
