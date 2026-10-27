@@ -4,6 +4,7 @@ import StudentManagement from "./StudentManagement";
 import CourseManagement from "./CourseManagement";
 import Transactions from "./Transactions";
 import ReportsAnalytics from "./Reportsanalytics";
+import Users from "./Users";
 
 const adminStyles = String.raw`/* =========================================================
    GLOBAL ADMIN
@@ -2360,6 +2361,174 @@ font-size: 14px;
   75%  { transform: translateY(7px); }
   100% { transform: translateY(0); }
 }
+
+/* =========================================================
+   LEAD STATUS - INTERACTIVE DONUT (same animation as Users > Plan Distribution)
+========================================================= */
+
+.ls-donut {
+  position: relative;
+  flex-shrink: 0;
+  width: 150px;
+  height: 150px;
+  animation: lsPopIn 0.5s ease both;
+}
+
+.ls-donut svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.ls-track {
+  fill: none;
+  stroke: #eef2f7;
+  stroke-width: 14;
+}
+
+.ls-seg {
+  fill: none;
+  stroke-width: 14;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: stroke-dasharray 1.1s cubic-bezier(0.2, 0.8, 0.2, 1), stroke-width 0.25s, opacity 0.25s;
+}
+
+.ls-seg.on { stroke-width: 19; }
+.ls-seg.dim { opacity: 0.25; }
+
+.ls-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.ls-center strong {
+  color: #1b3555;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.ls-center span {
+  margin-top: 2px;
+  color: #8b99aa;
+  font-size: 9.5px;
+}
+
+.ls-center b {
+  margin-top: 3px;
+  color: var(--c, #2f80ed);
+  font-size: 10.5px;
+}
+
+.ls-list {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ls-row {
+  padding: 7px 10px;
+  background: #ffffff;
+  border: 1px solid #e5ebf2;
+  border-radius: 10px;
+  cursor: pointer;
+  animation: lsSlide 0.5s backwards;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.ls-row:hover,
+.ls-row.on {
+  border-color: var(--c);
+  box-shadow: 0 6px 14px rgba(33, 60, 91, 0.08);
+  transform: translateX(2px);
+}
+
+.ls-row:focus-visible {
+  outline: 2px solid var(--c);
+  outline-offset: 2px;
+}
+
+.ls-row-top {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto auto;
+  gap: 7px;
+  align-items: center;
+  color: #687a92;
+  font-size: 10px;
+}
+
+.ls-row-top i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.ls-row-top span {
+  overflow: hidden;
+  color: #445872;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ls-row-top strong {
+  color: #445872;
+  font-size: 10px;
+}
+
+.ls-row-top small {
+  min-width: 26px;
+  color: #8d9aac;
+  font-size: 9px;
+  text-align: right;
+}
+
+.ls-bar {
+  height: 5px;
+  margin-top: 6px;
+  overflow: hidden;
+  background: #eef2f7;
+  border-radius: 99px;
+}
+
+.ls-bar i {
+  display: block;
+  height: 100%;
+  background: var(--c);
+  border-radius: 99px;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.ls-bar i.go {
+  animation: lsBarGrow 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes lsPopIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes lsSlide {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes lsBarGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
 `;
 
 /* =========================================================
@@ -2561,6 +2730,8 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate, isSidebar
                 navigate("/admin/transactions");
               } else if (item.name === "Reports") {
                 navigate("/admin/reports");
+              } else if (item.name === "Users") {
+                navigate("/admin/users");
               } else if (item.name === "Dashboard") {
                 navigate("/admin/dashboard");
               } else {
@@ -2914,6 +3085,131 @@ function StatCard({ icon, title, value, change, description, iconClass }) {
         <div className="stat-change">
           <span>↑ {change}</span>
           <small>{description}</small>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   LEAD STATUS CARD (interactive donut - same animation as Plan Distribution)
+========================================================= */
+
+const LEAD_STATUS = [
+  { key: "New", count: 6205, pct: 34, color: "#f3b436" },
+  { key: "Purchased", count: 5110, pct: 28, color: "#2f80ed" },
+  { key: "Converted", count: 4380, pct: 24, color: "#19bb7d" },
+  { key: "Invalid", count: 2555, pct: 14, color: "#ef626c" },
+];
+const LEAD_TOTAL = LEAD_STATUS.reduce((sum, l) => sum + l.count, 0);
+
+function LeadStatusCard() {
+  const [ready, setReady] = useState(false);
+  const [hover, setHover] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [total, setTotal] = useState(0);
+  const toggle = (key) => setSelected((cur) => (cur === key ? null : key));
+
+  /* donut draws in + total counts up once */
+  useEffect(() => {
+    const timer = setTimeout(() => setReady(true), 150);
+    const start = performance.now();
+    let frame;
+    const tick = (time) => {
+      const progress = Math.min((time - start) / 1400, 1);
+      setTotal(Math.round(LEAD_TOTAL * (1 - Math.pow(1 - progress, 3))));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  const shown = hover || selected;
+  const active = LEAD_STATUS.find((l) => l.key === shown);
+  const R = 52;
+  const C = 2 * Math.PI * R;
+  const GAP = 6; /* gap between two rings */
+
+  let acc = 0;
+  const segs = LEAD_STATUS.map((l) => {
+    const len = (l.count / LEAD_TOTAL) * C;
+    const seg = { ...l, len, offset: acc };
+    acc += len;
+    return seg;
+  });
+
+  return (
+    <div className="dashboard-card status-card">
+      <div className="card-header">
+        <div>
+          <h2>Lead Status</h2>
+          <p>Current lead distribution</p>
+        </div>
+      </div>
+
+      <div className="status-content">
+        <div className="donut-wrapper">
+          <div className="ls-donut">
+            <svg viewBox="0 0 140 140" role="img" aria-label="Lead status distribution">
+              <circle className="ls-track" cx="70" cy="70" r={R} />
+              {segs.map((s) => (
+                <circle
+                  key={s.key}
+                  className={`ls-seg ${shown === s.key ? "on" : ""} ${shown && shown !== s.key ? "dim" : ""}`}
+                  cx="70"
+                  cy="70"
+                  r={R}
+                  stroke={s.color}
+                  strokeDasharray={`${ready ? Math.max(s.len - GAP, 0) : 0} ${C}`}
+                  strokeDashoffset={-(s.offset + GAP / 2)}
+                  onMouseEnter={() => setHover(s.key)}
+                  onMouseLeave={() => setHover(null)}
+                  onClick={() => toggle(s.key)}
+                />
+              ))}
+            </svg>
+            <div className="ls-center" style={active ? { "--c": active.color } : undefined}>
+              <strong>{(active ? active.count : total).toLocaleString("en-IN")}</strong>
+              <span>{active ? `${active.key} leads` : "Total Leads"}</span>
+              {active && <b>{active.pct}% of total</b>}
+            </div>
+          </div>
+        </div>
+
+        <div className="ls-list">
+          {LEAD_STATUS.map((l, i) => (
+            <div
+              key={l.key}
+              className={`ls-row ${shown === l.key ? "on" : ""}`}
+              style={{ "--c": l.color, animationDelay: `${i * 70}ms` }}
+              role="button"
+              tabIndex={0}
+              onMouseEnter={() => setHover(l.key)}
+              onMouseLeave={() => setHover(null)}
+              onFocus={() => setHover(l.key)}
+              onBlur={() => setHover(null)}
+              onClick={() => toggle(l.key)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  toggle(l.key);
+                }
+              }}
+            >
+              <div className="ls-row-top">
+                <i />
+                <span>{l.key}</span>
+                <strong>{l.count.toLocaleString("en-IN")}</strong>
+                <small>{l.pct}%</small>
+              </div>
+              <div className="ls-bar">
+                <i className={ready ? "go" : ""} style={{ width: `${l.pct}%`, animationDelay: `${i * 90}ms` }} />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -3379,82 +3675,7 @@ function DashboardHome() {
 
         {/* LEAD STATUS */}
 
-        <div className="dashboard-card status-card">
-          <div className="card-header">
-            <div>
-              <h2>Lead Status</h2>
-              <p>Current lead distribution</p>
-            </div>
-          </div>
-
-          <div className="status-content">
-            <div className="donut-wrapper">
-              <div className="radial-chart">
-                <svg viewBox="0 0 150 150" aria-hidden="true">
-                  {[
-                    { r: 66, pct: 34, color: "#f3b436" },
-                    { r: 56, pct: 28, color: "#2f80ed" },
-                    { r: 46, pct: 24, color: "#19bb7d" },
-                    { r: 36, pct: 14, color: "#ef626c" },
-                  ].flatMap((ring) => [
-                    <circle
-                      key={`track-${ring.r}`}
-                      className="radial-track"
-                      cx="75"
-                      cy="75"
-                      r={ring.r}
-                    />,
-                    <circle
-                      key={`arc-${ring.r}`}
-                      className="radial-arc"
-                      cx="75"
-                      cy="75"
-                      r={ring.r}
-                      pathLength="100"
-                      stroke={ring.color}
-                      style={{ strokeDasharray: `${ring.pct} 100` }}
-                    />,
-                  ])}
-                </svg>
-
-                <div className="radial-center">
-                  <strong>18,250</strong>
-                  <span>Total Leads</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="status-list">
-              <div className="status-row">
-                <span className="status-color pending"></span>
-                <span>New</span>
-                <strong>6,205</strong>
-                <small>34%</small>
-              </div>
-
-              <div className="status-row">
-                <span className="status-color review"></span>
-                <span>Purchased</span>
-                <strong>5,110</strong>
-                <small>28%</small>
-              </div>
-
-              <div className="status-row">
-                <span className="status-color accepted"></span>
-                <span>Converted</span>
-                <strong>4,380</strong>
-                <small>24%</small>
-              </div>
-
-              <div className="status-row">
-                <span className="status-color rejected"></span>
-                <span>Invalid</span>
-                <strong>2,555</strong>
-                <small>14%</small>
-              </div>
-            </div>
-          </div>
-        </div>
+        <LeadStatusCard />
       </div>
 
       {/* LOWER CONTENT */}
@@ -3646,6 +3867,7 @@ const PATH_TO_PAGE = {
   "/admin/students": "Students",
   "/admin/transactions": "Transactions",
   "/admin/reports": "Reports",
+  "/admin/users": "Users",
 };
 
 function getPageFromPath(pathname) {
@@ -3741,6 +3963,8 @@ function AdminDashboard() {
               <Transactions embedded />
             ) : activePage === "Reports" ? (
               <ReportsAnalytics embedded />
+            ) : activePage === "Users" ? (
+              <Users embedded />
             ) : (
               <AdminSection title={activePage} />
             )}

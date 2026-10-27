@@ -1,0 +1,1097 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Chennai Dr. Ambedkar Government Law College, Pattarai Perambudur",
+      "city": "Pattarai Perambudur",
+      "district": "Thiruvallur",
+      "locality": "Pattarai Perambudur",
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 2,
+      "name": "Chennai Dr. Ambedkar Government Law College, Pudupakkam",
+      "city": "Pudupakkam",
+      "district": "Chengalpattu",
+      "locality": "Pudupakkam, Thiruporur Taluk",
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 3,
+      "name": "Government Law College, Madurai",
+      "city": "Madurai",
+      "district": "Madurai",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 4,
+      "name": "Government Law College, Tiruchirappalli",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 5,
+      "name": "Government Law College, Coimbatore",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 6,
+      "name": "Government Law College, Tirunelveli",
+      "city": "Tirunelveli",
+      "district": "Tirunelveli",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 7,
+      "name": "Government Law College, Chengalpattu",
+      "city": "Chengalpattu",
+      "district": "Chengalpattu",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 8,
+      "name": "Government Law College, Vellore",
+      "city": "Vellore",
+      "district": "Vellore",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 9,
+      "name": "Government Law College, Villupuram",
+      "city": "Villupuram",
+      "district": "Viluppuram",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 10,
+      "name": "Government Law College, Dharmapuri",
+      "city": "Dharmapuri",
+      "district": "Dharmapuri",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 11,
+      "name": "Government Law College, Ramanathapuram",
+      "city": "Ramanathapuram",
+      "district": "Ramanathapuram",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 12,
+      "name": "Government Law College, Salem",
+      "city": "Salem",
+      "district": "Salem",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 13,
+      "name": "Government Law College, Namakkal",
+      "city": "Namakkal",
+      "district": "Namakkal",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 14,
+      "name": "Government Law College, Theni",
+      "city": "Theni",
+      "district": "Theni",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 15,
+      "name": "Government Law College, Karaikudi",
+      "city": "Karaikudi",
+      "district": "Sivaganga",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court",
+        "Computer Lab"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 16,
+      "name": "Annai College of Law",
+      "city": "Kumbakonam",
+      "district": "Thanjavur",
+      "locality": "Kumbakonam",
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 17,
+      "name": "Anandam Law College",
+      "city": "Thanjavur",
+      "district": "Thanjavur",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 18,
+      "name": "Central Law College",
+      "city": "Salem",
+      "district": "Salem",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701,
+        702
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 19,
+      "name": "Saraswathy Law College",
+      "city": "Tindivanam",
+      "district": "Viluppuram",
+      "locality": "Tindivanam",
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 20,
+      "name": "Mother Teresa Law College",
+      "city": "Pudukkottai",
+      "district": "Pudukkottai",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 21,
+      "name": "G.T.N. Law College",
+      "city": "Dindigul",
+      "district": "Dindigul",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 22,
+      "name": "KMC College of Law",
+      "city": "Tiruppur",
+      "district": "Tiruppur",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 23,
+      "name": "Erode College of Law",
+      "city": "Erode",
+      "district": "Erode",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 24,
+      "name": "S. Thangapazham Law College",
+      "city": "Tenkasi",
+      "district": "Tenkasi",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 25,
+      "name": "Thulasi College of Law for Women",
+      "city": "Thoothukudi",
+      "district": "Thoothukudi",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Women's Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 26,
+      "name": "Mugil College of Law",
+      "city": "Kanyakumari",
+      "district": "Kanyakumari",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 27,
+      "name": "Sir Issac Newton Law College",
+      "city": "Nagapattinam",
+      "district": "Nagapattinam",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 28,
+      "name": "S.K.P. Law College",
+      "city": "Tiruvannamalai",
+      "district": "Tiruvannamalai",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 29,
+      "name": "Dhanvanth Law College",
+      "city": "Karur",
+      "district": "Karur",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Law",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. Ambedkar Law University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "facilities": [
+        "Library",
+        "Moot Court"
+      ],
+      "eligibility": "As per TNDALU admission norms",
+      "courseIds": [
+        701
+      ],
+      "website": null,
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BA.LLB",
+          "name": "B.A. LL.B."
+        }
+      ],
+      "image": null
+    }
+  ],
+  "courses": [
+    {
+      "id": 701,
+      "name": "B.A. LL.B. (5 Year Integrated)",
+      "category": "Law"
+    },
+    {
+      "id": 702,
+      "name": "LL.B. (3 Year)",
+      "category": "Law"
+    }
+  ]
+}

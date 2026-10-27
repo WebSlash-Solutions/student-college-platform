@@ -6,6 +6,8 @@ import StudentManagement from "../pages/admin/StudentManagement";
 import CollegeManagement from "../pages/admin/CollegeManagement";
 import Transactions from "../pages/admin/Transactions";
 import Reportsanalytics from "../pages/admin/Reportsanalytics";
+import Users from "../pages/admin/Users";
+
 
 // STUDENT
 import StudentDashboard from "../pages/student/StudentDashboard";
@@ -13,8 +15,9 @@ import StudentDashboard from "../pages/student/StudentDashboard";
 // COLLEGE
 import CollegeDashboard from "../pages/college/CollegeDashboard";
 import CollegeProfile from "../pages/college/CollegeProfile";
-import CollegeRegistration from "../pages/college/Registeration";
 import CollegeSite from "../pages/college/CollegeSite";
+import Registeration from "../pages/college/Registeration";
+import CollegePayment from "../pages/college/CollegePayment";
 
 
 function AppRoutes() {
@@ -29,6 +32,7 @@ function AppRoutes() {
         <Route path="/admin/college-management" element={<CollegeManagement />} />
         <Route path="/admin/transactions" element={<Transactions />} />
         <Route path="/admin/reports" element={<Reportsanalytics />} />
+        <Route path="/admin/users" element={<Users />} />
 
         {/* STUDENT */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
@@ -38,8 +42,10 @@ function AppRoutes() {
         {/* COLLEGE */}
         <Route path="/college/dashboard" element={<CollegeDashboard />} />
         <Route path="/college/profile" element={<CollegeProfile />} />
-        <Route path="/college/registration" element={<CollegeRegistration />} />
-        <Route path="/college/registration" element={<CollegeSite />} />
+        <Route path="/college/registration" element={<Registeration />} />
+        <Route path="/college/collegesite" element={<CollegeSite />} />
+        <Route path="/college/payment" element={<CollegePayment />} />
+
         
       </Routes>
     </BrowserRouter>
