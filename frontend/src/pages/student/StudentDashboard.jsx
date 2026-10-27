@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import dbData from "./db.json";
 import artsData from "./arts.json";
 import medicalData from "./medical.json";
 import nursingData from "./nursing.json";
 import alliedData from "./allied.json";
-import physiotherapyData from "./physiotherapy.json";
+import physiotherapyData from "./Physiotherapy.json";
+import lawData from "./law.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
@@ -176,9 +177,11 @@ function Icon({ name, size = 20 }) {
 ========================================================= */
 
 const NAV = [
-  { label: "Home", to: "/student/dashboard", view: "home" },
-  { label: "About", to: "/student/about", view: "about" },
-  { label: "Colleges", to: "/student/colleges", view: "colleges" },
+  { label: "Home", href: "#home", route: "/student/dashboard" },
+  { label: "About", href: "#about", route: "/student/about" },
+  { label: "Colleges", href: "#colleges", route: "/student/colleges" },
+  { label: "Courses", href: "#courses", route: "/student/dashboard" },
+  { label: "Contact", href: "#contact", route: "/student/dashboard" },
 ];
 
 /* =========================================================
@@ -466,7 +469,6 @@ const matchesCollege = (college, courseIndex, search) => {
     getState(college),
     getDistrict(college),
     getCollegeType(college),
-    college?.specialization,
     getAffiliation(college),
     getWebsite(college),
     getContact(college),
@@ -785,11 +787,6 @@ html {
   background: var(--blue-25);
 }
 
-.cc-menu a.cc-active {
-  color: var(--brand);
-  background: var(--blue-25);
-}
-
 .cc-nav-actions {
   display: flex;
   align-items: center;
@@ -832,10 +829,6 @@ html {
   padding: 13px 4px;
   font-weight: 600;
   color: var(--navy);
-}
-
-.cc-mobile a.cc-active {
-  color: var(--brand);
 }
 
 /* HERO */
@@ -1908,23 +1901,15 @@ html {
 ========================================================= */
 
 export default function StudentDashboard() {
-  /* which page to show, decided by the URL */
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const view = pathname.endsWith("/about")
-    ? "about"
-    : pathname.endsWith("/colleges")
-      ? "colleges"
+  // "colleges" and "about" are each their own page; everything else is Home.
+  const view = location.pathname.startsWith("/student/colleges")
+    ? "colleges"
+    : location.pathname.startsWith("/student/about")
+      ? "about"
       : "home";
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [view]);
-
-  const closeMobileMenu = () => {
-    const toggle = document.getElementById("cc-nav-toggle");
-    if (toggle) toggle.checked = false;
-  };
 
   const [session, setSession] = useState(() => {
     try {
@@ -1954,6 +1939,25 @@ export default function StudentDashboard() {
   };
 
   const user = session;
+
+  // navigate between the Home page and the separate Colleges page
+  const handleNav = (event, item) => {
+    event.preventDefault();
+
+    if (item.route && item.route !== location.pathname) {
+      navigate(item.route);
+    }
+
+    const anchor = (item.href || "").replace("#", "");
+    if (anchor && item.route === location.pathname) {
+      setTimeout(() => {
+        document.getElementById(anchor)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 60);
+    }
+  };
 
   const userInitials = user?.name
     ? user.name
@@ -2022,6 +2026,12 @@ export default function StudentDashboard() {
     const physiotherapyCourses = Array.isArray(physiotherapyData?.courses)
       ? physiotherapyData.courses
       : [];
+    const lawList = Array.isArray(lawData?.colleges)
+      ? lawData.colleges
+      : [];
+    const lawCourses = Array.isArray(lawData?.courses)
+      ? lawData.courses
+      : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
       : [];
@@ -2058,16 +2068,8 @@ export default function StudentDashboard() {
       ...medicalList.map((college) => decorate(college, false)),
       ...nursingList.map((college) => decorate(college, false)),
       ...alliedList.map((college) => decorate(college, false)),
-      ...physiotherapyList.map((college) =>
-        decorate(
-          {
-            ...college,
-            category: "Allied",
-            specialization: "Physiotherapy",
-          },
-          false,
-        ),
-      ),
+      ...physiotherapyList.map((college) => decorate(college, false)),
+      ...lawList.map((college) => decorate(college, false)),
     ]);
     setCourses([
       ...engCourses,
@@ -2076,6 +2078,7 @@ export default function StudentDashboard() {
       ...nursingCourses,
       ...alliedCourses,
       ...physiotherapyCourses,
+      ...lawCourses,
     ]);
     setLoading(false);
   }, []);
@@ -2134,16 +2137,17 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
-  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Healthcare & Medical Sciences"];
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Healthcare & Medical Sciences", "Law"];
 
   // subcategories shown under the "Healthcare & Medical Sciences" umbrella
-  const HEALTH_SUBCATEGORIES = ["Medical", "Nursing", "Allied Health"];
+  const HEALTH_SUBCATEGORIES = ["Medical", "Nursing", "Allied Health", "Physiotherapy"];
 
   // maps a subcategory tab to the `category` value stored on the colleges
   const HEALTH_SUB_TO_CATEGORY = {
     Medical: "Medical",
     Nursing: "Nursing",
     "Allied Health": "Allied",
+    Physiotherapy: "Physiotherapy",
   };
 
   const isHealthGroup = category === "Healthcare & Medical Sciences";
@@ -2166,7 +2170,8 @@ export default function StudentDashboard() {
   const healthGroupCount =
     (categoryCounts.Medical ?? 0) +
     (categoryCounts.Nursing ?? 0) +
-    (categoryCounts.Allied ?? 0);
+    (categoryCounts.Allied ?? 0) +
+    (categoryCounts.Physiotherapy ?? 0);
 
   /* =======================================================
      FILTER + SORT
@@ -2352,7 +2357,13 @@ export default function StudentDashboard() {
           />
 
           <div className="cc-wrap cc-nav-inner">
-            <Link to="/student/dashboard" className="cc-logo">
+            <a
+              href="#home"
+              className="cc-logo"
+              onClick={(event) =>
+                handleNav(event, { href: "#home", route: "/student/dashboard" })
+              }
+            >
               <span className="cc-logo-mark">
                 <Icon name="cap" size={24} />
               </span>
@@ -2361,28 +2372,32 @@ export default function StudentDashboard() {
                 <strong>Student College</strong>
                 <small>Student-College Admission Platform</small>
               </span>
-            </Link>
+            </a>
 
             <nav className="cc-menu">
               {NAV.map((item) => (
-                <Link
+                <a
                   key={item.label}
-                  to={item.to}
-                  className={view === item.view ? "cc-active" : ""}
+                  href={item.href}
+                  className={view === "colleges" && item.label === "Colleges" ? "cc-menu-active" : ""}
+                  onClick={(event) => handleNav(event, item)}
                 >
                   {item.label}
-                </Link>
+                </a>
               ))}
             </nav>
 
             <div className="cc-nav-actions">
-              <Link
-                to="/student/colleges"
+              <a
+                href="#colleges"
                 className="cc-icon-btn"
                 aria-label="Search colleges"
+                onClick={(event) =>
+                  handleNav(event, { href: "#colleges", route: "/student/colleges" })
+                }
               >
                 <Icon name="search" size={18} />
-              </Link>
+              </a>
 
               {user ? (
                 <div className="cc-user">
@@ -2428,14 +2443,17 @@ export default function StudentDashboard() {
 
           <nav className="cc-mobile">
             {NAV.map((item) => (
-              <Link
+              <a
                 key={item.label}
-                to={item.to}
-                className={view === item.view ? "cc-active" : ""}
-                onClick={closeMobileMenu}
+                href={item.href}
+                className={view === "colleges" && item.label === "Colleges" ? "cc-menu-active" : ""}
+                onClick={(event) => {
+                  document.getElementById("cc-nav-toggle").checked = false;
+                  handleNav(event, item);
+                }}
               >
                 {item.label}
-              </Link>
+              </a>
             ))}
 
             {user ? (
@@ -2467,497 +2485,518 @@ export default function StudentDashboard() {
         </header>
 
         {/* =================================================
-            HOME (only on /student/dashboard)
+            HERO + ABOUT  (Home page only)
         ================================================= */}
 
         {view === "home" && (
-          <section className="cc-hero">
-            <div className="cc-wrap cc-hero-grid">
-              <div>
-                <span className="cc-pill">
-                  <Icon name="sparkle" size={15} />
-                  Tamil Nadu Engineering Colleges
+          <>
+        {/* =================================================
+            HERO
+        ================================================= */}
+
+        <section className="cc-hero">
+          <div className="cc-wrap cc-hero-grid">
+            <div>
+              <span className="cc-pill">
+                <Icon name="sparkle" size={15} />
+                Tamil Nadu Engineering Colleges
+              </span>
+
+              <h1>
+                Find the Right College for <em>Your Future</em>
+              </h1>
+
+              <p className="cc-hero-text">
+                Explore engineering colleges in Coimbatore, Erode and Salem
+                with courses, fees, eligibility, facilities and important
+                college details in one place.
+              </p>
+
+              <div className="cc-hero-actions">
+                <a
+                  href="#colleges"
+                  className="cc-btn cc-btn-primary cc-btn-lg"
+                  onClick={(event) =>
+                    handleNav(event, { href: "#colleges", route: "/student/colleges" })
+                  }
+                >
+                  Explore Colleges
+                  <Icon name="arrow" size={18} />
+                </a>
+
+                <a
+                  href="#colleges"
+                  className="cc-btn cc-btn-ghost cc-btn-lg"
+                  onClick={(event) =>
+                    handleNav(event, { href: "#colleges", route: "/student/colleges" })
+                  }
+                >
+                  Compare Colleges
+                </a>
+              </div>
+
+              <ul className="cc-points">
+                <li>
+                  <Icon name="check" size={16} />
+                  Courses & fees
+                </li>
+
+                <li>
+                  <Icon name="check" size={16} />
+                  College details
+                </li>
+
+                <li>
+                  <Icon name="check" size={16} />
+                  Facilities
+                </li>
+              </ul>
+            </div>
+
+            <div className="cc-hero-visual">
+              <div className="cc-hero-img">
+                <img
+                  src={homeStudentImage}
+                  alt="Students on a college campus"
+                />
+              </div>
+
+              <div className="cc-float cc-float-b">
+                <span className="cc-icon-circle">
+                  <Icon name="building" size={22} />
                 </span>
 
-                <h1>
-                  Find the Right College for <em>Your Future</em>
-                </h1>
-
-                <p className="cc-hero-text">
-                  Explore engineering colleges in Coimbatore, Erode and Salem
-                  with courses, fees, eligibility, facilities and important
-                  college details in one place.
-                </p>
-
-                <div className="cc-hero-actions">
-                  <Link
-                    to="/student/colleges"
-                    className="cc-btn cc-btn-primary cc-btn-lg"
-                  >
-                    Explore Colleges
-                    <Icon name="arrow" size={18} />
-                  </Link>
-
-                  <Link
-                    to="/student/colleges"
-                    className="cc-btn cc-btn-ghost cc-btn-lg"
-                  >
-                    Compare Colleges
-                  </Link>
+                <div>
+                  <strong>{colleges.length || "10"}+</strong>
+                  <small>Engineering Colleges</small>
                 </div>
-
-                <ul className="cc-points">
-                  <li>
-                    <Icon name="check" size={16} />
-                    Courses & fees
-                  </li>
-
-                  <li>
-                    <Icon name="check" size={16} />
-                    College details
-                  </li>
-
-                  <li>
-                    <Icon name="check" size={16} />
-                    Facilities
-                  </li>
-                </ul>
               </div>
 
-              <div className="cc-hero-visual">
-                <div className="cc-hero-img">
-                  <img
-                    src={homeStudentImage}
-                    alt="Students on a college campus"
-                  />
-                </div>
+              <div className="cc-float cc-float-c">
+                <span className="cc-icon-circle">
+                  <Icon name="book" size={22} />
+                </span>
 
-                <div className="cc-float cc-float-b">
-                  <span className="cc-icon-circle">
-                    <Icon name="building" size={22} />
-                  </span>
-
-                  <div>
-                    <strong>{colleges.length || "10"}+</strong>
-                    <small>Engineering Colleges</small>
-                  </div>
-                </div>
-
-                <div className="cc-float cc-float-c">
-                  <span className="cc-icon-circle">
-                    <Icon name="book" size={22} />
-                  </span>
-
-                  <div>
-                    <strong>{courses.length || "8"}+</strong>
-                    <small>Courses Available</small>
-                  </div>
+                <div>
+                  <strong>{courses.length || "8"}+</strong>
+                  <small>Courses Available</small>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="cc-strip">
-              <div className="cc-wrap cc-strip-grid">
-                {stats.map((item) => (
-                  <div key={item.label}>
-                    <strong>{item.value}</strong>
-                    <span>{item.label}</span>
-                  </div>
-                ))}
-              </div>
+          <div className="cc-strip">
+            <div className="cc-wrap cc-strip-grid">
+              {stats.map((item) => (
+                <div key={item.label}>
+                  <strong>{item.value}</strong>
+                  <span>{item.label}</span>
+                </div>
+              ))}
             </div>
-          </section>
+          </div>
+        </section>
+          </>
         )}
 
         {/* =================================================
-            ABOUT (only on /student/about)
+            ABOUT  (separate page)
         ================================================= */}
 
         {view === "about" && (
-          <section className="cc-section" id="about">
-            <div className="cc-wrap cc-about">
-              <div>
-                <span className="cc-eyebrow">About us</span>
+          <>
+        <section className="cc-section" id="about">
+          <div className="cc-wrap cc-about">
+            <div>
+              <span className="cc-eyebrow">About us</span>
 
-                <h2>Everything you need to choose your college</h2>
+              <h2>Everything you need to choose your college</h2>
 
-                <p className="cc-about-text">
-                  Students can explore colleges and view their basic details,
-                  institution type, courses, admission information and
-                  facilities.
-                </p>
+              <p className="cc-about-text">
+                Students can explore colleges and view their basic details,
+                institution type, courses, admission information and
+                facilities.
+              </p>
 
-                <p className="cc-about-text">
-                  The college information is fetched from the database, making
-                  it easier to search and compare colleges without manually
-                  entering information into the frontend.
-                </p>
+              <p className="cc-about-text">
+                The college information is fetched from the database, making
+                it easier to search and compare colleges without manually
+                entering information into the frontend.
+              </p>
 
-                <ul className="cc-about-list">
-                  <li>
-                    <Icon name="check" size={18} />
-                    Basic college information
-                  </li>
+              <ul className="cc-about-list">
+                <li>
+                  <Icon name="check" size={18} />
+                  Basic college information
+                </li>
 
-                  <li>
-                    <Icon name="check" size={18} />
-                    Course, eligibility and fee details
-                  </li>
+                <li>
+                  <Icon name="check" size={18} />
+                  Course, eligibility and fee details
+                </li>
 
-                  <li>
-                    <Icon name="check" size={18} />
-                    College information and facilities
-                  </li>
+                <li>
+                  <Icon name="check" size={18} />
+                  College information and facilities
+                </li>
 
-                  <li>
-                    <Icon name="check" size={18} />
-                    Hostel, placement and campus facilities
-                  </li>
-                </ul>
-              </div>
-
-              <div className="cc-about-img">
-                <img src={aboutStudentImage} alt="College campus" />
-              </div>
+                <li>
+                  <Icon name="check" size={18} />
+                  Hostel, placement and campus facilities
+                </li>
+              </ul>
             </div>
-          </section>
+
+            <div className="cc-about-img">
+              <img src={aboutStudentImage} alt="College campus" />
+            </div>
+          </div>
+        </section>
+          </>
         )}
 
         {/* =================================================
-            COLLEGES (only on /student/colleges)
+            COLLEGE SECTION  (separate page)
         ================================================= */}
 
         {view === "colleges" && (
-          <section className="cc-section cc-colleges" id="colleges">
-            <div className="cc-wrap">
-              <div className="cc-col-head">
-                <span className="cc-eyebrow">College Directory</span>
+          <>
+        <section className="cc-section cc-colleges" id="colleges">
+          <div className="cc-wrap">
+            <div className="cc-col-head">
+              <span className="cc-eyebrow">College Directory</span>
 
-                <h2>Explore {activeCategory} Colleges</h2>
+              <h2>Explore {activeCategory} Colleges</h2>
 
-                <p>
-                  Search colleges and view complete information including basic
-                  details, institution type, courses, fees, eligibility and
-                  facilities.
-                </p>
+              <p>
+                Search colleges and view complete information including basic
+                details, institution type, courses, fees, eligibility and
+                facilities.
+              </p>
+            </div>
+
+            {/* CATEGORY TABS */}
+
+            <div className="cc-categories">
+              {COLLEGE_CATEGORIES.map((cat) => (
+                <button
+                  type="button"
+                  key={cat}
+                  className={`cc-cat-btn ${
+                    category === cat ? "cc-cat-active" : ""
+                  }`}
+                  onClick={() => {
+                    setCategory(cat);
+                    if (cat === "Healthcare & Medical Sciences") {
+                      setHealthSub("Medical");
+                    }
+                  }}
+                >
+                  {cat}
+                  <span className="cc-cat-count">
+                    {cat === "Healthcare & Medical Sciences"
+                      ? healthGroupCount
+                      : categoryCounts[cat] ?? 0}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* SUB-CATEGORY DROPDOWN (Healthcare & Medical Sciences) */}
+
+            {isHealthGroup && (
+              <div className="cc-subcategory-bar">
+                <label className="cc-subcategory-label" htmlFor="cc-subcat">
+                  Choose specialisation
+                </label>
+
+                <select
+                  id="cc-subcat"
+                  className="cc-select cc-subcategory-select"
+                  value={healthSub}
+                  onChange={(event) => setHealthSub(event.target.value)}
+                >
+                  {HEALTH_SUBCATEGORIES.map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub} ({categoryCounts[HEALTH_SUB_TO_CATEGORY[sub]] ?? 0})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* SEARCH/FILTER */}
+
+            <div className="cc-tools">
+              <div className="cc-field">
+                <Icon name="search" size={18} />
+
+                <input
+                  className="cc-input"
+                  type="search"
+                  placeholder="Search college, course, location..."
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                />
               </div>
 
-              {/* CATEGORY TABS */}
+              <select
+                className="cc-select"
+                value={city}
+                onChange={(event) => setCity(event.target.value)}
+              >
+                <option value="">All locations</option>
 
-              <div className="cc-categories">
-                {COLLEGE_CATEGORIES.map((cat) => (
+                {cityOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="cc-select"
+                value={type}
+                onChange={(event) => setType(event.target.value)}
+              >
+                <option value="">All institution types</option>
+
+                {typeOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="cc-select"
+                value={sort}
+                onChange={(event) => setSort(event.target.value)}
+              >
+                <option value="rating-desc">Rating: High to Low</option>
+                <option value="rating-asc">Rating: Low to High</option>
+                <option value="fee-asc">Fees: Low to High</option>
+                <option value="fee-desc">Fees: High to Low</option>
+                <option value="name-asc">Name: A-Z</option>
+              </select>
+            </div>
+
+            {/* RESULT COUNT */}
+
+            {!loading && !error && (
+              <div className="cc-meta-row">
+                <span className="cc-count">
+                  Showing {visibleColleges.length} of {colleges.length} colleges
+                </span>
+
+                {filtersActive && (
                   <button
                     type="button"
-                    key={cat}
-                    className={`cc-cat-btn ${
-                      category === cat ? "cc-cat-active" : ""
-                    }`}
-                    onClick={() => setCategory(cat)}
+                    className="cc-link-btn"
+                    onClick={clearFilters}
                   >
-                    {cat}
-                    <span className="cc-cat-count">
-                      {cat === "Healthcare & Medical Sciences"
-                        ? healthGroupCount
-                        : categoryCounts[cat] ?? 0}
-                    </span>
+                    Clear filters
                   </button>
-                ))}
+                )}
               </div>
+            )}
 
-              {/* SUB-CATEGORY DROPDOWN (Healthcare & Medical Sciences) */}
+            {/* LOADING */}
 
-              {isHealthGroup && (
-                <div className="cc-subcategory-bar">
-                  <label className="cc-subcategory-label" htmlFor="cc-subcat">
-                    Choose specialisation
-                  </label>
-
-                  <select
-                    id="cc-subcat"
-                    className="cc-select cc-subcategory-select"
-                    value={healthSub}
-                    onChange={(event) => setHealthSub(event.target.value)}
-                  >
-                    {HEALTH_SUBCATEGORIES.map((sub) => (
-                      <option key={sub} value={sub}>
-                        {sub} ({categoryCounts[HEALTH_SUB_TO_CATEGORY[sub]] ?? 0})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* SEARCH/FILTER */}
-
-              <div className="cc-tools">
-                <div className="cc-field">
-                  <Icon name="search" size={18} />
-
-                  <input
-                    className="cc-input"
-                    type="search"
-                    placeholder="Search college, course, location..."
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                  />
-                </div>
-
-                <select
-                  className="cc-select"
-                  value={city}
-                  onChange={(event) => setCity(event.target.value)}
-                >
-                  <option value="">All locations</option>
-
-                  {cityOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  className="cc-select"
-                  value={type}
-                  onChange={(event) => setType(event.target.value)}
-                >
-                  <option value="">All institution types</option>
-
-                  {typeOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  className="cc-select"
-                  value={sort}
-                  onChange={(event) => setSort(event.target.value)}
-                >
-                  <option value="rating-desc">Rating: High to Low</option>
-                  <option value="rating-asc">Rating: Low to High</option>
-                  <option value="fee-asc">Fees: Low to High</option>
-                  <option value="fee-desc">Fees: High to Low</option>
-                  <option value="name-asc">Name: A-Z</option>
-                </select>
+            {loading && (
+              <div className="cc-state">
+                <span className="cc-spinner" />
+                <strong>Loading colleges...</strong>
               </div>
+            )}
 
-              {/* RESULT COUNT */}
+            {/* ERROR */}
 
-              {!loading && !error && (
-                <div className="cc-meta-row">
-                  <span className="cc-count">
-                    Showing {visibleColleges.length} of {colleges.length} colleges
+            {!loading && error && (
+              <div className="cc-state">
+                <Icon name="close" size={26} />
+
+                <strong>{error}</strong>
+
+                <button
+                  className="cc-btn cc-btn-primary cc-btn-sm"
+                  onClick={() => window.location.reload()}
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+
+            {/* EMPTY */}
+
+            {!loading && !error && visibleColleges.length === 0 && (
+              <div className="cc-state">
+                <Icon name="search" size={26} />
+
+                <strong>
+                  {(categoryCounts[activeCategory] ?? 0) === 0
+                    ? `${activeCategory} colleges are not added yet`
+                    : "No colleges found"}
+                </strong>
+
+                {(categoryCounts[activeCategory] ?? 0) === 0 ? (
+                  <span style={{ color: "#64748B", fontSize: ".9rem" }}>
+                    {activeCategory} colleges will be added soon. Engineering
+                    colleges are available now.
                   </span>
-
-                  {filtersActive && (
-                    <button
-                      type="button"
-                      className="cc-link-btn"
-                      onClick={clearFilters}
-                    >
-                      Clear filters
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {/* LOADING */}
-
-              {loading && (
-                <div className="cc-state">
-                  <span className="cc-spinner" />
-                  <strong>Loading colleges...</strong>
-                </div>
-              )}
-
-              {/* ERROR */}
-
-              {!loading && error && (
-                <div className="cc-state">
-                  <Icon name="close" size={26} />
-
-                  <strong>{error}</strong>
-
-                  <button
-                    className="cc-btn cc-btn-primary cc-btn-sm"
-                    onClick={() => window.location.reload()}
-                  >
-                    Try Again
+                ) : (
+                  <button className="cc-link-btn" onClick={clearFilters}>
+                    Clear filters
                   </button>
-                </div>
-              )}
+                )}
+              </div>
+            )}
 
-              {/* EMPTY */}
+            {/* COLLEGE CARDS */}
 
-              {!loading && !error && visibleColleges.length === 0 && (
-                <div className="cc-state">
-                  <Icon name="search" size={26} />
+            {!loading && !error && visibleColleges.length > 0 && (
+              <>
+                <div className="cc-grid">
+                  {paginatedColleges.map((college) => {
+                    const name = getCollegeName(college);
+                    const location = getLocation(college);
+                    const rating = getRating(college);
+                    const image = resolveImage(college.image);
+                    const names = courseNames(college, courseIndex);
 
-                  <strong>
-                    {(categoryCounts[activeCategory] ?? 0) === 0
-                      ? `${activeCategory} colleges are not added yet`
-                      : "No colleges found"}
-                  </strong>
+                    return (
+                      <article className="cc-card" key={college.id}>
+                        <div className="cc-card-media">
+                          {image && (
+                            <img
+                              src={image}
+                              alt={`${name} campus`}
+                              loading="lazy"
+                              onError={hideBrokenImage}
+                            />
+                          )}
 
-                  {(categoryCounts[activeCategory] ?? 0) === 0 ? (
-                    <span style={{ color: "#64748B", fontSize: ".9rem" }}>
-                      {activeCategory} colleges will be added soon. Engineering
-                      colleges are available now.
-                    </span>
-                  ) : (
-                    <button className="cc-link-btn" onClick={clearFilters}>
-                      Clear filters
-                    </button>
-                  )}
-                </div>
-              )}
+                          <span className="cc-card-type">
+                            {getCollegeType(college)}
+                          </span>
 
-              {/* COLLEGE CARDS */}
+                          {rating > 0 && (
+                            <span className="cc-card-rating">
+                              <Icon name="star" size={14} />
+                              {rating.toFixed(1)}
+                            </span>
+                          )}
+                        </div>
 
-              {!loading && !error && visibleColleges.length > 0 && (
-                <>
-                  <div className="cc-grid">
-                    {paginatedColleges.map((college) => {
-                      const name = getCollegeName(college);
-                      const location = getLocation(college);
-                      const rating = getRating(college);
-                      const image = resolveImage(college.image);
-                      const names = courseNames(college, courseIndex);
+                        <div className="cc-card-body">
+                          <h3 className="cc-card-title">{name}</h3>
 
-                      return (
-                        <article className="cc-card" key={college.id}>
-                          <div className="cc-card-media">
-                            {image && (
-                              <img
-                                src={image}
-                                alt={`${name} campus`}
-                                loading="lazy"
-                                onError={hideBrokenImage}
-                              />
+                          {location && (
+                            <p className="cc-card-loc">
+                              <Icon name="pin" size={15} />
+                              {location}, {getState(college)}
+                            </p>
+                          )}
+
+                          {formatFee(getFee(college)) && (
+                            <p className="cc-card-fact">
+                              <span>Starting Fees</span>
+                              <strong>{formatFee(getFee(college))}</strong>
+                            </p>
+                          )}
+
+                          <p className="cc-card-fact">
+                            <span>Institution</span>
+                            <strong>{getCollegeType(college)}</strong>
+                          </p>
+
+                          <div className="cc-card-tags">
+                            {names.length === 0 ? (
+                              <span className="cc-tag">Courses available</span>
+                            ) : (
+                              names.slice(0, 2).map((course, index) => (
+                                <span
+                                  className="cc-tag"
+                                  key={`${course}-${index}`}
+                                >
+                                  {course}
+                                </span>
+                              ))
                             )}
 
-                            <span className="cc-card-type">
-                              {getCollegeType(college)}
-                            </span>
-
-                            {rating > 0 && (
-                              <span className="cc-card-rating">
-                                <Icon name="star" size={14} />
-                                {rating.toFixed(1)}
+                            {names.length > 2 && (
+                              <span className="cc-tag">
+                                +{names.length - 2} more
                               </span>
                             )}
                           </div>
+                        </div>
 
-                          <div className="cc-card-body">
-                            <h3 className="cc-card-title">{name}</h3>
+                        <div className="cc-card-foot">
+                          <button
+                            type="button"
+                            className="cc-btn cc-btn-primary cc-btn-block"
+                            onClick={() => setSelected(college)}
+                          >
+                            View Full Details
+                            <Icon name="arrow" size={16} />
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
 
-                            {location && (
-                              <p className="cc-card-loc">
-                                <Icon name="pin" size={15} />
-                                {location}, {getState(college)}
-                              </p>
-                            )}
+                {totalPages > 1 && (
+                  <div className="cc-pagination" aria-label="College pages">
+                    <button
+                      type="button"
+                      className="cc-page-btn cc-page-arrow"
+                      disabled={currentPage === 1}
+                      onClick={() => goToPage(currentPage - 1)}
+                    >
+                      Previous
+                    </button>
 
-                            {formatFee(getFee(college)) && (
-                              <p className="cc-card-fact">
-                                <span>Starting Fees</span>
-                                <strong>{formatFee(getFee(college))}</strong>
-                              </p>
-                            )}
-
-                            <p className="cc-card-fact">
-                              <span>Institution</span>
-                              <strong>{getCollegeType(college)}</strong>
-                            </p>
-
-                            <div className="cc-card-tags">
-                              {names.length === 0 ? (
-                                <span className="cc-tag">Courses available</span>
-                              ) : (
-                                names.slice(0, 2).map((course, index) => (
-                                  <span
-                                    className="cc-tag"
-                                    key={`${course}-${index}`}
-                                  >
-                                    {course}
-                                  </span>
-                                ))
-                              )}
-
-                              {names.length > 2 && (
-                                <span className="cc-tag">
-                                  +{names.length - 2} more
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="cc-card-foot">
-                            <button
-                              type="button"
-                              className="cc-btn cc-btn-primary cc-btn-block"
-                              onClick={() => setSelected(college)}
-                            >
-                              View Full Details
-                              <Icon name="arrow" size={16} />
-                            </button>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-
-                  {totalPages > 1 && (
-                    <div className="cc-pagination" aria-label="College pages">
-                      <button
-                        type="button"
-                        className="cc-page-btn cc-page-arrow"
-                        disabled={currentPage === 1}
-                        onClick={() => goToPage(currentPage - 1)}
-                      >
-                        Previous
-                      </button>
-
-                      <div className="cc-page-numbers">
-                        {buildPages(currentPage, totalPages).map((page) =>
-                          typeof page === "string" ? (
-                            <span key={page} className="cc-page-dots">
-                              …
-                            </span>
-                          ) : (
-                            <button
-                              key={page}
-                              type="button"
-                              className={`cc-page-btn ${
-                                currentPage === page ? "cc-page-active" : ""
-                              }`}
-                              aria-current={
-                                currentPage === page ? "page" : undefined
-                              }
-                              onClick={() => goToPage(page)}
-                            >
-                              {page}
-                            </button>
-                          ),
-                        )}
-                      </div>
-
-                      <button
-                        type="button"
-                        className="cc-page-btn cc-page-arrow"
-                        disabled={currentPage === totalPages}
-                        onClick={() => goToPage(currentPage + 1)}
-                      >
-                        Next
-                      </button>
+                    <div className="cc-page-numbers">
+                      {buildPages(currentPage, totalPages).map((page) =>
+                        typeof page === "string" ? (
+                          <span key={page} className="cc-page-dots">
+                            …
+                          </span>
+                        ) : (
+                          <button
+                            key={page}
+                            type="button"
+                            className={`cc-page-btn ${
+                              currentPage === page ? "cc-page-active" : ""
+                            }`}
+                            aria-current={
+                              currentPage === page ? "page" : undefined
+                            }
+                            onClick={() => goToPage(page)}
+                          >
+                            {page}
+                          </button>
+                        ),
+                      )}
                     </div>
-                  )}
-                </>
-              )}
-            </div>
-          </section>
+
+                    <button
+                      type="button"
+                      className="cc-page-btn cc-page-arrow"
+                      disabled={currentPage === totalPages}
+                      onClick={() => goToPage(currentPage + 1)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+          </>
         )}
 
         {/* =================================================
