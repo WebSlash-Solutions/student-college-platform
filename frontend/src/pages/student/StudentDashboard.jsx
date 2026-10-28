@@ -6,6 +6,7 @@ import medicalData from "./medical.json";
 import nursingData from "./nursing.json";
 import alliedData from "./allied.json";
 import physiotherapyData from "./Physiotherapy.json";
+import pharmacyData from "./pharmacy.json";
 import lawData from "./law.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
@@ -1988,14 +1989,14 @@ export default function StudentDashboard() {
   const ITEMS_PER_PAGE = 9;
 
   /* =======================================================
-     LOAD DATA FROM db.json (imported, no server)
+     LOAD DATA FROM JSON FILES (imported, no server)
   ======================================================= */
 
   useEffect(() => {
     setLoading(true);
     setError("");
 
-    // sources: engineering (db.json) + arts (arts.json)
+    // sources: engineering (db.json) + arts + healthcare + law
     const engList = Array.isArray(dbData?.colleges) ? dbData.colleges : [];
     const artsList = Array.isArray(artsData?.colleges) ? artsData.colleges : [];
     const engCourses = Array.isArray(dbData?.courses) ? dbData.courses : [];
@@ -2025,6 +2026,18 @@ export default function StudentDashboard() {
       : [];
     const physiotherapyCourses = Array.isArray(physiotherapyData?.courses)
       ? physiotherapyData.courses
+      : [];
+    const pharmacyList = Array.isArray(pharmacyData?.colleges)
+      ? pharmacyData.colleges
+      : [];
+    const pharmacyCourses = Array.isArray(pharmacyData?.courses)
+      ? pharmacyData.courses
+      : [];
+    const lawList = Array.isArray(lawData?.colleges)
+      ? lawData.colleges
+      : [];
+    const lawCourses = Array.isArray(lawData?.courses)
+      ? lawData.courses
       : [];
     const links = Array.isArray(dbData?.collegeCourses)
       ? dbData.collegeCourses
@@ -2063,6 +2076,8 @@ export default function StudentDashboard() {
       ...nursingList.map((college) => decorate(college, false)),
       ...alliedList.map((college) => decorate(college, false)),
       ...physiotherapyList.map((college) => decorate(college, false)),
+      ...pharmacyList.map((college) => decorate(college, false)),
+      ...lawList.map((college) => decorate(college, false)),
     ]);
     setCourses([
       ...engCourses,
@@ -2071,6 +2086,8 @@ export default function StudentDashboard() {
       ...nursingCourses,
       ...alliedCourses,
       ...physiotherapyCourses,
+      ...pharmacyCourses,
+      ...lawCourses,
     ]);
     setLoading(false);
   }, []);
@@ -2129,10 +2146,16 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
-  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Healthcare & Medical Sciences"];
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Healthcare & Medical Sciences", "Law"];
 
   // subcategories shown under the "Healthcare & Medical Sciences" umbrella
-  const HEALTH_SUBCATEGORIES = ["Medical", "Nursing", "Allied Health", "Physiotherapy"];
+  const HEALTH_SUBCATEGORIES = [
+    "Medical",
+    "Nursing",
+    "Allied Health",
+    "Physiotherapy",
+    "Pharmacy",
+  ];
 
   // maps a subcategory tab to the `category` value stored on the colleges
   const HEALTH_SUB_TO_CATEGORY = {
@@ -2140,6 +2163,7 @@ export default function StudentDashboard() {
     Nursing: "Nursing",
     "Allied Health": "Allied",
     Physiotherapy: "Physiotherapy",
+    Pharmacy: "Pharmacy",
   };
 
   const isHealthGroup = category === "Healthcare & Medical Sciences";
@@ -2163,7 +2187,8 @@ export default function StudentDashboard() {
     (categoryCounts.Medical ?? 0) +
     (categoryCounts.Nursing ?? 0) +
     (categoryCounts.Allied ?? 0) +
-    (categoryCounts.Physiotherapy ?? 0);
+    (categoryCounts.Physiotherapy ?? 0) +
+    (categoryCounts.Pharmacy ?? 0);
 
   /* =======================================================
      FILTER + SORT
@@ -2677,7 +2702,12 @@ export default function StudentDashboard() {
                   className={`cc-cat-btn ${
                     category === cat ? "cc-cat-active" : ""
                   }`}
-                  onClick={() => setCategory(cat)}
+                  onClick={() => {
+                    setCategory(cat);
+                    if (cat === "Healthcare & Medical Sciences") {
+                      setHealthSub("Medical");
+                    }
+                  }}
                 >
                   {cat}
                   <span className="cc-cat-count">

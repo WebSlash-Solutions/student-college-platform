@@ -15,18 +15,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -36,6 +42,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -55,18 +77,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -76,6 +104,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -95,18 +139,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -116,6 +166,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -135,18 +201,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.glctry.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -156,6 +228,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -175,18 +263,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://glccbe.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -196,6 +290,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -215,18 +325,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "http://www.glctvl.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -236,6 +352,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -255,18 +387,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -276,6 +414,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -295,18 +449,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -316,6 +476,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -335,18 +511,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -356,6 +538,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -375,18 +573,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -396,6 +600,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -415,18 +635,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -436,6 +662,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -455,18 +697,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -476,6 +724,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -495,18 +759,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -516,6 +786,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -535,18 +821,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -556,6 +848,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -575,18 +883,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Government Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
         "Moot Court",
-        "Computer Lab"
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndls.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -596,6 +910,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -615,21 +945,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -649,21 +1007,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -683,17 +1069,24 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated and 3-year LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
         701,
-        702
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
@@ -703,6 +1096,22 @@
         {
           "code": "LLB",
           "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -722,21 +1131,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -756,21 +1193,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -790,21 +1255,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -824,21 +1317,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -858,21 +1379,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -892,21 +1441,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -926,21 +1503,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Women's Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Women's Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -960,21 +1565,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -994,21 +1627,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -1028,21 +1689,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -1062,21 +1751,49 @@
       "established": null,
       "rating": null,
       "fee": null,
-      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering 5-year integrated LL.B. courses.",
+      "about": "Private Law College affiliated to Tamil Nadu Dr. Ambedkar Law University offering B.A. LL.B., LL.B. (3 Year), B.Com. LL.B., B.B.A. LL.B., B.C.A. LL.B. and LL.M. courses.",
       "facilities": [
         "Library",
-        "Moot Court"
+        "Moot Court",
+        "Computer Lab",
+        "Hostel",
+        "Sports Complex"
       ],
       "eligibility": "As per TNDALU admission norms",
       "courseIds": [
-        701
+        701,
+        702,
+        703,
+        704,
+        705,
+        706
       ],
-      "website": null,
+      "website": "https://www.tndalu.ac.in/",
       "locality2": null,
       "branches": [
         {
           "code": "BA.LLB",
           "name": "B.A. LL.B."
+        },
+        {
+          "code": "LLB",
+          "name": "LL.B. (3 Year)"
+        },
+        {
+          "code": "BCOM.LLB",
+          "name": "B.Com. LL.B."
+        },
+        {
+          "code": "BBA.LLB",
+          "name": "B.B.A. LL.B."
+        },
+        {
+          "code": "BCA.LLB",
+          "name": "B.C.A. LL.B."
+        },
+        {
+          "code": "LLM",
+          "name": "LL.M."
         }
       ],
       "image": null
@@ -1091,6 +1808,26 @@
     {
       "id": 702,
       "name": "LL.B. (3 Year)",
+      "category": "Law"
+    },
+    {
+      "id": 703,
+      "name": "B.Com. LL.B. (5 Year Integrated)",
+      "category": "Law"
+    },
+    {
+      "id": 704,
+      "name": "B.B.A. LL.B. (5 Year Integrated)",
+      "category": "Law"
+    },
+    {
+      "id": 705,
+      "name": "B.C.A. LL.B. (5 Year Integrated)",
+      "category": "Law"
+    },
+    {
+      "id": 706,
+      "name": "LL.M. (Postgraduate)",
       "category": "Law"
     }
   ]
