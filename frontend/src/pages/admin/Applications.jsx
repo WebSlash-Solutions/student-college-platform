@@ -13,12 +13,17 @@ const NAV = [
     { label: "Users", icon: "♧", path: "/admin/users" },
     { label: "Settings", icon: "⚙", path: "/admin/settings" },
 ];
-// Same logout as the Courses page: clear session and go to the admin login page
+// Same logout as the Users page: clear the session, fade the page out and go to the login page
 const handleAdminLogout = () => {
-    sessionStorage.clear();
-    localStorage.removeItem("isAdminLoggedIn");
-    localStorage.removeItem("adminLoggedIn");
-    window.location.replace("/admin/login");
+    try {
+        localStorage.clear();
+        sessionStorage.clear();
+    }
+    catch {
+        /* storage not available - ignore */
+    }
+    document.querySelector(".dm-app")?.classList.add("is-leaving");
+    setTimeout(() => window.location.replace("/login"), 350);
 };
 const STATS = [
     { label: "Total Students", value: 12450, trend: 2, tone: "blue", icon: "👥" },
@@ -740,6 +745,172 @@ function SmartAlerts({ alerts, onView, onViewAll }) {
       </div>
     </section>);
 }
+/* ───────────────────────── REGISTERED COLLEGE LOGINS (Unlock) ───────────────────────── */
+const LOGIN_COLLEGES = [
+    { id: "COL2025001", name: "SNS College of Technology", type: "Engineering College", city: "Coimbatore", userId: "sns.tech@campus", password: "Sns@2025#Ct" },
+    { id: "COL2025002", name: "PSG College of Technology", type: "Engineering College", city: "Coimbatore", userId: "psg.tech@campus", password: "Psg@4821#Tc" },
+    { id: "COL2025003", name: "Kongunadu Arts and Science College", type: "Arts & Science College", city: "Coimbatore", userId: "kongunadu.asc@campus", password: "Kon@7345#As" },
+    { id: "COL2025004", name: "Kumaraguru College of Technology", type: "Engineering College", city: "Coimbatore", userId: "kct.admin@campus", password: "Kct@9062#Ad" },
+    { id: "COL2025005", name: "Coimbatore Medical College", type: "Medical College", city: "Coimbatore", userId: "cmc.admin@campus", password: "Cmc@3158#Md" },
+    { id: "COL2025006", name: "Government Polytechnic College", type: "Polytechnic College", city: "Tiruppur", userId: "gpt.tiruppur@campus", password: "Gpt@6277#Pt" },
+    { id: "COL2025007", name: "Nirmala College for Women", type: "Arts & Science College", city: "Erode", userId: "nirmala.women@campus", password: "Nir@1894#Wm" },
+    { id: "COL2025008", name: "PSG Institute of Management", type: "Management (MBA) College", city: "Chennai", userId: "psg.mba@campus", password: "Pim@5530#Mb" },
+    { id: "COL2025009", name: "KMCH College of Nursing", type: "Nursing College", city: "Coimbatore", userId: "kmch.nursing@campus", password: "Kmc@8416#Ns" },
+    { id: "COL2025010", name: "Sri Krishna College of Engineering and Technology", type: "Engineering College", city: "Erode", userId: "skcet.admin@campus", password: "Skc@2749#En" },
+];
+const LOGIN_COLORS = ["#c5d8f9", "#f9c5d1", "#c5f9e0", "#f9d9c5", "#e0d4fb"];
+const LOGIN_PAGE = 5;
+const LOCK_AFTER = 30; // seconds before an unlocked login locks itself again
+const genPassword = (name) => {
+    const base = name.replace(/[^A-Za-z]/g, "").slice(0, 3) || "Col";
+    const pick = (s) => s[Math.floor(Math.random() * s.length)];
+    const num = String(Math.floor(1000 + Math.random() * 9000));
+    return `${base[0].toUpperCase()}${base.slice(1).toLowerCase()}${pick("@#$!")}${num}${pick("ABCDEFGHJKLMNPQRSTUVWXYZ")}${pick("abcdefghjkmnpqrstuvwxyz")}${pick("#$@!")}`;
+};
+function CollegeLogins({ onCopy, onToast }) {
+    const [list, setList] = useState(() => {
+        try {
+            const saved = localStorage.getItem("registeredCollegeLogins");
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    // Keep the existing demo logins while including newly created colleges.
+                    const merged = [...parsed];
+                    LOGIN_COLLEGES.forEach((college) => {
+                        if (!merged.some((item) => item.id === college.id || item.userId === college.userId)) {
+                            merged.push(college);
+                        }
+                    });
+                    return merged;
+                }
+            }
+        } catch (error) {
+            console.error("Unable to read saved college logins:", error);
+        }
+        return LOGIN_COLLEGES;
+    });
+    const [unlocked, setUnlocked] = useState({}); // id -> auto-lock time (ms)
+    const [shown, setShown] = useState({});
+    const [q, setQ] = useState("");
+    const [district, setDistrict] = useState("All");
+    const [page, setPage] = useState(1);
+    const [now, setNow] = useState(Date.now());
+    const total = list.length;
+    const count = Object.keys(unlocked).length;
+
+    // Keep the same credentials available to AdminLogin after refresh/navigation.
+    useEffect(() => {
+        try {
+            localStorage.setItem("registeredCollegeLogins", JSON.stringify(list));
+        } catch (error) {
+            console.error("Unable to save college logins:", error);
+        }
+    }, [list]);
+    // tick every second only while something is unlocked; lock again when time is up
+    useEffect(() => {
+        if (count === 0)
+            return undefined;
+        const t = setInterval(() => {
+            const n = Date.now();
+            setNow(n);
+            setUnlocked((u) => {
+                const next = {};
+                let changed = false;
+                Object.keys(u).forEach((id) => {
+                    if (u[id] > n)
+                        next[id] = u[id];
+                    else
+                        changed = true;
+                });
+                return changed ? next : u;
+            });
+        }, 1000);
+        return () => clearInterval(t);
+    }, [count]);
+    const filtered = useMemo(() => {
+        const t = q.trim().toLowerCase();
+        return list.filter((c) => (district === "All" || c.city === district) &&
+            (!t || `${c.name} ${c.id} ${c.type} ${c.city}`.toLowerCase().includes(t)));
+    }, [list, q, district]);
+    const pages = Math.max(1, Math.ceil(filtered.length / LOGIN_PAGE));
+    useEffect(() => { setPage(1); }, [q, district]);
+    useEffect(() => {
+        if (page > pages)
+            setPage(pages);
+    }, [pages, page]);
+    const view = filtered.slice((page - 1) * LOGIN_PAGE, page * LOGIN_PAGE);
+    const unlock = (id) => { setNow(Date.now()); setUnlocked((u) => ({ ...u, [id]: Date.now() + LOCK_AFTER * 1000 })); };
+    const toggleShow = (id) => setShown((s) => ({ ...s, [id]: !s[id] }));
+    const reset = () => { setUnlocked({}); setShown({}); };
+    const resetPassword = (c) => {
+        const password = genPassword(c.name);
+        setList((l) => l.map((x) => (x.id === c.id ? { ...x, password } : x)));
+        setShown((s) => ({ ...s, [c.id]: true }));
+        setNow(Date.now());
+        setUnlocked((u) => ({ ...u, [c.id]: Date.now() + LOCK_AFTER * 1000 }));
+        if (onToast)
+            onToast(`New password generated for ${c.name}`);
+    };
+    return (<section className="dm-card dm-card--pad dm-logins" aria-label="Registered college logins">
+      <div className="dm-logins__head">
+        <div>
+          <h2>🔐 Registered College Logins</h2>
+          <p className="dm-help">Click <b>Unlock</b> to reveal the User ID and Password. An unlocked login locks itself again after {LOCK_AFTER} seconds.</p>
+        </div>
+        <div className="dm-logins__meta">
+          <span><b>{count}</b> / {total} unlocked</span>
+          <button className="dm-btn dm-btn--ghost" onClick={reset} disabled={count === 0}>Lock All</button>
+        </div>
+      </div>
+
+      <div className="dm-toolbar">
+        <input className="dm-search dm-search--sm" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search college by name, ID or type..." aria-label="Search college logins"/>
+        <select className="dm-select" value={district} onChange={(e) => setDistrict(e.target.value)} aria-label="Filter by district">
+          <option value="All">All districts</option>
+          {DISTRICTS.map((d) => <option key={d} value={d}>{d}</option>)}
+        </select>
+        <span className="dm-count">{filtered.length} of {total}</span>
+      </div>
+
+      {view.length === 0 ? <p className="dm-empty dm-empty--soft">No registered college found.</p> : (<ul className="dm-logins__list">
+        {view.map((c, i) => {
+            const open = !!unlocked[c.id];
+            const visible = !!shown[c.id];
+            const secs = open ? Math.max(0, Math.ceil((unlocked[c.id] - now) / 1000)) : 0;
+            return (<li key={c.id} className={`dm-login ${open ? "is-open" : ""}`}>
+              <div className="dm-login__who">
+                <span className="dm-person__avatar" style={{ background: LOGIN_COLORS[(list.indexOf(c)) % LOGIN_COLORS.length], color: "#17365f" }}>{c.name[0]}</span>
+                <div>
+                  <strong>{c.name}</strong>
+                  <small>{c.id} · {c.type} · {c.city}</small>
+                </div>
+              </div>
+
+              <div className="dm-login__field">
+                <small>User ID</small>
+                {open ? <code>{c.userId}</code> : <span className="dm-login__mask">•••••••••••• 🔒</span>}
+              </div>
+
+              <div className="dm-login__field">
+                <small>Password</small>
+                {open ? <code>{visible ? c.password : "•".repeat(c.password.length)}</code> : <span className="dm-login__mask">•••••••••••• 🔒</span>}
+              </div>
+
+              <div className="dm-login__act">
+                {!open ? (<button className="dm-btn dm-btn--primary dm-login__unlock" onClick={() => unlock(c.id)}>🔓 Unlock</button>) : (<>
+                    <button className="dm-btn dm-btn--ghost" onClick={() => toggleShow(c.id)}>{visible ? "🙈 Hide" : "👁 Show"}</button>
+                    <button className="dm-btn dm-btn--outline" onClick={() => onCopy(`${c.userId} / ${c.password}`)}>📋 Copy</button>
+                    <button className="dm-btn dm-btn--ghost" onClick={() => resetPassword(c)} title="Generate a new password">🔄 Reset Password</button>
+                  </>)}
+              </div>
+              {open && <small className="dm-login__timer">⏱ Auto-locks in {secs}s</small>}
+            </li>);
+        })}
+      </ul>)}
+
+      {filtered.length > LOGIN_PAGE && <Pager page={page} pages={pages} total={filtered.length} pageSize={LOGIN_PAGE} onPage={setPage}/>}
+    </section>);
+}
 function ConfirmModal({ rec, status, onCancel, onConfirm }) {
     const isUnique = status === "Unique";
     useEffect(() => {
@@ -1199,6 +1370,11 @@ export default function DuplicateManagement() {
               <UniqueCards studentCount={uniqStudents.length} collegeCount={uniqColleges.length} onOpen={openUnique}/>
             </section>
           </aside>
+
+          {/* Full-width row: spans under both columns so there is no empty gap on the right */}
+          <div className="dm-fullrow">
+            <CollegeLogins onCopy={copyId} onToast={showToast}/>
+          </div>
         </div>
       </div>
 
@@ -1281,6 +1457,11 @@ body {
   text-align: left;
   font-family: "Inter","Segoe UI",system-ui,sans-serif;
   font-size: 14px;
+  transition: opacity .35s ease;
+}
+.dm-app.is-leaving {
+  opacity: 0;
+  pointer-events: none;
 }
 .dm-app * {
   box-sizing: border-box;
@@ -3258,5 +3439,139 @@ body {
 .dm-confirm__foot .dm-btn {
   flex: 1;
   padding: 11px 16px;
+}
+/*── Registered college logins (Unlock) ──*/
+.dm-fullrow {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.dm-logins {
+  container-type: inline-size;
+  container-name: dmlogins;
+}
+.dm-logins__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.dm-logins__head .dm-help {
+  margin-bottom: 0;
+}
+.dm-logins__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.dm-logins__meta b {
+  color: var(--blue);
+  font-size: 15px;
+}
+.dm-logins__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dm-login {
+  display: grid;
+  grid-template-columns: minmax(0,2.2fr) minmax(0,1.3fr) minmax(0,1.3fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fafcff;
+  transition: background .2s,border-color .2s,box-shadow .2s;
+}
+.dm-login:hover {
+  border-color: #cfe0ff;
+  box-shadow: 0 6px 16px rgba(20,33,61,.06);
+}
+.dm-login.is-open {
+  background: #f1fbf6;
+  border-color: #bfe9d6;
+}
+.dm-login__who {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+.dm-login__who > div {
+  min-width: 0;
+}
+.dm-login__who strong,.dm-login__who small {
+  overflow-wrap: anywhere;
+}
+.dm-login__field {
+  min-width: 0;
+}
+.dm-login__field small {
+  margin: 0 0 3px;
+}
+.dm-login__field code {
+  display: inline-block;
+  max-width: 100%;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: #fff;
+  border: 1px solid #bfe9d6;
+  color: #0f6b47;
+  font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  animation: dm-pop .3s both;
+}
+.dm-login__mask {
+  display: inline-block;
+  color: #9aa9bf;
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.dm-login__act {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.dm-login__unlock {
+  min-width: 108px;
+}
+.dm-login__timer {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #0f8a58;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.dm-logins .dm-toolbar {
+  padding: 0 0 14px;
+}
+.dm-logins .dm-pager {
+  padding: 14px 0 0;
+}
+@container dmlogins (max-width: 760px) {
+  .dm-login {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  }
+  .dm-login__who {
+    grid-column: 1 / -1;
+  }
+  .dm-login__act {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+  .dm-login__act .dm-btn {
+    flex: 1;
+  }
 }
 `;

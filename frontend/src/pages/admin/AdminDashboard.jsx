@@ -5,6 +5,7 @@ import CourseManagement from "./CourseManagement";
 import Transactions from "./Transactions";
 import ReportsAnalytics from "./Reportsanalytics";
 import Users from "./Users";
+import Settings from "./Settings";
 
 const adminStyles = String.raw`/* =========================================================
    GLOBAL ADMIN
@@ -570,8 +571,8 @@ const adminStyles = String.raw`/* ==============================================
   height: 82px;
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 0 22px;
+  gap: 10px;
+  padding: 0 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
@@ -616,7 +617,8 @@ const adminStyles = String.raw`/* ==============================================
 }
 
 .menu-title {
-  margin: 0 12px 10px;
+  margin: 0 0 10px;
+  text-align: center;
   color: #6f86a7;
   font-size: 9px;
   font-weight: 700;
@@ -738,8 +740,8 @@ const adminStyles = String.raw`/* ==============================================
 }
 
 .admin-topbar {
-  height: 72px;
-  padding: 0 30px;
+  height: 65px;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -754,7 +756,8 @@ const adminStyles = String.raw`/* ==============================================
 
 .top-search-container {
   position: relative;
-  width: 400px;
+  width: 520px;
+  max-width: 520px;
 }
 
 .top-search {
@@ -1907,7 +1910,7 @@ font-size: 14px;
   }
 
   .admin-topbar {
-    padding: 0 20px;
+    padding: 0 14px;
   }
 
   .top-search {
@@ -2165,7 +2168,7 @@ font-size: 14px;
 
   .admin-sidebar.mobile-open .sidebar-brand {
     justify-content: flex-start;
-    padding: 0 22px;
+    padding: 0 20px;
   }
 
   .admin-sidebar.mobile-open .sidebar-brand > div:last-child,
@@ -2732,6 +2735,8 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate, isSidebar
                 navigate("/admin/reports");
               } else if (item.name === "Users") {
                 navigate("/admin/users");
+              } else if (item.name === "Settings") {
+                navigate("/admin/settings");
               } else if (item.name === "Dashboard") {
                 navigate("/admin/dashboard");
               } else {
@@ -3868,6 +3873,7 @@ const PATH_TO_PAGE = {
   "/admin/transactions": "Transactions",
   "/admin/reports": "Reports",
   "/admin/users": "Users",
+  "/admin/settings": "Settings",
 };
 
 function getPageFromPath(pathname) {
@@ -3965,6 +3971,8 @@ function AdminDashboard() {
               <ReportsAnalytics embedded />
             ) : activePage === "Users" ? (
               <Users embedded />
+            ) : activePage === "Settings" ? (
+              <Settings embedded />
             ) : (
               <AdminSection title={activePage} />
             )}
