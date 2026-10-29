@@ -732,12 +732,80 @@ function HxAvatar({ src, look }) {
   if (!src || bad) return <Student {...look} />;
   return <img src={src} alt="Student" draggable="false" onError={() => setBad(true)} />;
 }
+/* Boost Plans: floating sparkle particles  [left %, size px, duration s, delay s, sway px] */
+const PC_SPARKS = [
+  [6, 8, 11, 0, 24], [15, 5, 9, 2, -18], [26, 10, 13, 4, 30], [37, 6, 10, 1, -26],
+  [48, 8, 12, 5, 20], [58, 5, 9, 3, -22], [68, 10, 14, 0.5, 28], [77, 6, 10, 6, -16],
+  [87, 8, 12, 2.5, 22], [94, 5, 9, 4.5, -20],
+];
 /* ---------- Boost Plans: card theme + line icons ---------- */
 const PLAN_UI = {
   elite: { tone: "blue", side: "l" },
   gold: { tone: "gold", side: "c" },
   diamond: { tone: "green", side: "r" },
 };
+
+/* Boost Plans: gold-dust particles inside the Gold card  [left %, size px, duration s, delay s] */
+const PC_DUST = [
+  [10, 5, 4.4, 0], [22, 4, 5.2, 1.1], [35, 6, 4.8, 2.2], [48, 4, 5.6, 0.6],
+  [60, 5, 4.6, 1.8], [72, 6, 5.4, 0.3], [84, 4, 4.9, 2.6], [92, 5, 5.8, 3.2],
+];
+
+/* Boost Plans (home cards only): unique content based on the project spec.
+   PLANS above is NOT changed, so the login-only pricing page stays exactly as it was. */
+const PC_CONTENT = {
+  elite: {
+    tag: "Start receiving verified student interest",
+    who: "🏫 Best for new colleges",
+    features: [
+      "Admin-verified college profile & listing",
+      "Free lead preview: Student ID, 12th %, course",
+      "Add & manage courses, fees and seats",
+      "Unlock any student's contact for ₹100",
+    ],
+  },
+  gold: {
+    tag: "Faster, smarter leads for growing colleges",
+    who: "📈 Best for growing colleges",
+    features: [
+      "Everything in Elite",
+      "Match-score ranked student leads",
+      "Featured badge + district search priority",
+      "Wallet unlocks & CSV export of leads",
+    ],
+  },
+  diamond: {
+    tag: "Full-scale admission campaigns, done with you",
+    who: "🚀 Best for large colleges",
+    features: [
+      "Everything in Gold",
+      "Top placement in search & recommendations",
+      "Instant SMS / email alerts for new interest",
+      "Dedicated manager & campaign support",
+    ],
+  },
+};
+
+/* spotlight that follows the finger / mouse on a plan card (sets CSS vars only) */
+function pcMove(e) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  if (!r.width || !r.height) return;
+  const px = (e.clientX - r.left) / r.width;
+  const py = (e.clientY - r.top) / r.height;
+  el.style.setProperty("--mx", `${px * 100}%`);
+  el.style.setProperty("--my", `${py * 100}%`);
+  if (e.pointerType === "mouse") {
+    // soft 3D tilt - used by CSS on laptop/desktop only
+    el.style.setProperty("--rx", `${((0.5 - py) * 7).toFixed(2)}deg`);
+    el.style.setProperty("--ry", `${((px - 0.5) * 9).toFixed(2)}deg`);
+  }
+}
+function pcLeave(e) {
+  const el = e.currentTarget;
+  el.style.setProperty("--rx", "0deg");
+  el.style.setProperty("--ry", "0deg");
+}
 
 function PlanIcon({ id }) {
   const paths = {
@@ -854,6 +922,18 @@ function CollegeSite() {
     // Create a payment order on the backend here; unlock only after the backend verifies payment.
     navigate(`/college/payment?plan=${chosen.id}&period=${period}`);
   };
+
+  useEffect(() => {
+    // Boost Plans: the card passing through the middle of the screen lights up (phone / tablet replacement for hover)
+    if (showPricing || typeof IntersectionObserver === "undefined") return undefined;
+    const slots = document.querySelectorAll(".pc-slot");
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle("live", e.isIntersecting)),
+      { threshold: 0, rootMargin: "-38% 0px -38% 0px" }
+    );
+    slots.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [showPricing]);
 
   useEffect(() => {
     // reveal on scroll
@@ -1255,7 +1335,10 @@ function CollegeSite() {
 
           {/* ================= PLANS (prices only after login) ================= */}
 <section id="plans" className="cs-light pc-sec">
-  <span className="cs-blob b6" /><span className="cs-blob b7" />
+  <span className="cs-blob b4" /><span className="cs-blob b5" />
+  <div className="pc-sparks" aria-hidden="true">
+    {PC_SPARKS.map(([x, sz, t, dl, dx], i) => (<i key={i} style={{ "--x": `${x}%`, "--s": `${sz}px`, "--t": `${t}s`, "--dl": `${dl}s`, "--dx": `${dx}px` }} />))}
+  </div>
   <div className="cs-wrap cs-sec">
     <span className="cs-eyebrow dark cs-rv">BOOST PLANS</span>
     <h2 className="cs-h2 light cs-rv"><Words>Choose a plan that <span className="cs-grad">fits your college</span></Words></h2>
@@ -1263,31 +1346,39 @@ function CollegeSite() {
     <div className="pc-grid">
       {PLANS.map((p, i) => {
         const ui = PLAN_UI[p.id];
+        const c = PC_CONTENT[p.id];
+        const rv = ui.side === "l" ? "left" : ui.side === "r" ? "right" : "zoom";
         return (
-          <div key={p.id} className={`pc-slot ${ui.side} cs-rv zoom`} style={{ "--d": `${i * 0.12}s` }}>
-            <article className={`pc-card ${ui.tone}`}>
+          <div key={p.id} className={`pc-slot ${ui.side} cs-rv ${rv}`} style={{ "--d": `${i * 0.12}s` }}>
+            {p.id === "gold" && <span className="pc-sonar" aria-hidden="true" />}
+            <article className={`pc-card ${ui.tone}`} onPointerMove={pcMove} onPointerDown={pcMove} onPointerLeave={pcLeave}>
+              <span className="pc-glow" aria-hidden="true" />
+              {p.id === "gold" && (
+                <span className="pc-dust" aria-hidden="true">
+                  {PC_DUST.map(([x, sz, t, dl], k) => (<i key={k} style={{ "--x": `${x}%`, "--s": `${sz}px`, "--t": `${t}s`, "--dl": `${dl}s` }} />))}
+                </span>
+              )}
               {p.id === "gold" && <span className="pc-badge">★ Most chosen</span>}
-              <span className="pc-ic"><PlanIcon id={p.id} /></span>
+              <span className="pc-ic">
+                {p.id === "gold" && <i className="pc-rays" aria-hidden="true" />}
+                <PlanIcon id={p.id} />
+                <i className="pc-orbit" aria-hidden="true" />
+                <i className="pc-tw t1" aria-hidden="true" /><i className="pc-tw t2" aria-hidden="true" /><i className="pc-tw t3" aria-hidden="true" />
+              </span>
               <h3>{p.name}</h3>
-              <p className="pc-tag">{p.tagline}</p>
+              <p className="pc-tag">{c.tag}</p>
+              <span className="pc-for">{c.who}</span>
 
-              {/* price is rendered ONLY when logged in */}
-              <div className="pc-price">
-                {loggedIn ? (
-                  <><strong>{rupee(MONTHLY[p.id])}</strong><span>/month</span></>
-                ) : (
-                  <><strong className="lock">₹ ••••</strong><span>/month</span></>
-                )}
-              </div>
+              {/* no price here - prices are shown only on the next page (after register / login) */}
 
               <ul>
-                {p.features.map((f) => (
+                {c.features.map((f) => (
                   <li key={f}><i>✓</i>{f}</li>
                 ))}
               </ul>
 
               <button className="pc-btn" onClick={goPlans}>
-                {loggedIn ? "View Plans & Prices" : "🔒 Login to view prices"}
+                {loggedIn ? "View Plans & Prices" : "🔒 Login to view prices"} <span className="pc-arr" aria-hidden="true">→</span>
               </button>
             </article>
           </div>
@@ -2406,13 +2497,15 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 @media (max-width:640px) { .cs-ribbons { gap:12px; padding:20px 0; } }
 @media (prefers-reduced-motion:reduce) { .cs-ribbons,.cs-ribbons::after { animation:none!important; } }
 /* ================= BOOST PLANS: dark glass pricing cards ================= */
-.cs-light.pc-sec { margin:clamp(22px,3vw,44px) clamp(10px,2vw,28px); border-radius:clamp(36px,6vw,84px); color:#fff; background:radial-gradient(700px 360px at 50% 0%,rgba(25,179,230,.22),transparent 70%),linear-gradient(155deg,#0a1744,#0d2f7a 60%,#0b4f9e); }
+.cs-light.pc-sec { margin:clamp(22px,3vw,44px) clamp(10px,2vw,28px); border-radius:clamp(36px,6vw,84px); color:var(--ink); background:linear-gradient(160deg,#e3eeff 0%,#f0f6ff 50%,#e1f4ff 100%); }
+.pc-sec .cs-h2.light { color:var(--ink); }
+.pc-sec .cs-eyebrow.dark { background:#e1ecff; color:var(--blue); }
 .cs-why + .cs-light.pc-sec>.cs-sec { padding-block:clamp(56px,7vw,110px); }
 .pc-sec .cs-sec { z-index:2; }
-.pc-sec .cs-plans-note { color:#a9c4ec; }
+.pc-sec .cs-plans-note { color:var(--muted); }
 .pc-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(18px,2.6vw,46px); align-items:center; width:min(100%,1700px); margin:84px auto 0; }
 .pc-slot { position:relative; }
-.pc-card { --c:rgba(90,180,255,.7); --ic:#5ab4ff; --bg:rgba(90,180,255,.16); position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; padding:46px 34px 34px; border-radius:52px; background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.02) 55%),rgba(6,24,64,.6); border:2px solid var(--c); box-shadow:0 34px 64px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.16); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .4s; }
+.pc-card { --c:rgba(90,180,255,.7); --ic:#5ab4ff; --bg:rgba(90,180,255,.16); position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; padding:46px 34px 34px; border-radius:52px; background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.02) 55%),linear-gradient(160deg,#10296e,#0a1b4d); border:2px solid var(--c); box-shadow:0 34px 64px -30px rgba(11,27,58,.55),inset 0 1px 0 rgba(255,255,255,.16); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .4s; }
 .pc-card.gold { --c:rgba(240,192,48,.8); --ic:#f0c030; --bg:rgba(240,192,48,.16); }
 .pc-card.green { --c:rgba(52,211,153,.7); --ic:#34d399; --bg:rgba(52,211,153,.16); }
 .pc-slot.l .pc-card { transform:perspective(1300px) rotateY(26deg) rotateZ(-6deg) translateY(28px) scale(.96); }
@@ -2439,6 +2532,34 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
   .pc-slot .pc-card:hover { transform:translateY(-6px); }
 }
 @media (prefers-reduced-motion:reduce) { .pc-card,.pc-ic { animation:none!important; transition:none!important; } }
+
+/* ===== BOOST PLANS v2: richer background + premium glass cards (scoped to .pc-sec / .pc-card only) ===== */
+.cs-light.pc-sec { background:radial-gradient(720px 380px at 10% 6%,rgba(25,179,230,.30),transparent 70%),radial-gradient(660px 420px at 92% 94%,rgba(139,92,246,.24),transparent 70%),radial-gradient(520px 320px at 52% 52%,rgba(240,192,48,.15),transparent 70%),linear-gradient(160deg,#dbe8ff 0%,#eef5ff 48%,#d6f0ff 100%); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9),0 34px 80px -44px rgba(21,60,140,.4); }
+.pc-sec::before { content:""; position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(rgba(21,88,214,.2) 1.4px,transparent 1.6px); background-size:30px 30px; -webkit-mask-image:radial-gradient(ellipse at 50% 55%,#000 0%,transparent 72%); mask-image:radial-gradient(ellipse at 50% 55%,#000 0%,transparent 72%); }
+.pc-sec::after { content:""; position:absolute; left:50%; top:58%; width:min(1100px,90%); height:340px; translate:-50% -50%; border-radius:50%; pointer-events:none; background:radial-gradient(ellipse,rgba(21,88,214,.22),rgba(21,88,214,0) 68%); filter:blur(18px); animation:pcAura 6s ease-in-out infinite; }
+.pc-card { border-color:rgba(255,255,255,.1); background:linear-gradient(165deg,rgba(255,255,255,.16),rgba(255,255,255,0) 40%),radial-gradient(300px 220px at 50% 0%,var(--bg),transparent 72%),linear-gradient(165deg,#13348a,#0a1b4d 70%,#081538); }
+.pc-card::before { content:""; position:absolute; inset:-2px; z-index:0; border-radius:inherit; padding:2px; pointer-events:none; background:conic-gradient(from var(--ang),transparent 0 52%,var(--ic) 78%,#fff 90%,transparent 100%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0); animation:ang 5s linear infinite; }
+.pc-card::after { content:""; position:absolute; inset:0; z-index:0; border-radius:inherit; pointer-events:none; background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%); background-size:260% 100%; background-position:160% 0; animation:pcShine 5.5s ease-in-out infinite; }
+.pc-card>* { position:relative; z-index:1; }
+.pc-card.gold { background:linear-gradient(165deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%),radial-gradient(300px 220px at 50% 0%,rgba(240,192,48,.28),transparent 72%),linear-gradient(165deg,#1c2f78,#0e1f58 70%,#0a1740); }
+.pc-card.green { background:linear-gradient(165deg,rgba(255,255,255,.16),rgba(255,255,255,0) 40%),radial-gradient(300px 220px at 50% 0%,rgba(52,211,153,.24),transparent 72%),linear-gradient(165deg,#0f3a6e,#0a2a55 70%,#081c40); }
+.pc-ic { width:100px; height:100px; border:2px solid var(--c); box-shadow:0 0 0 9px var(--bg),0 0 34px -4px var(--c),inset 0 0 18px var(--bg); }
+.pc-card h3 { font-size:40px; }
+.pc-card h3::after { content:""; display:block; width:46px; height:4px; margin:10px auto 0; border-radius:4px; background:linear-gradient(90deg,transparent,var(--ic),transparent); }
+.pc-tag { color:#cfe0fb; }
+.pc-card li { border-bottom:1px dashed rgba(255,255,255,.14); transition:translate .25s ease,color .25s; }
+.pc-card li:hover { translate:6px 0; color:#fff; }
+.pc-card li i { box-shadow:0 0 0 1.5px var(--c); }
+.pc-badge { z-index:3; animation:pcBadge 2.4s ease-in-out infinite; }
+.pc-btn { position:relative; overflow:hidden; background:linear-gradient(100deg,#1349c2,#1766e6 55%,#19b3e6); box-shadow:0 14px 28px -10px rgba(25,120,230,.75),inset 0 1px 0 rgba(255,255,255,.32); }
+.pc-card.gold .pc-btn { background:linear-gradient(100deg,#f59e0b,#ff9a2e 55%,#ff7a1a); box-shadow:0 14px 28px -10px rgba(245,158,11,.75),inset 0 1px 0 rgba(255,255,255,.35); }
+.pc-card.green .pc-btn { background:linear-gradient(100deg,#059669,#10b981 55%,#34d399); box-shadow:0 14px 28px -10px rgba(16,185,129,.7),inset 0 1px 0 rgba(255,255,255,.3); }
+.pc-btn::after { content:""; position:absolute; top:0; left:-80%; width:45%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent); transform:skewX(-20deg); animation:shine 3.6s infinite; }
+.pc-btn:hover { transform:translateY(-3px) scale(1.02); }
+@keyframes pcAura { 0%,100% { opacity:.55; scale:.96 1; } 50% { opacity:1; scale:1.05 1.08; } }
+@keyframes pcShine { 0%,35% { background-position:160% 0; } 100% { background-position:-60% 0; } }
+@keyframes pcBadge { 0%,100% { box-shadow:0 10px 20px rgba(245,158,11,.4),0 0 0 0 rgba(255,200,61,.55); } 60% { box-shadow:0 10px 20px rgba(245,158,11,.4),0 0 0 10px rgba(255,200,61,0); } }
+@media (prefers-reduced-motion:reduce) { .pc-sec::after,.pc-card::before,.pc-card::after,.pc-badge,.pc-btn::after { animation:none!important; } }
 @media (max-width:2000px) { .cs-header nav>button { padding:10px 10px; font-size:15px; } .cs-navcta { margin-left:6px; } .cs-navcta .cs-ghost,.cs-navcta .cs-solid { min-height:46px; padding:0 18px; font-size:15px; } .cs-brand small { display:none; } }
 @media (min-width:1900px) and (max-width:2000px) { .cs-header nav>button { padding:11px 13px; font-size:16px; } .cs-navcta .cs-ghost,.cs-navcta .cs-solid { min-height:48px; padding:0 22px; font-size:16px; } .cs-brand small { display:block; } }
 @media (max-width:1660px) { .cs-burger { display:grid; } .cs-header nav { position:absolute; top:calc(100% + 12px); left:0; right:0; display:none; flex-direction:column; align-items:stretch; gap:4px; padding:16px; border-radius:36px; background:rgba(255,255,255,.97); backdrop-filter:blur(18px); box-shadow:0 30px 60px rgba(21,60,140,.28); animation:pop .25s both; } .cs-header nav.open { display:flex; } .cs-header nav>button { text-align:left; padding:14px 20px; } .cs-header nav>button.cs-fancy { justify-content:flex-start; margin-inline:0; } .cs-navcta { flex-direction:column; align-items:stretch; margin:8px 0 0; } .cs-navcta .cs-ghost,.cs-navcta .cs-solid { width:100%; } }
@@ -2446,6 +2567,210 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 @media (max-width:760px) { .cs { font-size:17px; } .cs-tl-line { left:34px; } .cs-tl-dot { left:34px; } .cs-step { grid-template-columns:70px 1fr; gap:8px; } .cs-num { grid-column:1; width:62px; height:62px; box-shadow:0 0 0 8px rgba(21,88,214,.12); } .cs-step.l .cs-step-card,.cs-step.r .cs-step-card { grid-column:2; border-radius:30px 30px 30px 8px; padding:22px 22px 24px; } .cs-rv.left,.cs-rv.right { translate:0 40px; } .cs-leadrow { border-radius:34px; padding:14px; } .cs-leadrow .mob { margin-left:0; } .cs-privacy { flex-direction:column; align-items:flex-start; padding:28px 26px; border-radius:40px 40px 40px 10px; } .cs-form { grid-template-columns:1fr; } .sp-summary { border-radius:40px; padding:24px; justify-content:center; text-align:center; } }
 @media (max-width:640px) { .cs-brand small { display:none; } .cs-brand strong { font-size:19px; } .cs-logo { width:44px; height:44px; font-size:17px; } .cs-pill { height:68px; } .cs-grid3,.cs-bento { grid-template-columns:1fr; } .bn1,.bn2,.bn3,.bn4 { grid-column:auto; } .cs-est { grid-template-columns:1fr 1fr; gap:14px; } .cs-stats-in { gap:34px 10px; } .cs-orb { width:54px; height:54px; } .cs-orb i { font-size:26px; } .cs-lead-wrap { width:min(300px,86%); right:0; bottom:-8%; } .cs-toast { top:0; left:0; padding:9px 16px 9px 10px; } .cs-row .cs-solid.big,.cs-row .cs-ghost.big { width:100%; } .cs-banner { border-radius:50px 50px 50px 16px; } .cs-top { right:14px; bottom:14px; width:52px; height:52px; } .lg-card { border-radius:42px 42px 42px 12px; } .lg-teaser { gap:8px; } .lg-teaser span { font-size:18px; } .cs-chip { height:44px; padding:0 18px; font-size:16px; } .cs-set { gap:10px; padding-right:10px; } .cs-ribbons { gap:10px; } }
 @media (prefers-reduced-motion:reduce) { .cs *,.cs *::before,.cs *::after { animation-duration:.001s!important; animation-iteration-count:1!important; transition-duration:.001s!important; } .cs-w { opacity:1; } .cs-rv { opacity:1; translate:0 0; scale:1; } .cs-ln,.cs-wd>span { opacity:1!important; transform:none!important; filter:none!important; } .cs-track { animation:none!important; } }
+
+/* ===== BOOST PLANS v3: extra animations (scoped to .pc-sec / .pc-slot / .pc-card only; uses translate/scale/rotate so nothing clashes with existing transforms) ===== */
+/* floating sparkles in the background */
+.pc-sparks { position:absolute; inset:0; z-index:1; overflow:hidden; pointer-events:none; }
+.pc-sparks i { position:absolute; left:var(--x); bottom:-20px; width:var(--s); height:var(--s); border-radius:50%; opacity:0; background:radial-gradient(circle,#fff 0,rgba(25,179,230,.75) 45%,transparent 72%); box-shadow:0 0 12px rgba(25,179,230,.55); animation:pcRise var(--t) linear var(--dl) infinite; }
+.pc-sparks i:nth-child(3n+2) { background:radial-gradient(circle,#fff 0,rgba(240,192,48,.85) 45%,transparent 72%); box-shadow:0 0 12px rgba(240,192,48,.6); }
+.pc-sparks i:nth-child(3n) { background:radial-gradient(circle,#fff 0,rgba(139,92,246,.75) 45%,transparent 72%); box-shadow:0 0 12px rgba(139,92,246,.5); }
+@keyframes pcRise { 0% { opacity:0; transform:translate3d(0,0,0) scale(.6); } 12% { opacity:.95; } 85% { opacity:.8; } 100% { opacity:0; transform:translate3d(var(--dx,20px),-1100px,0) scale(1.15); } }
+
+/* cards gently float (each one on a different beat) */
+.pc-card { animation:pcFloat 6s ease-in-out infinite; will-change:translate; }
+.pc-slot.l .pc-card { animation-delay:-1.2s; }
+.pc-slot.c .pc-card { animation-duration:5s; animation-delay:-3s; }
+.pc-slot.r .pc-card { animation-delay:-4.6s; }
+.pc-slot .pc-card:hover { animation-play-state:paused; }
+@keyframes pcFloat { 0%,100% { translate:0 0; } 50% { translate:0 -12px; } }
+
+/* glowing halo breathing behind the Gold card */
+.pc-slot.c::before { content:""; position:absolute; inset:-6% -8%; z-index:0; border-radius:70px; pointer-events:none; background:radial-gradient(closest-side,rgba(240,192,48,.5),rgba(255,154,46,.18) 55%,transparent 78%); filter:blur(24px); animation:pcHalo 3.8s ease-in-out infinite; }
+@keyframes pcHalo { 0%,100% { opacity:.45; scale:.94; } 50% { opacity:1; scale:1.06; } }
+
+/* ripple rings around the plan icon */
+.pc-ic::before,.pc-ic::after { content:""; position:absolute; inset:-9px; border-radius:50%; border:2px solid var(--ic); opacity:0; pointer-events:none; animation:pcRipple 3.2s ease-out infinite; }
+.pc-ic::after { animation-delay:1.6s; }
+@keyframes pcRipple { 0% { opacity:.65; transform:scale(.95); } 100% { opacity:0; transform:scale(1.7); } }
+
+/* feature rows slide in one-by-one when the card appears */
+.pc-slot.in .pc-card li { animation:pcLi .65s cubic-bezier(.2,.8,.2,1) backwards; }
+.pc-slot.in .pc-card li:nth-child(1) { animation-delay:calc(var(--d,0s) + .55s); }
+.pc-slot.in .pc-card li:nth-child(2) { animation-delay:calc(var(--d,0s) + .68s); }
+.pc-slot.in .pc-card li:nth-child(3) { animation-delay:calc(var(--d,0s) + .81s); }
+.pc-slot.in .pc-card li:nth-child(4) { animation-delay:calc(var(--d,0s) + .94s); }
+@keyframes pcLi { from { opacity:0; transform:translateX(-22px); } to { opacity:1; transform:none; } }
+
+/* tick marks pop one after another, on a loop */
+.pc-card li i { animation:pcTick 5s ease-in-out infinite; }
+.pc-card li:nth-child(2) i { animation-delay:.45s; }
+.pc-card li:nth-child(3) i { animation-delay:.9s; }
+.pc-card li:nth-child(4) i { animation-delay:1.35s; }
+@keyframes pcTick { 0%,16%,100% { scale:1; } 8% { scale:1.28; } }
+
+/* "Most chosen" badge wiggle + Gold button heartbeat */
+.pc-badge { animation:pcBadge 2.4s ease-in-out infinite,pcWiggle 4s ease-in-out infinite; }
+@keyframes pcWiggle { 0%,80%,100% { rotate:0deg; } 86% { rotate:-3deg; } 92% { rotate:3deg; } 96% { rotate:-2deg; } }
+.pc-card.gold .pc-btn { animation:pcBeat 2.6s ease-in-out infinite; }
+@keyframes pcBeat { 0%,100% { scale:1; } 50% { scale:1.035; } }
+
+/* mobile / tablet: lighter, smaller movement so it stays smooth */
+@media (max-width:62.5em) {
+  .pc-sparks i:nth-child(n+7) { display:none; }
+  .pc-card { animation-duration:7s; }
+  .pc-slot.c .pc-card { animation-duration:6s; }
+  @keyframes pcFloat { 0%,100% { translate:0 0; } 50% { translate:0 -7px; } }
+  .pc-slot.c::before { inset:-3% -4%; filter:blur(18px); }
+}
+@media (prefers-reduced-motion:reduce) { .pc-sparks { display:none; } .pc-card,.pc-slot.c::before,.pc-ic::before,.pc-ic::after,.pc-card li,.pc-card li i,.pc-badge,.pc-card.gold .pc-btn { animation:none!important; } }
+
+/* ===== BOOST PLANS v4: straight cards, brand-colour buttons, new animations (scoped to .pc-sec / .pc-slot / .pc-card only) ===== */
+/* desktop: no slant - side cards sit straight and a little lower, Gold stays raised in the middle */
+@media (min-width:62.51em) {
+  .pc-slot.l .pc-card,.pc-slot.r .pc-card { transform:translateY(26px) scale(.97); }
+  .pc-slot.l .pc-card:hover,.pc-slot.r .pc-card:hover { transform:translateY(8px) scale(1.03); }
+}
+
+/* buttons use the page's own brand gradient (blue / violet / coral), flowing slowly */
+.pc-btn { display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(100deg,#1349c2,#1766e6,#19b3e6,#1766e6,#1349c2); background-size:220% 100%; animation:pcFlow 6s ease-in-out infinite alternate; box-shadow:0 14px 28px -10px rgba(21,88,214,.75),inset 0 1px 0 rgba(255,255,255,.32); }
+.pc-card.gold .pc-btn { background:linear-gradient(100deg,#1458d8,#4f6bf0,#8b5cf6,#4f6bf0,#1458d8); background-size:220% 100%; box-shadow:0 14px 28px -10px rgba(99,92,240,.8),inset 0 1px 0 rgba(255,255,255,.35); animation:pcBeat 2.6s ease-in-out infinite,pcFlow 6s ease-in-out infinite alternate; }
+.pc-card.green .pc-btn { background:linear-gradient(100deg,#8b5cf6,#b05fe0,#ff7a59,#b05fe0,#8b5cf6); background-size:220% 100%; box-shadow:0 14px 28px -10px rgba(190,95,200,.75),inset 0 1px 0 rgba(255,255,255,.3); }
+@keyframes pcFlow { from { background-position:0 0; } to { background-position:100% 0; } }
+.pc-arr { display:inline-block; font-weight:900; animation:pcArrow 1.6s ease-in-out infinite; }
+@keyframes pcArrow { 0%,100% { transform:translateX(0); } 50% { transform:translateX(6px); } }
+
+/* spotlight that follows the mouse / finger inside the card */
+.pc-card>.pc-glow { position:absolute; inset:0; z-index:0; border-radius:inherit; pointer-events:none; opacity:0; transition:opacity .35s; background:radial-gradient(circle 260px at var(--mx,50%) var(--my,30%),rgba(255,255,255,.2),transparent 70%); }
+.pc-card:hover>.pc-glow,.pc-card:active>.pc-glow { opacity:1; }
+
+/* small dot orbiting the plan icon */
+.pc-orbit { position:absolute; inset:-15px; border-radius:50%; pointer-events:none; animation:pcSpin 6s linear infinite; }
+.pc-orbit::before { content:""; position:absolute; top:-4px; left:50%; width:8px; height:8px; margin-left:-4px; border-radius:50%; background:var(--ic); box-shadow:0 0 12px 2px var(--ic); }
+@keyframes pcSpin { to { transform:rotate(360deg); } }
+
+/* "Best for" chip with a light sweep */
+.pc-for { position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:6px; margin:0 0 4px; padding:7px 16px; border-radius:999px; font-size:14px; font-weight:800; letter-spacing:.3px; color:var(--ic); background:var(--bg); border:1px solid var(--c); }
+.pc-for::after { content:""; position:absolute; top:0; left:-80%; width:45%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent); transform:skewX(-20deg); animation:shine 3.8s infinite; }
+
+@media (max-width:62.5em) {
+  .pc-orbit { inset:-12px; }
+  .pc-for { font-size:13.5px; }
+}
+@media (prefers-reduced-motion:reduce) { .pc-btn,.pc-card.gold .pc-btn,.pc-arr,.pc-orbit,.pc-for::after { animation:none!important; } .pc-card>.pc-glow { display:none; } }
+
+/* ===== BOOST PLANS v5: signature animations, Gold showpiece, full responsive + touch support (scoped to .pc-sec / .pc-slot / .pc-card only) =====
+   Breakpoints use em (not scaled): laptop > 62.5em | tablet 41em-62.5em | phone < 41em. Tablet/phone sizes use rem so text stays readable. */
+
+/* smoother hover + the card also animates its own transform for tilt */
+.pc-sec .pc-card { will-change:translate,transform; }
+
+/* ---- twinkling sparkles around every plan icon ---- */
+.pc-tw { position:absolute; display:block; pointer-events:none; background:var(--ic); clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); filter:drop-shadow(0 0 4px var(--ic)); opacity:0; animation:pcTwinkle 3.4s ease-in-out infinite; }
+.pc-tw.t1 { top:-14%; right:-8%; width:20px; height:20px; }
+.pc-tw.t2 { bottom:2%; left:-16%; width:13px; height:13px; animation-delay:1.1s; }
+.pc-tw.t3 { top:40%; right:-26%; width:10px; height:10px; animation-delay:2.1s; }
+@keyframes pcTwinkle { 0%,100% { opacity:0; scale:.2; rotate:0deg; } 45% { opacity:1; scale:1; rotate:45deg; } 70% { opacity:0; scale:.3; rotate:90deg; } }
+
+/* ---- Elite: bolt charges and flashes ---- */
+.pc-card.blue .pc-ic svg { animation:pcZap 3.6s ease-in-out infinite; }
+@keyframes pcZap { 0%,84%,100% { scale:1; filter:none; } 87% { scale:1.2; filter:drop-shadow(0 0 9px var(--ic)) brightness(1.6); } 90% { scale:.94; filter:none; } 93% { scale:1.12; filter:drop-shadow(0 0 7px var(--ic)) brightness(1.4); } }
+
+/* ---- Diamond: gem flips like a coin and glints ---- */
+.pc-card.green .pc-ic svg { animation:pcGem 5s ease-in-out infinite; }
+@keyframes pcGem { 0%,62%,100% { transform:perspective(300px) rotateY(0deg); filter:none; } 82% { transform:perspective(300px) rotateY(360deg); filter:drop-shadow(0 0 10px var(--ic)) brightness(1.4); } }
+
+/* ---- GOLD showpiece (middle card) ---- */
+/* sonar rings expanding behind the card */
+.pc-sonar { position:absolute; inset:0; z-index:0; border-radius:52px; pointer-events:none; }
+.pc-sonar::before,.pc-sonar::after { content:""; position:absolute; inset:0; border-radius:inherit; border:2px solid rgba(240,192,48,.6); opacity:0; animation:pcSonar 3.8s ease-out infinite; }
+.pc-sonar::after { animation-delay:1.9s; }
+@keyframes pcSonar { 0% { opacity:.7; scale:1; } 100% { opacity:0; scale:1.2; } }
+/* flash reveal when the Gold card first appears (float animation is kept) */
+.pc-sec .pc-slot.c.in .pc-card { animation:pcGoldIn 1.1s cubic-bezier(.2,1.2,.3,1) .25s backwards,pcFloat 5s ease-in-out -3s infinite; }
+@keyframes pcGoldIn { 0% { scale:.9; filter:brightness(1.9) saturate(1.4); } 60% { scale:1.03; } 100% { scale:1; filter:none; } }
+/* gold dust rising inside the card */
+.pc-card>.pc-dust { position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit; pointer-events:none; }
+.pc-dust i { position:absolute; left:var(--x); bottom:-8px; width:var(--s); height:var(--s); border-radius:50%; opacity:0; background:radial-gradient(circle,#fff 0,#ffd75e 45%,rgba(255,200,60,0) 75%); box-shadow:0 0 10px rgba(255,200,60,.8); animation:pcDust var(--t) ease-in var(--dl) infinite; }
+@keyframes pcDust { 0% { opacity:0; transform:translate3d(0,0,0) scale(.6); } 15% { opacity:1; } 100% { opacity:0; transform:translate3d(12px,-430px,0) scale(1.1); } }
+/* rotating light rays behind the crown */
+.pc-rays { position:absolute; inset:-52%; z-index:-1; border-radius:50%; pointer-events:none; background:repeating-conic-gradient(from 0deg,rgba(255,214,90,.34) 0 7deg,transparent 7deg 20deg); -webkit-mask:radial-gradient(circle,transparent 30%,#000 36%,transparent 68%); mask:radial-gradient(circle,transparent 30%,#000 36%,transparent 68%); animation:pcSpin 16s linear infinite; }
+/* crown sways and glows */
+.pc-card.gold .pc-ic svg { animation:pcCrown 3.8s ease-in-out infinite; }
+@keyframes pcCrown { 0%,100% { rotate:0deg; translate:0 0; filter:drop-shadow(0 0 3px rgba(240,192,48,.5)); } 25% { rotate:-5deg; } 50% { translate:0 -3px; filter:drop-shadow(0 0 13px rgba(255,214,90,.95)); } 75% { rotate:5deg; } }
+/* shimmering gold title */
+.pc-card.gold h3 { background:linear-gradient(100deg,#fff 0 38%,#ffe48a 46%,#f0c030 50%,#ffe48a 54%,#fff 62% 100%); background-size:260% 100%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; animation:pcGoldText 4.5s ease-in-out infinite; }
+@keyframes pcGoldText { 0% { background-position:130% 0; } 55%,100% { background-position:-30% 0; } }
+/* light scanning down the feature rows */
+.pc-card li { position:relative; }
+.pc-card.gold li::after { content:""; position:absolute; inset:2px -6px; border-radius:12px; pointer-events:none; background:linear-gradient(90deg,transparent,rgba(240,192,48,.2),transparent) no-repeat; background-size:55% 100%; background-position:-90% 0; animation:pcScan 6s ease-in-out infinite; }
+.pc-card.gold li:nth-child(2)::after { animation-delay:.5s; }
+.pc-card.gold li:nth-child(3)::after { animation-delay:1s; }
+.pc-card.gold li:nth-child(4)::after { animation-delay:1.5s; }
+@keyframes pcScan { 0% { background-position:-90% 0; } 22%,100% { background-position:190% 0; } }
+/* badge sparkle */
+.pc-badge::before { content:""; position:absolute; top:-9px; right:-7px; width:18px; height:18px; background:#fff; clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); filter:drop-shadow(0 0 5px #ffd75e); animation:pcTwinkle 2.6s ease-in-out infinite; }
+.pc-btn:active { scale:.97; }
+
+/* ---- LAPTOP / DESKTOP: 3D tilt following the mouse (mouse only) ---- */
+@media (hover:hover) and (pointer:fine) and (min-width:62.51em) {
+  .pc-sec .pc-slot .pc-card:hover { transition:transform .22s ease-out,box-shadow .4s; transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-14px) scale(1.05); }
+  .pc-sec .pc-slot.l .pc-card:hover,.pc-sec .pc-slot.r .pc-card:hover { transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(6px) scale(1.04); }
+}
+
+/* ---- TABLET + PHONE (and any touch device): "live" card replaces hover ---- */
+@media (max-width:62.5em),(hover:none) {
+  .pc-sec .pc-slot .pc-card { --mx:50%; --my:22%; }
+  .pc-sec .pc-slot.live .pc-card { transform:translateY(-8px) scale(1.02); box-shadow:0 40px 70px -30px rgba(0,0,0,.8),0 0 46px -10px var(--ic),inset 0 1px 0 rgba(255,255,255,.18); }
+  .pc-sec .pc-slot.live .pc-card>.pc-glow { opacity:1; }
+  .pc-sec .pc-slot.live .pc-ic { box-shadow:0 0 0 9px var(--bg),0 0 44px 0 var(--c),inset 0 0 22px var(--bg); }
+  .pc-sec .pc-slot.live .pc-card li i { animation-duration:2.6s; }
+  .pc-sec .pc-slot .pc-card:active { transform:scale(.985); }
+}
+
+/* ---- TABLET (41em - 62.5em): Gold on top, Elite + Diamond side by side ---- */
+@media (min-width:41em) and (max-width:62.5em) {
+  .pc-sec .pc-grid { grid-template-columns:repeat(2,minmax(0,1fr)); width:min(100%,46rem); max-width:none; gap:2.6rem 1.4rem; margin-top:3.4rem; align-items:stretch; }
+  .pc-sec .pc-slot.c { grid-column:1/-1; order:-1; width:min(100%,27rem); justify-self:center; }
+}
+
+/* ---- PHONE (< 41em): one clean column, Gold first ---- */
+@media (max-width:40.99em) {
+  .pc-sec .pc-grid { grid-template-columns:minmax(0,1fr); width:min(100%,25rem); max-width:none; gap:2.6rem; margin-top:3rem; }
+  .pc-sec .pc-slot.c { order:-1; }
+}
+
+/* ---- shared tablet + phone sizing (rem = real size, not scaled) ---- */
+@media (max-width:62.5em) {
+  .pc-sec .pc-slot .pc-card { height:100%; padding:2.1rem 1.35rem 1.5rem; border-radius:2rem; backdrop-filter:none; -webkit-backdrop-filter:none; }
+  .pc-sec .pc-slot.cs-rv.left,.pc-sec .pc-slot.cs-rv.right { translate:0 40px; }
+  .pc-sec .pc-slot.cs-rv.in { translate:0 0; }
+  .pc-sec .pc-sonar { border-radius:2rem; }
+  .pc-sonar::before,.pc-sonar::after { animation-name:pcSonarS; }
+  @keyframes pcSonarS { 0% { opacity:.7; scale:1; } 100% { opacity:0; scale:1.07; } }
+  .pc-sec .pc-ic { width:5rem; height:5rem; margin-bottom:1.1rem; }
+  .pc-sec .pc-card h3 { font-size:1.9rem; }
+  .pc-sec .pc-tag { margin-bottom:.8rem!important; font-size:.95rem; }
+  .pc-sec .pc-for { font-size:.78rem; padding:.4rem .9rem; }
+  .pc-sec .pc-card ul { margin:1rem 0 1.4rem; }
+  .pc-sec .pc-card li { gap:.65rem; padding:.72rem .1rem; font-size:.92rem; }
+  .pc-sec .pc-card li i { width:1.4rem; height:1.4rem; font-size:.75rem; }
+  .pc-sec .pc-btn { min-height:3rem; font-size:1rem; }
+  .pc-sec .pc-badge { top:-.85rem; padding:.38rem 1rem; font-size:.74rem; }
+  .pc-tw.t1 { width:1.1rem; height:1.1rem; } .pc-tw.t2 { width:.75rem; height:.75rem; } .pc-tw.t3 { width:.6rem; height:.6rem; }
+  .pc-dust i:nth-child(n+6) { display:none; }
+  @keyframes pcDust { 0% { opacity:0; transform:translate3d(0,0,0) scale(.6); } 15% { opacity:1; } 100% { opacity:0; transform:translate3d(10px,-300px,0) scale(1.1); } }
+}
+@media (max-width:25em) {
+  .pc-sec .pc-slot .pc-card { padding:1.9rem 1.1rem 1.3rem; }
+  .pc-sec .pc-card h3 { font-size:1.7rem; }
+  .pc-sec .pc-card li { font-size:.88rem; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .pc-tw,.pc-sonar::before,.pc-sonar::after,.pc-dust i,.pc-rays,.pc-card.gold li::after,.pc-badge::before { animation:none!important; }
+  .pc-dust,.pc-sonar,.pc-tw { display:none; }
+  .pc-card.blue .pc-ic svg,.pc-card.green .pc-ic svg,.pc-card.gold .pc-ic svg,.pc-card.gold h3,.pc-sec .pc-slot.c.in .pc-card { animation:none!important; }
+}
 `;
 
 /* scale every "px" in the CSS by UI_SCALE (0.67 = look of 67% browser zoom at 100% zoom).
