@@ -37,7 +37,7 @@ function AppRoutes() {
 
         {/* Institution Dashboard */}
         <Route
-          path="/admin/institution-dashboard"
+         path="/institution/dashboard"
           element={<InstitutionDashboard />}
         />
 

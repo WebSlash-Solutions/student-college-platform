@@ -774,6 +774,26 @@ const formatExpiry = (v) => {
   return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
 };
 
+/* intro smoke: four coloured streams from the four corners meet in the centre and swirl into a round logo */
+const SMOKE = Array.from({ length: 16 }, (_, i) => {
+  const corner = i % 4; // 0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right
+  const a = (i / 16) * Math.PI * 2;
+  const wob = (i >> 2) * 4;
+  const left = corner % 2 === 0;
+  const top = corner < 2;
+  return {
+    cls: `c${corner}`,
+    sx: `${left ? -(58 + wob) : 58 + wob}vw`,
+    sy: `${top ? -(52 + wob) : 52 + wob}vh`,
+    ex: `${Math.round(Math.cos(a) * 78)}px`,
+    ey: `${Math.round(Math.sin(a) * 78)}px`,
+    size: 150 + (i % 4) * 36,
+    delay: ((i >> 2) * 0.12).toFixed(2),
+  };
+});
+
+const PROCESS_STEPS = ["Contacting your bank…", "Verifying payment securely…", "Activating your plan…"];
+
 const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, onPaid, onClose }) => {
   const [method, setMethod] = useState("upi");
   const [phase, setPhase] = useState("form"); // form | processing | success
@@ -784,10 +804,22 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
   const [bank, setBank] = useState("");
   const [errors, setErrors] = useState({});
   const [txn, setTxn] = useState("");
+  const [procStep, setProcStep] = useState(0);
   const timer = useRef(null);
   const paid = useRef(false);
 
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  useEffect(() => {
+    if (phase !== "processing") return undefined;
+    setProcStep(0);
+    const t1 = setTimeout(() => setProcStep(1), 1000);
+    const t2 = setTimeout(() => setProcStep(2), 2000);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [phase]);
 
   const close = () => {
     if (phase === "processing") return;
@@ -816,6 +848,7 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
 
   const submit = (e) => {
     e.preventDefault();
+    if (phase === "processing") return;
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length) return;
@@ -826,7 +859,7 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
       paid.current = true;
       setPhase("success");
       onPaid(id, method);
-    }, 1700);
+    }, 3000);
   };
 
   const clearError = (k) => setErrors((prev) => ({ ...prev, [k]: undefined }));
@@ -836,14 +869,6 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
 
   const body = (
     <>
-      {phase === "processing" && (
-        <div className="cd-center">
-          <div className="cd-spinner" />
-          <h3 className="cd-modal-title">Processing payment…</h3>
-          <p className="cd-modal-sub">Please do not close or refresh this page.</p>
-        </div>
-      )}
-
       {phase === "success" && (
         <div className="cd-center">
           <div className="cd-tick">
@@ -873,7 +898,7 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
         </div>
       )}
 
-      {phase === "form" && (
+      {(phase === "form" || phase === "processing") && (
         <form onSubmit={submit} noValidate>
           <h3 className="cd-modal-title">{title}</h3>
           {subtitle && <p className="cd-modal-sub">{subtitle}</p>}
@@ -1088,16 +1113,39 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
   );
 
   return (
-    <Modal title="Payment" onClose={close} wide={!!promo}>
-      {promo ? (
-        <div className="cd-split">
-          <aside className="cd-promo">{promo}</aside>
-          <div className="cd-split-main">{body}</div>
+    <>
+      <Modal title="Payment" onClose={close} wide={!!promo}>
+        {promo ? (
+          <div className="cd-split">
+            <aside className="cd-promo">{promo}</aside>
+            <div className="cd-split-main">{body}</div>
+          </div>
+        ) : (
+          body
+        )}
+      </Modal>
+
+      {phase === "processing" && (
+        <div className="cdp-overlay" role="status" aria-live="polite">
+          <div className="cdp-card">
+            <div className="cdp-ring">
+              <i />
+              <span>🔒</span>
+            </div>
+            <h2>Processing payment</h2>
+            <p>Please don’t close or refresh this page.</p>
+            <ul>
+              {PROCESS_STEPS.map((st, i) => (
+                <li key={st} className={i < procStep ? "done" : i === procStep ? "on" : ""}>
+                  <b>{i < procStep ? "✓" : ""}</b>
+                  {st}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      ) : (
-        body
       )}
-    </Modal>
+    </>
   );
 };
 
@@ -1125,6 +1173,25 @@ export default function CollegeDashboard() {
   const [addCourseOpen, setAddCourseOpen] = useState(false);
   const [payment, setPayment] = useState(null); // { kind: 'unlock'|'listing', lead? }
   const [profile, setProfile] = useState(null);
+  const [introOn, setIntroOn] = useState(false);
+  const introTimers = useRef([]);
+
+  useEffect(() => () => introTimers.current.forEach(clearTimeout), []);
+
+  /* Pay Now (listing): play the smoke intro first, open the payment modal as the intro fades out */
+  const startListingPayment = () => {
+    if (introOn) return;
+    const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      setPayment({ kind: "listing" });
+      return;
+    }
+    setIntroOn(true);
+    introTimers.current = [
+      setTimeout(() => setPayment({ kind: "listing" }), 4400),
+      setTimeout(() => setIntroOn(false), 5300),
+    ];
+  };
 
   useEffect(() => {
     try {
@@ -1432,6 +1499,48 @@ export default function CollegeDashboard() {
         .cd-center { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 14px 0 2px; }
         .cd-center .cd-modal-title { margin-right: 0; }
         .cd-spinner { width: 54px; height: 54px; margin: 10px 0 18px; border: 5px solid #e3ecf9; border-top-color: #1f6fe8; border-radius: 50%; animation: cdSpin .8s linear infinite; }
+        .cx-intro { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; overflow: hidden; background: radial-gradient(700px 480px at 50% 50%, #241347, #08040f 72%); animation: cxOut .8s 4.4s ease forwards; }
+        .cx-ring { position: absolute; left: 50%; top: 50%; width: 0; height: 0; animation: cxSpin 4.4s ease-in-out both; }
+        .cx-ring i { position: absolute; left: 0; top: 0; width: var(--s); height: var(--s); border-radius: 50%; filter: blur(16px); mix-blend-mode: screen; opacity: 0; animation: cxPuff 3.6s ease-in-out both; }
+        .cx-ring i.c0 { background: radial-gradient(circle, rgba(255,200,230,.95), rgba(255,70,150,.5) 45%, transparent 70%); }
+        .cx-ring i.c1 { background: radial-gradient(circle, rgba(255,235,185,.95), rgba(255,170,40,.5) 45%, transparent 70%); }
+        .cx-ring i.c2 { background: radial-gradient(circle, rgba(190,255,225,.95), rgba(30,200,130,.5) 45%, transparent 70%); }
+        .cx-ring i.c3 { background: radial-gradient(circle, rgba(220,205,255,.95), rgba(140,90,255,.5) 45%, transparent 70%); }
+        .cx-center { position: absolute; left: 50%; top: 50%; display: grid; place-items: center; transform: translate(-50%, -50%); }
+        .cx-core, .cx-logo { grid-area: 1/1; border-radius: 50%; }
+        .cx-core { width: 190px; height: 190px; background: radial-gradient(circle at 35% 30%, #fff, #ffd1ec 32%, #a56bff 70%, #3b1d8f); box-shadow: 0 0 70px 24px rgba(165,107,255,.5); opacity: 0; animation: cxCore 4.4s ease both; }
+        .cx-logo { display: grid; place-items: center; width: 120px; height: 120px; background: #fff; box-shadow: 0 14px 40px -10px rgba(0,0,0,.5); opacity: 0; animation: cxPop .7s 3s cubic-bezier(.3,1.5,.5,1) both; }
+        .cx-logo svg { width: 72px; height: 72px; }
+        .cx-brandtxt { position: absolute; left: 0; right: 0; top: calc(50% + 122px); margin: 0; text-align: center; color: #fff; font-size: 28px; font-weight: 800; letter-spacing: -.3px; opacity: 0; animation: cxFade2 .6s 3.4s ease both; }
+        .cx-brandtxt em { font-style: normal; color: #f9a8d4; }
+        @keyframes cxPuff {
+          0% { transform: translate(-50%,-50%) translate(var(--sx),var(--sy)) scale(.5); opacity: 0; }
+          22% { opacity: .8; }
+          55% { transform: translate(-50%,-50%) translate(var(--ex),var(--ey)) scale(1); opacity: .85; }
+          75% { transform: translate(-50%,-50%) translate(var(--ex),var(--ey)) scale(1.05); opacity: .8; }
+          100% { transform: translate(-50%,-50%) translate(calc(var(--ex) * 2.6),calc(var(--ey) * 2.6)) scale(2.4); opacity: 0; }
+        }
+        @keyframes cxSpin { 0%, 40% { transform: rotate(0); } 100% { transform: rotate(200deg); } }
+        @keyframes cxCore { 0%, 28% { opacity: 0; transform: scale(.3); filter: blur(14px); } 52% { opacity: .9; transform: scale(1); filter: blur(5px); } 70%, 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
+        @keyframes cxPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+        @keyframes cxFade2 { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        @keyframes cxOut { to { opacity: 0; visibility: hidden; transform: scale(1.08); } }
+        @media (max-width: 600px) { .cx-core { width: 150px; height: 150px; } .cx-logo { width: 96px; height: 96px; } .cx-logo svg { width: 58px; height: 58px; } .cx-brandtxt { top: calc(50% + 100px); font-size: 24px; } }
+        .cdp-overlay { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 16px; overflow-y: auto; background: rgba(11,27,58,.62); backdrop-filter: blur(8px); animation: cdFade .25s both; }
+        .cdp-card { width: min(380px, 100%); padding: 30px 26px 26px; text-align: center; border-radius: 28px; background: #fff; color: #0b1b3a; box-shadow: 0 40px 80px -20px rgba(0,0,0,.5); animation: cdpPop .4s cubic-bezier(.2,1.2,.4,1) both; }
+        .cdp-ring { position: relative; display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 16px; }
+        .cdp-ring i { position: absolute; inset: 0; border-radius: 50%; border: 5px solid #e3eefc; border-top-color: #1558d6; border-right-color: #8fe3ff; animation: cdSpin .9s linear infinite; }
+        .cdp-ring span { font-size: 28px; }
+        .cdp-card h2 { margin: 0; font-size: 23px; font-weight: 800; letter-spacing: -.4px; }
+        .cdp-card p { margin: 6px 0 0; font-size: 14px; color: #52698a; }
+        .cdp-card ul { display: grid; gap: 12px; margin: 20px 0 0; padding: 0; list-style: none; text-align: left; }
+        .cdp-card li { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: #9fb1cb; transition: color .3s; }
+        .cdp-card li b { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #d7e5f7; font-size: 12px; color: #fff; transition: all .3s; }
+        .cdp-card li.on { color: #0b1b3a; }
+        .cdp-card li.on b { border-color: #1558d6; border-top-color: transparent; animation: cdSpin .7s linear infinite; }
+        .cdp-card li.done { color: #0b7d60; }
+        .cdp-card li.done b { background: #10b981; border-color: #10b981; }
+        @keyframes cdpPop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
         .cd-tick { display: grid; place-items: center; width: 66px; height: 66px; margin-bottom: 14px; border-radius: 50%; background: linear-gradient(135deg, #14b88c, #0e9d77); box-shadow: 0 10px 22px rgba(20,184,140,.35); animation: cdTick .5s cubic-bezier(.2,.8,.2,1) both; }
         .cd-receipt { width: 100%; margin-top: 6px; padding: 6px 14px; border-radius: 13px; background: #f6f9fd; }
         .cd-receipt div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e8eef7; font-size: 12px; }
@@ -1648,7 +1757,7 @@ export default function CollegeDashboard() {
         @media (prefers-reduced-motion: reduce) {
           .cd-anim, .cd-table tbody tr, .cd-progress span, .cd-topbar { animation: none !important; opacity: 1 !important; }
           .cd-hero::before, .cd-hero::after, .cd-listing::after, .cd-user-text small i, .cd-spinner { animation-duration: 0s !important; }
-          .cd-overlay, .cd-modal, .cd-tick, .cd-pane { animation: none !important; }
+          .cd-overlay, .cd-modal, .cd-tick, .cd-pane, .cdp-overlay, .cdp-card { animation: none !important; }
         }
       `}</style>
 
@@ -1933,7 +2042,7 @@ export default function CollegeDashboard() {
                 <div className="cd-price">
                   {inr(LISTING_PRICE)} <span>/ month</span>
                 </div>
-                <button className="cd-btn" onClick={() => setPayment({ kind: "listing" })}>
+                <button className="cd-btn" onClick={startListingPayment} disabled={introOn}>
                   {listingActive ? "Renew" : "Pay Now"}
                 </button>
               </div>
@@ -2029,6 +2138,23 @@ export default function CollegeDashboard() {
       )}
 
       {profile && <ProfileModal lead={profile} onClose={() => setProfile(null)} />}
+
+      {introOn && (
+        <div className="cx-intro" aria-hidden="true">
+          <div className="cx-ring">
+            {SMOKE.map((m, i) => (
+              <i key={i} className={m.cls} style={{ "--sx": m.sx, "--sy": m.sy, "--ex": m.ex, "--ey": m.ey, "--s": `${m.size}px`, animationDelay: `${m.delay}s` }} />
+            ))}
+          </div>
+          <div className="cx-center">
+            <span className="cx-core" />
+            <span className="cx-logo">
+              <svg viewBox="0 0 32 32" fill="#6d28d9" stroke="#6d28d9" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M16 6 3 12.5 16 19l13-6.5L16 6Z" /><path d="M9 16.5V22c0 1.7 3.1 3.5 7 3.5s7-1.8 7-3.5v-5.5l-7 3.5-7-3.5Z" /><path d="M29 13v7" fill="none" /></svg>
+            </span>
+          </div>
+          <p className="cx-brandtxt">Campus<em>Connect</em></p>
+        </div>
+      )}
     </div>
   );
 }
