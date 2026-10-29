@@ -149,6 +149,9 @@ export default function CollegePayment() {
   const [upiStep, setUpiStep] = useState("req");
   const [pin, setPin] = useState("");
   const [showDet, setShowDet] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
+  const [qrMessage, setQrMessage] = useState("");
+  const qrVideoRef = useRef(null);
 
   const confetti = useMemo(
     () => Array.from({ length: 40 }, (_, i) => ({
@@ -196,6 +199,65 @@ export default function CollegePayment() {
       setErrors({ upi: "Payment request expired. Please try again." });
     }
   }, [secs, stage]);
+
+  /* QR scanner: reads UPI payment QR codes using the device camera. */
+  useEffect(() => {
+    if (!qrOpen) return undefined;
+    let stopped = false;
+    let stream;
+    let timer;
+    const scan = async () => {
+      if (stopped || !qrVideoRef.current || !("BarcodeDetector" in window)) return;
+      try {
+        const detector = scan.detector;
+        const video = qrVideoRef.current;
+        if (video.readyState >= 2) {
+          const codes = await detector.detect(video);
+          if (codes.length && !stopped) {
+            const raw = codes[0].rawValue || "";
+            let scannedUpi = "";
+            try {
+              const query = raw.includes("?") ? raw.slice(raw.indexOf("?") + 1).split("#")[0] : "";
+              scannedUpi = new URLSearchParams(query).get("pa") || "";
+            } catch { /* invalid QR payload */ }
+            if (!scannedUpi && /^[\\w.-]{2,}@[a-zA-Z]{2,}$/.test(raw.trim())) scannedUpi = raw.trim();
+            if (scannedUpi) {
+              setUpi(scannedUpi);
+              setErrors({});
+              setQrOpen(false);
+              return;
+            }
+            setQrMessage("This QR doesn't contain a valid UPI ID. Try another UPI payment QR.");
+          }
+        }
+      } catch { /* wait for the next camera frame */ }
+      if (!stopped) timer = setTimeout(scan, 250);
+    };
+    (async () => {
+      try {
+        if (!navigator.mediaDevices?.getUserMedia) throw new Error("Camera access isn't available in this browser.");
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
+        if (stopped) { stream.getTracks().forEach((track) => track.stop()); return; }
+        if (!("BarcodeDetector" in window)) {
+          setQrMessage("QR scanning isn't supported in this browser. Open this page in the latest Chrome on Android, or enter your UPI ID manually.");
+          return;
+        }
+        scan.detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+        if (qrVideoRef.current) {
+          qrVideoRef.current.srcObject = stream;
+          await qrVideoRef.current.play();
+          scan();
+        }
+      } catch {
+        setQrMessage("Camera permission is required to scan a QR code. Allow camera access and try again.");
+      }
+    })();
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      if (stream) stream.getTracks().forEach((track) => track.stop());
+    };
+  }, [qrOpen]);
 
   if (!session || !valid) return null;
 
@@ -301,9 +363,12 @@ export default function CollegePayment() {
           </div>
           <label className={`${errors.upi ? "bad" : ""} ${upiOk ? "good" : ""}`}>
             <span className="cp-lb">UPI ID</span>
-            <span className="cp-inwrap">
+            <span className="cp-inwrap cp-upi-inputwrap">
               <input value={upi} onChange={(e) => { setUpi(e.target.value); setErrors({}); }} placeholder="name@okhdfcbank" autoComplete="off" inputMode="email" disabled={busy} />
               {upiOk && <b className="cp-okmark" aria-hidden="true">✓</b>}
+              <button type="button" className="cp-qr-btn" onClick={() => { setQrMessage(""); setQrOpen(true); }} disabled={busy} aria-label="Scan UPI QR code" title="Scan UPI QR code">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M8 8h3v3H8zM14 8h2v2h-2zM14 14h3v3h-3zM8 14h2v2H8zM11 14v2M14 11h2M17 8v2M8 11v1M11 17h1M18 14h2" /></svg>
+              </button>
             </span>
             {errors.upi && <em>{errors.upi}</em>}
             {upiOk && !errors.upi && <span className="cp-okt">UPI ID looks good{upiApp ? ` · ${upiApp[0]}` : ""}</span>}
@@ -590,6 +655,25 @@ export default function CollegePayment() {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---- UPI QR scanner ---- */}
+      {qrOpen && (
+        <div className="cp-qr-overlay" role="dialog" aria-modal="true" aria-label="Scan UPI QR code">
+          <div className="cp-qr-modal">
+            <button type="button" className="cp-qr-close" onClick={() => setQrOpen(false)} aria-label="Close QR scanner">×</button>
+            <div className="cp-qr-symbol" aria-hidden="true">▦</div>
+            <h2>Scan UPI QR Code</h2>
+            <p>Place the UPI payment QR code inside the frame.</p>
+            <div className="cp-qr-camera">
+              <video ref={qrVideoRef} autoPlay muted playsInline />
+              <span className="cp-qr-frame" aria-hidden="true" />
+            </div>
+            {qrMessage && <p className="cp-qr-message" role="alert">{qrMessage}</p>}
+            <button type="button" className="cp-qr-cancel" onClick={() => setQrOpen(false)}>Cancel scanning</button>
+            <small>Camera scanning only reads the UPI ID. Payment remains in demo mode.</small>
           </div>
         </div>
       )}
@@ -983,4 +1067,25 @@ body { margin:0!important; display:block!important; background:#f3f8ff!important
   .cp-det { display:none; margin:18px 0 0; }
   .cp-det.open { display:grid; }
 }
+
+/* UPI QR scan button and camera modal */
+.cp-upi-inputwrap { position:relative; }
+.cp-upi-inputwrap input { padding-right:48px!important; }
+.cp-qr-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:34px; height:34px; border:0; border-radius:8px; background:transparent; color:#1558d6; cursor:pointer; }
+.cp-qr-btn:hover { background:#eaf3ff; }
+.cp-qr-btn:disabled { opacity:.45; cursor:not-allowed; }
+.cp-qr-btn svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.cp-qr-overlay { position:fixed; inset:0; z-index:9999; display:grid; place-items:center; padding:20px; background:rgba(3,20,43,.72); backdrop-filter:blur(8px); }
+.cp-qr-modal { position:relative; width:min(100%,420px); padding:28px; border:1px solid #dce8f7; border-radius:22px; background:#fff; box-shadow:0 24px 80px rgba(0,0,0,.28); text-align:center; }
+.cp-qr-modal h2 { margin:8px 0!important; font-size:24px; }
+.cp-qr-modal p { color:#52698a; font-size:13px; }
+.cp-qr-close { position:absolute; top:12px; right:14px; width:34px; height:34px; border:0; border-radius:50%; background:#f1f6fc; color:#153b63; font-size:25px; cursor:pointer; }
+.cp-qr-symbol { display:grid; place-items:center; width:48px; height:48px; margin:0 auto; border-radius:14px; background:#eaf3ff; color:#1558d6; font-size:30px; }
+.cp-qr-camera { position:relative; overflow:hidden; width:100%; aspect-ratio:1; margin:20px auto 14px; border-radius:16px; background:#071b2d; }
+.cp-qr-camera video { display:block; width:100%; height:100%; object-fit:cover; }
+.cp-qr-frame { position:absolute; inset:18%; border:3px solid #54d6ff; border-radius:18px; box-shadow:0 0 0 999px rgba(0,0,0,.12); pointer-events:none; }
+.cp-qr-message { margin:10px 0!important; color:#c6283d!important; }
+.cp-qr-cancel { width:100%; padding:12px 16px; border:0; border-radius:12px; background:#1558d6; color:white; font:inherit; font-weight:800; cursor:pointer; }
+.cp-qr-modal small { display:block; margin-top:12px; color:#71829a; font-size:11px; }
+@media (max-width:480px) { .cp-qr-modal { padding:22px 18px; } }
 `;
