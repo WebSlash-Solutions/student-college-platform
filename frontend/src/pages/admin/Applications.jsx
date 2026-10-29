@@ -13,12 +13,17 @@ const NAV = [
     { label: "Users", icon: "♧", path: "/admin/users" },
     { label: "Settings", icon: "⚙", path: "/admin/settings" },
 ];
-// Same logout as the Courses page: clear session and go to the admin login page
+// Same logout as the Users page: clear the session, fade the page out and go to the login page
 const handleAdminLogout = () => {
-    sessionStorage.clear();
-    localStorage.removeItem("isAdminLoggedIn");
-    localStorage.removeItem("adminLoggedIn");
-    window.location.replace("/admin/login");
+    try {
+        localStorage.clear();
+        sessionStorage.clear();
+    }
+    catch {
+        /* storage not available - ignore */
+    }
+    document.querySelector(".dm-app")?.classList.add("is-leaving");
+    setTimeout(() => window.location.replace("/login"), 350);
 };
 const STATS = [
     { label: "Total Students", value: 12450, trend: 2, tone: "blue", icon: "👥" },
@@ -1452,6 +1457,11 @@ body {
   text-align: left;
   font-family: "Inter","Segoe UI",system-ui,sans-serif;
   font-size: 14px;
+  transition: opacity .35s ease;
+}
+.dm-app.is-leaving {
+  opacity: 0;
+  pointer-events: none;
 }
 .dm-app * {
   box-sizing: border-box;

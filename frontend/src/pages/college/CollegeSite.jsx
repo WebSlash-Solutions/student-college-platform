@@ -732,7 +732,35 @@ function HxAvatar({ src, look }) {
   if (!src || bad) return <Student {...look} />;
   return <img src={src} alt="Student" draggable="false" onError={() => setBad(true)} />;
 }
+/* ---------- Boost Plans: card theme + line icons ---------- */
+const PLAN_UI = {
+  elite: { tone: "blue", side: "l" },
+  gold: { tone: "gold", side: "c" },
+  diamond: { tone: "green", side: "r" },
+};
 
+function PlanIcon({ id }) {
+  const paths = {
+    elite: <path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2Z" />,
+    gold: (
+      <>
+        <path d="M3 19h18" />
+        <path d="m4 17-1-10 5 4 4-7 4 7 5-4-1 10H4Z" />
+      </>
+    ),
+    diamond: (
+      <>
+        <path d="M6 3h12l4 6-10 12L2 9l4-6Z" />
+        <path d="M2 9h20M9 3l3 6 3-6M12 21 9 9m3 12 3-12" />
+      </>
+    ),
+  };
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {paths[id]}
+    </svg>
+  );
+}
 function CollegeSite() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false);
@@ -1226,33 +1254,52 @@ function CollegeSite() {
           </section>
 
           {/* ================= PLANS (prices only after login) ================= */}
-          <section id="plans" className="cs-light">
-            <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow cs-rv">BOOST PLANS</span>
-              <h2 className="cs-h2 cs-rv"><Words>Choose a plan that <span className="cs-grad">fits your college</span></Words></h2>
-              <div className="cs-plans">
-                {PLANS.map((p, i) => (
-                  <Tilt key={p.id} className={`cs-plan ${p.id} cs-rv zoom`} style={{ "--d": `${i * 0.12}s` }} max={6}>
-                    {p.id === "gold" && <span className="cs-pop-badge">★ Most chosen</span>}
-                    <span className="cs-plan-ic">{p.icon}</span>
-                    <h3>{p.name}</h3>
-                    <p className="cs-plan-tag">{p.tagline}</p>
-                    <ul>
-                      {p.features.map((f) => (
-                        <li key={f}><i>✓</i>{f}</li>
-                      ))}
-                    </ul>
-                    <button className="cs-solid" onClick={goPlans}>
-                      {loggedIn ? "View Plans & Prices →" : "🔒 Login to view prices"}
-                    </button>
-                  </Tilt>
-                ))}
+<section id="plans" className="cs-light pc-sec">
+  <span className="cs-blob b6" /><span className="cs-blob b7" />
+  <div className="cs-wrap cs-sec">
+    <span className="cs-eyebrow dark cs-rv">BOOST PLANS</span>
+    <h2 className="cs-h2 light cs-rv"><Words>Choose a plan that <span className="cs-grad">fits your college</span></Words></h2>
+
+    <div className="pc-grid">
+      {PLANS.map((p, i) => {
+        const ui = PLAN_UI[p.id];
+        return (
+          <div key={p.id} className={`pc-slot ${ui.side} cs-rv zoom`} style={{ "--d": `${i * 0.12}s` }}>
+            <article className={`pc-card ${ui.tone}`}>
+              {p.id === "gold" && <span className="pc-badge">★ Most chosen</span>}
+              <span className="pc-ic"><PlanIcon id={p.id} /></span>
+              <h3>{p.name}</h3>
+              <p className="pc-tag">{p.tagline}</p>
+
+              {/* price is rendered ONLY when logged in */}
+              <div className="pc-price">
+                {loggedIn ? (
+                  <><strong>{rupee(MONTHLY[p.id])}</strong><span>/month</span></>
+                ) : (
+                  <><strong className="lock">₹ ••••</strong><span>/month</span></>
+                )}
               </div>
-              <p className="cs-plans-note cs-rv">
-                Plans are available for 1 month, 6 months and 1 year. {loggedIn ? "Open any plan to compare durations." : "Prices are shown to registered colleges after login."}
-              </p>
-            </div>
-          </section>
+
+              <ul>
+                {p.features.map((f) => (
+                  <li key={f}><i>✓</i>{f}</li>
+                ))}
+              </ul>
+
+              <button className="pc-btn" onClick={goPlans}>
+                {loggedIn ? "View Plans & Prices" : "🔒 Login to view prices"}
+              </button>
+            </article>
+          </div>
+        );
+      })}
+    </div>
+
+    <p className="cs-plans-note cs-rv">
+      Plans are available for 1 month, 6 months and 1 year. {loggedIn ? "Open any plan to compare durations." : "Prices are shown to registered colleges after login."}
+    </p>
+  </div>
+</section>
 
           {/* ================= HOW IT WORKS ================= */}
           <section id="how" className="cs-how">
@@ -2358,6 +2405,40 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 @keyframes mqSheen { 0%,35% { left:-40%; } 100% { left:140%; } }
 @media (max-width:640px) { .cs-ribbons { gap:12px; padding:20px 0; } }
 @media (prefers-reduced-motion:reduce) { .cs-ribbons,.cs-ribbons::after { animation:none!important; } }
+/* ================= BOOST PLANS: dark glass pricing cards ================= */
+.cs-light.pc-sec { margin:clamp(22px,3vw,44px) clamp(10px,2vw,28px); border-radius:clamp(36px,6vw,84px); color:#fff; background:radial-gradient(700px 360px at 50% 0%,rgba(25,179,230,.22),transparent 70%),linear-gradient(155deg,#0a1744,#0d2f7a 60%,#0b4f9e); }
+.cs-why + .cs-light.pc-sec>.cs-sec { padding-block:clamp(56px,7vw,110px); }
+.pc-sec .cs-sec { z-index:2; }
+.pc-sec .cs-plans-note { color:#a9c4ec; }
+.pc-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(18px,2.6vw,46px); align-items:center; width:min(100%,1700px); margin:84px auto 0; }
+.pc-slot { position:relative; }
+.pc-card { --c:rgba(90,180,255,.7); --ic:#5ab4ff; --bg:rgba(90,180,255,.16); position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; padding:46px 34px 34px; border-radius:52px; background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.02) 55%),rgba(6,24,64,.6); border:2px solid var(--c); box-shadow:0 34px 64px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.16); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .4s; }
+.pc-card.gold { --c:rgba(240,192,48,.8); --ic:#f0c030; --bg:rgba(240,192,48,.16); }
+.pc-card.green { --c:rgba(52,211,153,.7); --ic:#34d399; --bg:rgba(52,211,153,.16); }
+.pc-slot.l .pc-card { transform:perspective(1300px) rotateY(26deg) rotateZ(-6deg) translateY(28px) scale(.96); }
+.pc-slot.r .pc-card { transform:perspective(1300px) rotateY(-26deg) rotateZ(6deg) translateY(28px) scale(.96); }
+.pc-slot.c .pc-card { transform:translateY(-12px) scale(1.05); box-shadow:0 44px 80px -30px rgba(0,0,0,.8),0 0 60px -10px rgba(240,192,48,.3),inset 0 1px 0 rgba(255,255,255,.18); }
+.pc-slot .pc-card:hover { transform:perspective(1300px) rotateY(0) rotateZ(0) translateY(-14px) scale(1.05); box-shadow:0 44px 80px -30px rgba(0,0,0,.85),0 0 50px -12px var(--ic),inset 0 1px 0 rgba(255,255,255,.18); }
+.pc-badge { position:absolute; top:-16px; left:50%; transform:translateX(-50%); padding:7px 18px; border-radius:999px; background:linear-gradient(90deg,#f59e0b,#ff7a59); color:#fff; font-size:13.5px; font-weight:800; letter-spacing:.6px; white-space:nowrap; box-shadow:0 10px 20px rgba(245,158,11,.4); }
+.pc-ic { display:grid; place-items:center; width:96px; height:96px; margin-bottom:18px; border-radius:50%; background:var(--bg); color:var(--ic); animation:bobS 5s ease-in-out infinite; }
+.pc-ic svg { width:48%; height:48%; display:block; }
+.pc-card h3 { margin:0 0 6px!important; font-size:38px; font-weight:800; letter-spacing:-.4px; color:#fff; }
+.pc-tag { margin-bottom:14px!important; font-size:18px; line-height:1.4; color:#c3d6f3; text-align:center!important; }
+.pc-price { display:flex; align-items:baseline; justify-content:center; gap:6px; margin-bottom:6px; }
+.pc-price strong { font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(34px,3vw,46px); font-weight:800; color:#fff; }
+.pc-price span { font-size:18px; font-weight:600; color:#a9c4ec; }
+.pc-card ul { list-style:none; display:grid; gap:0; width:100%; margin:18px 0 28px; padding:0; text-align:left; }
+.pc-card li { display:flex; align-items:center; gap:12px; padding:13px 2px; border-bottom:1px solid rgba(255,255,255,.1); font-size:17px; font-weight:600; line-height:1.35; color:#e3eeff; }
+.pc-card li:last-child { border-bottom:0; }
+.pc-card li i { display:grid; place-items:center; flex:0 0 auto; width:24px; height:24px; border-radius:50%; background:var(--bg); color:var(--ic); font-style:normal; font-size:13px; font-weight:900; }
+.pc-btn { margin-top:auto; width:100%; min-height:58px; border:0; border-radius:999px; color:#fff; font-size:17.5px; font-weight:800; background:linear-gradient(180deg,#ff7a1a,#e8590c); box-shadow:0 14px 26px -10px rgba(232,89,12,.7),inset 0 1px 0 rgba(255,255,255,.3); transition:transform .25s,filter .25s; }
+.pc-btn:hover { transform:translateY(-3px); filter:brightness(1.08); }
+@media (max-width:62.5em) {
+  .pc-grid { grid-template-columns:minmax(0,1fr); max-width:560px; gap:34px; margin-top:56px; }
+  .pc-slot .pc-card,.pc-slot.l .pc-card,.pc-slot.r .pc-card,.pc-slot.c .pc-card { transform:none; }
+  .pc-slot .pc-card:hover { transform:translateY(-6px); }
+}
+@media (prefers-reduced-motion:reduce) { .pc-card,.pc-ic { animation:none!important; transition:none!important; } }
 @media (max-width:2000px) { .cs-header nav>button { padding:10px 10px; font-size:15px; } .cs-navcta { margin-left:6px; } .cs-navcta .cs-ghost,.cs-navcta .cs-solid { min-height:46px; padding:0 18px; font-size:15px; } .cs-brand small { display:none; } }
 @media (min-width:1900px) and (max-width:2000px) { .cs-header nav>button { padding:11px 13px; font-size:16px; } .cs-navcta .cs-ghost,.cs-navcta .cs-solid { min-height:48px; padding:0 22px; font-size:16px; } .cs-brand small { display:block; } }
 @media (max-width:1660px) { .cs-burger { display:grid; } .cs-header nav { position:absolute; top:calc(100% + 12px); left:0; right:0; display:none; flex-direction:column; align-items:stretch; gap:4px; padding:16px; border-radius:36px; background:rgba(255,255,255,.97); backdrop-filter:blur(18px); box-shadow:0 30px 60px rgba(21,60,140,.28); animation:pop .25s both; } .cs-header nav.open { display:flex; } .cs-header nav>button { text-align:left; padding:14px 20px; } .cs-header nav>button.cs-fancy { justify-content:flex-start; margin-inline:0; } .cs-navcta { flex-direction:column; align-items:stretch; margin:8px 0 0; } .cs-navcta .cs-ghost,.cs-navcta .cs-solid { width:100%; } }

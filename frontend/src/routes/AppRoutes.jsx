@@ -2,11 +2,15 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // ADMIN
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminDashboard from "../pages/admin/Applications";
+import AdminDashboard from "../pages/admin/CourseManagement";
 import StudentManagement from "../pages/admin/StudentManagement";
 import CollegeManagement from "../pages/admin/CollegeManagement";
 import Transactions from "../pages/admin/Transactions";
 import Reportsanalytics from "../pages/admin/Reportsanalytics";
 import Users from "../pages/admin/Users";
+import Users from "../pages/admin/Settings";
+
 
 
 // STUDENT
@@ -28,11 +32,14 @@ function AppRoutes() {
 
         {/* ADMIN */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/applications" element={<Applications />} />
+        <Route path="/admin/coursemanagement" element={<CourseManagement />} />
         <Route path="/admin/student-management" element={<StudentManagement />} />
         <Route path="/admin/college-management" element={<CollegeManagement />} />
         <Route path="/admin/transactions" element={<Transactions />} />
         <Route path="/admin/reports" element={<Reportsanalytics />} />
         <Route path="/admin/users" element={<Users />} />
+        <Route path="/admin/settings" element={<Settings />} />
 
         {/* STUDENT */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
