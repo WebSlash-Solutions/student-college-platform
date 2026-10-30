@@ -10,6 +10,8 @@ import Transactions from "../pages/admin/Transactions";
 import Reportsanalytics from "../pages/admin/Reportsanalytics";
 import Users from "../pages/admin/Users";
 import Users from "../pages/admin/Settings";
+import AdminLogin from "../pages/admin/AdminLogin.jsx";
+import InstitutionDashboard from "../pages/admin/InstitutionDashboard.jsx";
 
 
 
@@ -40,6 +42,10 @@ function AppRoutes() {
         <Route path="/admin/reports" element={<Reportsanalytics />} />
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/settings" element={<Settings />} />
+        <Route path="/institution/dashboard" element={<InstitutionDashboard />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        
+
 
         {/* STUDENT */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />

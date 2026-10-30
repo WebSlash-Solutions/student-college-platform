@@ -14,6 +14,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 const SESSION_KEY = "campusconnect_college_session";
 const AFTER_LOGIN_KEY = "campusconnect_after_login";
 
+/* LIVE college name from your backend (the logged-in college's own record).
+   Set VITE_API_URL in .env (e.g. http://localhost:5000) and change COLLEGE_ME_PATH to the route that
+   returns the logged-in college's profile. If the call fails, the saved session data is used instead. */
+const API_BASE = (import.meta.env && import.meta.env.VITE_API_URL) || "http://localhost:5000";
+const COLLEGE_ME_PATH = "/api/college/me";
+
 const PLANS = {
   elite: { name: "Elite", icon: "🥈", accent: "#cbd5e1", monthly: 999, features: ["College listing in search", "Browse all student lead previews", "Email support"] },
   gold: { name: "Gold", icon: "🥇", accent: "#fbbf24", monthly: 1999, features: ["Featured badge on college profile", "Priority in district search", "Lead export (CSV)"] },
@@ -31,6 +37,21 @@ const UPI_APPS = [["Google Pay", "@okaxis", "#1a73e8"], ["PhonePe", "@ybl", "#5f
 const PROCESS_STEPS = ["Contacting your bank…", "Verifying payment securely…", "Activating your plan…"];
 const CONFETTI = ["#1558d6", "#19b3e6", "#fb7185", "#fbbf24", "#10b981", "#a78bfa"];
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "del"];
+
+/* intro smoke: one stream from the top-left, one from the right end, both meet in the centre and swirl into a round */
+const SMOKE = Array.from({ length: 16 }, (_, i) => {
+  const fromLeft = i % 2 === 0;
+  const a = (i / 16) * Math.PI * 2;
+  return {
+    cls: fromLeft ? "l" : "r",
+    sx: fromLeft ? `${-58 - (i % 4) * 4}vw` : `${58 + (i % 4) * 4}vw`,
+    sy: fromLeft ? `${-52 + (i % 3) * 7}vh` : `${24 - (i % 3) * 12}vh`,
+    ex: `${Math.round(Math.cos(a) * 78)}px`,
+    ey: `${Math.round(Math.sin(a) * 78)}px`,
+    size: 150 + (i % 4) * 36,
+    delay: ((i >> 1) * 0.1).toFixed(2),
+  };
+});
 
 const rupee = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 const rupee2 = (n) => `₹${n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -135,6 +156,8 @@ export default function CollegePayment() {
   const periodId = params.get("period");
   const session = useMemo(readSession, []);
   const valid = Boolean(PLANS[planId] && PERIODS[periodId]);
+  const [liveName, setLiveName] = useState("");
+  const [nameLoading, setNameLoading] = useState(Boolean(session));
 
   const [method, setMethod] = useState("upi");
   const [upi, setUpi] = useState("");
@@ -152,6 +175,12 @@ export default function CollegePayment() {
   const [qrOpen, setQrOpen] = useState(false);
   const [qrMessage, setQrMessage] = useState("");
   const qrVideoRef = useRef(null);
+  const [intro, setIntro] = useState(() => !(typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches));
+  useEffect(() => {
+    if (!intro) return undefined;
+    const t = setTimeout(() => setIntro(false), 5300);
+    return () => clearTimeout(t);
+  }, [intro]);
 
   const confetti = useMemo(
     () => Array.from({ length: 40 }, (_, i) => ({
@@ -175,6 +204,23 @@ export default function CollegePayment() {
   }, [session, valid, navigate, planId, periodId]);
 
   useEffect(() => { window.scrollTo({ top: 0 }); }, [stage === "done"]);
+
+  /* fetch the real, live college name of the logged-in college */
+  useEffect(() => {
+    if (!session) return undefined;
+    const ctrl = new AbortController();
+    const token = session.token || session.accessToken || (session.user && session.user.token) || "";
+    fetch(`${API_BASE}${COLLEGE_ME_PATH}`, {
+      signal: ctrl.signal,
+      credentials: "include",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data) => { const n = pickCollegeName(data); if (n) setLiveName(n); })
+      .catch(() => { /* backend not reachable - fall back to saved session */ })
+      .finally(() => { if (!ctrl.signal.aborted) setNameLoading(false); });
+    return () => ctrl.abort();
+  }, [session]);
 
   useEffect(() => {
     if (stage !== "processing") return undefined;
@@ -268,7 +314,7 @@ export default function CollegePayment() {
   const total = full - discount;
   const taxable = total / (1 + GST / 100);
   const gstAmt = total - taxable;
-  const collegeName = findRegisteredName(session) || pickCollegeName(session) || "Your college";
+  const collegeName = liveName || pickCollegeName(session) || findRegisteredName(session) || (nameLoading ? "Loading college…" : "Your college");
   const email = session.email || "";
   const startD = new Date();
   const endD = new Date(startD);
@@ -444,6 +490,23 @@ export default function CollegePayment() {
     <div className="cp" style={{ "--accent": plan.accent }}>
       <style>{css}</style>
 
+      {intro && (
+        <div className="cx-intro" aria-hidden="true">
+          <div className="cx-ring">
+            {SMOKE.map((m, i) => (
+              <i key={i} className={m.cls} style={{ "--sx": m.sx, "--sy": m.sy, "--ex": m.ex, "--ey": m.ey, "--s": `${m.size}px`, animationDelay: `${m.delay}s` }} />
+            ))}
+          </div>
+          <div className="cx-center">
+            <span className="cx-core" />
+            <span className="cx-logo">
+              <svg viewBox="0 0 32 32" fill="#1558d6" stroke="#1558d6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M16 6 3 12.5 16 19l13-6.5L16 6Z" /><path d="M9 16.5V22c0 1.7 3.1 3.5 7 3.5s7-1.8 7-3.5v-5.5l-7 3.5-7-3.5Z" /><path d="M29 13v7" fill="none" /></svg>
+            </span>
+          </div>
+          <p className="cx-brandtxt">Campus<em>Connect</em></p>
+        </div>
+      )}
+
       {stage === "done" ? (
         /* ============ SUCCESS ============ */
         <main className="cp-done">
@@ -497,92 +560,96 @@ export default function CollegePayment() {
         </main>
       ) : (
         /* ============ CHECKOUT ============ */
-        <div className="cp-split">
-          {/* ---- left: total panel ---- */}
-          <aside className="cp-side">
-            <span className="cp-mark" aria-hidden="true">{plan.icon}</span>
-            <div className="cp-side-in">
-              <div className="cp-side-top">
-                <button className="cp-brand" onClick={() => navigate("/college/home")} disabled={busy} aria-label="CampusConnect home"><Logo /><b>CampusConnect</b></button>
-                <button className="cp-back" onClick={() => navigate("/college/home?view=plans")} disabled={busy}>← Change plan</button>
-              </div>
+<div className="cx">
+          {/* Change plan - goes back to the plans page */}
+          <div className="cx-top">
+            <button className="cp-back cx-back" onClick={() => navigate("/college/home?view=plans")} disabled={busy}>← Change plan</button>
+          </div>
 
-              <p className="cp-eyebrow"><span aria-hidden="true">{plan.icon}</span> {plan.name} plan · {periodLabel}</p>
-              <div className="cp-big">
-                <small>Total to pay</small>
-                <Amount value={total} />
-                <span className="cp-big-sub">incl. {GST}% GST{off > 0 && <em>You save {rupee(discount)}</em>}</span>
-              </div>
+          <div className="cp-split">
+            {/* ---- left: plan summary ---- */}
+            <aside className="cp-side">
+              <div className="cp-side-in">
+                <div className="cx-pills">
+                  <span className="cx-plan"><i aria-hidden="true">{plan.icon}</i>{plan.name} Plan</span>
+                  <span className="cx-per">{periodLabel}</span>
+                </div>
+                <h2 className="cx-title">Campus<em>Connect</em></h2>
+                <p className="cx-tag">Premium plan for better college management</p>
 
-              <button className="cp-det-toggle" aria-expanded={showDet} onClick={() => setShowDet((v) => !v)}>
-                Order details <span aria-hidden="true">▾</span>
-              </button>
+                <div className="cx-total">
+                  <small>Total to Pay</small>
+                  <div className="cx-amt">
+                    <Amount value={total} />
+                    {off > 0 && <span className="cx-save">🏷 You save {rupee(discount)}</span>}
+                  </div>
+                  <span className="cx-gst">Incl. {GST}% GST</span>
+                </div>
 
-              <div className={`cp-det ${showDet ? "open" : ""}`}>
                 <div className="cp-who">
                   <span className="cp-avatar" aria-hidden="true">{initials}</span>
                   <div><small>Plan for</small><b>{collegeName}</b></div>
                 </div>
 
-                <dl className="cp-lines">
-                  <div><dt>{plan.name} × {months} {months === 1 ? "month" : "months"}</dt><i /><dd>{rupee(full)}</dd></div>
-                  {off > 0 && <div className="save"><dt>{off}% duration discount</dt><i /><dd>− {rupee(discount)}</dd></div>}
-                  <div className="mut"><dt>Price excl. GST</dt><i /><dd>{rupee2(taxable)}</dd></div>
-                  <div className="mut"><dt>GST @ {GST}%</dt><i /><dd>{rupee2(gstAmt)}</dd></div>
-                </dl>
-
+                <h3 className="cx-bh">Plan Benefits</h3>
                 <ul className="cp-feat">
                   {planId !== "elite" && <li>Everything in {planId === "gold" ? "Elite" : "Gold"}</li>}
                   {plan.features.map((f) => <li key={f}>{f}</li>)}
                 </ul>
 
-                <p className="cp-valid">📅 Valid <b>{fmtDate(startD)}</b> → <b>{fmtDate(endD)}</b></p>
-                <p className="cp-note">Student lead unlocks are charged separately at ₹100 per lead.</p>
+                <svg className="cx-ill" viewBox="0 0 260 150" aria-hidden="true">
+                  <path d="M10 122 130 148 250 122 130 96Z" fill="#3b78ff" opacity=".45" />
+                  <path d="M58 64 130 34 202 64Z" fill="#d6e5ff" />
+                  <rect x="68" y="64" width="124" height="52" fill="#eef4ff" />
+                  <g fill="#8db2f5"><rect x="78" y="70" width="10" height="44" /><rect x="98" y="70" width="10" height="44" /><rect x="152" y="70" width="10" height="44" /><rect x="172" y="70" width="10" height="44" /></g>
+                  <rect x="118" y="84" width="24" height="32" rx="3" fill="#2f6bff" />
+                  <circle cx="130" cy="54" r="5" fill="#2f6bff" />
+                  <path d="M130 34V12" stroke="#d6e5ff" strokeWidth="2" /><path d="M130 12h16l-4 5 4 5h-16Z" fill="#38bdf8" />
+                  <circle cx="40" cy="104" r="12" fill="#22c55e" /><circle cx="226" cy="102" r="14" fill="#22c55e" /><circle cx="210" cy="112" r="9" fill="#16a34a" />
+                </svg>
+                <p className="cx-script">Better Connections<br />Brighter Futures</p>
               </div>
-            </div>
-          </aside>
+            </aside>
 
-          {/* ---- right: payment ---- */}
-          <main className="cp-main" onKeyDown={onEnter}>
-            <div className="cp-bg" aria-hidden="true"><i /><i /><s>₹</s><s>🎓</s><s>₹</s></div>
-            <div className="cp-main-in">
-              <ol className="cp-prog" aria-label="Checkout progress">
-                {steps.map((t, i) => (
-                  <li key={t} className={i < cur ? "done" : i === cur ? "on" : ""}><i /><span>{i < cur ? "✓ " : ""}{t}</span></li>
-                ))}
-              </ol>
+            {/* ---- right: payment ---- */}
+            <main className="cp-main" onKeyDown={onEnter}>
+              <div className="cp-main-in cx-card">
+                <ol className="cp-prog cx-prog" aria-label="Checkout progress">
+                  {steps.map((t, i) => (
+                    <li key={t} className={i < cur ? "done" : i === cur ? "on" : ""}>
+                      <div className="cx-stp"><b>{i < cur ? "✓" : i + 1}</b><i /></div>
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ol>
 
-              <h1>Choose how to pay</h1>
-              <p className="cp-sub">Your plan starts the moment the payment is confirmed.</p>
+                <h1>Choose Payment Method</h1>
+                <p className="cp-sub">Your plan starts the moment the payment is confirmed.</p>
 
-              <div className="cp-acc" role="radiogroup" aria-label="Payment method">
-                {METHODS.map(([id, t, ic, sub]) => (
-                  <section key={id} className={`cp-opt ${method === id ? "open" : ""}`}>
-                    <button type="button" role="radio" aria-checked={method === id} className="cp-opt-h" onClick={() => pickMethod(id)} disabled={busy}>
-                      <span className="cp-radio" aria-hidden="true" />
-                      <span className="cp-opt-ic" aria-hidden="true">{ic}</span>
-                      <span className="cp-opt-t"><b>{t}</b><small>{sub}</small></span>
-                      <span className="cp-chev" aria-hidden="true">⌄</span>
+                <div className="cx-methods" role="radiogroup" aria-label="Payment method">
+                  {METHODS.map(([id, t, ic, sub]) => (
+                    <button key={id} type="button" role="radio" aria-checked={method === id} className={`cx-m ${method === id ? "on" : ""}`} onClick={() => pickMethod(id)} disabled={busy}>
+                      {id === "upi" && <em className="cx-badge">★ Most Preferred</em>}
+                      <span className="cx-mi" aria-hidden="true">{ic}</span>
+                      <b>{t}</b>
+                      <small>{sub}</small>
                     </button>
-                    <div className="cp-opt-b">
-                      <div><div className="cp-pad">{method === id && renderPanel(id)}</div></div>
-                    </div>
-                  </section>
-                ))}
-              </div>
+                  ))}
+                </div>
 
-              <div className="cp-paywrap">
-                <button className="cp-pay" onClick={payNow} disabled={busy}>
-                  <span><b aria-hidden="true">🔒</b> Pay {rupee(total)}</span><i aria-hidden="true">→</i>
-                </button>
-                <ul className="cp-trust" aria-label="Security assurances">
-                  <li>Encrypted</li><li>Server-verified</li><li>Instant GST receipt</li>
-                </ul>
-              </div>
+                <div className="cx-panel" key={method}>{renderPanel(method)}</div>
 
-              <p className="cp-safe">We never store your card details. Your plan is activated only after our server verifies the payment.{email && <> Receipt goes to <b>{email}</b>.</>}</p>
-            </div>
-          </main>
+                <div className="cp-paywrap">
+                  <button className="cp-pay" onClick={payNow} disabled={busy}>
+                    <span><b aria-hidden="true">🔒</b> Pay {rupee(total)}</span><i aria-hidden="true">→</i>
+                  </button>
+                  <ul className="cp-trust" aria-label="Security assurances">
+                    <li>256-bit SSL Encrypted</li><li>Secure &amp; Verified</li><li>Instant GST Receipt</li>
+                  </ul>
+                </div>
+              </div>
+            </main>
+          </div>
         </div>
       )}
 
@@ -1088,4 +1155,105 @@ body { margin:0!important; display:block!important; background:#f3f8ff!important
 .cp-qr-cancel { width:100%; padding:12px 16px; border:0; border-radius:12px; background:#1558d6; color:white; font:inherit; font-weight:800; cursor:pointer; }
 .cp-qr-modal small { display:block; margin-top:12px; color:#71829a; font-size:11px; }
 @media (max-width:480px) { .cp-qr-modal { padding:22px 18px; } }
+/* ===== clean checkout layout (no sidebar / no top bar) ===== */
+.cx { width:100%; max-width:1180px; margin:0 auto; padding:16px clamp(14px,3vw,28px) 28px; font-size:14px; }
+.cx-top { display:flex; margin-bottom:12px; }
+.cx .cx-back { padding:8px 16px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:13px; font-weight:700; box-shadow:0 6px 16px -10px rgba(21,88,214,.4); }
+.cx .cx-back:hover:not(:disabled) { background:#eaf3ff; }
+.cx .cp-split { grid-template-columns:minmax(300px,4.6fr) minmax(0,7fr); gap:22px; min-height:0; align-items:start; }
+.cx .cp-side { position:sticky; top:16px; height:auto; border-radius:24px; overflow:hidden; background:radial-gradient(380px 240px at 100% 100%,rgba(56,130,255,.4),transparent 70%),linear-gradient(160deg,#0a1f5c,#0f3a9e 62%,#0b2a78); box-shadow:0 28px 54px -34px rgba(11,42,120,.8); }
+.cx .cp-side-in { display:flex; flex-direction:column; gap:14px; max-width:none; height:auto; margin:0; padding:24px; overflow:visible; }
+.cx-pills { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.cx-plan { display:inline-flex; align-items:center; gap:8px; padding:4px 14px 4px 4px; border-radius:999px; background:rgba(255,255,255,.12); font-weight:700; font-size:13.5px; }
+.cx-plan i { display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:rgba(251,191,36,.25); font-style:normal; font-size:13px; }
+.cx-per { padding:6px 13px; border:1px solid rgba(255,255,255,.35); border-radius:999px; font-weight:600; font-size:12.5px; }
+.cx-title { margin:0; font-size:28px; font-weight:800; letter-spacing:-.4px; line-height:1.1; }
+.cx-title em { font-style:normal; color:#38bdf8; }
+.cx-tag { margin:-6px 0 0; font-size:14px; color:#e6efff; }
+.cx-total { display:grid; gap:4px; padding:14px 16px; border:1px solid rgba(255,255,255,.22); border-radius:16px; background:rgba(255,255,255,.07); }
+.cx-total small { font-size:13.5px; font-weight:700; }
+.cx-amt { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.cx-amt strong { font-size:34px; line-height:1.1; letter-spacing:-.8px; }
+.cx-save { padding:6px 11px; border-radius:9px; background:#10b981; font-size:12px; font-weight:700; }
+.cx-gst { font-size:12.5px; color:#cfe0ff; }
+.cx .cp-who { padding:12px 14px; border:1px solid rgba(255,255,255,.2); border-radius:14px; background:rgba(255,255,255,.07); }
+.cx .cp-who small { font-size:12px; } .cx .cp-who b { font-size:15px; }
+.cx-bh { margin:2px 0 -4px; font-size:15px; font-weight:800; color:#7dd3fc; }
+.cx .cp-feat { gap:9px; padding:0; border:0; }
+.cx .cp-feat li { font-size:13px; }
+.cx .cp-feat li::before { width:20px; height:20px; background:#60a5fa; font-size:10px; }
+.cx-ill { width:100%; max-width:210px; margin:4px auto 0; }
+.cx-script { margin:-4px 0 0; text-align:right; font:italic 600 14px/1.3 "Segoe Script","Brush Script MT",cursive; color:#bcd4ff; transform:rotate(-4deg); }
+.cx .cp-main { display:block; padding:0; overflow:visible; }
+.cx .cp-main-in { max-width:none; }
+.cx-card { padding:26px 28px; border:1px solid var(--line); border-radius:24px; background:#fff; box-shadow:0 24px 50px -34px rgba(21,88,214,.45); }
+.cx .cp-prog { margin-bottom:22px; }
+.cx .cp-prog li { font-size:13px; }
+.cx-stp { display:flex; align-items:center; gap:8px; }
+.cx-stp b { display:grid; place-items:center; flex:none; width:30px; height:30px; border-radius:50%; background:#eaf1fd; border:2px solid #cfdcf3; color:#4a5f82; font-size:13px; }
+.cx-stp i { flex:1; }
+.cp-prog li.done .cx-stp b { background:#10b981; border-color:#10b981; color:#fff; }
+.cp-prog li.on .cx-stp b { background:#fff; border-color:var(--brand); color:var(--brand); }
+.cx .cp-main h1 { font-size:24px; color:#0b1b3a; -webkit-text-fill-color:#0b1b3a; opacity:1; background:none; }
+.cx .cp-sub { font-size:14px; margin-top:4px; }
+/* payment method tiles */
+.cx-methods { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+.cx-m { position:relative; display:grid; justify-items:center; gap:3px; padding:22px 10px 14px; border:2px solid var(--line); border-radius:18px; background:#fff; color:var(--ink); font:inherit; text-align:center; cursor:pointer; transition:border-color .2s,box-shadow .2s,transform .2s,background .2s; }
+.cx-m:hover:not(:disabled) { transform:translateY(-2px); border-color:#a9c6f5; }
+.cx-m.on { border-color:var(--brand); background:linear-gradient(180deg,#f2f7ff,#fff); box-shadow:0 16px 30px -20px rgba(21,88,214,.7); }
+.cx-m.on::after { content:"✓"; position:absolute; top:8px; right:8px; display:grid; place-items:center; width:20px; height:20px; border-radius:50%; background:var(--brand); color:#fff; font-size:11px; font-weight:800; }
+.cx-mi { display:grid; place-items:center; width:44px; height:44px; margin-bottom:4px; border-radius:14px; background:#eaf1fd; font-size:20px; }
+.cx-m.on .cx-mi { background:var(--brand); }
+.cx-m b { font-size:14.5px; }
+.cx-m small { font-size:11.5px; line-height:1.3; color:var(--muted); font-weight:500; }
+.cx-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); padding:3px 10px; border-radius:999px; background:#e8f8ef; border:1px solid #bfe9d0; color:#0f9d58; font-size:10.5px; font-weight:700; font-style:normal; white-space:nowrap; }
+.cx-panel { margin-top:16px; padding:18px; border:1px solid var(--line); border-radius:18px; background:#f7faff; animation:cpFade .35s both; }
+.cx .cp-chips button { font-size:13px; padding:5px 14px 5px 5px; background:#fff; }
+.cx .cp-chips i { width:24px; height:24px; font-size:11px; }
+.cx .cp-lb { font-size:11.5px; }
+.cx .cp-flow li { font-size:12px; padding:10px 12px; background:#fff; border:1px solid var(--line); }
+.cx .cp-panel input, .cx-panel input { font-size:14.5px; }
+.cx .cp-paywrap { margin-top:20px; }
+.cx .cp-pay { min-height:56px; font-size:16px; background:linear-gradient(100deg,#1558d6,#5b3df0); }
+.cx .cp-trust { font-size:12px; gap:4px 22px; }
+@media (max-width:980px) {
+  .cx .cp-split { grid-template-columns:1fr; }
+  .cx .cp-side { position:relative; top:0; }
+  .cx .cp-paywrap { position:static; margin:20px 0 0; padding:0; background:none; }
+}
+@media (max-width:600px) {
+  .cx-card { padding:20px 16px; }
+  .cx-methods { grid-template-columns:1fr; }
+  .cx-m { grid-template-columns:44px 1fr; justify-items:start; text-align:left; padding:14px; column-gap:12px; }
+  .cx-mi { grid-row:1 / 3; margin:0; }
+  .cx-badge { top:8px; left:auto; right:38px; transform:none; }
+  .cx .cp-flow { grid-template-columns:1fr; }
+}
+/* ===== intro smoke animation ===== */
+.cx-intro { position:fixed; inset:0; z-index:10000; display:grid; place-items:center; overflow:hidden; background:radial-gradient(700px 480px at 50% 50%,#10296b,#050d24 72%); animation:cxOut .8s 4.4s ease forwards; }
+.cx-ring { position:absolute; left:50%; top:50%; width:0; height:0; animation:cxSpin 4.4s ease-in-out both; }
+.cx-ring i { position:absolute; left:0; top:0; width:var(--s); height:var(--s); border-radius:50%; filter:blur(16px); mix-blend-mode:screen; opacity:0; animation:cxPuff 3.6s ease-in-out both; }
+.cx-ring i.l { background:radial-gradient(circle,rgba(205,224,255,.95),rgba(100,150,255,.5) 45%,transparent 70%); }
+.cx-ring i.r { background:radial-gradient(circle,rgba(190,245,255,.95),rgba(40,190,235,.5) 45%,transparent 70%); }
+.cx-center { position:absolute; left:50%; top:50%; display:grid; place-items:center; transform:translate(-50%,-50%); }
+.cx-core, .cx-logo { grid-area:1/1; border-radius:50%; }
+.cx-core { width:190px; height:190px; background:radial-gradient(circle at 35% 30%,#fff,#a9ccff 32%,#2f6bff 70%,#0b2a78); box-shadow:0 0 70px 24px rgba(80,150,255,.5); opacity:0; animation:cxCore 4.4s ease both; }
+.cx-logo { display:grid; place-items:center; width:120px; height:120px; background:#fff; box-shadow:0 14px 40px -10px rgba(0,0,0,.5); opacity:0; animation:cxPop .7s 3s cubic-bezier(.3,1.5,.5,1) both; }
+.cx-logo svg { width:72px; height:72px; }
+.cx-brandtxt { position:absolute; left:0; right:0; top:calc(50% + 122px); margin:0; text-align:center; color:#fff; font-size:26px; font-weight:800; letter-spacing:-.3px; opacity:0; animation:cxFade2 .6s 3.4s ease both; }
+.cx-brandtxt em { font-style:normal; color:#38bdf8; }
+@keyframes cxPuff {
+  0% { transform:translate(-50%,-50%) translate(var(--sx),var(--sy)) scale(.5); opacity:0; }
+  22% { opacity:.8; }
+  55% { transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) scale(1); opacity:.85; }
+  75% { transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) scale(1.05); opacity:.8; }
+  100% { transform:translate(-50%,-50%) translate(calc(var(--ex) * 2.6),calc(var(--ey) * 2.6)) scale(2.4); opacity:0; }
+}
+@keyframes cxSpin { 0%,40% { transform:rotate(0); } 100% { transform:rotate(200deg); } }
+@keyframes cxCore { 0%,28% { opacity:0; transform:scale(.3); filter:blur(14px); } 52% { opacity:.9; transform:scale(1); filter:blur(5px); } 70%,100% { opacity:1; transform:scale(1); filter:blur(0); } }
+@keyframes cxPop { from { opacity:0; transform:scale(.4); } to { opacity:1; transform:scale(1); } }
+@keyframes cxFade2 { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+@keyframes cxOut { to { opacity:0; visibility:hidden; transform:scale(1.08); } }
+@media (max-width:600px) { .cx-core { width:150px; height:150px; } .cx-logo { width:96px; height:96px; } .cx-logo svg { width:58px; height:58px; } .cx-brandtxt { top:calc(50% + 100px); font-size:22px; } }
+
 `;
