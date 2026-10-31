@@ -1,5 +1,108 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+/* UI SCALE: every "px" value in the CSS below (sizes, spacing, fonts, breakpoints) and every icon size is multiplied by this number.
+   0.67 = the dashboard looks at 100% browser zoom exactly like it looked at 67% zoom (same value as the college home page).
+   Change to 0.75 / 0.8 / 1 if you want it bigger. */
+const UI_SCALE = 0.67;
+const scaleCache = new Map();
+const scalePx = (css) => {
+  if (!scaleCache.has(css)) {
+    scaleCache.set(css, css.replace(/(\d*\.?\d+)px/g, (_, n) => `${Math.round(parseFloat(n) * UI_SCALE * 100) / 100}px`));
+  }
+  return scaleCache.get(css);
+};
+
+/* ---- who is logged in (same session the college home page uses: see CollegeSite.jsx) ---- */
+const SESSION_KEY = "campusconnect_college_session";
+const AFTER_LOGIN_KEY = "campusconnect_after_login";
+const LOGOUT_ALSO_CLEAR = []; // add any other localStorage keys your login page saves (e.g. a separate token key) so Logout wipes them too
+
+const sessionGone = (x) => {
+  if (!x) return false;
+  const n = typeof x === "number" ? x : Number(x);
+  const ms = Number.isFinite(n) ? (n < 1e12 ? n * 1000 : n) : Date.parse(x);
+  return Number.isFinite(ms) && ms <= Date.now();
+};
+
+/* real login check: empty / "null" / "undefined" values and expired tokens do NOT count (the real lock must still be on the backend) */
+function readSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return false;
+    const v = raw.trim();
+    if (["", "null", "undefined", "false", "0", "{}", "[]"].includes(v)) return false;
+    let data = v;
+    try { data = JSON.parse(v); } catch { /* plain token string */ }
+    if (data === null || data === false) return false;
+    if (typeof data === "object") {
+      if (Object.keys(data).length === 0) return false;
+      if (sessionGone(data.expiresAt || data.expires || data.exp)) return false;
+    }
+    const token = typeof data === "string" ? data : data.token || data.accessToken || data.jwt;
+    if (typeof token === "string" && token.split(".").length === 3) {
+      try {
+        const b = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        const payload = JSON.parse(atob(b + "=".repeat((4 - (b.length % 4)) % 4)));
+        if (sessionGone(payload.exp)) return false;
+      } catch { /* not a readable JWT: keep as logged in */ }
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/* the college that is logged in: name, id, email, mobile, location, logo, verified (anything missing is simply not shown) */
+function readCollege() {
+  const none = { name: "Your College", email: "", mobile: "", id: "", place: "", logo: "", verified: false };
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return none;
+    let data = raw;
+    try { data = JSON.parse(raw); } catch { /* plain token string */ }
+    let src = {};
+    if (data && typeof data === "object") {
+      src = { ...data, ...(data.user || {}), ...(data.profile || {}), ...(data.college || {}) };
+    } else if (typeof data === "string" && data.split(".").length === 3) {
+      try {
+        const b = data.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        src = JSON.parse(atob(b + "=".repeat((4 - (b.length % 4)) % 4)));
+      } catch { /* unreadable token */ }
+    }
+    const pick = (...keys) => {
+      for (const k of keys) {
+        const v = src[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+        if (typeof v === "number") return String(v);
+      }
+      return "";
+    };
+    const id = pick("collegeId", "college_id", "collegeCode", "code", "regNo", "registrationNumber", "id", "_id");
+    return {
+      name: pick("collegeName", "college_name", "instituteName", "institutionName", "orgName", "name", "title") || none.name,
+      email: pick("email", "officialEmail", "collegeEmail", "contactEmail"),
+      mobile: pick("mobile", "phone", "phoneNumber", "contactNumber", "contact"),
+      id: id.length <= 16 ? id : "",
+      place: [pick("district", "city"), pick("state")].filter(Boolean).join(", "),
+      logo: pick("logo", "logoUrl", "logo_url", "photo", "image", "avatar"),
+      verified: src.verified === true || src.isVerified === true || ["verified", "approved", "active"].includes(String(src.status || "").toLowerCase()),
+    };
+  } catch {
+    return none;
+  }
+}
+
+/* round avatar: college logo if there is one, otherwise the first letter of the college name */
+function CollegeAvatar({ college, className = "college-avatar" }) {
+  const [bad, setBad] = useState(false);
+  const ok = college.logo && !bad && /^(https?:|data:image|\/)/.test(college.logo);
+  return (
+    <div className={className}>
+      {ok ? <img src={college.logo} alt="" onError={() => setBad(true)} /> : college.name.trim().charAt(0).toUpperCase()}
+    </div>
+  );
+}
 
 const leads = [
   { id: "STU10234", name: "Keerthi", course: "B.Tech CSE", location: "Coimbatore", score: "82%", status: "New" },
@@ -46,7 +149,7 @@ function Icon({ name, size = 20 }) {
   };
 
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={Math.round(size * UI_SCALE * 100) / 100} height={Math.round(size * UI_SCALE * 100) / 100} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d={paths[name] || paths.dashboard} />
     </svg>
   );
@@ -54,7 +157,42 @@ function Icon({ name, size = 20 }) {
 
 export default function CollegeDashboard() {
   const routerNavigate = useNavigate();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [, setAuthTick] = useState(0); // bumps when the login state may have changed (logout in another tab, token expiry)
+  const loggedIn = readSession();
+  const college = loggedIn ? readCollege() : null; // the college that is logged in right now
+  const leaving = useRef(false);
+
+  // dashboard is for logged-in colleges only: no login -> go to the login page (and come back here after login)
+  useEffect(() => {
+    if (loggedIn || leaving.current) return;
+    try {
+      sessionStorage.setItem(AFTER_LOGIN_KEY, "/college/dashboard");
+    } catch {
+      /* ignore */
+    }
+    routerNavigate("/college/register?mode=login", { replace: true });
+  }, [loggedIn, routerNavigate]);
+  useEffect(() => {
+    const sync = () => setAuthTick((n) => n + 1);
+    window.addEventListener("storage", sync);
+    window.addEventListener("focus", sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("focus", sync);
+    };
+  }, []);
+
+  // Logout: wipe the session and go back to the public college site
+  const logout = () => {
+    leaving.current = true;
+    try {
+      [SESSION_KEY, ...LOGOUT_ALSO_CLEAR].forEach((k) => localStorage.removeItem(k));
+      sessionStorage.removeItem(AFTER_LOGIN_KEY);
+    } catch {
+      /* ignore */
+    }
+    routerNavigate("/college/home", { replace: true });
+  };  const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Dashboard");
   const [search, setSearch] = useState("");
   const [showNotification, setShowNotification] = useState(false);
@@ -128,6 +266,8 @@ export default function CollegeDashboard() {
   }
 };
 
+  if (!loggedIn || !college) return null; // never show the dashboard to a logged-out visitor
+
   const menu = [
     ["Dashboard", "dashboard"],
     ["Student Leads", "users"],
@@ -139,7 +279,7 @@ export default function CollegeDashboard() {
 
   return (
     <div className={`college-dashboard ${animated ? "is-ready" : ""}`}>
-      <style>{`
+      <style>{scalePx(`
         *{box-sizing:border-box}
         html,body,#root{width:100%;min-width:0;margin:0;padding:0}
         body{background:#f4f8fd}
@@ -589,7 +729,62 @@ export default function CollegeDashboard() {
           .college-card-header{padding:18px}
           .college-table td,.college-table th{padding:14px 14px}
         }
-      `}</style>
+
+        /* logged-in college: avatar, names and profile banner */
+        .college-avatar{overflow:hidden;font-size:16px}
+        .college-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+        .college-side-user>div:last-child{min-width:0}
+        .college-side-user strong{line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .college-user>div:last-child{min-width:0}
+        .college-user strong{max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .college-profile{
+          position:relative;overflow:hidden;display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+          margin-bottom:26px;padding:28px 32px;border-radius:22px;color:#fff;
+          background:linear-gradient(120deg,#0a3b8c 0%,#0866d4 52%,#19b3e6 100%);background-size:200% 200%;
+          box-shadow:0 22px 50px -22px rgba(8,103,214,.65);
+          opacity:0;transform:translateY(18px);animation:rise .6s ease .05s forwards,gradMove 14s ease-in-out infinite
+        }
+        .college-profile:before,.college-profile:after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+        .college-profile:before{width:260px;height:260px;right:-70px;top:-120px;background:rgba(255,255,255,.10)}
+        .college-profile:after{width:160px;height:160px;right:150px;bottom:-95px;background:rgba(255,255,255,.07)}
+        .college-profile>*{position:relative;z-index:1}
+        .college-profile-av{
+          display:grid;place-items:center;flex:none;width:84px;height:84px;overflow:hidden;
+          border-radius:26px 26px 26px 8px;background:#fff;color:#0866d4;font-size:36px;font-weight:900;
+          box-shadow:0 0 0 5px rgba(255,255,255,.28),0 16px 30px rgba(4,30,80,.30)
+        }
+        .college-profile-av img{width:100%;height:100%;object-fit:cover;display:block}
+        .college-profile-main{flex:1;min-width:260px}
+        .college-profile-tag{
+          display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;
+          background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+          font-size:11px;font-weight:800;letter-spacing:.9px;text-transform:uppercase
+        }
+        .college-profile-tag:before{content:"";width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.3);animation:dotPulse 1.8s ease infinite}
+        .college-profile h2{margin:10px 0 0;font-size:30px;line-height:1.15;letter-spacing:-.6px;font-weight:850;color:#fff}
+        .college-profile-chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+        .college-profile-chips span{
+          display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:8px 14px;border-radius:999px;
+          background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);
+          font-size:13px;font-weight:650;overflow-wrap:anywhere;backdrop-filter:blur(6px)
+        }
+        .college-profile-chips small{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;opacity:.72}
+        .college-profile-btn{
+          display:inline-flex;align-items:center;gap:8px;flex:none;border:0;border-radius:12px;padding:14px 20px;
+          background:#fff;color:#0866d4;font-size:13px;font-weight:850;box-shadow:0 14px 28px rgba(4,30,80,.25);transition:.22s ease
+        }
+        .college-profile-btn:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(4,30,80,.32)}
+        @media(max-width:980px){
+          .college-profile{padding:22px;gap:18px}
+          .college-profile h2{font-size:25px}
+        }
+        @media(max-width:560px){
+          .college-profile{padding:18px;border-radius:18px}
+          .college-profile-av{width:64px;height:64px;font-size:28px}
+          .college-profile h2{font-size:21px}
+          .college-profile-btn{width:100%;justify-content:center}
+        }
+      `)}</style>
 
       <div className={`college-overlay ${mobileOpen ? "show" : ""}`} onClick={() => setMobileOpen(false)} />
 
@@ -620,14 +815,14 @@ export default function CollegeDashboard() {
         <div className="college-sidebar-spacer" />
 
         <div className="college-side-user">
-          <div className="college-avatar"><Icon name="building" size={19} /></div>
+          <CollegeAvatar college={college} />
           <div>
-            <strong>Your College</strong>
-            <span>Verified College</span>
+            <strong title={college.name}>{college.name}</strong>
+            <span>{college.verified ? "Verified College" : "Logged in"}</span>
           </div>
         </div>
 
-        <button className="college-nav-item college-logout" onClick={() => notify("Logout will be connected to authentication")}>
+        <button className="college-nav-item college-logout" onClick={logout}>
           <Icon name="logout" size={18} />
           <span>Logout</span>
         </button>
@@ -665,10 +860,10 @@ export default function CollegeDashboard() {
             </button>
 
             <div className="college-user">
-              <div className="college-avatar"><Icon name="building" size={19} /></div>
+              <CollegeAvatar college={college} />
               <div>
-                <strong>Your College</strong>
-                <span>Verified College</span>
+                <strong title={college.name}>{college.name}</strong>
+                <span>{college.verified ? "Verified College" : "Logged in"}</span>
               </div>
             </div>
           </div>
@@ -685,12 +880,29 @@ export default function CollegeDashboard() {
         <section className="college-content">
           <div className="college-welcome">
             <div>
-              <h1>{greeting}, Admissions Partner 👋</h1>
-              <p>Here’s what is happening with your student leads today.</p>
+              <h1>{greeting} 👋</h1>
+              <p>Welcome back! Here’s what is happening with your student leads today.</p>
             </div>
             <button className="college-primary" onClick={() => navigate("Courses")}>
               <Icon name="plus" size={15} />
               Add New Course
+            </button>
+          </div>
+
+          <div className="college-profile">
+            <CollegeAvatar college={college} className="college-profile-av" />
+            <div className="college-profile-main">
+              <span className="college-profile-tag">{college.verified ? "Verified college" : "Logged in"}</span>
+              <h2>{college.name}</h2>
+              <div className="college-profile-chips">
+                {college.id && <span><small>College ID</small>{college.id}</span>}
+                {college.email && <span><small>Email</small>{college.email}</span>}
+                {college.mobile && <span><small>Mobile</small>{college.mobile}</span>}
+                {college.place && <span><small>Location</small>{college.place}</span>}
+              </div>
+            </div>
+            <button className="college-profile-btn" onClick={() => navigate("College Profile")}>
+              View College Profile <Icon name="arrow" size={13} />
             </button>
           </div>
 
