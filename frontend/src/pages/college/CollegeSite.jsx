@@ -31,6 +31,42 @@ const HERO_CAMPUS =
 const SESSION_KEY = "campusconnect_college_session"; // same key used by Registeration.jsx
 const AFTER_LOGIN_KEY = "campusconnect_after_login"; // login page can read this and redirect back (value: "/college/home?view=plans")
 
+/* Is a college REALLY logged in?  Not just "some value exists": empty / "null" / "undefined" values and expired tokens do NOT count.
+   Works with a plain token string, a JSON object { token | accessToken | jwt, expiresAt | expires | exp }, or a JWT with an "exp" claim.
+   (This only decides what the screen shows. The real lock must still be on the backend: prices + payment APIs must check the JWT.) */
+const sessionGone = (x) => {
+  if (!x) return false;
+  const n = typeof x === "number" ? x : Number(x);
+  const ms = Number.isFinite(n) ? (n < 1e12 ? n * 1000 : n) : Date.parse(x);
+  return Number.isFinite(ms) && ms <= Date.now();
+};
+function readSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return false;
+    const v = raw.trim();
+    if (["", "null", "undefined", "false", "0", "{}", "[]"].includes(v)) return false;
+    let data = v;
+    try { data = JSON.parse(v); } catch { /* plain token string */ }
+    if (data === null || data === false) return false;
+    if (typeof data === "object") {
+      if (Object.keys(data).length === 0) return false;
+      if (sessionGone(data.expiresAt || data.expires || data.exp)) return false;
+    }
+    const token = typeof data === "string" ? data : data.token || data.accessToken || data.jwt;
+    if (typeof token === "string" && token.split(".").length === 3) {
+      try {
+        const b = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        const payload = JSON.parse(atob(b + "=".repeat((4 - (b.length % 4)) % 4)));
+        if (sessionGone(payload.exp)) return false;
+      } catch { /* not a readable JWT: keep as logged in */ }
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /* UI SCALE: every "px" value in the CSS below is multiplied by this number.
    0.67 = the page looks at 100% browser zoom exactly like it looked at 67% zoom.
    Change to 0.75 / 0.8 / 1 if you want it bigger. */
@@ -101,10 +137,10 @@ const BENEFITS = [
 ];
 
 const LEADS = [
-  ["STU10231", "82%", "B.Tech CSE", "Chennai", "S"],
-  ["STU10232", "91%", "MBBS", "Coimbatore", "M"],
-  ["STU10233", "76%", "B.Sc Nursing", "Salem", "N"],
-  ["STU10234", "88%", "B.Com", "Erode", "B"],
+  ["STU10231", "82%", "B.Tech CSE", "Bengaluru", "S"],
+  ["STU10232", "91%", "MBBS", "Delhi", "M"],
+  ["STU10233", "76%", "B.Sc Nursing", "Kochi", "N"],
+  ["STU10234", "88%", "B.Com", "Jaipur", "B"],
 ];
 
 /* SAMPLE prices (monthly base, ₹) and discounts. Shown ONLY after login. */
@@ -116,6 +152,29 @@ const PERIODS = [
   ["12m", "1 Year", 12, 20],
 ];
 const rupee = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
+/* Student leads you can unlock with the amount you pay (each lead = DL_BASE.price = ₹100). Change this one line if you want fixed lead quotas instead. */
+const leadsOf = (amount) => Math.floor(amount / DL_BASE.price);
+const nf = (n) => n.toLocaleString("en-IN");
+
+/* Pricing page: what each plan gives for each duration (SAMPLE content - edit the text freely).
+   Student leads and the "You save" line are calculated automatically from the price. */
+const PLAN_PERKS = {
+  elite: {
+    "1m": ["30 days of verified college listing", "Ideal to try CampusConnect"],
+    "6m": ["6 months of verified college listing", "Full receipts & purchase history for the term"],
+    "12m": ["A full year of verified college listing", "Full receipts & purchase history for the year", "One payment, no monthly renewals"],
+  },
+  gold: {
+    "1m": ["30 days of Featured badge & district priority", "Built for one focused admission push"],
+    "6m": ["6 months of Featured badge & district priority", "Covers a complete admission season", "Priority email & chat support"],
+    "12m": ["12 months of Featured badge & district priority", "Priority support with faster replies", "Quarterly lead performance review"],
+  },
+  diamond: {
+    "1m": ["Campaign kickoff call with your account manager", "Instant alerts for new student interest"],
+    "6m": ["6 months of top placement in search", "Monthly campaign review with your manager", "Instant alerts for new student interest"],
+    "12m": ["12 months of top placement in search", "Quarterly strategy sessions with your manager", "Instant alerts for new student interest", "Early access to new features"],
+  },
+};
 
 const RIBBON_A = ["Search by district", "₹100 per lead", "Verified colleges", "Consent-based leads", "Secure payments", "Instant unlock"];
 const RIBBON_B = ["🎯 Course-matched students", "📲 Direct mobile numbers", "⚡ Unlock in one tap", "🧾 Receipt for every lead", "🎓 Fresh after 12th results", "🔒 Server-verified payments", "📈 Track every follow-up"];
@@ -567,9 +626,9 @@ function Ln({ i = 0, children }) {
 /* ---------- hero: Live Admission Pulse (live bars + unlock ticker + travelling ₹ coin) ---------- */
 const HP_STEPS = [["🎓", "Student shows interest"], ["💳", "College pays ₹100"], ["📲", "Admission call"]];
 const HP_FEED = [
-  ["Salem", "B.Tech CSE", "STU10235"],
-  ["Coimbatore", "MBBS", "STU10236"],
-  ["Erode", "B.Com", "STU10237"],
+  ["Hyderabad", "B.Tech CSE", "STU10235"],
+  ["Pune", "MBBS", "STU10236"],
+  ["Lucknow", "B.Com", "STU10237"],
   ["Chennai", "B.Sc Nursing", "STU10238"],
   ["Tiruppur", "B.E ECE", "STU10239"],
 ];
@@ -661,11 +720,20 @@ function SideRail({ active, show, onGo }) {
    Numbers below are SAMPLE values. Replace with your API values.  The demo rows use fake data only. */
 const DL_BASE = { downloads: 12450, students: 25430, leads: 18250, colleges: 325, price: 100 };
 
+/* ---- LIVE BACKEND for TOTAL STUDENT LEADS DOWNLOADED ----
+   API_BASE  : your backend URL (use "" if you use a dev proxy / same domain).
+   DL_STATS_URL : GET endpoint that returns the total downloaded count, e.g.  { "total": 12450 }
+   Also accepted: { totalDownloaded | downloads | count : 12450 } or the same inside { data: {...} }.
+   While loading / if the API fails, the old sample number is shown, so the design never breaks. */
+const API_BASE = "http://localhost:5000";
+const DL_STATS_URL = "/api/stats/downloads";
+const DL_REFRESH_MS = 30000; // re-fetch every 30 seconds so the counter stays live
+
 const DL_LEADS = [
-  { id: "STU10231", pc: "82%", course: "B.Tech CSE", city: "Chennai", name: "Keerthana R", mobile: "98765 43210", email: "keerthana@example.com" },
-  { id: "STU10232", pc: "91%", course: "MBBS", city: "Coimbatore", name: "Mohan S", mobile: "98765 43211", email: "mohan@example.com" },
-  { id: "STU10233", pc: "76%", course: "B.Sc Nursing", city: "Salem", name: "Nandhini P", mobile: "98765 43212", email: "nandhini@example.com" },
-  { id: "STU10234", pc: "88%", course: "B.Com", city: "Erode", name: "Barath K", mobile: "98765 43213", email: "barath@example.com" },
+  { id: "STU10231", pc: "82%", course: "B.Tech CSE", city: "Bengaluru", name: "Ananya R", mobile: "98765 43210", email: "ananya@example.com" },
+  { id: "STU10232", pc: "91%", course: "MBBS", city: "Delhi", name: "Rohan S", mobile: "98765 43211", email: "rohan@example.com" },
+  { id: "STU10233", pc: "76%", course: "B.Sc Nursing", city: "Kochi", name: "Meera P", mobile: "98765 43212", email: "meera@example.com" },
+  { id: "STU10234", pc: "88%", course: "B.Com", city: "Jaipur", name: "Arjun K", mobile: "98765 43213", email: "arjun@example.com" },
 ];
 
 const DL_STEPS = [
@@ -708,6 +776,26 @@ function AnimatedNumber({ value, prefix = "", className = "" }) {
 
 function DownloadsSection({ onRegister, onBrowse }) {
   const [state, setState] = useState({}); // id -> "paying" | "done"
+  const [live, setLive] = useState(null); // real total from backend (null = not loaded yet)
+
+  useEffect(() => {
+    let off = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`${API_BASE}${DL_STATS_URL}`, { headers: { Accept: "application/json" } });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const j = await r.json();
+        const d = j && typeof j === "object" && j.data && typeof j.data === "object" ? j.data : j;
+        const n = Number(d.total ?? d.totalDownloaded ?? d.downloads ?? d.count);
+        if (!off && Number.isFinite(n) && n >= 0) setLive(n);
+      } catch (e) {
+        /* backend not reachable: keep the last value (or the sample number) */
+      }
+    };
+    load();
+    const t = setInterval(load, DL_REFRESH_MS);
+    return () => { off = true; clearInterval(t); };
+  }, []);
   const doneIds = DL_LEADS.filter((l) => state[l.id] === "done").map((l) => l.id);
   const mine = doneIds.length;
 
@@ -733,7 +821,8 @@ function DownloadsSection({ onRegister, onBrowse }) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
-  const total = DL_BASE.downloads + mine;
+  // real backend number when connected; the demo rows below are fake so they only affect the sample fallback
+  const total = live !== null ? live : DL_BASE.downloads + mine;
 
   return (
     <section id="downloads" className="dl">
@@ -750,7 +839,7 @@ function DownloadsSection({ onRegister, onBrowse }) {
           <div className="dl-total cs-rv">
             <small>TOTAL STUDENT LEADS DOWNLOADED</small>
             <div className="dl-big" key={mine}><AnimatedNumber value={total} /></div>
-            <p className="dl-sub">by <b>{DL_BASE.colleges}+</b> colleges across Tamil Nadu</p>
+            <p className="dl-sub">by <b>{DL_BASE.colleges}+</b> colleges across India</p>
             <div className="dl-mini">
               <div><b><AnimatedNumber value={DL_BASE.students} /></b><span>students registered</span></div>
               <div><b><AnimatedNumber value={DL_BASE.leads} /></b><span>student leads available</span></div>
@@ -965,33 +1054,39 @@ const PC_DUST = [
    PLANS above is NOT changed, so the login-only pricing page stays exactly as it was. */
 const PC_CONTENT = {
   elite: {
-    tag: "Start receiving verified student interest",
-    who: "🏫 Best for new colleges",
+    tag: "Launch your admissions with verified leads",
+    who: "🏫 Perfect for new colleges",
     features: [
-      "Admin-verified college profile & listing",
-      "Free lead preview: Student ID, 12th %, course",
-      "Add & manage courses, fees and seats",
-      "Unlock any student's contact for ₹100",
+      "Admin-verified profile that builds trust",
+      "Free preview of every student lead",
+      "Pay only ₹100 per lead you unlock",
+      "Showcase your courses, fees and seats",
+      "Name, mobile & email saved after unlock",
+      "Receipts & full purchase history",
     ],
   },
   gold: {
-    tag: "Faster, smarter leads for growing colleges",
-    who: "📈 Best for growing colleges",
+    tag: "Smarter leads and higher visibility, faster",
+    who: "📈 Top pick for growing colleges",
     features: [
-      "Everything in Elite",
-      "Match-score ranked student leads",
-      "Featured badge + district search priority",
-      "Wallet unlocks & CSV export of leads",
+      "Everything in Elite, included",
+      "Best-fit students ranked by match score",
+      "Featured badge on your college profile",
+      "Priority placement in district search",
+      "One-click CSV export of your leads",
+      "Save up to 20% on 6-month & 1-year plans",
     ],
   },
   diamond: {
-    tag: "Full-scale admission campaigns, done with you",
-    who: "🚀 Best for large colleges",
+    tag: "Your full admission campaign, managed for you",
+    who: "🚀 Built for large colleges",
     features: [
-      "Everything in Gold",
-      "Top placement in search & recommendations",
-      "Instant SMS / email alerts for new interest",
-      "Dedicated manager & campaign support",
+      "Everything in Gold, included",
+      "Top-of-page placement in every search",
+      "Recommended first to matching students",
+      "Instant SMS & email alerts on new interest",
+      "Dedicated account manager for your college",
+      "Admission campaign planning & support",
     ],
   },
 };
@@ -1039,6 +1134,58 @@ function PlanIcon({ id }) {
     </svg>
   );
 }
+/* Which college is logged in?  Reads the profile from the saved login session (the same data Registeration.jsx saves).
+   Accepts a JSON object (also { user | profile | college } inside it) or a JWT payload. Anything missing is simply not shown. */
+const LOGOUT_ALSO_CLEAR = []; // add any other localStorage keys your login page saves (e.g. a separate token key) so Logout wipes them too
+function readCollege() {
+  const none = { name: "Your College", email: "", mobile: "", id: "", place: "", logo: "", verified: false };
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return none;
+    let data = raw;
+    try { data = JSON.parse(raw); } catch { /* plain token string */ }
+    let src = {};
+    if (data && typeof data === "object") {
+      src = { ...data, ...(data.user || {}), ...(data.profile || {}), ...(data.college || {}) };
+    } else if (typeof data === "string" && data.split(".").length === 3) {
+      try {
+        const b = data.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        src = JSON.parse(atob(b + "=".repeat((4 - (b.length % 4)) % 4)));
+      } catch { /* unreadable token */ }
+    }
+    const pick = (...keys) => {
+      for (const k of keys) {
+        const v = src[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+        if (typeof v === "number") return String(v);
+      }
+      return "";
+    };
+    const id = pick("collegeId", "college_id", "collegeCode", "code", "regNo", "registrationNumber", "id", "_id");
+    return {
+      name: pick("collegeName", "college_name", "instituteName", "institutionName", "orgName", "name", "title") || none.name,
+      email: pick("email", "officialEmail", "collegeEmail", "contactEmail"),
+      mobile: pick("mobile", "phone", "phoneNumber", "contactNumber", "contact"),
+      id: id.length <= 16 ? id : "", // long database ids are not shown
+      place: [pick("district", "city"), pick("state")].filter(Boolean).join(", "),
+      logo: pick("logo", "logoUrl", "logo_url", "photo", "image", "avatar"),
+      verified: src.verified === true || src.isVerified === true || ["verified", "approved", "active"].includes(String(src.status || "").toLowerCase()),
+    };
+  } catch {
+    return none;
+  }
+}
+
+function CollegeAvatar({ college }) {
+  const [bad, setBad] = useState(false);
+  const ok = college.logo && !bad && /^(https?:|data:image|\/)/.test(college.logo);
+  return (
+    <span className="cs-me-av">
+      {ok ? <img src={college.logo} alt="" onError={() => setBad(true)} /> : college.name.trim().charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
 function CollegeSite() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false);
@@ -1050,12 +1197,9 @@ function CollegeSite() {
   const glowRef = useRef(null);
   const lineRef = useRef(null);
 
-  let loggedIn = false;
-  try {
-    loggedIn = Boolean(localStorage.getItem(SESSION_KEY));
-  } catch {
-    loggedIn = false;
-  }
+  const [, setAuthTick] = useState(0); // bumps when the login state may have changed (logout in another tab, token expiry)
+  const loggedIn = readSession();
+  const college = loggedIn ? readCollege() : null; // the college that is logged in right now
 
   // "site" = public website, "pricing" = login-only subscription prices
   const [view, setView] = useState(() => {
@@ -1069,6 +1213,52 @@ function CollegeSite() {
   const [period, setPeriod] = useState("6m");
   const [selected, setSelected] = useState("gold");
 
+  // logout / login in another tab, or coming back to this tab: re-check, and never keep the prices on screen after logout
+  useEffect(() => {
+    const sync = () => setAuthTick((n) => n + 1);
+    window.addEventListener("storage", sync);
+    window.addEventListener("focus", sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("focus", sync);
+    };
+  }, []);
+  useEffect(() => {
+    if (!loggedIn && view === "pricing") setView("site");
+  }, [loggedIn, view]);
+
+  // profile menu in the top bar (only exists while a college is logged in)
+  const [meOpen, setMeOpen] = useState(false);
+  const meRef = useRef(null);
+  useEffect(() => {
+    if (!loggedIn) setMeOpen(false);
+  }, [loggedIn]);
+  useEffect(() => {
+    if (!meOpen) return undefined;
+    const down = (e) => { if (meRef.current && !meRef.current.contains(e.target)) setMeOpen(false); };
+    const key = (e) => { if (e.key === "Escape") setMeOpen(false); };
+    document.addEventListener("pointerdown", down);
+    window.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("pointerdown", down);
+      window.removeEventListener("keydown", key);
+    };
+  }, [meOpen]);
+  // Logout: wipe the session, close everything that shows prices, go back to the public site
+  const logout = () => {
+    try {
+      [SESSION_KEY, ...LOGOUT_ALSO_CLEAR].forEach((k) => localStorage.removeItem(k));
+      sessionStorage.removeItem(AFTER_LOGIN_KEY);
+    } catch {
+      /* ignore */
+    }
+    setMeOpen(false);
+    setMenu(false);
+    setGate(false);
+    setView("site");
+    setAuthTick((n) => n + 1);
+    window.scrollTo({ top: 0 });
+  };
   const goLogin = () => navigate("/college/register?mode=login");
   const goRegister = () => navigate("/college/register");
   const goDashboard = () => navigate("/college/dashboard");
@@ -1129,6 +1319,13 @@ function CollegeSite() {
   const chosen = PLANS.find((p) => p.id === selected) || PLANS[0];
   const chosenPrice = priceOf(chosen);
   const proceed = () => {
+    // payment is login-only: if the session ended meanwhile, ask for login instead of opening payment
+    if (!loggedIn) {
+      rememberPlans();
+      setView("site");
+      setGate(true);
+      return;
+    }
     // Create a payment order on the backend here; unlock only after the backend verifies payment.
     navigate(`/college/payment?plan=${chosen.id}&period=${period}`);
   };
@@ -1283,7 +1480,38 @@ function CollegeSite() {
               </button>
             ))}
             <span className="cs-navcta">
-              <button className="cs-solid" onClick={goRegister}>Register College <i className="cs-arr">→</i></button>
+              {college ? (
+                <div className={`cs-me ${meOpen ? "open" : ""}`} ref={meRef}>
+                  <button className="cs-me-btn" onClick={() => setMeOpen((o) => !o)} aria-haspopup="menu" aria-expanded={meOpen} title={college.name}>
+                    <CollegeAvatar college={college} />
+                    <span className="cs-me-tx"><b>{college.name}</b><small>Logged in</small></span>
+                    <span className="cs-me-ch" aria-hidden="true">▾</span>
+                  </button>
+                  {meOpen && (
+                    <div className="cs-me-menu" role="menu">
+                      <div className="cs-me-head">
+                        <CollegeAvatar college={college} />
+                        <div>
+                          <b>{college.name}</b>
+                          {college.verified && <span className="cs-me-badge">✓ Verified college</span>}
+                        </div>
+                      </div>
+                      <div className="cs-me-rows">
+                        {college.id && <div><span className="cs-me-ic">🆔</span><span><small>College ID</small>{college.id}</span></div>}
+                        {college.email && <div><span className="cs-me-ic">✉️</span><span><small>Email</small>{college.email}</span></div>}
+                        {college.mobile && <div><span className="cs-me-ic">📞</span><span><small>Mobile</small>{college.mobile}</span></div>}
+                        {college.place && <div><span className="cs-me-ic">📍</span><span><small>Location</small>{college.place}</span></div>}
+                      </div>
+                      <div className="cs-me-acts">
+                        <button className="cs-solid" role="menuitem" onClick={() => { setMeOpen(false); setMenu(false); goDashboard(); }}>My Dashboard <i className="cs-arr">→</i></button>
+                        <button className="cs-me-out" role="menuitem" onClick={logout}>⏻ Logout</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button className="cs-solid" onClick={goRegister}>Register College <i className="cs-arr">→</i></button>
+              )}
             </span>
           </nav>
 
@@ -1339,9 +1567,14 @@ function CollegeSite() {
                     </p>
 
                     <ul>
+                      <li key={`leads-${period}`}><i>✓</i><span><b>{nf(leadsOf(total))} student leads</b> to unlock with {rupee(total)}</span></li>
                       {p.features.map((f) => (
                         <li key={f}><i>✓</i>{f}</li>
                       ))}
+                      {(PLAN_PERKS[p.id][period] || []).map((f) => (
+                        <li key={`${period}-${f}`}><i>✓</i>{f}</li>
+                      ))}
+                      {discount > 0 && <li key={`save-${period}`}><i>✓</i><span><b>You save {rupee(full - total)}</b> ({discount}% off) vs paying monthly</span></li>}
                     </ul>
 
                     <button className={selected === p.id ? "cs-solid" : "cs-ghost"} onClick={() => setSelected(p.id)}>
@@ -1568,7 +1801,7 @@ function CollegeSite() {
     </div>
 
     <p className="cs-plans-note cs-rv">
-      Plans are available for 1 month, 6 months and 1 year. {loggedIn ? "Open any plan to compare durations." : "Prices are shown to registered colleges after login."}
+      Flexible plans for 1 month, 6 months or 1 year: the longer you stay, the more you save. {loggedIn ? "Open any plan to compare durations." : "Register or login to see prices."}
     </p>
   </div>
 </section>
@@ -1740,7 +1973,8 @@ function CollegeSite() {
                   <label>Official Email<input required type="email" placeholder="admissions@college.edu" /></label>
                   <label>Mobile<input required inputMode="tel" placeholder="10-digit number" /></label>
                   <label>District
-                    <select defaultValue="Coimbatore">
+                    <select required defaultValue="">
+                      <option value="" disabled>Select your district</option>
                       {Object.entries(INDIA_DISTRICTS).map(([st, list]) => (
                         <optgroup key={st} label={st}>
                           {list.map((d) => <option key={`${st}-${d}`} value={d}>{d}</option>)}
@@ -1826,6 +2060,32 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 .cs-header nav>button.on { background:linear-gradient(100deg,#e3eeff,#dff4ff); color:var(--blue); }
 .cs-navcta { display:flex; align-items:center; gap:8px; margin-left:10px; }
 .cs-burger { display:none; place-items:center; width:50px; height:50px; border:0; background:#eaf2ff; color:var(--blue); border-radius:50%; font-size:22px; }
+/* logged-in college profile chip + menu (top bar) - only rendered while a college is logged in */
+.cs-me { position:relative; }
+.cs-me-btn { display:inline-flex; align-items:center; gap:10px; max-width:300px; min-height:50px; padding:4px 14px 4px 5px; border:2px solid #cfe1fb; border-radius:999px; background:#fff; text-align:left; box-shadow:0 10px 22px -12px rgba(21,60,140,.45); transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s; }
+.cs-me-btn:hover,.cs-me.open .cs-me-btn { border-color:var(--blue); transform:translateY(-2px); box-shadow:0 16px 28px -12px rgba(21,88,214,.45); }
+.cs-me-av { display:grid; place-items:center; flex:0 0 auto; width:40px; height:40px; overflow:hidden; border-radius:50%; background:linear-gradient(135deg,#1458d8,#19b3e6); color:#fff; font-family:"Bricolage Grotesque",sans-serif; font-size:18px; font-weight:800; }
+.cs-me-av img { display:block; width:100%; height:100%; object-fit:cover; }
+.cs-me-tx { display:grid; min-width:0; line-height:1.15; }
+.cs-me-tx b { max-width:170px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:15px; font-weight:800; color:#0f2a5c; }
+.cs-me-tx small { display:flex; align-items:center; gap:5px; margin-top:2px; font-size:12px; font-weight:700; color:#16a34a; }
+.cs-me-tx small::before { content:""; width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,.2); }
+.cs-me-ch { flex:0 0 auto; font-size:12px; color:#6d86a6; transition:transform .25s; }
+.cs-me.open .cs-me-ch { transform:rotate(180deg); }
+.cs-me-menu { position:absolute; top:calc(100% + 16px); right:0; z-index:5; width:340px; padding:20px; text-align:left; border-radius:30px 30px 30px 10px; background:#fff; border:1px solid #d7e5f7; box-shadow:0 30px 70px -20px rgba(21,60,140,.45); animation:pop .25s both; }
+.cs-me-head { display:flex; align-items:center; gap:14px; padding-bottom:16px; border-bottom:1px solid #e6eefb; }
+.cs-me-head .cs-me-av { width:58px; height:58px; font-size:25px; }
+.cs-me-head b { display:block; font-family:"Bricolage Grotesque",sans-serif; font-size:19px; font-weight:800; line-height:1.2; color:#0f2a5c; word-break:break-word; }
+.cs-me-badge { display:inline-flex; margin-top:6px; padding:3px 10px; border-radius:999px; background:#dcf7e9; color:#0f9158; font-size:12px; font-weight:800; }
+.cs-me-rows { display:grid; gap:12px; padding:16px 0; }
+.cs-me-rows>div { display:grid; grid-template-columns:26px 1fr; gap:10px; align-items:start; font-size:14.5px; font-weight:600; line-height:1.35; color:#35506c; word-break:break-word; }
+.cs-me-rows small { display:block; font-size:11.5px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:#8aa0bd; }
+.cs-me-acts { display:grid; gap:10px; }
+.cs-me-acts .cs-solid { width:100%; }
+.cs-me-out { display:flex; align-items:center; justify-content:center; gap:8px; min-height:46px; border:2px solid #fecdd3; border-radius:999px; background:#fff1f2; color:#be123c; font-size:15.5px; font-weight:800; transition:background .25s,transform .25s; }
+.cs-me-out:hover { background:#ffe4e6; transform:translateY(-2px); }
+@media (max-width:2000px) { .cs-me-btn { min-height:46px; padding:3px 12px 3px 4px; } .cs-me-av { width:38px; height:38px; font-size:17px; } .cs-me-tx b { max-width:150px; font-size:14.5px; } }
+@media (max-width:1660px) { .cs-me-btn { width:100%; max-width:none; } .cs-me-tx { flex:1; } .cs-me-tx b { max-width:none; } .cs-me-menu { position:static; width:auto; margin-top:10px; box-shadow:none; border-radius:26px; background:#f7faff; animation:none; } }
 .cs-solid,.cs-ghost,.cs-white,.cs-outline { position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:50px; padding:0 26px; border-radius:999px; font-size:16.5px; font-weight:800; border:0; white-space:nowrap; transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background-position .5s; }
 .cs-solid { color:#fff; background:linear-gradient(100deg,#1349c2,#1766e6,#19b3e6,#1349c2); background-size:300% 100%; box-shadow:0 12px 26px rgba(22,103,224,.32); }
 .cs-solid::after,.cs-white::after { content:""; position:absolute; top:0; left:-80%; width:45%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent); transform:skewX(-20deg); animation:shine 3.6s infinite; }
@@ -2905,6 +3165,8 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 .pc-slot.in .pc-card li:nth-child(2) { animation-delay:calc(var(--d,0s) + .68s); }
 .pc-slot.in .pc-card li:nth-child(3) { animation-delay:calc(var(--d,0s) + .81s); }
 .pc-slot.in .pc-card li:nth-child(4) { animation-delay:calc(var(--d,0s) + .94s); }
+.pc-slot.in .pc-card li:nth-child(5) { animation-delay:calc(var(--d,0s) + 1.07s); }
+.pc-slot.in .pc-card li:nth-child(6) { animation-delay:calc(var(--d,0s) + 1.2s); }
 @keyframes pcLi { from { opacity:0; transform:translateX(-22px); } to { opacity:1; transform:none; } }
 
 /* tick marks pop one after another, on a loop */
@@ -2912,6 +3174,8 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 .pc-card li:nth-child(2) i { animation-delay:.45s; }
 .pc-card li:nth-child(3) i { animation-delay:.9s; }
 .pc-card li:nth-child(4) i { animation-delay:1.35s; }
+.pc-card li:nth-child(5) i { animation-delay:1.8s; }
+.pc-card li:nth-child(6) i { animation-delay:2.25s; }
 @keyframes pcTick { 0%,16%,100% { scale:1; } 8% { scale:1.28; } }
 
 /* "Most chosen" badge wiggle + Gold button heartbeat */
@@ -3012,6 +3276,8 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 .pc-card.gold li:nth-child(2)::after { animation-delay:.5s; }
 .pc-card.gold li:nth-child(3)::after { animation-delay:1s; }
 .pc-card.gold li:nth-child(4)::after { animation-delay:1.5s; }
+.pc-card.gold li:nth-child(5)::after { animation-delay:2s; }
+.pc-card.gold li:nth-child(6)::after { animation-delay:2.5s; }
 @keyframes pcScan { 0% { background-position:-90% 0; } 22%,100% { background-position:190% 0; } }
 /* badge sparkle */
 .pc-badge::before { content:""; position:absolute; top:-9px; right:-7px; width:18px; height:18px; background:#fff; clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); filter:drop-shadow(0 0 5px #ffd75e); animation:pcTwinkle 2.6s ease-in-out infinite; }
