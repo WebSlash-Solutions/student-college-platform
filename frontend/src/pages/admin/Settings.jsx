@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 /* =====================================================================
@@ -532,7 +532,8 @@ const TE = {
   Users: "వినియోగదారులు",
   Settings: "సెట్టింగ్‌లు",
   Logout: "లాగ్ అవుట్",
-  "Search students, colleges, leads...": "విద్యార్థులు, కళాశాలలు, లీడ్‌లు వెతకండి...",
+  "Search students, colleges, leads...":
+    "విద్యార్థులు, కళాశాలలు, లీడ్‌లు వెతకండి...",
   "Manage your platform settings, preferences and system configurations":
     "మీ ప్లాట్‌ఫారమ్ సెట్టింగ్‌లు, ప్రాధాన్యతలు, సిస్టమ్ కాన్ఫిగరేషన్‌లను నిర్వహించండి",
   "Admin Profile & Organization": "అడ్మిన్ ప్రొఫైల్ & సంస్థ",
@@ -630,8 +631,300 @@ const TE = {
   Revoke: "రద్దు చేయి",
 };
 
-const DICT = { ta: TA, hi: HI, te: TE };
+/* ---------- 3d. 21 MORE LANGUAGES (menu + page title; remaining text stays English until you add more keys) ---------- */
+const NAV = [
+  "Dashboard",
+  "Students",
+  "Colleges",
+  "Courses",
+  "Applications",
+  "Transactions",
+  "Reports",
+  "Users",
+  "Settings",
+  "Logout",
+];
+const XL = Object.fromEntries(
+  Object.entries({
+    es: [
+      "Panel",
+      "Estudiantes",
+      "Universidades",
+      "Cursos",
+      "Solicitudes",
+      "Transacciones",
+      "Informes",
+      "Usuarios",
+      "Configuración",
+      "Cerrar sesión",
+    ],
+    fr: [
+      "Tableau de bord",
+      "Étudiants",
+      "Universités",
+      "Cours",
+      "Candidatures",
+      "Transactions",
+      "Rapports",
+      "Utilisateurs",
+      "Paramètres",
+      "Déconnexion",
+    ],
+    de: [
+      "Übersicht",
+      "Studierende",
+      "Hochschulen",
+      "Kurse",
+      "Bewerbungen",
+      "Transaktionen",
+      "Berichte",
+      "Benutzer",
+      "Einstellungen",
+      "Abmelden",
+    ],
+    pt: [
+      "Painel",
+      "Estudantes",
+      "Faculdades",
+      "Cursos",
+      "Candidaturas",
+      "Transações",
+      "Relatórios",
+      "Usuários",
+      "Configurações",
+      "Sair",
+    ],
+    it: [
+      "Pannello",
+      "Studenti",
+      "Università",
+      "Corsi",
+      "Candidature",
+      "Transazioni",
+      "Report",
+      "Utenti",
+      "Impostazioni",
+      "Esci",
+    ],
+    ru: [
+      "Панель",
+      "Студенты",
+      "Колледжи",
+      "Курсы",
+      "Заявки",
+      "Транзакции",
+      "Отчёты",
+      "Пользователи",
+      "Настройки",
+      "Выйти",
+    ],
+    ar: [
+      "لوحة التحكم",
+      "الطلاب",
+      "الكليات",
+      "الدورات",
+      "الطلبات",
+      "المعاملات",
+      "التقارير",
+      "المستخدمون",
+      "الإعدادات",
+      "تسجيل الخروج",
+    ],
+    zh: [
+      "仪表盘",
+      "学生",
+      "学院",
+      "课程",
+      "申请",
+      "交易",
+      "报告",
+      "用户",
+      "设置",
+      "退出登录",
+    ],
+    ja: [
+      "ダッシュボード",
+      "学生",
+      "大学",
+      "コース",
+      "申請",
+      "取引",
+      "レポート",
+      "ユーザー",
+      "設定",
+      "ログアウト",
+    ],
+    ko: [
+      "대시보드",
+      "학생",
+      "대학",
+      "과정",
+      "지원서",
+      "거래",
+      "보고서",
+      "사용자",
+      "설정",
+      "로그아웃",
+    ],
+    id: [
+      "Dasbor",
+      "Mahasiswa",
+      "Perguruan Tinggi",
+      "Kursus",
+      "Pendaftaran",
+      "Transaksi",
+      "Laporan",
+      "Pengguna",
+      "Pengaturan",
+      "Keluar",
+    ],
+    ml: [
+      "ഡാഷ്ബോർഡ്",
+      "വിദ്യാർത്ഥികൾ",
+      "കോളേജുകൾ",
+      "കോഴ്സുകൾ",
+      "അപേക്ഷകൾ",
+      "ഇടപാടുകൾ",
+      "റിപ്പോർട്ടുകൾ",
+      "ഉപയോക്താക്കൾ",
+      "ക്രമീകരണങ്ങൾ",
+      "ലോഗ് ഔട്ട്",
+    ],
+    kn: [
+      "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+      "ವಿದ್ಯಾರ್ಥಿಗಳು",
+      "ಕಾಲೇಜುಗಳು",
+      "ಕೋರ್ಸ್‌ಗಳು",
+      "ಅರ್ಜಿಗಳು",
+      "ವಹಿವಾಟುಗಳು",
+      "ವರದಿಗಳು",
+      "ಬಳಕೆದಾರರು",
+      "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+      "ಲಾಗ್ ಔಟ್",
+    ],
+    bn: [
+      "ড্যাশবোর্ড",
+      "শিক্ষার্থী",
+      "কলেজ",
+      "কোর্স",
+      "আবেদন",
+      "লেনদেন",
+      "রিপোর্ট",
+      "ব্যবহারকারী",
+      "সেটিংস",
+      "লগ আউট",
+    ],
+    mr: [
+      "डॅशबोर्ड",
+      "विद्यार्थी",
+      "महाविद्यालये",
+      "अभ्यासक्रम",
+      "अर्ज",
+      "व्यवहार",
+      "अहवाल",
+      "वापरकर्ते",
+      "सेटिंग्ज",
+      "लॉग आउट",
+    ],
+    gu: [
+      "ડેશબોર્ડ",
+      "વિદ્યાર્થીઓ",
+      "કોલેજો",
+      "અભ્યાસક્રમો",
+      "અરજીઓ",
+      "વ્યવહારો",
+      "અહેવાલો",
+      "વપરાશકર્તાઓ",
+      "સેટિંગ્સ",
+      "લોગ આઉટ",
+    ],
+    pa: [
+      "ਡੈਸ਼ਬੋਰਡ",
+      "ਵਿਦਿਆਰਥੀ",
+      "ਕਾਲਜ",
+      "ਕੋਰਸ",
+      "ਅਰਜ਼ੀਆਂ",
+      "ਲੈਣ-ਦੇਣ",
+      "ਰਿਪੋਰਟਾਂ",
+      "ਉਪਭੋਗਤਾ",
+      "ਸੈਟਿੰਗਾਂ",
+      "ਲੌਗ ਆਉਟ",
+    ],
+    or: [
+      "ଡ୍ୟାସବୋର୍ଡ",
+      "ଛାତ୍ରଛାତ୍ରୀ",
+      "କଲେଜ",
+      "ପାଠ୍ୟକ୍ରମ",
+      "ଆବେଦନ",
+      "କାରବାର",
+      "ରିପୋର୍ଟ",
+      "ବ୍ୟବହାରକାରୀ",
+      "ସେଟିଂସ",
+      "ଲଗ୍ ଆଉଟ",
+    ],
+    ur: [
+      "ڈیش بورڈ",
+      "طلبہ",
+      "کالجز",
+      "کورسز",
+      "درخواستیں",
+      "لین دین",
+      "رپورٹس",
+      "صارفین",
+      "ترتیبات",
+      "لاگ آؤٹ",
+    ],
+    as: [
+      "ডেছব'ৰ্ড",
+      "ছাত্ৰ-ছাত্ৰী",
+      "মহাবিদ্যালয়",
+      "পাঠ্যক্ৰম",
+      "আবেদন",
+      "লেনদেন",
+      "প্ৰতিবেদন",
+      "ব্যৱহাৰকাৰী",
+      "ছেটিংছ",
+      "লগ আউট",
+    ],
+    ne: [
+      "ड्यासबोर्ड",
+      "विद्यार्थीहरू",
+      "कलेजहरू",
+      "पाठ्यक्रमहरू",
+      "आवेदनहरू",
+      "कारोबारहरू",
+      "प्रतिवेदनहरू",
+      "प्रयोगकर्ताहरू",
+      "सेटिङहरू",
+      "लग आउट",
+    ],
+  }).map(([k, v]) => [k, Object.fromEntries(NAV.map((n, i) => [n, v[i]]))]),
+);
+const DICT = { ta: TA, hi: HI, te: TE, ...XL };
 const LOCALE = { en: "en-IN", ta: "ta-IN", hi: "hi-IN", te: "te-IN" };
+Object.assign(LOCALE, {
+  es: "es-ES",
+  fr: "fr-FR",
+  de: "de-DE",
+  pt: "pt-BR",
+  it: "it-IT",
+  ru: "ru-RU",
+  ar: "ar-SA",
+  zh: "zh-CN",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  id: "id-ID",
+  ml: "ml-IN",
+  kn: "kn-IN",
+  bn: "bn-IN",
+  mr: "mr-IN",
+  gu: "gu-IN",
+  pa: "pa-IN",
+  or: "or-IN",
+  ur: "ur-IN",
+  as: "as-IN",
+  ne: "ne-NP",
+});
 
 /* ---------- 4. CONTEXT + SMALL PARTS ---------- */
 const Ctx = createContext(null);
@@ -1344,6 +1637,752 @@ function Topbar({ q, setQ, onMenu }) {
   );
 }
 
+/* ---------- 7b. SPOTLIGHT (animated control-center strip + LIVE backend data) ---------- */
+/* BACKEND: set VITE_API_URL in .env (e.g. http://localhost:5000/api) or edit API_BASE / EP below to match your server */
+const API_BASE = (
+  import.meta.env?.VITE_API_URL || "http://localhost:5000/api"
+).replace(/\/$/, "");
+const EP = {
+  health: "/health",
+  students: "/students",
+  colleges: "/colleges",
+  applications: "/applications",
+  transactions: "/transactions",
+  activity: "/activity",
+};
+const REFRESH_MS = 30000;
+/* shown while the backend is not reachable; replaced by live numbers automatically once it connects */
+const DEMO = {
+  students: 12480,
+  colleges: 342,
+  applications: 3920,
+  transactions: 1865,
+};
+const DEMO_FEED = [
+  "SNS College approved",
+  "PSG College - 50 profiles purchased",
+  "New college verification request",
+  "KG College - Diamond plan activated",
+  "Database backup completed",
+];
+
+const listOf = (d) => {
+  if (Array.isArray(d)) return d;
+  const x = d?.data ?? d?.items ?? d?.results ?? d?.rows;
+  return Array.isArray(x) ? x : null;
+};
+const countOf = (d) => {
+  const l = listOf(d);
+  if (l) return l.length;
+  const n = Number(
+    d?.count ?? d?.total ?? d?.totalCount ?? d?.data?.count ?? d?.data?.total,
+  );
+  return Number.isFinite(n) ? n : null;
+};
+const textOf = (x) =>
+  typeof x === "string"
+    ? x
+    : x?.message || x?.title || x?.action || x?.description || x?.text || "";
+
+async function api(path, signal) {
+  let token = null;
+  try {
+    token =
+      sessionStorage.getItem("adminToken") ||
+      sessionStorage.getItem("token") ||
+      localStorage.getItem("token");
+  } catch {
+    /* storage unavailable */
+  }
+  const res = await fetch(`${API_BASE}${path}`, {
+    signal,
+    headers: {
+      Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json().catch(() => ({}));
+}
+
+function useLive() {
+  const [st, setSt] = useState({
+    state: "loading",
+    busy: true,
+    ms: null,
+    at: null,
+    n: {},
+    feed: [],
+  });
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const iv = setInterval(() => setTick((x) => x + 1), REFRESH_MS);
+    return () => clearInterval(iv);
+  }, []);
+  useEffect(() => {
+    let dead = false;
+    const ac = new AbortController();
+    const kill = setTimeout(() => ac.abort(), 8000);
+    const t0 = performance.now();
+    const keys = ["students", "colleges", "applications", "transactions"];
+    setSt((p) => ({ ...p, busy: true }));
+    Promise.allSettled([
+      api(EP.health, ac.signal).then(() => Math.round(performance.now() - t0)),
+      ...keys.map((k) => api(EP[k], ac.signal)),
+      api(EP.activity, ac.signal),
+    ]).then(([h, ...rest]) => {
+      clearTimeout(kill);
+      if (dead) return;
+      let ok = h.status === "fulfilled";
+      const n = {};
+      keys.forEach((k, i) => {
+        const r = rest[i];
+        n[k] = r.status === "fulfilled" ? countOf(r.value) : null;
+        if (r.status === "fulfilled") ok = true;
+      });
+      const act = rest[keys.length];
+      const feed =
+        act.status === "fulfilled"
+          ? (listOf(act.value) || []).slice(0, 6).map(textOf).filter(Boolean)
+          : [];
+      setSt((p) => ({
+        state: ok ? "live" : "offline",
+        busy: false,
+        ms: h.status === "fulfilled" ? h.value : null,
+        at: new Date(),
+        n: ok ? n : p.n,
+        feed: ok ? feed : p.feed,
+      }));
+    });
+    return () => {
+      dead = true;
+      clearTimeout(kill);
+      ac.abort();
+    };
+  }, [tick]);
+  return { ...st, refresh: () => setTick((x) => x + 1) };
+}
+
+function useCount(to, ms = 1100) {
+  const [v, setV] = useState(0);
+  const from = useRef(0);
+  useEffect(() => {
+    let raf;
+    let t0;
+    const a = from.current;
+    const step = (ts) => {
+      t0 = t0 ?? ts;
+      const p = Math.min((ts - t0) / ms, 1);
+      const val = Math.round(a + (to - a) * (1 - Math.pow(1 - p, 3)));
+      from.current = val;
+      setV(val);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [to, ms]);
+  return v;
+}
+
+const glow = (e) => {
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+  e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+};
+
+function Tile({ icon, label, to, note, i }) {
+  const v = useCount(to ?? 0);
+  return (
+    <div className="sx-tile" style={{ "--i": i }} onMouseMove={glow}>
+      <span className="sx-tico">
+        <Icon n={icon} size={18} />
+      </span>
+      <b>{to == null ? "—" : v.toLocaleString("en-IN")}</b>
+      <span>{label}</span>
+      <small>{note}</small>
+    </div>
+  );
+}
+
+function Spotlight() {
+  const { s, set, toast, fmt } = useS();
+  const live = useLive();
+  const isDark =
+    s.theme === "dark" ||
+    (s.theme === "system" &&
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-color-scheme: dark)").matches);
+  const score =
+    40 +
+    (s.twofa ? 30 : 0) +
+    (s.mask ? 15 : 0) +
+    (s.access.pay ? 0 : 10) +
+    (s.maint ? 0 : 5);
+  const hr = +new Intl.DateTimeFormat("en-GB", {
+    timeZone: s.tz,
+    hour: "2-digit",
+    hour12: false,
+  }).format(new Date());
+  const hello =
+    hr < 12 ? "Good morning" : hr < 17 ? "Good afternoon" : "Good evening";
+  const C = 2 * Math.PI * 52;
+  const score_v = useCount(score);
+  const chips = [
+    [
+      "palette",
+      isDark ? "Dark mode" : "Light mode",
+      isDark,
+      () => {
+        set({ theme: isDark ? "light" : "dark" });
+        toast("Theme switched");
+      },
+    ],
+    [
+      "shieldok",
+      "Two-factor",
+      s.twofa,
+      () => {
+        set({ twofa: !s.twofa });
+        toast(s.twofa ? "2FA turned off" : "2FA turned on");
+      },
+    ],
+    [
+      "eyeoff",
+      "Mask contacts",
+      s.mask,
+      () => {
+        set({ mask: !s.mask });
+        toast(s.mask ? "Masking off" : "Masking on");
+      },
+    ],
+    [
+      "gear",
+      "Maintenance",
+      s.maint,
+      () => {
+        set({ maint: !s.maint });
+        toast(s.maint ? "Maintenance off" : "Maintenance on");
+      },
+    ],
+  ];
+  const have = Object.values(live.n).some((v) => v != null);
+  const isLive = live.state === "live";
+  const demo = live.state === "offline" && !have;
+  const N = demo ? DEMO : live.n;
+  const lines = [];
+  if (demo) lines.push(...DEMO_FEED);
+  else if (live.feed.length) lines.push(...live.feed);
+  else {
+    if (N.students != null) lines.push(`${N.students} students registered`);
+    if (N.colleges != null)
+      lines.push(`${N.colleges} colleges on the platform`);
+    if (N.applications != null)
+      lines.push(`${N.applications} applications received`);
+    if (N.transactions != null)
+      lines.push(`${N.transactions} transactions recorded`);
+  }
+  if (!lines.length) lines.push("Connecting to the server…");
+  const base = [...lines, ...lines];
+  const feed = [...base, ...base];
+  const note = isLive
+    ? "Live from server"
+    : demo
+      ? "Sample data"
+      : live.state === "loading"
+        ? "Connecting…"
+        : "Last synced data";
+  const badge = isLive
+    ? "Live"
+    : demo
+      ? "Demo"
+      : live.state === "loading"
+        ? "Sync"
+        : "Offline";
+  return (
+    <div className="sx-wrap">
+      <section className="sx-hero" onMouseMove={glow}>
+        <i className="sx-orb o1" />
+        <i className="sx-orb o2" />
+        <i className="sx-orb o3" />
+        {[8, 22, 38, 55, 72, 88].map((x, k) => (
+          <i
+            key={x}
+            className="sx-spark"
+            style={{
+              left: `${x}%`,
+              animationDelay: `${k * 1.1}s`,
+              animationDuration: `${6 + (k % 3) * 2}s`,
+            }}
+          />
+        ))}
+        <div className="sx-copy">
+          <span className="sx-kick">
+            <em /> Control Center
+          </span>
+          <h2>
+            {hello}, {s.profile.name}
+          </h2>
+          <p>
+            {score >= 90
+              ? "Everything looks great — your platform is fully secured."
+              : "Turn on a few more safeguards to reach a perfect score."}
+          </p>
+          <div className="sx-chips">
+            {chips.map(([ic, lb, st, fn]) => (
+              <button
+                key={lb}
+                type="button"
+                className={`sx-chip${st ? " on" : ""}`}
+                onClick={fn}
+                aria-pressed={st}
+              >
+                <Icon n={ic} size={15} />
+                {lb}
+                <i />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="sx-ring" aria-label={`Security score ${score}%`}>
+          <svg viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="sxg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#7dd3fc" />
+                <stop offset="1" stopColor="#a78bfa" />
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r="52" className="sx-trk" />
+            <circle
+              cx="60"
+              cy="60"
+              r="52"
+              className="sx-arc"
+              style={{
+                strokeDasharray: C,
+                "--c": C,
+                "--off": C * (1 - score / 100),
+              }}
+            />
+          </svg>
+          <span className="sx-orbit">
+            <i />
+          </span>
+          <div className="sx-num">
+            <b>{score_v}</b>
+            <small>Security</small>
+          </div>
+        </div>
+      </section>
+      <div className="sx-tiles">
+        <Tile i={0} icon="users" label="Students" to={N.students} note={note} />
+        <Tile
+          i={1}
+          icon="building"
+          label="Colleges"
+          to={N.colleges}
+          note={note}
+        />
+        <Tile
+          i={2}
+          icon="file"
+          label="Applications"
+          to={N.applications}
+          note={note}
+        />
+        <Tile
+          i={3}
+          icon="money"
+          label="Transactions"
+          to={N.transactions}
+          note={note}
+        />
+      </div>
+      <div className="sx-feed" aria-label="Live activity">
+        <span
+          className={`sx-live${isLive ? "" : demo ? " demo" : " off"}`}
+          title={
+            demo
+              ? `Backend not reachable at ${API_BASE} - showing sample data`
+              : ""
+          }
+        >
+          <i /> {badge}
+        </span>
+        <div className="sx-roll">
+          <div className="sx-track">
+            {feed.map((a, k) => (
+              <span key={k}>
+                <Icon n="bell" size={13} />
+                {a}
+              </span>
+            ))}
+          </div>
+        </div>
+        <span className="sx-sync">
+          {live.at && (
+            <span>
+              {isLive && live.ms != null ? `${live.ms} ms · ` : ""}
+              {fmt(live.at)}
+            </span>
+          )}
+          <button
+            type="button"
+            className={`sx-rf${live.busy ? " spin" : ""}`}
+            onClick={live.refresh}
+            aria-label="Refresh live data"
+            title="Refresh"
+          >
+            <Icon n="pulse" size={15} />
+          </button>
+        </span>
+      </div>
+      <Extras live={live} demo={demo} />
+    </div>
+  );
+}
+
+const LANGS = [
+  ["en", "English", "English", "A", 1],
+  ["ta", "தமிழ்", "Tamil", "அ", 1],
+  ["hi", "हिन्दी", "Hindi", "अ", 1],
+  ["te", "తెలుగు", "Telugu", "అ", 1],
+  ["ml", "മലയാളം", "Malayalam", "മ"],
+  ["kn", "ಕನ್ನಡ", "Kannada", "ಕ"],
+  ["bn", "বাংলা", "Bengali", "ব"],
+  ["mr", "मराठी", "Marathi", "म"],
+  ["gu", "ગુજરાતી", "Gujarati", "ગ"],
+  ["pa", "ਪੰਜਾਬੀ", "Punjabi", "ਪ"],
+  ["or", "ଓଡ଼ିଆ", "Odia", "ଓ"],
+  ["as", "অসমীয়া", "Assamese", "অ"],
+  ["ur", "اردو", "Urdu", "ا"],
+  ["ne", "नेपाली", "Nepali", "न"],
+  ["es", "Español", "Spanish", "E"],
+  ["fr", "Français", "French", "F"],
+  ["de", "Deutsch", "German", "D"],
+  ["pt", "Português", "Portuguese", "P"],
+  ["it", "Italiano", "Italian", "I"],
+  ["ru", "Русский", "Russian", "Р"],
+  ["ar", "العربية", "Arabic", "ع"],
+  ["zh", "中文", "Chinese", "中"],
+  ["ja", "日本語", "Japanese", "日"],
+  ["ko", "한국어", "Korean", "한"],
+  ["id", "Bahasa Indonesia", "Indonesian", "B"],
+];
+
+function LangPick({ i }) {
+  const { s, set, toast } = useS();
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const box = useRef(null);
+  const inp = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    inp.current?.focus({ preventScroll: true });
+    const off = (e) => {
+      if (!box.current?.contains(e.target)) {
+        setOpen(false);
+        setQ("");
+      }
+    };
+    const esc = (e) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        setQ("");
+      }
+    };
+    document.addEventListener("mousedown", off);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", off);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
+  const cur = LANGS.find((l) => l[0] === s.lang) || LANGS[0];
+  const needle = q.trim().toLowerCase();
+  const list = LANGS.filter(
+    (l) => !needle || `${l[1]} ${l[2]}`.toLowerCase().includes(needle),
+  );
+  return (
+    <div
+      className={`sx-lang${open ? " open" : ""}`}
+      ref={box}
+      style={{ "--i": i }}
+    >
+      <button
+        type="button"
+        className="sx-act"
+        onMouseMove={glow}
+        onClick={() => {
+          setOpen((o) => !o);
+          setQ("");
+        }}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span>
+          <Icon n="globe" size={20} />
+        </span>
+        <b>Switch language</b>
+        <small key={cur[0]} className="sx-swap">
+          Now: {cur[1]}
+        </small>
+        <i className="sx-caret">
+          <Icon n="chev" size={14} />
+        </i>
+      </button>
+      {open && (
+        <div className="sx-menu">
+          <label className="sx-find">
+            <Icon n="search" size={15} />
+            <input
+              ref={inp}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search languages…"
+              aria-label="Search languages"
+            />
+          </label>
+          <ul className="sx-opts" role="listbox">
+            {list.map(([code, native, en, glyph], k) => (
+              <li
+                key={code}
+                role="option"
+                aria-selected={code === s.lang}
+                style={{ "--k": Math.min(k, 8) }}
+              >
+                <button
+                  type="button"
+                  className={code === s.lang ? "on" : ""}
+                  onClick={() => {
+                    set({ lang: code });
+                    toast(native);
+                    setOpen(false);
+                    setQ("");
+                  }}
+                >
+                  <span className="sx-gl">{glyph}</span>
+                  <span className="sx-ln">
+                    <b>{native}</b>
+                    <small>{en}</small>
+                  </span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12l5 5 10-10" />
+                  </svg>
+                </button>
+              </li>
+            ))}
+            {!list.length && <li className="sx-none">No language found</li>}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Extras({ live, demo }) {
+  const { s, set, toast } = useS();
+  const allOn = Object.values(s.notifs).every(Boolean);
+  const todo = [
+    ["Two-factor authentication", s.twofa, () => set({ twofa: !s.twofa })],
+    ["Contact masking enabled", s.mask, () => set({ mask: !s.mask })],
+    [
+      "All alert channels on",
+      allOn,
+      () =>
+        set({
+          notifs: {
+            reg: !allOn,
+            col: !allOn,
+            app: !allOn,
+            txn: !allOn,
+            sys: !allOn,
+          },
+        }),
+    ],
+    ["Maintenance mode off", !s.maint, () => set({ maint: !s.maint })],
+    [
+      "Payment data restricted",
+      !s.access.pay,
+      () => set({ access: { ...s.access, pay: !s.access.pay } }),
+    ],
+  ];
+  const done = todo.filter((x) => x[1]).length;
+  const days = Math.max(
+    0,
+    Math.floor((new Date().getTime() - new Date(s.backup).getTime()) / 864e5),
+  );
+  const isLive = live.state === "live";
+  const fields = [
+    s.profile.name,
+    s.profile.email,
+    s.profile.phone,
+    s.profile.role,
+    s.org.name,
+    s.org.type,
+    s.org.city,
+    s.org.website,
+  ];
+  const prof = Math.round(
+    (fields.filter((x) => String(x || "").trim()).length / fields.length) * 100,
+  );
+  const bars = [
+    ["hdd", "Storage used", 42, "42%"],
+    ["user", "Profile completeness", prof, `${prof}%`],
+    [
+      "server",
+      "Server connection",
+      isLive ? Math.max(20, 100 - Math.round((live.ms ?? 50) / 10)) : 0,
+      isLive
+        ? live.ms != null
+          ? `${live.ms} ms`
+          : "Online"
+        : demo
+          ? "Not connected"
+          : "Checking…",
+    ],
+    [
+      "db",
+      "Last backup",
+      Math.max(8, 100 - days * 4),
+      days === 0 ? "Just now" : `${days} day${days === 1 ? "" : "s"} ago`,
+    ],
+  ];
+  const tone = (v) => (v >= 70 ? "g" : v >= 40 ? "a" : "r");
+  return (
+    <>
+      <div className="sx-duo">
+        <section className="sx-box" style={{ "--i": 0 }}>
+          <div className="sx-bh">
+            <h3>Security checklist</h3>
+            <span className={`sx-pct${done === todo.length ? " full" : ""}`}>
+              {done}/{todo.length}
+            </span>
+          </div>
+          <div className="sx-meter g">
+            <i style={{ "--w": `${(done / todo.length) * 100}%` }} />
+          </div>
+          <div className="sx-todos">
+            {todo.map(([label, ok, fn], k) => (
+              <button
+                key={label}
+                type="button"
+                className={`sx-todo${ok ? " ok" : ""}`}
+                style={{ "--k": k }}
+                onClick={fn}
+              >
+                <span className="sx-tick">
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="14"
+                    height="14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12l5 5 10-10" />
+                  </svg>
+                </span>
+                <span className="sx-tl">{label}</span>
+                <em>{ok ? "Done" : "Fix"}</em>
+              </button>
+            ))}
+          </div>
+        </section>
+        <section className="sx-box" style={{ "--i": 1 }}>
+          <div className="sx-bh">
+            <h3>System pulse</h3>
+            <span className={`sx-pulse${isLive ? " on" : ""}`}>
+              <i /> {isLive ? "Connected" : demo ? "Demo mode" : "Checking"}
+            </span>
+          </div>
+          <div className="sx-bars">
+            {bars.map(([ic, label, pct, val], k) => (
+              <div className="sx-bar" key={label} style={{ "--k": k }}>
+                <div className="sx-bt">
+                  <span>
+                    <Icon n={ic} size={15} />
+                    {label}
+                  </span>
+                  <b>{val}</b>
+                </div>
+                <div className={`sx-meter ${tone(pct)}`}>
+                  <i style={{ "--w": `${pct}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+      <div className="sx-acts">
+        <button
+          type="button"
+          className="sx-act"
+          style={{ "--i": 0 }}
+          onMouseMove={glow}
+          onClick={() => {
+            set({ backup: new Date().toISOString() });
+            toast("Backup completed");
+          }}
+        >
+          <span>
+            <Icon n="db" size={20} />
+          </span>
+          <b>Back up now</b>
+          <small>Create a fresh database backup</small>
+        </button>
+        <button
+          type="button"
+          className="sx-act"
+          style={{ "--i": 1 }}
+          onMouseMove={glow}
+          onClick={() => {
+            set({
+              notifs: {
+                reg: !allOn,
+                col: !allOn,
+                app: !allOn,
+                txn: !allOn,
+                sys: !allOn,
+              },
+            });
+            toast(allOn ? "All alerts muted" : "All alerts enabled");
+          }}
+        >
+          <span>
+            <Icon n="bell" size={20} />
+          </span>
+          <b>{allOn ? "Mute all alerts" : "Enable all alerts"}</b>
+          <small>Control every notification channel</small>
+        </button>
+        <LangPick i={2} />
+        <NavLink
+          to="/admin/colleges"
+          className="sx-act"
+          style={{ "--i": 3 }}
+          onMouseMove={glow}
+        >
+          <span>
+            <Icon n="building" size={20} />
+          </span>
+          <b>Review colleges</b>
+          <small>Open college management</small>
+        </NavLink>
+      </div>
+    </>
+  );
+}
+
 /* ---------- 8. PAGE ---------- */
 export default function Settings() {
   const [s, setS] = useState(load);
@@ -1444,6 +2483,7 @@ export default function Settings() {
                 {fmt(now)}
               </time>
             </div>
+            <Spotlight />
             <div className="sc-grid">
               {view.map(({ sec, rows }, i) => (
                 <Card
@@ -2617,4 +3657,204 @@ const CSS = `
     transition:none!important
   }
 }
+
+/* ===== SPOTLIGHT (additive - new elements only) ===== */
+.sx-wrap{margin-bottom:18px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;width:100%;max-width:100%;min-width:0;box-sizing:border-box}.sx-wrap>*{min-width:0;max-width:100%;box-sizing:border-box}
+.sx-hero{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:26px 30px;border-radius:20px;color:#fff;background:linear-gradient(120deg,#0d2145,#1b4fae 55%,#5a3fc9);background-size:200% 200%;animation:sxFlow 14s ease-in-out infinite,sxRise .7s .15s both;box-shadow:0 18px 40px -18px rgba(33,119,232,.55)}
+.sx-hero:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(260px circle at var(--mx,70%) var(--my,0%),rgba(255,255,255,.22),transparent 70%);transition:background .2s}
+.sx-hero:after{content:"";position:absolute;top:0;bottom:0;width:90px;left:-120px;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-18deg);animation:sxSweep 6s 1.2s ease-in-out infinite}
+.sx-orb{position:absolute;border-radius:50%;filter:blur(38px);opacity:.55;pointer-events:none}
+.sx-orb.o1{width:220px;height:220px;background:#38bdf8;top:-90px;left:8%;animation:sxDrift 11s ease-in-out infinite}
+.sx-orb.o2{width:180px;height:180px;background:#a78bfa;bottom:-80px;right:22%;animation:sxDrift 13s -4s ease-in-out infinite reverse}
+.sx-orb.o3{width:120px;height:120px;background:#f472b6;top:30%;right:-40px;animation:sxDrift 9s -2s ease-in-out infinite}
+.sx-copy{position:relative;z-index:1;min-width:0;flex:1 1 320px}
+.sx-kick{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)}
+.sx-kick em{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 0 rgba(74,222,128,.7);animation:sxPing 1.8s infinite}
+.sx-copy h2{margin:12px 0 4px;font-size:28px;font-weight:800;letter-spacing:-.02em;color:#fff}
+.sx-copy p{margin:0 0 16px;color:rgba(255,255,255,.82);font-size:14.5px}
+.sx-chips{display:flex;flex-wrap:wrap;gap:9px}
+.sx-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;font:inherit;font-size:13px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);transition:transform .2s,background .2s,border-color .2s}
+.sx-chip:hover{transform:translateY(-3px);background:rgba(255,255,255,.2)}
+.sx-chip:active{transform:scale(.95)}
+.sx-chip i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:background .25s,box-shadow .25s}
+.sx-chip.on{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.55)}
+.sx-chip.on i{background:#4ade80;box-shadow:0 0 10px #4ade80}
+.sx-ring{position:relative;z-index:1;width:150px;height:150px;flex:none;margin-inline:auto}
+.sx-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.sx-trk{fill:none;stroke:rgba(255,255,255,.18);stroke-width:9}
+.sx-arc{fill:none;stroke:url(#sxg);stroke-width:9;stroke-linecap:round;stroke-dashoffset:var(--off);animation:sxDraw 1.5s .4s cubic-bezier(.2,.8,.2,1) both;filter:drop-shadow(0 0 6px rgba(167,139,250,.8))}
+.sx-orbit{position:absolute;inset:0;animation:sxSpin 5s linear infinite}
+.sx-orbit i{position:absolute;top:-3px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:#fff;box-shadow:0 0 12px 3px rgba(255,255,255,.8)}
+.sx-num{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.sx-num b{font-size:38px;line-height:1;font-weight:800}
+.sx-num small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.8;margin-top:4px}
+.sx-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.sx-tile{position:relative;overflow:hidden;display:grid;gap:2px;padding:16px 18px;border-radius:16px;background:var(--card);border:1px solid var(--line);animation:sxRise .6s calc(.3s + var(--i)*90ms) both;transition:transform .25s,box-shadow .25s,border-color .25s}
+.sx-tile:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(180px circle at var(--mx,50%) var(--my,50%),rgba(33,119,232,.16),transparent 70%)}
+.sx-tile:hover{transform:translateY(-4px);border-color:var(--pr);box-shadow:0 14px 28px -16px rgba(33,119,232,.5)}
+.sx-tile:hover:before{opacity:1}
+.sx-tico{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--pr),#7c5cf0);margin-bottom:8px;transition:transform .35s}
+.sx-tile:hover .sx-tico{transform:rotate(-8deg) scale(1.1)}
+.sx-tile b{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
+.sx-tile span:not(.sx-tico){font-weight:600;color:var(--tx);font-size:13.5px}
+.sx-tile small{color:var(--mu);font-size:12px}
+.sx-feed{overflow:hidden;display:flex;align-items:center;gap:12px;padding:9px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);animation:sxRise .6s .7s both}
+.sx-live{display:inline-flex;align-items:center;gap:7px;flex:none;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#e11d48}
+.sx-live i{width:8px;height:8px;border-radius:50%;background:#e11d48;animation:sxPing2 1.6s infinite}
+.sx-roll{overflow:hidden;flex:1;min-width:0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.sx-track{display:flex;gap:34px;width:max-content;animation:sxMarq 26s linear infinite}
+.sx-roll:hover .sx-track{animation-play-state:paused}
+.sx-track span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;color:var(--mu);font-size:13px}
+.sx-track svg{color:var(--pr)}
+@keyframes sxRise{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes sxFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes sxSweep{0%{left:-120px}55%,100%{left:110%}}
+@keyframes sxDrift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,26px) scale(1.2)}}
+@keyframes sxPing{70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+@keyframes sxPing2{0%{box-shadow:0 0 0 0 rgba(225,29,72,.6)}70%,100%{box-shadow:0 0 0 8px rgba(225,29,72,0)}}
+@keyframes sxDraw{from{stroke-dashoffset:var(--c)}}
+@keyframes sxSpin{to{transform:rotate(360deg)}}
+@keyframes sxMarq{to{transform:translateX(-50%)}}
+@media (max-width:980px){.sx-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.sx-hero{padding:20px 18px}.sx-copy h2{font-size:23px}.sx-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sx-tile{padding:13px}.sx-tile b{font-size:22px}.sx-feed{padding:8px 10px}}
+
+/* ===== LIVE feed controls + light/dark fixes (additive) ===== */
+.sx-live.off{color:#64748b}
+.sx-live.off i{background:#94a3b8;animation:none}
+.sx-sync{display:inline-flex;align-items:center;gap:10px;flex:none}
+.sx-sync>span{font-size:12px;color:var(--mu);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sx-rf{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--mu);display:grid;place-items:center;cursor:pointer;transition:color .2s,border-color .2s,transform .2s}
+.sx-rf:hover{color:var(--pr);border-color:var(--pr);transform:translateY(-2px)}
+.sx-rf.spin svg{animation:sxSpin .8s linear infinite}
+.um-app{background-color:var(--bg);transition:opacity .35s ease}
+.um-main{background:var(--bg)}
+.um-app[data-theme=light]{--bg:#f4f7fc;--card:#fff;--line:#e6ebf3;--tx:#0f1b33;--mu:#66758f;--hov:#f1f5fd}
+.um-app[data-theme=dark] .um-topbar{background:rgba(10,17,37,.96);border-bottom-color:var(--line)}
+.um-app[data-theme=dark] .um-search{background:var(--card)}
+.um-app[data-theme=dark] .um-bell{color:#9fb2ff!important}
+.um-app[data-theme=dark] .um-profile-chev{color:#9fb2ff}
+.um-app[data-theme=dark] .sc-drop{background:var(--card);border-color:var(--line)}
+@media (max-width:760px){.sx-sync>span{display:none}}
+
+/* ===== EXTRAS: checklist, pulse, quick actions + responsive (additive) ===== */
+.sx-live.demo{color:#d97706}
+.sx-live.demo i{background:#f59e0b;animation:none}
+.sx-duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sx-box{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;animation:sxRise .6s calc(.8s + var(--i)*100ms) both;transition:box-shadow .25s,border-color .25s}
+.sx-box:hover{box-shadow:0 14px 28px -18px rgba(33,119,232,.5);border-color:var(--pr)}
+.sx-bh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.sx-bh h3{margin:0;font-size:16px;font-weight:800;color:var(--tx)}
+.sx-pct{font-weight:800;font-size:13px;color:var(--pr);background:color-mix(in srgb,var(--pr) 12%,transparent);padding:3px 10px;border-radius:99px}
+.sx-pulse{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#d97706}
+.sx-pulse i{width:8px;height:8px;border-radius:50%;background:#f59e0b}
+.sx-pulse.on{color:#16a34a}
+.sx-pulse.on i{background:#22c55e;animation:sxPing3 1.8s infinite}
+.sx-meter{height:8px;border-radius:99px;background:color-mix(in srgb,var(--mu) 18%,transparent);overflow:hidden}
+.sx-meter i{display:block;height:100%;width:var(--w);border-radius:99px;transform-origin:left;background:linear-gradient(90deg,var(--b1),var(--b2),var(--b1));background-size:200% 100%;animation:sxFill 1.3s 1s cubic-bezier(.2,.8,.2,1) both,sxShine 2.4s 2.3s linear infinite}
+.sx-meter.g{--b1:#22c55e;--b2:#86efac}
+.sx-meter.a{--b1:#f59e0b;--b2:#fcd34d}
+.sx-meter.r{--b1:#ef4444;--b2:#fca5a5}
+.sx-todos,.sx-bars{display:grid;gap:8px;margin-top:14px}
+.sx-bars{gap:14px}
+.sx-todo{display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--tx);font:inherit;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer;animation:sxSlide .5s calc(1s + var(--k)*80ms) both;transition:transform .2s,border-color .2s,background .2s}
+.sx-todo:hover{transform:translateX(5px);border-color:var(--pr)}
+.sx-todo:active{transform:scale(.98)}
+.sx-tl{flex:1;min-width:0}
+.sx-tick{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);color:transparent;transition:background .25s,border-color .25s}
+.sx-tick path{stroke-dasharray:24;stroke-dashoffset:24}
+.sx-todo.ok .sx-tick{background:#22c55e;border-color:#22c55e;color:#fff}
+.sx-todo.ok .sx-tick path{animation:sxCheck .5s .15s ease forwards}
+.sx-todo em{flex:none;font-style:normal;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;color:#d97706;background:rgba(245,158,11,.14)}
+.sx-todo.ok em{color:#16a34a;background:rgba(34,197,94,.14)}
+.sx-bt{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:13px}
+.sx-bt span{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--tx)}
+.sx-bt svg{color:var(--pr)}
+.sx-bt b{color:var(--mu);font-weight:700;font-variant-numeric:tabular-nums}
+.sx-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.sx-act{position:relative;overflow:hidden;display:grid;gap:3px;justify-items:start;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;text-align:left;text-decoration:none;cursor:pointer;animation:sxRise .6s calc(1.1s + var(--i)*90ms) both;transition:transform .25s,box-shadow .25s,border-color .25s}
+.sx-act:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(160px circle at var(--mx,50%) var(--my,50%),rgba(124,92,240,.18),transparent 70%)}
+.sx-act:hover{transform:translateY(-4px);border-color:#7c5cf0;box-shadow:0 14px 28px -16px rgba(124,92,240,.55)}
+.sx-act:hover:before{opacity:1}
+.sx-act:active{transform:scale(.97)}
+.sx-act>span{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#2177e8,#7c5cf0);margin-bottom:8px;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.sx-act:hover>span{transform:rotate(-10deg) scale(1.15)}
+.sx-act b{font-size:14.5px;font-weight:800;position:relative}
+.sx-act small{color:var(--mu);font-size:12px;position:relative}
+@keyframes sxFill{from{transform:scaleX(0)}}
+@keyframes sxShine{to{background-position:-200% 0}}
+@keyframes sxSlide{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+@keyframes sxCheck{to{stroke-dashoffset:0}}
+@keyframes sxPing3{0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}70%,100%{box-shadow:0 0 0 8px rgba(34,197,94,0)}}
+@media (max-width:1180px){.sx-act{padding:14px}}
+@media (max-width:980px){.sx-duo{grid-template-columns:minmax(0,1fr)}.sx-acts{grid-template-columns:repeat(2,minmax(0,1fr))}.sx-hero{padding:22px 24px}}
+@media (max-width:760px){.sx-ring{width:124px;height:124px}.sx-num b{font-size:30px}.sx-copy h2{font-size:24px}.sx-copy p{font-size:13.5px}.sx-chip{padding:7px 12px;font-size:12.5px}.sx-box{padding:15px}}
+@media (max-width:520px){.sx-hero{flex-direction:column-reverse;align-items:flex-start;gap:14px}.sx-ring{margin:0 auto;width:112px;height:112px}.sx-copy{flex-basis:auto;width:100%}.sx-acts{gap:10px}.sx-act{padding:12px}.sx-act small{display:none}.sx-act>span{width:34px;height:34px;margin-bottom:4px}.sx-todo{padding:8px 10px;font-size:13px}.sx-wrap,.sx-duo{gap:10px}}
+
+/* ===== FINAL POLISH: ring contrast, equal-height cards, extra animations (additive) ===== */
+.sx-ring,.sx-chips,.sx-kick,.sx-num{user-select:none;-webkit-user-select:none}
+.sx-ring{transition:transform .4s cubic-bezier(.3,1.4,.5,1)}
+.sx-hero:hover .sx-ring{transform:scale(1.05)}
+.sx-ring:before{content:"";position:absolute;inset:23px;border-radius:50%;background:radial-gradient(circle,rgba(6,16,40,.62),rgba(6,16,40,.38));box-shadow:inset 0 0 18px rgba(0,0,0,.25)}
+.sx-ring:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(167,139,250,.5);pointer-events:none;animation:sxHalo 2.8s ease-out infinite}
+.sx-num b{color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.sx-num small{color:#fff;opacity:1;font-weight:700;letter-spacing:.14em;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.sx-spark{position:absolute;bottom:-10px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.75);box-shadow:0 0 8px rgba(255,255,255,.8);pointer-events:none;opacity:0;animation:sxFloat 7s linear infinite}
+.sx-tico svg{animation:sxBob 3.2s calc(var(--i,0)*.4s) ease-in-out infinite}
+.sx-duo{align-items:stretch}
+.sx-box{display:flex;flex-direction:column}
+.sx-todos,.sx-bars{flex:1;align-content:space-between}
+.sx-bh h3{position:relative}
+.sx-bh h3:after{content:"";display:block;height:3px;width:30px;margin-top:5px;border-radius:3px;background:linear-gradient(90deg,var(--pr),#7c5cf0);animation:sxGrow .8s 1s both}
+.sx-pct.full{color:#fff;background:#22c55e;animation:sxPop .7s both}
+@keyframes sxHalo{0%{transform:scale(.92);opacity:.9}100%{transform:scale(1.28);opacity:0}}
+@keyframes sxFloat{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:.9}100%{transform:translateY(-230px) scale(1.2);opacity:0}}
+@keyframes sxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+@keyframes sxGrow{from{width:0}}
+@keyframes sxPop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@media (max-width:980px){.sx-todos,.sx-bars{flex:none}}
+@media (max-width:520px){.sx-ring:before{inset:19px}.sx-ring:after{inset:-4px}}
+@media (prefers-reduced-motion:reduce){.sx-todo.ok .sx-tick path{stroke-dashoffset:0}.sx-spark{display:none}}
+
+/* ===== LANGUAGE DROPDOWN (additive) ===== */
+.sx-lang{position:relative;min-width:0}
+.sx-lang.open{z-index:60}
+.sx-lang .sx-act{width:100%;height:100%;box-sizing:border-box}
+.sx-lang.open .sx-act{border-color:#7c5cf0;box-shadow:0 0 0 4px rgba(124,92,240,.15)}
+.sx-caret{position:absolute;top:16px;right:14px;display:grid;color:var(--mu);transform:rotate(90deg);transition:transform .35s cubic-bezier(.3,1.5,.5,1),color .2s}
+.sx-lang.open .sx-caret{transform:rotate(-90deg);color:#7c5cf0}
+.sx-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:60;min-width:100%;width:max-content;max-width:min(300px,86vw);box-sizing:border-box;margin:0;padding:6px;list-style:none;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 46px -14px rgba(20,30,80,.4);transform-origin:24% 0;animation:sxMenuIn .34s cubic-bezier(.2,1.2,.4,1) both}
+.sx-menu li{margin:0;animation:sxSlide .38s calc(var(--k)*70ms + .05s) both}
+.sx-menu button{position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:9px 10px;border-radius:11px;color:var(--tx);font:inherit;text-align:left;cursor:pointer;background:transparent;transition:background .2s,transform .2s}
+.sx-menu button:hover{background:var(--hov);transform:translateX(4px)}
+.sx-menu button:active{transform:scale(.97)}
+.sx-menu button.on{background:color-mix(in srgb,#7c5cf0 12%,transparent)}
+.sx-gl{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:19px;font-weight:800;color:#fff;background:linear-gradient(135deg,#2177e8,#7c5cf0);transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.sx-menu button:hover .sx-gl{transform:rotate(-8deg) scale(1.12)}
+.sx-menu button.on .sx-gl{box-shadow:0 0 0 3px rgba(124,92,240,.25),0 6px 14px -4px rgba(124,92,240,.6)}
+.sx-ln{flex:1;min-width:0;display:grid}
+.sx-ln b{font-size:14.5px;font-weight:700;line-height:1.25}
+.sx-ln small{font-size:11.5px;color:var(--mu)}
+.sx-menu svg{flex:none;color:#22c55e;stroke-dasharray:24;stroke-dashoffset:24;opacity:0}
+.sx-menu .on svg{opacity:1;animation:sxCheck .5s .2s ease forwards}
+.sx-swap{animation:sxSwap .45s both}
+@keyframes sxMenuIn{from{opacity:0;transform:translateY(-12px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes sxSwap{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@media (max-width:520px){.sx-menu{max-width:calc(100vw - 48px)}.sx-caret{top:12px;right:10px}}
+@media (prefers-reduced-motion:reduce){.sx-menu .on svg{stroke-dashoffset:0}}
+
+/* ===== 25-LANGUAGE PICKER (additive) ===== */
+.sx-menu{width:300px;min-width:270px;max-width:min(320px,calc(100vw - 48px));padding:8px}
+.sx-find{display:flex;align-items:center;gap:8px;height:38px;padding:0 11px;margin:0 0 8px;border-radius:11px;border:1px solid var(--line);background:var(--bg);color:var(--mu);transition:border-color .2s,box-shadow .2s}
+.sx-find:focus-within{border-color:#7c5cf0;box-shadow:0 0 0 3px rgba(124,92,240,.15)}
+.sx-find input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;color:var(--tx);font:inherit;font-size:13px;padding:0}
+.sx-menu .sx-find svg{color:var(--mu);stroke-dasharray:none;stroke-dashoffset:0;opacity:1;animation:none}
+.sx-opts{list-style:none;margin:0;padding:0 2px 0 0;max-height:min(300px,50vh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.sx-tag{flex:none;font-style:normal;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:99px;color:#16a34a;background:rgba(34,197,94,.14)}
+.sx-tag.b{color:#d97706;background:rgba(245,158,11,.14)}
+.sx-none{padding:16px 8px;text-align:center;color:var(--mu);font-size:13px}
+
+/* ===== picker clean-up (additive) ===== */
+.sx-find input,.sx-find input:focus,.sx-find input:focus-visible{outline:none!important;box-shadow:none!important;border:0!important;background:transparent!important;border-radius:0}
+.sx-opts{overflow-x:hidden}
+.sx-menu button{box-sizing:border-box}
 `;
