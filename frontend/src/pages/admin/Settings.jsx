@@ -408,6 +408,231 @@ const TA = {
   Revoke: "நீக்கு",
 };
 
+/* ---------- 3b. HINDI ---------- */
+const HI = {
+  Dashboard: "डैशबोर्ड",
+  Students: "छात्र",
+  Colleges: "कॉलेज",
+  Courses: "पाठ्यक्रम",
+  Applications: "आवेदन",
+  Duplicates: "डुप्लिकेट",
+  Transactions: "लेनदेन",
+  Reports: "रिपोर्ट",
+  Users: "उपयोगकर्ता",
+  Settings: "सेटिंग्स",
+  Logout: "लॉग आउट",
+  "Search students, colleges, leads...": "छात्र, कॉलेज, लीड खोजें...",
+  "Manage your platform settings, preferences and system configurations":
+    "अपने प्लेटफ़ॉर्म की सेटिंग्स, पसंद और सिस्टम कॉन्फ़िगरेशन प्रबंधित करें",
+  "Admin Profile & Organization": "एडमिन प्रोफ़ाइल और संगठन",
+  "Manage your profile, organization details and admin information.":
+    "अपनी प्रोफ़ाइल, संगठन विवरण और एडमिन जानकारी प्रबंधित करें।",
+  "Profile Information": "प्रोफ़ाइल जानकारी",
+  "Name, email, phone, role": "नाम, ईमेल, फ़ोन, भूमिका",
+  "Organization Details": "संगठन विवरण",
+  "College platform information": "कॉलेज प्लेटफ़ॉर्म की जानकारी",
+  "Edit Profile": "प्रोफ़ाइल संपादित करें",
+  "Update your profile details": "अपनी प्रोफ़ाइल का विवरण अपडेट करें",
+  Administrator: "प्रशासक",
+  "System Preferences": "सिस्टम पसंद",
+  "Configure platform behavior, language, time and appearance.":
+    "भाषा, समय और रूप-रंग सेट करें।",
+  "Language & Region": "भाषा और क्षेत्र",
+  "Choose language and region": "भाषा चुनें",
+  "Date & Time Format": "तारीख़ और समय प्रारूप",
+  "Set timezone and date format": "समय क्षेत्र और तारीख़ प्रारूप",
+  Theme: "थीम",
+  "Light / Dark mode": "लाइट / डार्क मोड",
+  "Dashboard Preferences": "डैशबोर्ड पसंद",
+  "Set default dashboard view": "डिफ़ॉल्ट डैशबोर्ड दृश्य",
+  "Notification Settings": "सूचना सेटिंग्स",
+  "Manage email and system notifications.":
+    "ईमेल और सिस्टम सूचनाएँ प्रबंधित करें।",
+  "Student Registrations": "छात्र पंजीकरण",
+  "New student account alerts": "नए छात्र खाते की सूचनाएँ",
+  "College Approvals": "कॉलेज अनुमोदन",
+  "College verification requests": "कॉलेज सत्यापन अनुरोध",
+  "New applications and status updates": "नए आवेदन और स्थिति अपडेट",
+  "Payment and lead purchase alerts": "भुगतान और लीड खरीद सूचनाएँ",
+  "System Updates": "सिस्टम अपडेट",
+  "Maintenance and platform updates": "रखरखाव और प्लेटफ़ॉर्म अपडेट",
+  "Security & Access Control": "सुरक्षा और एक्सेस नियंत्रण",
+  "Keep your account and data secure.": "अपने खाते और डेटा को सुरक्षित रखें।",
+  "Change Password": "पासवर्ड बदलें",
+  "Update your password": "अपना पासवर्ड अपडेट करें",
+  "Two-Factor Authentication": "दो-चरणीय प्रमाणीकरण",
+  "Add an extra layer of security": "सुरक्षा की एक अतिरिक्त परत जोड़ें",
+  "Login Activity": "लॉगिन गतिविधि",
+  "View recent login activity": "हाल की लॉगिन गतिविधि देखें",
+  "Session Management": "सत्र प्रबंधन",
+  "Manage active sessions": "सक्रिय सत्र प्रबंधित करें",
+  "Role & Permission": "भूमिका और अनुमति",
+  "Control admin access levels": "एडमिन एक्सेस स्तर नियंत्रित करें",
+  "Account Activity & Audit Logs": "खाता गतिविधि और ऑडिट लॉग",
+  "Track admin actions and system activities.":
+    "एडमिन और सिस्टम गतिविधियों को ट्रैक करें।",
+  "Admin Actions": "एडमिन कार्य",
+  "View all admin activities": "सभी एडमिन गतिविधियाँ देखें",
+  "College Actions": "कॉलेज कार्य",
+  "Approval / rejection history": "अनुमोदन / अस्वीकृति इतिहास",
+  "Transaction Logs": "लेनदेन लॉग",
+  "Payment and lead details": "भुगतान और लीड विवरण",
+  "System Logs": "सिस्टम लॉग",
+  "System events and changes": "सिस्टम घटनाएँ और बदलाव",
+  "Data Privacy & Compliance": "डेटा गोपनीयता और अनुपालन",
+  "Manage data access and privacy controls.":
+    "डेटा एक्सेस और गोपनीयता नियंत्रण प्रबंधित करें।",
+  "Student Data Access": "छात्र डेटा एक्सेस",
+  "View and manage data permissions": "डेटा अनुमतियाँ देखें और प्रबंधित करें",
+  "Contact Information Masking": "संपर्क जानकारी मास्किंग",
+  "Hide sensitive information": "संवेदनशील जानकारी छिपाएँ",
+  "Data Retention": "डेटा प्रतिधारण",
+  "Set data storage duration": "डेटा भंडारण अवधि सेट करें",
+  "Privacy Policy": "गोपनीयता नीति",
+  "Manage privacy settings": "गोपनीयता सेटिंग्स प्रबंधित करें",
+  "System Maintenance": "सिस्टम रखरखाव",
+  "Monitor system health and manage backups.":
+    "सिस्टम की स्थिति देखें और बैकअप प्रबंधित करें।",
+  "Database Backup": "डेटाबेस बैकअप",
+  "Last backup": "पिछला बैकअप",
+  "System Health": "सिस्टम स्वास्थ्य",
+  "Server and application status": "सर्वर और एप्लिकेशन की स्थिति",
+  "Storage Usage": "स्टोरेज उपयोग",
+  "Used: 42% of total storage": "उपयोग: कुल स्टोरेज का 42%",
+  "Maintenance Mode": "रखरखाव मोड",
+  "Enable/disable maintenance mode": "रखरखाव मोड चालू/बंद करें",
+  Success: "सफल",
+  Healthy: "स्वस्थ",
+  Saved: "सहेजा गया",
+  "Save changes": "बदलाव सहेजें",
+  Close: "बंद करें",
+  Cancel: "रद्द करें",
+  "No settings match your search.": "आपकी खोज से कोई सेटिंग मेल नहीं खाती।",
+  Timezone: "समय क्षेत्र",
+  "Date format": "तारीख़ प्रारूप",
+  "12-hour clock": "12 घंटे की घड़ी",
+  Light: "लाइट",
+  Dark: "डार्क",
+  System: "सिस्टम",
+  Notifications: "सूचनाएँ",
+  "Back up now": "अभी बैकअप लें",
+  Revoke: "रद्द करें",
+};
+
+/* ---------- 3c. TELUGU ---------- */
+const TE = {
+  Dashboard: "డ్యాష్‌బోర్డ్",
+  Students: "విద్యార్థులు",
+  Colleges: "కళాశాలలు",
+  Courses: "కోర్సులు",
+  Applications: "దరఖాస్తులు",
+  Duplicates: "నకిలీలు",
+  Transactions: "లావాదేవీలు",
+  Reports: "నివేదికలు",
+  Users: "వినియోగదారులు",
+  Settings: "సెట్టింగ్‌లు",
+  Logout: "లాగ్ అవుట్",
+  "Search students, colleges, leads...": "విద్యార్థులు, కళాశాలలు, లీడ్‌లు వెతకండి...",
+  "Manage your platform settings, preferences and system configurations":
+    "మీ ప్లాట్‌ఫారమ్ సెట్టింగ్‌లు, ప్రాధాన్యతలు, సిస్టమ్ కాన్ఫిగరేషన్‌లను నిర్వహించండి",
+  "Admin Profile & Organization": "అడ్మిన్ ప్రొఫైల్ & సంస్థ",
+  "Manage your profile, organization details and admin information.":
+    "మీ ప్రొఫైల్, సంస్థ వివరాలు, అడ్మిన్ సమాచారాన్ని నిర్వహించండి.",
+  "Profile Information": "ప్రొఫైల్ సమాచారం",
+  "Name, email, phone, role": "పేరు, ఇమెయిల్, ఫోన్, పాత్ర",
+  "Organization Details": "సంస్థ వివరాలు",
+  "College platform information": "కళాశాల ప్లాట్‌ఫారమ్ సమాచారం",
+  "Edit Profile": "ప్రొఫైల్ సవరించండి",
+  "Update your profile details": "మీ ప్రొఫైల్ వివరాలను నవీకరించండి",
+  Administrator: "నిర్వాహకుడు",
+  "System Preferences": "సిస్టమ్ ప్రాధాన్యతలు",
+  "Configure platform behavior, language, time and appearance.":
+    "భాష, సమయం, రూపాన్ని సెట్ చేయండి.",
+  "Language & Region": "భాష & ప్రాంతం",
+  "Choose language and region": "భాషను ఎంచుకోండి",
+  "Date & Time Format": "తేదీ & సమయ ఫార్మాట్",
+  "Set timezone and date format": "టైమ్‌జోన్, తేదీ ఫార్మాట్",
+  Theme: "థీమ్",
+  "Light / Dark mode": "లైట్ / డార్క్ మోడ్",
+  "Dashboard Preferences": "డ్యాష్‌బోర్డ్ ప్రాధాన్యతలు",
+  "Set default dashboard view": "డిఫాల్ట్ డ్యాష్‌బోర్డ్ వీక్షణ",
+  "Notification Settings": "నోటిఫికేషన్ సెట్టింగ్‌లు",
+  "Manage email and system notifications.":
+    "ఇమెయిల్, సిస్టమ్ నోటిఫికేషన్‌లను నిర్వహించండి.",
+  "Student Registrations": "విద్యార్థి నమోదులు",
+  "New student account alerts": "కొత్త విద్యార్థి ఖాతా అలర్ట్‌లు",
+  "College Approvals": "కళాశాల ఆమోదాలు",
+  "College verification requests": "కళాశాల ధృవీకరణ అభ్యర్థనలు",
+  "New applications and status updates": "కొత్త దరఖాస్తులు, స్థితి నవీకరణలు",
+  "Payment and lead purchase alerts": "చెల్లింపు, లీడ్ కొనుగోలు అలర్ట్‌లు",
+  "System Updates": "సిస్టమ్ నవీకరణలు",
+  "Maintenance and platform updates": "నిర్వహణ, ప్లాట్‌ఫారమ్ నవీకరణలు",
+  "Security & Access Control": "భద్రత & యాక్సెస్ నియంత్రణ",
+  "Keep your account and data secure.": "మీ ఖాతా, డేటాను సురక్షితంగా ఉంచండి.",
+  "Change Password": "పాస్‌వర్డ్ మార్చండి",
+  "Update your password": "మీ పాస్‌వర్డ్‌ను నవీకరించండి",
+  "Two-Factor Authentication": "రెండు-దశల ధృవీకరణ",
+  "Add an extra layer of security": "అదనపు భద్రతా పొరను జోడించండి",
+  "Login Activity": "లాగిన్ కార్యకలాపం",
+  "View recent login activity": "ఇటీవలి లాగిన్‌లను చూడండి",
+  "Session Management": "సెషన్ నిర్వహణ",
+  "Manage active sessions": "యాక్టివ్ సెషన్‌లను నిర్వహించండి",
+  "Role & Permission": "పాత్ర & అనుమతి",
+  "Control admin access levels": "అడ్మిన్ యాక్సెస్ స్థాయిలను నియంత్రించండి",
+  "Account Activity & Audit Logs": "ఖాతా కార్యకలాపం & ఆడిట్ లాగ్‌లు",
+  "Track admin actions and system activities.":
+    "అడ్మిన్, సిస్టమ్ కార్యకలాపాలను ట్రాక్ చేయండి.",
+  "Admin Actions": "అడ్మిన్ చర్యలు",
+  "View all admin activities": "అన్ని అడ్మిన్ కార్యకలాపాలను చూడండి",
+  "College Actions": "కళాశాల చర్యలు",
+  "Approval / rejection history": "ఆమోదం / తిరస్కరణ చరిత్ర",
+  "Transaction Logs": "లావాదేవీ లాగ్‌లు",
+  "Payment and lead details": "చెల్లింపు, లీడ్ వివరాలు",
+  "System Logs": "సిస్టమ్ లాగ్‌లు",
+  "System events and changes": "సిస్టమ్ ఈవెంట్‌లు, మార్పులు",
+  "Data Privacy & Compliance": "డేటా గోప్యత & సమ్మతి",
+  "Manage data access and privacy controls.":
+    "డేటా యాక్సెస్, గోప్యతా నియంత్రణలను నిర్వహించండి.",
+  "Student Data Access": "విద్యార్థి డేటా యాక్సెస్",
+  "View and manage data permissions": "డేటా అనుమతులను చూడండి, నిర్వహించండి",
+  "Contact Information Masking": "సంప్రదింపు సమాచార మాస్కింగ్",
+  "Hide sensitive information": "సున్నితమైన సమాచారాన్ని దాచండి",
+  "Data Retention": "డేటా నిలుపుదల",
+  "Set data storage duration": "డేటా నిల్వ వ్యవధిని సెట్ చేయండి",
+  "Privacy Policy": "గోప్యతా విధానం",
+  "Manage privacy settings": "గోప్యతా సెట్టింగ్‌లను నిర్వహించండి",
+  "System Maintenance": "సిస్టమ్ నిర్వహణ",
+  "Monitor system health and manage backups.":
+    "సిస్టమ్ స్థితిని, బ్యాకప్‌లను నిర్వహించండి.",
+  "Database Backup": "డేటాబేస్ బ్యాకప్",
+  "Last backup": "చివరి బ్యాకప్",
+  "System Health": "సిస్టమ్ ఆరోగ్యం",
+  "Server and application status": "సర్వర్, అప్లికేషన్ స్థితి",
+  "Storage Usage": "నిల్వ వినియోగం",
+  "Used: 42% of total storage": "వినియోగం: మొత్తం నిల్వలో 42%",
+  "Maintenance Mode": "నిర్వహణ మోడ్",
+  "Enable/disable maintenance mode": "నిర్వహణ మోడ్ ఆన్/ఆఫ్ చేయండి",
+  Success: "విజయం",
+  Healthy: "ఆరోగ్యకరం",
+  Saved: "సేవ్ అయింది",
+  "Save changes": "మార్పులను సేవ్ చేయండి",
+  Close: "మూసివేయి",
+  Cancel: "రద్దు",
+  "No settings match your search.": "మీ శోధనకు సరిపడే సెట్టింగ్‌లు లేవు.",
+  Timezone: "టైమ్‌జోన్",
+  "Date format": "తేదీ ఫార్మాట్",
+  "12-hour clock": "12 గంటల గడియారం",
+  Light: "లైట్",
+  Dark: "డార్క్",
+  System: "సిస్టమ్",
+  Notifications: "నోటిఫికేషన్‌లు",
+  "Back up now": "ఇప్పుడే బ్యాకప్ తీసుకోండి",
+  Revoke: "రద్దు చేయి",
+};
+
+const DICT = { ta: TA, hi: HI, te: TE };
+const LOCALE = { en: "en-IN", ta: "ta-IN", hi: "hi-IN", te: "te-IN" };
+
 /* ---------- 4. CONTEXT + SMALL PARTS ---------- */
 const Ctx = createContext(null);
 const useS = () => useContext(Ctx);
@@ -612,6 +837,8 @@ function Panel({ id, close }) {
           opts={[
             ["en", "English", "Default"],
             ["ta", "தமிழ்", "Tamil"],
+            ["hi", "हिन्दी", "Hindi"],
+            ["te", "తెలుగు", "Telugu"],
           ]}
         />
       );
@@ -1145,7 +1372,7 @@ export default function Settings() {
   }, [msg]);
 
   const set = (patch) => setS((p) => ({ ...p, ...patch }));
-  const t = (x) => (s.lang === "ta" && TA[x]) || x;
+  const t = (x) => DICT[s.lang]?.[x] || x;
   const fmt = (d, time = true, f = s.dateFmt) => {
     const p = {};
     new Intl.DateTimeFormat("en-GB", {
@@ -1158,7 +1385,7 @@ export default function Settings() {
       .forEach((x) => {
         p[x.type] = x.value;
       });
-    const mon = new Intl.DateTimeFormat(s.lang === "ta" ? "ta-IN" : "en-IN", {
+    const mon = new Intl.DateTimeFormat(LOCALE[s.lang] || "en-IN", {
       timeZone: s.tz,
       month: "short",
     }).format(d);
