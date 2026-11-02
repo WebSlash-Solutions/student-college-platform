@@ -3235,6 +3235,9 @@ function DashboardHome() {
         ? "Good Afternoon, Admin"
         : "Good Evening, Admin";
 
+  const greetingIcon =
+    currentHour < 12 ? "☀️" : currentHour < 17 ? "🌤️" : "🌙";
+
   const [showAllLeads, setShowAllLeads] = useState(false);
   const [showAllActivities, setShowAllActivities] = useState(false);
 
@@ -3485,7 +3488,12 @@ function DashboardHome() {
 
       <div className="dashboard-heading">
         <div>
-          <h1>{greeting}</h1>
+          <h1>
+            {greeting}{" "}
+            <span aria-hidden="true" style={{ marginLeft: "6px" }}>
+              {greetingIcon}
+            </span>
+          </h1>
 
           <p>
             Manage students, colleges, leads, applications and platform activity

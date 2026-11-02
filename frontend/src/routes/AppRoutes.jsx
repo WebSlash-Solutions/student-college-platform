@@ -18,82 +18,46 @@ function AppRoutes() {
     <BrowserRouter>
       <Routes>
         {/* Default Route */}
-        <Route
-          path="/"
-          element={<Navigate to="/admin/dashboard" replace />}
-        />
+        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
 
         {/* Admin Login */}
-        <Route
-          path="/admin/login"
-          element={<AdminLogin />}
-        />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* Admin Dashboard */}
-        <Route
-          path="/admin/dashboard"
-          element={<AdminDashboard />}
-        />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
         {/* Institution Dashboard */}
         <Route
-         path="/institution/dashboard"
+          path="/institution/dashboard"
           element={<InstitutionDashboard />}
         />
 
         {/* Student Management */}
-        <Route
-          path="/admin/student-management"
-          element={<StudentManagement />}
-        />
+        <Route path="/admin/students" element={<StudentManagement />} />
 
         {/* College Management */}
-        <Route
-          path="/admin/college-management"
-          element={<CollegeManagement />}
-        />
+        <Route path="/admin/colleges" element={<CollegeManagement />} />
 
         {/* Course Management */}
-        <Route
-          path="/admin/courses"
-          element={<CourseManagement />}
-        />
+        <Route path="/admin/courses" element={<CourseManagement />} />
 
         {/* Applications */}
-        <Route
-          path="/admin/applications"
-          element={<Applications />}
-        />
+        <Route path="/admin/applications" element={<Applications />} />
 
         {/* Transactions */}
-        <Route
-          path="/admin/transactions"
-          element={<Transactions />}
-        />
+        <Route path="/admin/transactions" element={<Transactions />} />
 
         {/* Reports */}
-        <Route
-          path="/admin/reports"
-          element={<Reportsanalytics />}
-        />
+        <Route path="/admin/reports" element={<Reportsanalytics />} />
 
         {/* Users */}
-        <Route
-          path="/admin/users"
-          element={<Users />}
-        />
+        <Route path="/admin/users" element={<Users />} />
 
         {/* Settings */}
-        <Route
-          path="/admin/settings"
-          element={<Settings />}
-        />
+        <Route path="/admin/settings" element={<Settings />} />
 
         {/* Unknown Route */}
-        <Route
-          path="*"
-          element={<Navigate to="/admin/dashboard" replace />}
-        />
+        <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );
