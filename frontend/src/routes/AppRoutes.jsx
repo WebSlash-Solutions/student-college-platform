@@ -36,15 +36,15 @@ function AppRoutes() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/applications" element={<Applications />} />
         <Route path="/admin/coursemanagement" element={<CourseManagement />} />
-        <Route path="/admin/student-management" element={<StudentManagement />} />
-        <Route path="/admin/college-management" element={<CollegeManagement />} />
+        <Route path="/admin/students" element={<StudentManagement />} />
+        <Route path="/admin/colleges" element={<CollegeManagement />} />
         <Route path="/admin/transactions" element={<Transactions />} />
         <Route path="/admin/reports" element={<Reportsanalytics />} />
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/settings" element={<Settings />} />
         <Route path="/institution/dashboard" element={<InstitutionDashboard />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        
+
 
 
         {/* STUDENT */}
@@ -59,7 +59,7 @@ function AppRoutes() {
         <Route path="/college/collegesite" element={<CollegeSite />} />
         <Route path="/college/payment" element={<CollegePayment />} />
 
-        
+
       </Routes>
     </BrowserRouter>
   );

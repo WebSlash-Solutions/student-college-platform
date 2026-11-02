@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 /* =========================================================
    COLLEGE DATA
-   550 COLLEGES: ENGINEERING + ARTS & SCIENCE + MEDICAL + NURSING + ALLIED HEALTH + PHYSIOTHERAPY + AGRICULTURE + LAW
+   900 COLLEGES: ENGINEERING + ARTS & SCIENCE + MEDICAL + NURSING + ALLIED HEALTH + PHYSIOTHERAPY + AGRICULTURE + LAW
 ========================================================= */
 
 const engineeringFacilities = [
@@ -24156,6 +24156,12 @@ function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Same logout as Admin page: clear session and go back to the admin login.
+  const handleLogout = () => {
+    sessionStorage.removeItem("adminLoggedIn");
+    navigate("/admin/dashboard", { replace: true });
+  };
+
   const menuItems = [
     ["Dashboard", "⌂", "/admin/dashboard"],
     ["Students", "♙", "/admin/students"],
@@ -24168,18 +24174,10 @@ function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
     ["Settings", "⚙", "/admin/settings"],
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminLoggedIn");
-    localStorage.removeItem("isAdminLoggedIn");
-    sessionStorage.clear();
-    window.location.replace("/admin/login");
-  };
-
   return (
-    <aside className={`college-sidebar ${isOpen ? "is-open" : ""}`}>
-      <div className="college-brand">
-        <div className="brand-icon">🎓</div>
-
+    <aside className={`student-layout-sidebar ${isOpen ? "is-open" : ""}`}>
+      <div className="student-layout-brand">
+        <div className="student-layout-brand-icon">🎓</div>
         <div>
           <h1>
             Student<span>College</span>
@@ -24188,13 +24186,13 @@ function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
         </div>
       </div>
 
-      <div className="sidebar-scroll">
-        <p className="menu-title">MAIN MENU</p>
-
+      <nav className="student-layout-menu">
+        <p className="student-layout-menu-title">MAIN MENU</p>
         {menuItems.map(([name, icon, path]) => (
           <button
+            type="button"
             key={name}
-            className={`college-sidebar-item ${
+            className={`student-layout-nav-item ${
               location.pathname === path ||
               (name === "Colleges" &&
                 location.pathname.startsWith("/admin/colleges"))
@@ -24207,24 +24205,27 @@ function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
               navigate(path);
             }}
           >
-            <span className="sidebar-icon">{icon}</span>
+            <span className="student-layout-nav-icon">{icon}</span>
             <span>{name}</span>
           </button>
         ))}
-      </div>
+      </nav>
 
-      <div className="sidebar-bottom">
-        <div className="sidebar-admin-card">
-          <div className="sidebar-avatar">A</div>
-
+      <div className="student-layout-sidebar-bottom">
+        <div className="student-layout-user-card">
+          <div className="student-layout-user-avatar">A</div>
           <div>
             <strong>Admin</strong>
             <span>Super Admin</span>
           </div>
         </div>
-
-        <button className="logout-button" onClick={handleLogout}>
-          ↪ <span>Logout</span>
+        <button
+          type="button"
+          className="student-layout-logout"
+          onClick={handleLogout}
+        >
+          <span>↪</span>
+          Logout
         </button>
       </div>
     </aside>
@@ -24238,50 +24239,70 @@ function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
 function TopBar({ search, onSearchChange, onMenuClick }) {
   const navigate = useNavigate();
 
+  // Same logout as Admin page: clear session and go back to the admin login.
   const handleLogout = () => {
-    localStorage.removeItem("adminLoggedIn");
-    localStorage.removeItem("isAdminLoggedIn");
-    sessionStorage.clear();
-    window.location.replace("/admin/login");
+    sessionStorage.removeItem("adminLoggedIn");
+    navigate("/admin/dashboard", { replace: true });
   };
 
   return (
-    <header className="college-topbar">
-      <div className="topbar-left">
-        <button
-          type="button"
-          className="menu-toggle"
-          aria-label="Toggle menu"
-          onClick={onMenuClick}
-        >
-          ☰
-        </button>
+    <header className="student-layout-topbar">
+      <button
+        type="button"
+        className="student-layout-mobile-toggle"
+        onClick={onMenuClick}
+        aria-label="Toggle navigation menu"
+      >
+        ☰
+      </button>
 
-        <div className="global-search">
-          <span>⌕</span>
+      <div className="student-layout-search-wrap">
+        <div className="student-layout-search">
+          <span className="student-layout-search-icon">⌕</span>
           <input
+            type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search students, colleges, leads..."
+            aria-label="Search colleges"
           />
+          {search && (
+            <button
+              type="button"
+              className="student-layout-search-clear"
+              onClick={() => onSearchChange("")}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="top-admin">
-        <button className="notification-button">
-          ♢<span className="notification-dot"></span>
+      <div className="student-layout-topbar-right">
+        <button
+          type="button"
+          className="student-layout-notification"
+          aria-label="Notifications"
+        >
+          ♢<span className="student-layout-notification-dot" />
         </button>
-
-        <button className="top-admin-profile" onClick={handleLogout}>
-          <span className="top-avatar">A</span>
-
-          <span className="top-admin-text">
+        <div className="student-layout-profile">
+          <div className="student-layout-profile-avatar">A</div>
+          <div className="student-layout-profile-details">
             <strong>Admin</strong>
-            <small>Super Admin</small>
-          </span>
-
-          <span>⌄</span>
-        </button>
+            <span>Super Admin</span>
+          </div>
+          <button
+            type="button"
+            className="student-layout-topbar-logout"
+            onClick={handleLogout}
+            title="Logout"
+            aria-label="Logout"
+          >
+            ⌄
+          </button>
+        </div>
       </div>
     </header>
   );
@@ -27746,15 +27767,25 @@ export default function CollegeManagement() {
     setSelectedCollege(null);
   };
 
+  // Always start from the top of the scrolling area when switching views
+  useEffect(() => {
+    const area = document.querySelector(".student-layout-main");
+    if (area) area.scrollTo({ top: 0 });
+  }, [selectedId]);
+
   return (
     <>
       <style>{collegeStyles}</style>
 
-      <div className="college-admin-app">
-        <div
-          className={`sidebar-overlay ${sidebarOpen ? "is-open" : ""}`}
-          onClick={() => setSidebarOpen(false)}
-        ></div>
+      <div className="student-layout">
+        {sidebarOpen && (
+          <button
+            type="button"
+            className="student-layout-overlay"
+            aria-label="Close navigation menu"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
         <AdminSidebar
           onCollegesClick={() => setSelectedCollege(null)}
@@ -27762,14 +27793,14 @@ export default function CollegeManagement() {
           onClose={() => setSidebarOpen(false)}
         />
 
-        <div className="college-main">
+        <div className="student-layout-main">
           <TopBar
             search={search}
             onSearchChange={handleSearchChange}
             onMenuClick={() => setSidebarOpen((prev) => !prev)}
           />
 
-          <main>
+          <main className="student-layout-content">
             {selectedCollege ? (
               <CollegeDetails
                 college={selectedCollege}
@@ -27796,15 +27827,385 @@ export default function CollegeManagement() {
 ========================================================= */
 
 const collegeStyles = String.raw`
+/* ===== SHARED LAYOUT (same as Student page) ===== */
+.student-layout,
+.student-layout * { box-sizing: border-box; }
 
-* {
-  box-sizing: border-box;
+.student-layout {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  width: 100vw;
+  max-width: none;
+  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  overflow: hidden;
+  margin: 0;
+  background: #f4f7fb;
+  color: #16243d;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-/* Full-width reset (removes centered/narrow wrapper from default Vite styles) */
-html,
-body,
-#root {
+.student-layout-sidebar {
+  width: 236px;
+  min-width: 236px;
+  height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #112746;
+  color: #fff;
+}
+
+.student-layout-brand {
+  height: 82px;
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.student-layout-brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.1);
+  font-size: 21px;
+}
+
+.student-layout-brand h1 {
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.student-layout-brand h1 span { color: #58a1ff; }
+
+.student-layout-brand p {
+  margin: 3px 0 0;
+  color: #91a5c2;
+  font-size: 9px;
+}
+
+.student-layout-menu {
+  flex: 1;
+  padding: 24px 12px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.student-layout-menu::-webkit-scrollbar { display: none; }
+
+.student-layout-menu-title {
+  margin: 0 0 10px;
+  text-align: center;
+  color: #6f86a7;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.student-layout-nav-item {
+  width: 100%;
+  height: 43px;
+  margin-bottom: 4px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #afbdd1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+  transition: .2s ease;
+}
+
+.student-layout-nav-item:hover {
+  color: #fff;
+  background: rgba(255,255,255,.07);
+}
+
+.student-layout-nav-item.active {
+  color: #fff;
+  background: #2177e8;
+  box-shadow: 0 6px 18px rgba(33,119,232,.2);
+}
+
+.student-layout-nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.student-layout-sidebar-bottom {
+  padding: 15px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.student-layout-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.055);
+}
+
+.student-layout-user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #28558e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.student-layout-user-card strong {
+  display: block;
+  color: #fff;
+  font-size: 12px;
+}
+
+.student-layout-user-card span {
+  display: block;
+  margin-top: 2px;
+  color: #8196b5;
+  font-size: 9px;
+}
+
+.student-layout-main {
+  min-width: 0;
+  width: calc(100vw - 236px);
+  flex: 1 1 auto;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+}
+
+.student-layout-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 65px;
+  min-height: 65px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background: #fff;
+  border-bottom: 1px solid #e7ecf2;
+}
+
+.student-layout-search-wrap {
+  position: relative;
+  width: 520px;
+  max-width: 520px;
+  min-width: 0;
+}
+
+.student-layout-search {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-radius: 9px;
+  background: #f4f7fb;
+  color: #7b8da7;
+}
+
+.student-layout-search-icon { font-size: 20px; }
+
+.student-layout-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #253954;
+  font-size: 12px;
+}
+
+.student-layout-search input::placeholder { color: #99a7ba; }
+
+.student-layout-search-clear {
+  border: 0;
+  background: transparent;
+  color: #71839c;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.student-layout-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.student-layout-notification {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #61738e;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.student-layout-notification-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f25f68;
+}
+
+.student-layout-profile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.student-layout-profile-avatar {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #183f70;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.student-layout-profile-details strong {
+  display: block;
+  color: #233854;
+  font-size: 12px;
+}
+
+.student-layout-profile-details span {
+  display: block;
+  margin-top: 2px;
+  color: #8c9aae;
+  font-size: 9px;
+}
+
+/* ===== LOGOUT (same behaviour as Admin page) ===== */
+.student-layout-logout {
+  width: 100%;
+  height: 36px;
+  margin-top: 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #93a6c0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.student-layout-logout:hover {
+  color: #fff;
+  background: rgba(255,255,255,.07);
+}
+
+.student-layout-topbar-logout {
+  border: 0;
+  background: transparent;
+  color: #71839c;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.student-layout-mobile-toggle { display: none; }
+
+.student-layout-content {
+  min-width: 0;
+  padding: 27px 30px 40px;
+}
+
+@media (max-width: 900px) {
+  .student-layout-main {
+    width: 100vw;
+  }
+  .student-layout-sidebar {
+    position: fixed;
+    z-index: 220;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+  }
+  .student-layout-sidebar.is-open { transform: translateX(0); }
+  .student-layout-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 210;
+    border: 0;
+    background: rgba(10,25,50,.42);
+  }
+  .student-layout-mobile-toggle {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #61738e;
+    font-size: 19px;
+    cursor: pointer;
+  }
+  .student-layout-search-wrap { flex: 1; width: auto; }
+  .student-layout-topbar { padding: 0 14px; }
+}
+
+@media (max-width: 560px) {
+  .student-layout-topbar { gap: 8px; }
+  .student-layout-topbar-right { gap: 8px; }
+  .student-layout-profile-details { display: none; }
+  .student-layout-topbar-logout { display: none; }
+  .student-layout-search { padding: 0 10px; }
+}
+
+
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
+* { box-sizing: border-box; }
+
+html, body, #root {
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
@@ -27817,1027 +28218,826 @@ body {
   display: block !important;
   place-items: initial !important;
   min-width: 0 !important;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font-family: Inter, Arial, Helvetica, sans-serif;
-  background: #f5f8fc;
-  color: #17375f;
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-/* =========================================================
-   MAIN APP
-========================================================= */
-
-.college-admin-app {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  background: #f5f8fc;
-}
-
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.menu-toggle,
-.sidebar-overlay {
-  display: none;
-}
-
-.college-main {
-  min-width: 0;
-  flex: 1 1 auto;
-  width: calc(100% - 236px);
-  margin-left: 236px;
-  overflow-x: hidden;
-}
-
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-
-.college-sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 236px;
-  background: #112746;
-  color: white;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-}
-
-
-.college-brand {
-  height: 82px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 0 14px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-
-.brand-icon {
-  width: 39px;
-  height: 39px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,.1);
-  font-size: 22px;
-}
-
-.college-brand h1 {
-  margin: 0;
-  color: white;
-  font-family: Inter, Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  line-height: 1.2;
-}
-
-.college-brand h1 span {
-  color: #62a8ff;
-}
-
-.college-brand p {
-  margin: 4px 0 0;
-  color: #9fb2ca;
-  font-size: 9.5px;
-}
-
-.sidebar-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 28px 12px 18px 4px;
-    scrollbar-width: none;
-}
-
-.menu-title {
-  margin: 0 10px 11px;
-  color: #7e96b3;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .8px;
-  text-align: center;
-}
-
-.college-sidebar-item {
-  width: 100%;
-  min-height: 43px;
-  border: 0;
-  background: transparent;
-   color: #d6e1ef;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 13px;
-  margin-bottom: 4px;
-  text-align: left;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  transition: .2s;
-}
-
-.college-sidebar-item:hover {
-  background: rgba(255,255,255,.07);
-  color: white;
-}
-
-.college-sidebar-item.active {
-  background: #287fe8;
-  color: white;
-  box-shadow: 0 5px 14px rgba(25,107,211,.2);
-}
-
-.sidebar-icon {
-  width: 20px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.lead-star {
-  margin-left: auto;
-  color: #ffd24a;
-  font-size: 10px;
-}
-
-.sidebar-bottom {
-  flex-shrink: 0;
-  padding: 16px 6px 8px;
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-
-.sidebar-admin-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 12px;
-  margin-bottom: 9px;
-  background: rgba(255,255,255,.07);
-  border-radius: 10px;
-}
-
-.sidebar-admin-card > div:last-child {
-  text-align: center;
-}
-
-.sidebar-avatar,
-.top-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #2d5c9a;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.sidebar-admin-card strong {
-  display: block;
-  color: white;
-  font-size: 12px;
-}
-
-.sidebar-admin-card span {
-  display: block;
-  color: #8da4be;
-  font-size: 9px;
-  margin-top: 5px;
-}
-
-.logout-button {
-  width: 100%;
-  height: 36px;
-  border: 0;
-  background: transparent;
-  color: #bdccdd;
-  border-radius: 7px;
-  text-align: center;
-  padding: 0 12px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 11px;
-}
-
-.logout-button:hover {
-  background: rgba(255,255,255,.08);
-  color: white;
-}
-/* =========================================================
-   TOP BAR
-========================================================= */
-
-.college-topbar {
-  width: 100%;
-  height: 64px;
-  background: white;
-  border-bottom: 1px solid #e5ebf2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.global-search {
-  width: 300px;
-  height: 38px;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
   background: #f4f7fb;
-  border: 1px solid #edf1f6;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 10px;
+  color: #14325c;
 }
 
-.global-search span {
-  font-size: 12px;
-  color: #8fa0b5;
-}
+html { scroll-behavior: smooth; }
 
-.global-search input {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  background: transparent !important;
-  color: #29496e;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
 
-.global-search input::placeholder {
-  color: #91a0b5;
-}
-
-.top-admin {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.notification-button {
-  position: relative;
-  border: 0;
-  background: transparent;
-  color: #17375f;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  padding: 4px 8px;
-}
-
-.notification-dot {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #f0454d;
-}
-
-.top-admin-profile {
-  border: 0;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #62758e;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 9px;
-}
-
-.top-avatar {
-  width: 32px;
-  height: 32px;
-  background: #17407a;
-  font-size: 13px;
-}
-
-.top-admin-text {
-  text-align: center;
-}
-
-.top-admin-text strong {
-  display: block;
-  color: #244363;
-  font-size: 12px;
-  line-height: 1.2;
-}
-
-.top-admin-text small {
-  display: block;
-  color: #8a9bb0;
-  font-size: 9px;
-  line-height: 1.2;
-  margin-top: 3px;
-}
-
-/* =========================================================
-   PAGE
-========================================================= */
-
+/* content area inside the shared layout */
+.student-layout-content { padding: 24px 28px 40px; }
 
 .college-page,
 .college-details-page {
   width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 32px 32px 55px;
-  overflow-x: hidden;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+  min-width: 0;
+  color: #14325c;
 }
 
+/* =========================================================
+   HERO HEADING
+========================================================= */
+
 .college-page-heading {
-  width: 100%;
-  margin-bottom: 20px;
-  text-align: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 96px;
+  padding: 16px 22px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  border: 1px solid #dbe8fb;
+  text-align: left;
+  background:
+    radial-gradient(circle at 12% 30%, rgba(255,255,255,.9), transparent 38%),
+    linear-gradient(100deg, #eaf2ff 0%, #d9e8ff 55%, #c5dcff 100%);
 }
+
+.college-page-heading::before {
+  content: "🏫";
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(45,125,240,.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+.college-page-heading::after {
+  content: "🏛️";
+  position: absolute;
+  right: 18px;
+  bottom: -22px;
+  font-size: 110px;
+  line-height: 1;
+  opacity: .2;
+  pointer-events: none;
+  user-select: none;
+}
+
+.college-page-heading > div { position: relative; z-index: 1; min-width: 0; }
 
 .college-page-heading h2 {
   margin: 0;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
-  line-height: 1.2;
-  color: #17375f;
-  letter-spacing: -0.08em;
+  line-height: 1.25;
+  color: #0f2a52;
+  letter-spacing: normal;
 }
 
 .college-page-heading p {
-  margin: 8px 0 0;
-  color: #8091a8;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 13.5px;
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #3b5578;
 }
 
 /* =========================================================
-   TABS
+   CATEGORY TABS
 ========================================================= */
 
 .college-tabs {
   display: flex;
-  gap: 7px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 2px 2px 6px;
   overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.college-tabs {
-  scrollbar-width: none;      /* Firefox */
-  -ms-overflow-style: none;   /* old Edge */
-}
-
-.college-tabs::-webkit-scrollbar {
-  display: none;              /* Chrome, Edge, Safari */
-}
+.college-tabs::-webkit-scrollbar { display: none; }
 
 .college-tabs button {
-  border: 1px solid #dfe7f0;
-  background: white;
-  color: #60748e;
-  border-radius: 8px;
-  padding: 10px 17px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #dbe5f2;
+  border-radius: 999px;
+  background: #fff;
+  color: #4b6586;
   font-size: 13px;
+  font-weight: 600;
   white-space: nowrap;
+  transition: background .15s, border-color .15s, color .15s, box-shadow .15s;
 }
+
+.college-tabs button:hover { background: #eef4fd; border-color: #bcd4f6; color: #2166cc; }
 
 .college-tabs button.active {
-  background: #247de8;
-  border-color: #247de8;
-  color: white;
-  box-shadow: 0 5px 14px rgba(36,125,232,.16);
+  background: linear-gradient(135deg, #2d7df0, #1d63d6);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(45,125,240,.25);
 }
 
+.college-tabs button .tab-count {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #eaf1fb;
+  color: #2d7df0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.college-tabs button.active .tab-count { background: rgba(255,255,255,.24); color: #fff; }
+
 /* =========================================================
-   FILTER
+   FILTER BAR
 ========================================================= */
 
 .college-filter {
-  background: white;
-  border: 1px solid #e2e9f1;
-  border-radius: 10px;
-  padding: 14px;
   display: grid;
-  grid-template-columns: minmax(250px, 1fr) 190px 190px 100px;
-  gap: 9px;
-  margin-bottom: 17px;
+  grid-template-columns: minmax(220px, 1fr) 190px 190px 100px;
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e4ebf5;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(20,50,92,.04);
 }
 
 .college-search {
-  height: 46px;
-  border: 1px solid #e1e8f0;
-  border-radius: 7px;
+  height: 42px;
+  min-width: 0;
   display: flex;
   align-items: center;
-  padding: 0 11px;
-  gap: 8px;
+  gap: 10px;
+  padding: 0 12px;
+  border: 1px solid #dbe5f2;
+  border-radius: 10px;
+  background: #fff;
+  color: #7a8ca6;
 }
 
+.college-search:focus-within { border-color: #2d7df0; box-shadow: 0 0 0 3px rgba(45,125,240,.12); }
+
 .college-search input {
+  flex: 1;
+  min-width: 0;
   width: 100%;
   border: 0;
   outline: 0;
   background: transparent !important;
-  color: #29496e !important;
-  -webkit-text-fill-color: #29496e;
-  caret-color: #29496e;
+  color: #14325c !important;
+  -webkit-text-fill-color: #14325c;
+  caret-color: #14325c;
   font-size: 13px;
-  color: #29496e;
 }
 
 .college-filter select,
 .reset-button {
-  height: 46px;
-  border: 1px solid #e1e8f0;
-  border-radius: 7px;
-  background: white;
-  color: #60748e;
-  padding: 0 10px;
+  height: 42px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid #dbe5f2;
+  border-radius: 10px;
+  background: #fff;
+  color: #28466b;
   font-size: 13px;
+  outline: none;
 }
 
-.reset-button:hover {
-  background: #f1f6fc;
-}
+.college-filter select:focus { border-color: #2d7df0; box-shadow: 0 0 0 3px rgba(45,125,240,.12); }
+
+.reset-button { font-weight: 600; color: #4b6586; transition: background .15s; }
+.reset-button:hover { background: #eef4fd; }
 
 /* =========================================================
-   STATS
+   STAT CARDS
 ========================================================= */
 
 .college-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 25px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
 }
 
 .college-stat-card {
-  background: white;
-  border: 1px solid #e3eaf2;
-  border-radius: 10px;
-  padding: 22px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 14px rgba(20,50,92,.05);
+  transition: transform .18s, box-shadow .18s;
 }
 
+.college-stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(20,50,92,.12); }
+
+.college-stat-card:nth-child(1) { background: linear-gradient(135deg,#eaf3ff,#f6faff); border-color: #d3e5fb; }
+.college-stat-card:nth-child(2) { background: linear-gradient(135deg,#e6f8ee,#f4fcf8); border-color: #c8ecd8; }
+.college-stat-card:nth-child(3) { background: linear-gradient(135deg,#fff5e3,#fffaf0); border-color: #f7e2b8; }
+.college-stat-card:nth-child(4) { background: linear-gradient(135deg,#ffecee,#fff7f8); border-color: #fbd0d5; }
+
 .stat-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 9px;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
   font-weight: 800;
 }
 
-.stat-icon.blue {
-  background: #e9f2ff;
-  color: #247de8;
-}
-
-.stat-icon.green {
-  background: #e6f8f0;
-  color: #13aa72;
-}
-
-.stat-icon.orange {
-  background: #fff3df;
-  color: #e9a329;
-}
-
-.stat-icon.red {
-  background: #ffe9eb;
-  color: #e75a65;
-}
+.stat-icon.blue   { background: #d6e8ff; color: #2d7df0; }
+.stat-icon.green  { background: #1fb36d; color: #fff; }
+.stat-icon.orange { background: #fde8bd; color: #d98d00; }
+.stat-icon.red    { background: #fde0e3; color: #e5484d; }
 
 .college-stat-card small {
   display: block;
-  color: #8495aa;
+  color: #34506f;
   font-size: 12px;
+  font-weight: 600;
 }
 
 .college-stat-card strong {
   display: block;
-  color: #25486d;
-  font-size: 28px;
-  margin-top: 3px;
+  margin-top: 2px;
+  color: #0f2a52;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 /* =========================================================
-   REGISTERED
+   COLLEGE STAT CARDS - SMOKE ON HOVER + SEA WAVE
+   (same effect as the Admin dashboard, in each card's own colour)
+========================================================= */
+
+.college-stat-card {
+  position: relative;
+  overflow: hidden;
+  animation: collegeSeaWave 3s ease-in-out infinite;
+}
+
+.college-stat-card:nth-child(1) { --smoke: 45, 125, 240; animation-delay: 0s; }
+.college-stat-card:nth-child(2) { --smoke: 31, 179, 109; animation-delay: -0.45s; }
+.college-stat-card:nth-child(3) { --smoke: 217, 141, 0;  animation-delay: -0.9s; }
+.college-stat-card:nth-child(4) { --smoke: 229, 72, 77;  animation-delay: -1.35s; }
+
+.college-stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.college-stat-card::before,
+.college-stat-card::after {
+  content: "";
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  bottom: -45%;
+  height: 130%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(13px);
+  will-change: transform, opacity;
+}
+
+.college-stat-card::before {
+  background:
+    radial-gradient(circle at 18% 78%, rgba(var(--smoke), .55) 0 14%, transparent 42%),
+    radial-gradient(circle at 52% 88%, rgba(var(--smoke), .50) 0 16%, transparent 46%),
+    radial-gradient(circle at 84% 74%, rgba(var(--smoke), .50) 0 13%, transparent 40%);
+}
+
+.college-stat-card::after {
+  background:
+    radial-gradient(circle at 32% 85%, rgba(var(--smoke), .45) 0 15%, transparent 44%),
+    radial-gradient(circle at 68% 80%, rgba(var(--smoke), .40) 0 14%, transparent 42%),
+    radial-gradient(circle at 92% 90%, rgba(var(--smoke), .40) 0 12%, transparent 38%);
+}
+
+.college-stat-card:hover::before {
+  animation: collegeSmokeRiseA 2.4s ease-out infinite;
+}
+
+.college-stat-card:hover::after {
+  animation: collegeSmokeRiseB 3.1s ease-out infinite;
+  animation-delay: 0.7s;
+}
+
+@keyframes collegeSeaWave {
+  0%   { transform: translateY(0); }
+  25%  { transform: translateY(-7px); }
+  50%  { transform: translateY(0); }
+  75%  { transform: translateY(7px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes collegeSmokeRiseA {
+  0%   { opacity: 0;    transform: translateY(35%) translateX(0) scale(0.8); }
+  25%  { opacity: 0.85; }
+  100% { opacity: 0;    transform: translateY(-48%) translateX(7%) scale(1.35); }
+}
+
+@keyframes collegeSmokeRiseB {
+  0%   { opacity: 0;    transform: translateY(40%) translateX(0) scale(0.85); }
+  30%  { opacity: 0.75; }
+  100% { opacity: 0;    transform: translateY(-55%) translateX(-8%) scale(1.45); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .college-stat-card,
+  .college-stat-card:hover::before,
+  .college-stat-card:hover::after { animation: none; }
+}
+
+/* =========================================================
+   REGISTERED HEADING
 ========================================================= */
 
 .registered-heading {
   display: flex;
   justify-content: space-between;
-  align-items: end;
-  margin-bottom: 13px;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .registered-heading h3 {
   margin: 0;
-  color: #244668;
-  font-size: 16px;
+  color: #0f2a52;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .4px;
 }
 
 .registered-heading p {
-  margin: 5px 0 0;
-  color: #91a0b3;
-  font-size: 13px;
+  margin: 4px 0 0;
+  color: #6a7f9c;
+  font-size: 12.5px;
 }
 
 .registered-heading > span {
-  color: #72869e;
-  font-size: 13px;
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #eaf3ff;
+  color: #2166cc;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 /* =========================================================
-   COLLEGE GRID
+   COLLEGE GRID + CARD
 ========================================================= */
 
 .college-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
 }
 
 .college-card {
-  background: white;
-  border: 1px solid #e2e9f1;
-  border-radius: 11px;
-  padding: 17px;
-  transition: .2s;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #e4ebf5;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(20,50,92,.04);
+  transition: transform .18s, border-color .18s, box-shadow .18s;
 }
 
 .college-card:hover {
-  transform: translateY(-2px);
-  border-color: #c8dcf5;
-  box-shadow: 0 9px 25px rgba(31,75,120,.08);
+  transform: translateY(-3px);
+  border-color: #b9d3f7;
+  box-shadow: 0 14px 30px rgba(45,125,240,.13);
 }
 
 .college-card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
 .college-short {
-  width: 39px;
-  height: 39px;
-  border-radius: 9px;
-  background: #edf5ff;
-  color: #247de8;
+  min-width: 46px;
+  height: 46px;
+  padding: 0 8px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
+  color: #fff;
   font-size: 13px;
-}
-
-.college-status {
-  border-radius: 20px;
-  padding: 5px 8px;
-  font-size: 11px;
   font-weight: 800;
+  background: linear-gradient(135deg,#2f80ed,#56ccf2);
+  box-shadow: 0 6px 14px rgba(45,125,240,.22);
 }
 
-.college-status.verified {
-  background: #e6f8f0;
-  color: #13a96e;
+.college-card:nth-child(6n+2) .college-short { background: linear-gradient(135deg,#9b51e0,#c084fc); box-shadow: 0 6px 14px rgba(155,81,224,.22); }
+.college-card:nth-child(6n+3) .college-short { background: linear-gradient(135deg,#11998e,#38ef7d); box-shadow: 0 6px 14px rgba(17,153,142,.22); }
+.college-card:nth-child(6n+4) .college-short { background: linear-gradient(135deg,#f2994a,#f2c94c); box-shadow: 0 6px 14px rgba(242,153,74,.22); }
+.college-card:nth-child(6n+5) .college-short { background: linear-gradient(135deg,#eb5757,#f08a8a); box-shadow: 0 6px 14px rgba(235,87,87,.22); }
+.college-card:nth-child(6n+6) .college-short { background: linear-gradient(135deg,#1e3c72,#2a5298); box-shadow: 0 6px 14px rgba(30,60,114,.22); }
+
+.college-status,
+.detail-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.college-status.pending {
-  background: #fff4df;
-  color: #d99a21;
-}
-
-.college-status.suspended {
-  background: #ffe8ea;
-  color: #df5561;
-}
+.college-status.verified, .detail-status.verified   { background: #dff6e9; color: #14935f; }
+.college-status.pending,  .detail-status.pending    { background: #fff0cf; color: #d98d00; }
+.college-status.suspended, .detail-status.suspended { background: #ffe3e6; color: #dc3f4d; }
 
 .college-category {
-  display: inline-block;
-  margin-top: 11px;
-  color: #287ce0;
-  font-size: 11px;
+  align-self: flex-start;
+  margin-top: 14px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #eaf3ff;
+  color: #2166cc;
+  font-size: 10.5px;
   font-weight: 800;
+  letter-spacing: .4px;
   text-transform: uppercase;
 }
 
 .college-card h3 {
-  color: #27496c;
-  font-size: 16px;
+  margin: 8px 0 6px;
+  min-height: 42px;
+  color: #0f2a52;
+  font-size: 15.5px;
+  font-weight: 800;
   line-height: 1.35;
-  min-height: 38px;
-  margin: 7px 0;
 }
 
 .college-location {
-  color: #8092a8;
-  font-size: 13px;
   margin-bottom: 12px;
+  color: #6a7f9c;
+  font-size: 12.5px;
 }
 
 .college-info-row {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
-  border-top: 1px solid #edf1f5;
+  gap: 12px;
   padding: 9px 0;
+  border-top: 1px dashed #e1e9f4;
   font-size: 12px;
 }
 
-.college-info-row span {
-  color: #91a0b2;
-}
-
-.college-info-row strong {
-  color: #4f6885;
-  text-align: right;
-}
+.college-info-row span { color: #7a8ca6; flex-shrink: 0; }
+.college-info-row strong { color: #28466b; text-align: right; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
 
 .view-details-button {
   width: 100%;
-  height: 42px;
+  height: 40px;
+  margin-top: auto;
   border: 0;
-  border-radius: 7px;
-  background: #247de8;
-  color: white;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2d7df0, #1d63d6);
+  color: #fff;
   font-size: 13px;
-  font-weight: 800;
-  margin-top: 7px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(45,125,240,.22);
+  transition: filter .15s, transform .15s;
 }
 
-.view-details-button:hover {
-  background: #176dce;
-}
+.college-info-row + .view-details-button { margin-top: 10px; }
+.view-details-button:hover { filter: brightness(1.07); }
 
 /* =========================================================
    EMPTY
 ========================================================= */
 
 .empty-colleges {
-  background: white;
-  border: 1px solid #e2e9f1;
-  border-radius: 10px;
-  text-align: center;
   padding: 60px 20px;
+  text-align: center;
+  background: #fff;
+  border: 1.5px dashed #cfdcee;
+  border-radius: 14px;
+  color: #6a7f9c;
 }
 
-.empty-colleges div {
-  font-size: 35px;
-}
-
-.empty-colleges h3 {
-  color: #29496e;
-}
-
-.empty-colleges p {
-  color: #8a9bae;
-  font-size: 14px;
-}
+.empty-colleges div { font-size: 34px; margin-bottom: 8px; }
+.empty-colleges h3 { margin: 0; color: #28466b; font-size: 16px; }
+.empty-colleges p { margin: 6px 0 0; font-size: 13px; }
 
 /* =========================================================
-   DETAILS HEADER
+   DETAILS - HEADER
 ========================================================= */
 
 .back-colleges {
-  border: 0;
-  background: transparent;
-  color: #247de8;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 0;
-  margin-bottom: 15px;
+  height: 34px;
+  margin-bottom: 14px;
+  padding: 0 14px;
+  border: 1px solid #bcd4f6;
+  border-radius: 9px;
+  background: #fff;
+  color: #2166cc;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: background .15s;
 }
 
+.back-colleges:hover { background: #eaf3ff; }
+
 .college-detail-header {
-  background: white;
-  border: 1px solid #e0e8f1;
-  border-radius: 12px;
-  padding: 20px;
   display: flex;
-  gap: 16px;
+  gap: 18px;
   margin-bottom: 16px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #dbe8fb;
+  background: linear-gradient(100deg, #eaf2ff, #f6faff);
+  box-shadow: 0 6px 20px rgba(20,50,92,.05);
 }
 
 .detail-logo {
-  width: 68px;
-  height: 68px;
+  width: 72px;
+  height: 72px;
   flex-shrink: 0;
-  border-radius: 13px;
-  background: linear-gradient(135deg,#247de8,#1457aa);
-  color: white;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, #2f80ed, #1457aa);
+  color: #fff;
   font-size: 19px;
-  font-weight: 900;
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(45,125,240,.28);
 }
 
-.detail-header-content {
-  width: 100%;
-  min-width: 0;
-}
+.detail-header-content { width: 100%; min-width: 0; }
 
 .detail-title-row {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  align-items: flex-start;
+  gap: 16px;
 }
 
+.detail-title-row > div { min-width: 0; }
+
 .detail-category {
-  color: #287de2;
-  font-size: 11px;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #d6e8ff;
+  color: #2166cc;
+  font-size: 10.5px;
   font-weight: 800;
+  letter-spacing: .4px;
   text-transform: uppercase;
 }
 
 .detail-title-row h1 {
-  margin: 5px 0;
-  color: #193b60;
-  font-size: 26px;
-}
-
-.detail-title-row p {
-  margin: 0;
-  color: #8495a9;
-  font-size: 13px;
-}
-
-.detail-status {
-  height: fit-content;
-  border-radius: 20px;
-  padding: 7px 11px;
-  font-size: 11px;
+  margin: 8px 0 4px;
+  color: #0f2a52;
+  font-size: 24px;
   font-weight: 800;
-  white-space: nowrap;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
-.detail-status.verified {
-  background: #e4f8ef;
-  color: #12a56b;
-}
+.detail-title-row p { margin: 0; color: #4b6586; font-size: 13px; }
 
-.detail-status.pending {
-  background: #fff2dc;
-  color: #d79a25;
-}
+.detail-status { padding: 6px 14px; font-size: 11.5px; }
 
-.detail-status.suspended {
-  background: #ffe8ea;
-  color: #df5661;
-}
-
-.detail-tags {
-  display: flex;
-  gap: 7px;
-  margin-top: 11px;
-  flex-wrap: wrap;
-}
+.detail-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
 .detail-tags span {
-  background: #f1f6fc;
-  border: 1px solid #e0e9f3;
-  color: #647991;
-  border-radius: 5px;
-  padding: 5px 8px;
-  font-size: 11px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #d3e5fb;
+  color: #34506f;
+  font-size: 11.5px;
+  font-weight: 600;
 }
 
+.detail-official-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 7px 12px;
+  border-radius: 9px;
+  background: #fff;
+  border: 1px solid #bcd4f6;
+  color: #2166cc;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.detail-official-link:hover { background: #eaf3ff; }
+
 /* =========================================================
-   DETAIL LAYOUT
+   DETAILS - LAYOUT
 ========================================================= */
 
 .detail-layout {
   display: grid;
-  grid-template-columns: 185px minmax(0, 1fr);
-  gap: 15px;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
   align-items: start;
 }
 
 .detail-side-nav {
-  background: white;
-  border: 1px solid #e0e8f1;
-  border-radius: 10px;
-  padding: 11px;
   position: sticky;
-  top: 82px;
+  top: 86px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e4ebf5;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(20,50,92,.04);
 }
 
 .detail-side-nav p {
-  color: #91a0b2;
-  font-size: 11px;
+  margin: 4px 8px 10px;
+  color: #7a8ca6;
+  font-size: 10.5px;
   font-weight: 800;
-  letter-spacing: .8px;
-  margin: 4px 8px 9px;
+  letter-spacing: 1px;
 }
 
 .detail-side-nav button {
   width: 100%;
-  height: 37px;
-  border: 0;
-  background: transparent;
-  color: #6e8199;
-  border-radius: 7px;
-  text-align: left;
-  padding: 0 9px;
+  height: 40px;
+  margin-bottom: 4px;
+  padding: 0 11px;
   display: flex;
-  gap: 9px;
   align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #4b6586;
+  text-align: left;
   font-size: 13px;
-  margin-bottom: 3px;
+  font-weight: 600;
+  transition: background .15s, color .15s;
 }
 
-.detail-side-nav button:hover {
-  background: #f2f7fd;
-  color: #247de8;
-}
+.detail-side-nav button:hover { background: #f1f6fd; color: #2166cc; }
 
 .detail-side-nav button.active {
-  background: #eaf3ff;
-  color: #247de8;
-  font-weight: 800;
+  background: linear-gradient(135deg, #2d7df0, #1d63d6);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(45,125,240,.22);
 }
 
-/* =========================================================
-   DETAIL SECTION
-========================================================= */
+.detail-content, .detail-section, .admin-actions-section { min-width: 0; max-width: 100%; }
 
 .detail-section {
-  background: white;
-  border: 1px solid #e0e8f1;
-  border-radius: 10px;
+  margin-bottom: 16px;
   padding: 20px;
-  margin-bottom: 15px;
-  scroll-margin-top: 85px;
+  background: #fff;
+  border: 1px solid #e4ebf5;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(20,50,92,.04);
+  scroll-margin-top: 86px;
 }
 
 .section-title {
-  border-bottom: 1px solid #edf1f5;
+  margin-bottom: 16px;
   padding-bottom: 12px;
-  margin-bottom: 15px;
+  border-bottom: 1px solid #edf2f9;
 }
 
 .section-title h2 {
   margin: 0;
-  color: #244768;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #0f2a52;
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: .4px;
+}
+
+.section-title h2::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #2d7df0, #56ccf2);
 }
 
 /* =========================================================
-   INFO
+   DETAILS - INFO
 ========================================================= */
 
 .info-table {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid #e6edf4;
-  border-radius: 8px;
-  overflow: hidden;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .info-item {
-  min-height: 49px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 9px 12px;
-  border-bottom: 1px solid #edf1f5;
+  padding: 11px 14px;
+  background: #f7faff;
+  border: 1px solid #e6eef9;
+  border-radius: 12px;
 }
 
-.info-item:nth-child(odd) {
-  border-right: 1px solid #edf1f5;
-}
-
-.info-item span {
-  color: #91a0b3;
-  font-size: 12px;
-}
-
-.info-item strong {
-  color: #4b6480;
-  font-size: 13px;
-  margin-top: 4px;
-}
+.info-item span { color: #7a8ca6; font-size: 11.5px; font-weight: 600; }
+.info-item strong { margin-top: 4px; color: #0f2a52; font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
 
 .description-box {
   margin-top: 14px;
-  background: #f7faff;
-  border: 1px solid #e6eef7;
-  border-radius: 8px;
-  padding: 13px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f0ebff, #f9f7ff);
+  border: 1px solid #ddd2fa;
+  border-radius: 12px;
 }
 
-.description-box h4 {
-  margin: 0 0 6px;
-  color: #294b70;
-  font-size: 13px;
-}
-
-.description-box p {
-  margin: 0;
-  color: #74879e;
-  font-size: 13px;
-  line-height: 1.6;
-}
+.description-box h4 { margin: 0 0 6px; color: #0f2a52; font-size: 13.5px; font-weight: 800; }
+.description-box p { margin: 0; color: #4b6586; font-size: 13px; line-height: 1.65; }
 
 /* =========================================================
-   COURSES
+   DETAILS - COURSES / FEES
 ========================================================= */
 
 .course-detail-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .course-detail-card {
-  border: 1px solid #e5ebf2;
-  border-radius: 8px;
-  padding: 12px;
+  min-width: 0;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  padding: 13px;
+  background: #fff;
+  border: 1px solid #e4ebf5;
+  border-radius: 12px;
+  transition: border-color .15s, box-shadow .15s;
 }
 
+.course-detail-card:hover { border-color: #b9d3f7; box-shadow: 0 8px 20px rgba(45,125,240,.1); }
+
 .course-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  background: #edf5ff;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  background: #e3efff;
 }
 
-.course-detail-card h4 {
-  margin: 0;
-  color: #365573;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.course-detail-card p {
-  margin: 5px 0;
-  color: #8a9bad;
-  font-size: 11px;
-}
+.course-detail-card h4 { margin: 0; color: #0f2a52; font-size: 13.5px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
+.course-detail-card p { margin: 4px 0 6px; color: #7a8ca6; font-size: 11.5px; }
 
 .course-detail-card span {
-  color: #287de1;
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #eaf3ff;
+  color: #2166cc;
   font-size: 11px;
   font-weight: 700;
 }
 
-/* =========================================================
-   FEES
-========================================================= */
-
-.fees-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid #e5ebf2;
-  border-radius: 8px;
-  overflow: hidden;
-}
+.fees-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 
 .fee-item {
   min-height: 52px;
@@ -28845,820 +29045,198 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 15px;
-  padding: 10px 13px;
-  border-bottom: 1px solid #edf1f5;
+  padding: 10px 14px;
+  background: #f7faff;
+  border: 1px solid #e6eef9;
+  border-radius: 12px;
 }
 
-.fee-item:nth-child(odd) {
-  border-right: 1px solid #edf1f5;
-}
-
-.fee-item span {
-  color: #8596aa;
-  font-size: 12px;
-}
-
-.fee-item strong {
-  color: #46617d;
-  font-size: 12px;
-  text-align: right;
-}
-
+.fee-item span { color: #7a8ca6; font-size: 12px; }
+.fee-item strong { color: #0f2a52; font-size: 12.5px; text-align: right; }
 
 /* =========================================================
-   FACILITIES
+   DETAILS - FACILITIES
 ========================================================= */
 
 .facility-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
   gap: 10px;
 }
 
 .facility-card {
-  min-height: 80px;
-  border: 1px solid #e5ebf2;
-  border-radius: 8px;
+  min-height: 88px;
+  padding: 12px 8px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-}
-
-.facility-card span {
-  font-size: 22px;
-}
-
-.facility-card strong {
-  color: #59708b;
-  font-size: 12px;
+  background: #f7faff;
+  border: 1px solid #e6eef9;
+  border-radius: 12px;
   text-align: center;
+  transition: transform .15s, border-color .15s, background .15s;
 }
+
+.facility-card:hover { transform: translateY(-2px); border-color: #b9d3f7; background: #eef5ff; }
+.facility-card span { font-size: 24px; }
+.facility-card strong { color: #28466b; font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
 
 /* =========================================================
-   PLACEMENT
+   DETAILS - PLACEMENT
 ========================================================= */
 
 .placement-summary {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
   margin-bottom: 20px;
 }
 
 .placement-summary > div {
-  background: #f7faff;
-  border: 1px solid #e3ebf4;
-  border-radius: 8px;
-  padding: 13px;
+  min-width: 0;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
 }
 
-.placement-summary small {
-  display: block;
-  color: #8999ac;
-  font-size: 11px;
-}
+.placement-summary > div:nth-child(1) { background: linear-gradient(135deg,#e6f8ee,#f4fcf8); border-color: #c8ecd8; }
+.placement-summary > div:nth-child(2) { background: linear-gradient(135deg,#eaf3ff,#f6faff); border-color: #d3e5fb; }
+.placement-summary > div:nth-child(3) { background: linear-gradient(135deg,#f0ebff,#f9f7ff); border-color: #ddd2fa; }
+.placement-summary > div:nth-child(4) { background: linear-gradient(135deg,#fff5e3,#fffaf0); border-color: #f7e2b8; }
 
-.placement-summary strong {
-  display: block;
-  color: #315574;
-  font-size: 14px;
-  margin-top: 7px;
-}
+.placement-summary small { display: block; color: #34506f; font-size: 11.5px; font-weight: 600; }
+.placement-summary strong { display: block; margin-top: 6px; color: #0f2a52; font-size: 15px; font-weight: 800; overflow-wrap: anywhere; }
 
-.placement-company-heading {
-  color: #385672;
-  font-size: 14px;
-  margin: 0 0 10px;
-}
+.placement-company-heading { margin: 0 0 10px; color: #0f2a52; font-size: 13.5px; font-weight: 800; letter-spacing: .4px; }
 
 .company-table-wrapper {
   width: 100%;
   overflow-x: auto;
-  border: 1px solid #e3eaf2;
-  border-radius: 8px;
+  border: 1px solid #e4ebf5;
+  border-radius: 12px;
+  -webkit-overflow-scrolling: touch;
 }
 
-.company-table {
-  width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
-}
+.company-table { width: 100%; min-width: 720px; border-collapse: collapse; }
 
 .company-table th {
-  background: #f6f9fc;
-  color: #8293a7;
+  padding: 12px;
+  background: #f3f8ff;
+  color: #5d7ea6;
   text-align: left;
   font-size: 11px;
-  padding: 11px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
 }
 
 .company-table td {
-  border-top: 1px solid #edf1f5;
-  color: #647991;
-  font-size: 12px;
-  padding: 12px 11px;
+  padding: 12px;
+  border-top: 1px solid #edf2f9;
+  color: #34506f;
+  font-size: 12.5px;
   vertical-align: middle;
 }
 
-.company-table td strong {
-  color: #385875;
-}
+.company-table tbody tr:hover { background: #fafcff; }
+.company-table td strong { color: #0f2a52; }
 
 .company-active {
-  background: #e5f8ef;
-  color: #12a76d;
-  padding: 5px 7px;
-  border-radius: 12px;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #dff6e9;
+  color: #14935f;
   font-size: 11px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
 /* =========================================================
-   ADMISSION
+   DETAILS - ADMISSION / CONTACT
 ========================================================= */
 
-.admission-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-}
+.admission-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 
 .admission-card {
-  border: 1px solid #e4ebf2;
-  border-radius: 8px;
-  padding: 13px;
+  min-width: 0;
+  padding: 15px;
+  background: #fafcff;
+  border: 1px solid #e4ebf5;
+  border-radius: 12px;
 }
 
-.admission-card h4 {
-  color: #385875;
-  margin: 0 0 8px;
-  font-size: 13px;
-}
+.admission-card h4 { margin: 0 0 8px; color: #0f2a52; font-size: 13.5px; font-weight: 800; }
+.admission-card p { margin: 0; color: #4b6586; font-size: 12.5px; line-height: 1.65; }
+.admission-card ul { margin: 0; padding-left: 18px; color: #4b6586; font-size: 12.5px; line-height: 1.9; }
 
-.admission-card p {
-  color: #74879d;
-  font-size: 12px;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.admission-card ul {
-  margin: 0;
-  padding-left: 16px;
-  color: #74879d;
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-/* =========================================================
-   CONTACT
-========================================================= */
-
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
+.contact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 
 .contact-grid > div {
-  border: 1px solid #e5ebf2;
-  border-radius: 8px;
-  padding: 13px;
+  min-width: 0;
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  background: #f7faff;
+  border: 1px solid #e6eef9;
+  border-radius: 12px;
 }
 
 .contact-grid > div > span {
-  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d6e8ff;
+  font-size: 18px;
 }
 
-.contact-grid small {
-  display: block;
-  color: #8c9bad;
-  font-size: 11px;
+.contact-grid > div > div { min-width: 0; }
+.contact-grid small { display: block; color: #7a8ca6; font-size: 11.5px; font-weight: 600; }
+.contact-grid strong { display: block; margin-top: 3px; color: #0f2a52; font-size: 12.5px; font-weight: 700; overflow-wrap: anywhere; word-break: break-word; }
+.contact-grid a { color: #2166cc; text-decoration: none; overflow-wrap: anywhere; word-break: break-all; }
+.contact-grid a:hover { text-decoration: underline; }
+
+.visit-website-button {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 11px 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2d7df0, #1d63d6);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(45,125,240,.22);
 }
 
-.contact-grid strong {
-  display: block;
-  color: #4d6681;
-  font-size: 12px;
-  margin-top: 4px;
-}
+.visit-website-button:hover { filter: brightness(1.07); }
 
 /* =========================================================
    ADMIN ACTIONS
 ========================================================= */
 
 .admin-actions-section {
-  background: white;
-  border: 1px solid #e0e8f1;
-  border-radius: 10px;
-  padding: 18px;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid #e4ebf5;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(20,50,92,.04);
 }
 
-.admin-actions-section h3 {
-  color: #385875;
-  font-size: 14px;
-  margin: 0 0 12px;
-}
+.admin-actions-section h3 { margin: 0 0 12px; color: #0f2a52; font-size: 14px; font-weight: 800; letter-spacing: .4px; }
 
 .admin-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 9px;
-}
-
-.admin-actions button {
-  height: 39px;
-  border: 0;
-  border-radius: 7px;
-  color: white;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.admin-actions .edit {
-  background: #277ee7;
-}
-
-.admin-actions .verify {
-  background: #18ae75;
-}
-
-.admin-actions .suspend {
-  background: #eda72a;
-}
-
-.admin-actions .reject {
-  background: #e75863;
-}
-
-/* =========================================================
-   OFFICIAL WEBSITE LINKS
-========================================================= */
-
-.detail-official-link {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 7px 12px;
-  border-radius: 7px;
-  background: #eaf3ff;
-  border: 1px solid #cfe2fb;
-  color: #1f6fd6;
-  font-size: 12px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.detail-official-link:hover {
-  background: #dcebff;
-}
-
-.contact-grid a {
-  color: #247de8;
-  text-decoration: none;
-  word-break: break-all;
-}
-
-.contact-grid a:hover {
-  text-decoration: underline;
-}
-
-.visit-website-button {
-  display: inline-block;
-  margin-top: 14px;
-  padding: 11px 18px;
-  border-radius: 8px;
-  background: #247de8;
-  color: white;
-  font-size: 13px;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.visit-website-button:hover {
-  background: #176dce;
-}
-
-
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 1100px) {
-
-  .college-sidebar {
-    width: 215px;
-  }
-
-  .college-main {
-    margin-left: 215px;
-    width: calc(100% - 215px);
-  }
-
-  .college-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .college-filter {
-    grid-template-columns: 1fr 150px 150px;
-  }
-
-  .reset-button {
-    width: 100%;
-  }
-
-  .college-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .detail-layout {
-    grid-template-columns: 160px minmax(0,1fr);
-  }
-
-  .placement-summary {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .facility-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 768px) {
-
-  .college-admin-app {
-    display: block;
-  }
-
-  /* Mobile: sidebar hidden by default, opens with the hamburger button */
-  .menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: #17345d;
-    font-size: 22px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .topbar-left {
-    flex: 1;
-  }
-
-  .topbar-left .global-search {
-    flex: 1;
-    width: auto;
-    min-width: 0;
-  }
-
-  .sidebar-overlay {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 20, 40, .5);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s ease;
-    z-index: 999;
-  }
-
-  .sidebar-overlay.is-open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .college-sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 236px;
-    z-index: 1000;
-    transform: translateX(-100%);
-    transition: transform .25s ease;
-  }
-
-  .college-sidebar.is-open {
-    transform: translateX(0);
-  }
-
-  .college-main {
-    margin-left: 0;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .college-topbar {
-    height: 60px;
-    padding: 0 13px;
-  }
-
-  .global-search {
-    width: 52%;
-  }
-
-  .global-search input {
-    font-size: 12px;
-  }
-
-  .top-admin-text {
-    display: none;
-  }
-
-  .college-page,
-  .college-details-page {
-    padding: 20px 13px 40px;
-  }
-
-  .college-page-heading h2 {
-    font-size: 22px;
-  }
-
-  .college-tabs {
-    padding-bottom: 3px;
-  }
-
-  .college-filter {
-    grid-template-columns: 1fr;
-  }
-
-  .college-stats {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .college-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .college-card h3 {
-    min-height: auto;
-  }
-
-  .college-detail-header {
-    padding: 14px;
-  }
-
-  .detail-title-row {
-    flex-direction: column;
-    gap: 9px;
-  }
-
-  .detail-title-row h1 {
-    font-size: 20px;
-  }
-
-  .detail-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .detail-side-nav {
-    position: sticky;
-    top: 60px;
-    z-index: 10;
-    display: flex;
-    overflow-x: auto;
-    gap: 4px;
-    padding: 8px;
-  }
-
-  .detail-side-nav p {
-    display: none;
-  }
-
-  .detail-side-nav button {
-    width: auto;
-    flex-shrink: 0;
-    white-space: nowrap;
-    padding: 0 11px;
-  }
-
-  .info-table,
-  .fees-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .info-item:nth-child(odd),
-  .fee-item:nth-child(odd) {
-    border-right: 0;
-  }
-
-  .course-detail-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .facility-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .placement-summary {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .admission-grid,
-  .contact-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-actions {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
-@media (max-width: 480px) {
-
-  .global-search {
-    width: 48%;
-  }
-
-  .global-search span {
-    font-size: 13px;
-  }
-
-  .global-search input::placeholder {
-    font-size: 11px;
-  }
-
-  .college-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .college-stat-card {
-    padding: 13px;
-  }
-
-  .college-detail-header {
-    flex-direction: column;
-  }
-
-  .detail-logo {
-    width: 55px;
-    height: 55px;
-  }
-
-  .detail-tags span {
-    font-size: 10px;
-  }
-
-  .detail-section {
-    padding: 14px;
-  }
-
-  .facility-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .placement-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .registered-heading {
-    align-items: flex-start;
-    gap: 8px;
-    flex-direction: column;
-  }
-}
-
-
-/* =========================================================
-   ADMIN ACTIONS - RESPONSIVE FIX + EDIT MODAL
-========================================================= */
-
-.college-details-page,
-.detail-content,
-.admin-actions-section,
-.detail-section {
-  min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.detail-content {
-  min-width: 0;
-}
-
-.contact-grid strong,
-.contact-grid a,
-.info-item strong {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.admin-actions button {
-  min-width: 0;
-  min-height: 42px;
-  height: auto;
-  padding: 8px 10px;
-  white-space: normal;
-  line-height: 1.25;
-  cursor: pointer;
-  transition: .2s;
-}
-
-.admin-actions button:hover:not(:disabled) {
-  filter: brightness(.93);
-}
-
-.admin-actions button:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-.admin-notice {
-  margin-top: 12px;
-  padding: 10px 13px;
-  border-radius: 8px;
-  background: #eaf3ff;
-  color: #1f6fd1;
-  font-size: 12px;
-  font-weight: 700;
-  overflow-wrap: anywhere;
-}
-
-.edit-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(20, 35, 55, .55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.edit-modal {
   width: 100%;
-  max-width: 680px;
-  max-height: 92vh;
-  background: white;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
-}
-
-.edit-modal-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 18px;
-  border-bottom: 1px solid #edf1f5;
-}
-
-.edit-modal-head h3 {
-  margin: 0;
-  color: #244768;
-  font-size: 16px;
-}
-
-.edit-modal-head button {
-  border: 0;
-  background: #f1f5f9;
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
-  cursor: pointer;
-  color: #5b708a;
-}
-
-.edit-modal-body {
-  padding: 16px 18px;
-  overflow-y: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.edit-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.edit-field.full {
-  grid-column: 1 / -1;
-}
-
-.edit-field span {
-  color: #7d8fa5;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.edit-field input,
-.edit-field textarea {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #dbe4ee;
-  border-radius: 7px;
-  padding: 9px 10px;
-  font-size: 13px;
-  font-family: inherit;
-  color: #ffffff;
-  background: #3a3a3a;
-  caret-color: #ffffff;
-  outline: 0;
-  resize: vertical;
-}
-
-.edit-field input::placeholder,
-.edit-field textarea::placeholder {
-  color: #b5bcc6;
-}
-
-.edit-field input:focus,
-.edit-field textarea:focus {
-  border-color: #247de8;
-}
-
-.edit-modal-actions {
-  display: flex;
-  justify-content: flex-end;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
-  padding: 13px 18px;
-  border-top: 1px solid #edf1f5;
-}
-
-.edit-modal-actions button {
-  height: 40px;
-  padding: 0 18px;
-  border-radius: 7px;
-  border: 0;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.edit-modal-actions .cancel {
-  background: #eef2f7;
-  color: #5b708a;
-}
-
-.edit-modal-actions .save {
-  background: #247de8;
-  color: white;
-}
-
-@media (max-width: 768px) {
-  .detail-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .admin-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .contact-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .admin-actions {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .edit-modal-body {
-    grid-template-columns: 1fr;
-  }
-
-  .edit-modal-actions button {
-    flex: 1;
-  }
-}
-
-/* =========================================================
-   ADMIN ACTIONS - 4 BUTTONS RESPONSIVE (MOBILE / TABLET / LAPTOP)
-========================================================= */
-
-.admin-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 9px;
-  width: 100%;
 }
 
 .admin-actions button {
@@ -29666,29 +29244,244 @@ button {
   min-width: 0;
   min-height: 44px;
   padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
   white-space: normal;
   overflow-wrap: anywhere;
-  text-align: center;
-  line-height: 1.25;
+  transition: filter .15s;
+}
+
+.admin-actions .edit    { background: linear-gradient(135deg,#2d7df0,#1d63d6); box-shadow: 0 8px 18px rgba(45,125,240,.22); }
+.admin-actions .verify  { background: linear-gradient(135deg,#22b573,#139a5c); box-shadow: 0 8px 18px rgba(19,154,92,.2); }
+.admin-actions .suspend { background: linear-gradient(135deg,#f4b13a,#e19410); box-shadow: 0 8px 18px rgba(225,148,16,.2); }
+.admin-actions .reject  { background: linear-gradient(135deg,#f0525e,#dc3545); box-shadow: 0 8px 18px rgba(220,53,69,.2); }
+
+.admin-actions button:hover:not(:disabled) { filter: brightness(1.07); }
+.admin-actions button:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+
+.admin-notice {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #eaf3ff;
+  color: #1f6fd1;
+  font-size: 12.5px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 /* =========================================================
-   CATEGORY TAB COUNT
+   EDIT MODAL
 ========================================================= */
 
-.college-tabs button .tab-count {
-  display: inline-block;
-  margin-left: 7px;
-  padding: 1px 7px;
-  border-radius: 999px;
-  background: #eaf1fb;
-  color: #247de8;
-  font-size: 11px;
-  font-weight: 800;
+.edit-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(10, 25, 50, .5);
 }
 
-.college-tabs button.active .tab-count {
-  background: rgba(255,255,255,.22);
-  color: white;
+.edit-modal {
+  width: 100%;
+  max-width: 680px;
+  max-height: 92vh;
+  max-height: 92dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(10, 25, 50, .28);
 }
+
+.edit-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #edf2f9;
+}
+
+.edit-modal-head h3 { margin: 0; color: #0f2a52; font-size: 17px; font-weight: 800; }
+
+.edit-modal-head button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: #f1f5fa;
+  color: #4b6586;
+}
+
+.edit-modal-head button:hover { background: #e3ebf6; }
+
+.edit-modal-body {
+  padding: 18px 20px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.edit-field { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.edit-field.full { grid-column: 1 / -1; }
+.edit-field span { color: #5d7ea6; font-size: 12px; font-weight: 600; }
+
+.edit-field input,
+.edit-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d9e3f1;
+  border-radius: 10px;
+  background: #fff;
+  color: #14325c;
+  caret-color: #14325c;
+  font-size: 13px;
+  outline: 0;
+  resize: vertical;
+}
+
+.edit-field input::placeholder,
+.edit-field textarea::placeholder { color: #9aabc2; }
+
+.edit-field input:focus,
+.edit-field textarea:focus { border-color: #2d7df0; box-shadow: 0 0 0 3px rgba(45,125,240,.12); }
+
+.edit-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid #edf2f9;
+}
+
+.edit-modal-actions button {
+  height: 40px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.edit-modal-actions .cancel { background: #eef2f8; color: #4b6586; }
+.edit-modal-actions .save { background: linear-gradient(135deg, #2d7df0, #1d63d6); color: #fff; box-shadow: 0 6px 14px rgba(45,125,240,.22); }
+
+/* =========================================================
+   LAPTOP / SMALL DESKTOP
+========================================================= */
+
+@media (max-width: 1200px) {
+  .college-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .college-filter { grid-template-columns: minmax(200px, 1fr) 170px 170px 90px; }
+  .placement-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admission-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* =========================================================
+   TABLET (sidebar becomes a drawer at 900px)
+========================================================= */
+
+@media (max-width: 900px) {
+  .student-layout-content { padding: 18px 16px 36px; }
+
+  .college-filter { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); }
+  .college-search { grid-column: 1 / -1; }
+  .reset-button { width: 100%; }
+
+  .detail-layout { grid-template-columns: minmax(0, 1fr); }
+
+  .detail-side-nav {
+    top: 8px;
+    z-index: 20;
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .detail-side-nav::-webkit-scrollbar { display: none; }
+  .detail-side-nav p { display: none; }
+
+  .detail-side-nav button {
+    width: auto;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0 14px;
+    white-space: nowrap;
+  }
+
+  .detail-section { scroll-margin-top: 74px; }
+  .admission-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .student-layout-content { padding: 14px 12px 32px; }
+
+  .college-page-heading { min-height: 84px; padding: 14px; gap: 12px; border-radius: 12px; }
+  .college-page-heading::before { width: 46px; height: 46px; font-size: 24px; border-radius: 13px; }
+  .college-page-heading::after { font-size: 80px; }
+  .college-page-heading h2 { font-size: 19px; }
+  .college-page-heading p { font-size: 12px; }
+
+  .college-filter { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 10px; }
+  .reset-button { grid-column: 1 / -1; }
+
+  .college-stats { gap: 10px; }
+  .college-stat-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; }
+  .stat-icon { width: 36px; height: 36px; font-size: 16px; }
+  .college-stat-card strong { font-size: 21px; }
+
+  .college-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .college-card h3 { min-height: 0; }
+
+  .college-detail-header { padding: 14px; gap: 14px; border-radius: 14px; }
+  .detail-logo { width: 58px; height: 58px; border-radius: 15px; font-size: 16px; }
+  .detail-title-row { flex-direction: column; gap: 10px; }
+  .detail-title-row h1 { font-size: 20px; }
+
+  .detail-section { padding: 14px; border-radius: 14px; }
+  .info-table,
+  .course-detail-grid,
+  .fees-grid,
+  .contact-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .admin-actions-section { padding: 14px; }
+  .admin-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .edit-modal-body { grid-template-columns: minmax(0, 1fr); padding: 14px; }
+  .edit-modal-head, .edit-modal-actions { padding-left: 14px; padding-right: 14px; }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+  .college-detail-header { flex-direction: column; }
+  .placement-summary { grid-template-columns: minmax(0, 1fr); }
+  .admin-actions { grid-template-columns: minmax(0, 1fr); }
+  .registered-heading { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .edit-modal-actions button { flex: 1; }
+}
+
+@media (max-width: 360px) {
+  .college-filter { grid-template-columns: minmax(0, 1fr); }
+  .college-stats { grid-template-columns: minmax(0, 1fr); }
+}
+
 `;
