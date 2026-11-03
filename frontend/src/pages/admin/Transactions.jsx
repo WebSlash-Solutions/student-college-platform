@@ -76,91 +76,133 @@ const CSS = `
 .muted { color: var(--muted); font-size: 12.5px; }
 .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12.5px; }
 
-/* ---------- 2. Sidebar (standalone mode only) ---------- */
+/* ---------- 2. Sidebar (standalone mode only) - identical to the Applications page sidebar ---------- */
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
-  z-index: 50;
+  height: 100vh;
+  height: 100dvh;
   width: var(--side-w);
+  background: #112746;
+  color: #fff;
+  line-height: 25.6px; /* same inherited line-height as the Applications sidebar */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: var(--navy);
-  color: #fff;
+  padding: 0;
+  z-index: 50;
   transform: translateX(-100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.sidebar.open { transform: translateX(0); box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3); }
+.sidebar.open { transform: none; box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35); }
 
 .sidebar-overlay {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(10, 18, 36, 0.55);
+  background: rgba(8, 18, 35, 0.55);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s;
 }
 .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
 
 .brand {
   display: flex;
+  gap: 10px;
   align-items: center;
-  gap: 12px;
+  flex-shrink: 0;
   height: 82px;
   padding: 0 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 .brand-logo {
   display: grid;
   place-items: center;
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
-  border-radius: 12px;
+  border-radius: 11px;
   background: rgba(255, 255, 255, 0.1);
   font-size: 20px;
 }
-.brand strong { display: block; font-size: 16px; line-height: 1.2; }
-.brand small { color: #9fb2d6; font-size: 9px; margin-top: 3px; }
+.brand strong { display: block; color: #fff; font-size: 16px; font-weight: 700; line-height: 1.2; }
+.brand strong span { color: #58a1ff; }
+.brand small { color: #91a5c2; font-size: 9px; margin-top: 3px; }
 
 .nav-title {
-  margin: 24px 20px 10px;
-  color: #8ea3cc;
+  width: 100%;
+  margin: 24px 0 10px;
+  color: #6f86a7;
   font-size: 9px;
+  font-weight: 700;
   letter-spacing: 1px;
+  text-align: center;
   text-transform: uppercase;
 }
-.nav { display: flex; flex-direction: column; gap: 4px; padding: 0 12px; overflow-y: auto; }
+/* nav scrolls, but its scrollbar is pushed outside the (clipped) sidebar */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: scroll;
+  width: calc(100% + 40px);
+  margin-right: -40px;
+  padding: 0 52px 0 12px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nav::-webkit-scrollbar,
+.sidebar *::-webkit-scrollbar { display: none; width: 0; height: 0; }
 .nav-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
+  flex-shrink: 0;
   height: 43px;
   padding: 0 13px;
   border-radius: 8px;
-  color: #c6d3ee;
+  color: #afbdd1;
   font-size: 12px;
   text-align: left;
   transition: background 0.2s, color 0.2s;
+  animation: txSlideIn 0.45s both;
+  animation-delay: calc(var(--i) * 45ms);
 }
-.nav-item:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
-.nav-item.active { background: var(--blue); color: #fff; font-weight: 600; }
+.nav-item:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
+.nav-item.active { background: #2177e8; color: #fff; box-shadow: 0 6px 18px rgba(33, 119, 232, 0.2); }
 .nav-icon { width: 20px; text-align: center; font-size: 16px; }
 
-.sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.sidebar-footer { flex-shrink: 0; padding: 14px; border-top: 1px solid rgba(255, 255, 255, 0.07); }
 .profile {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 12px;
-  border-radius: 12px;
-  background: var(--navy-2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
 }
-.profile strong { display: block; font-size: 12px; }
-.profile small { color: #9fb2d6; font-size: 9px; }
-.profile .avatar { width: 34px; height: 34px; font-size: 12px; }
-.logout { width: 100%; height: 34px; margin-top: 8px; padding: 0; color: #c6d3ee; font-size: 11px; }
-.logout:hover { color: #fff; }
+.profile strong { display: block; color: #fff; font-size: 12px; font-weight: 700; }
+.profile small { color: #8196b5; font-size: 9px; margin-top: 2px; }
+.profile .avatar { width: 34px; height: 34px; font-size: 12px; background: #28558e; }
+.logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 34px;
+  margin-top: 8px;
+  padding: 0;
+  border-radius: 8px;
+  color: #93a6c0;
+  font-size: 11px;
+  transition: background 0.2s, color 0.2s;
+}
+.logout:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
+@keyframes txSlideIn { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
 
 /* ---------- 3. Top bar & page shell ---------- */
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -1559,11 +1601,10 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
    RESPONSIVE - viewport based (shell: sidebar, topbar, modal)
    ============================================================ */
 @media (max-width: 380px) {
-  .sidebar { width: 230px; }
   .page-head h1 { font-size: 20px; }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 900px) {
   .icon-btn.menu-btn { display: grid; flex-shrink: 0; }
   .topbar { padding: 10px 14px; }
 }
@@ -1582,10 +1623,12 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
   .modal-foot .dl > button { width: auto; }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 901px) {
   .sidebar { transform: none; box-shadow: none; }
   .sidebar-overlay { display: none; }
   .main { margin-left: var(--side-w); }
+}
+@media (min-width: 1024px) {
   .content { padding: 26px 28px 56px; }
 }
 
@@ -2062,13 +2105,13 @@ const statusClass = (s) => `badge badge-${s.toLowerCase()}`;
 
 const NAV_ITEMS = [
   ["Dashboard", "⌂", "/admin/dashboard"],
-  ["Students", "☺", "/admin/students"],
-  ["Colleges", "▦", "/admin/colleges"],
-  ["Courses", "▭", "/admin/courses"],
+  ["Students", "♙", "/admin/students"],
+  ["Colleges", "▥", "/admin/colleges"],
+  ["Courses", "▱", "/admin/courses"],
   ["Applications", "✉", "/admin/applications"],
   ["Transactions", "₹", "/admin/transactions"],
   ["Reports", "◑", "/admin/reports"],
-  ["Users", "♙", "/admin/users"],
+  ["Users", "♧", "/admin/users"],
   ["Settings", "⚙", "/admin/settings"],
 ];
 
@@ -2510,18 +2553,19 @@ function Sidebar({ open, onClose }) {
         <div className="brand">
           <div className="brand-logo">🎓</div>
           <div>
-            <strong>StudentCollege</strong>
+            <strong>Student<span>College</span></strong>
             <small>Admission Platform</small>
           </div>
         </div>
 
-        <p className="nav-title">Main Menu</p>
+        <p className="nav-title">MAIN MENU</p>
         <nav className="nav">
-          {NAV_ITEMS.map(([name, icon, path]) => (
+          {NAV_ITEMS.map(([name, icon, path], i) => (
             <button
               key={name}
               type="button"
               className={`nav-item ${pathname === path ? "active" : ""}`}
+              style={{ "--i": i }}
               onClick={() => goTo(path)}
             >
               <span className="nav-icon">{icon}</span>
@@ -2539,7 +2583,7 @@ function Sidebar({ open, onClose }) {
             </div>
           </div>
           <button type="button" className="logout" onClick={logout}>
-            ↪ Logout
+            ↪ <span>Logout</span>
           </button>
         </div>
       </aside>

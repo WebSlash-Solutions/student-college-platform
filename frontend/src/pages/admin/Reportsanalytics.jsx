@@ -2535,6 +2535,7 @@ const CSS = `
   padding: 0;
   background: #112746;
   color: #fff;
+  line-height: 25.6px; /* same inherited line-height as the Transactions sidebar */
   overflow: hidden;
   z-index: 60;
   transition: transform .35s cubic-bezier(.4,0,.2,1);
@@ -2598,7 +2599,8 @@ const CSS = `
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.ra-sidebar nav::-webkit-scrollbar {
+.ra-sidebar nav::-webkit-scrollbar,
+.ra-sidebar *::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
