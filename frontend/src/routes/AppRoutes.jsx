@@ -14,8 +14,9 @@ function AppRoutes() {
         <Route path="/" element={<Navigate to="/college/home" replace />} />
         <Route path="/college/home" element={<CollegeSite />} />
         <Route path="/college/dashboard" element={<CollegeDashboard />} />
+        <Route path="/college/leads" element={<CollegeDashboard />} />
         <Route path="/college/profile" element={<CollegeProfile />} />
-        <Route path="/college/registration" element={<CollegeRegistration />} />
+        <Route path="/college/register" element={<CollegeRegistration />} />
         <Route path="/college/payment" element={<CollegePayment />} />
       </Routes>
     </BrowserRouter>

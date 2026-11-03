@@ -53,6 +53,15 @@ const ROUTES = {
   login: "/college/register?mode=login",
 };
 
+/* top navbar links (label, route, key) - same look as the home page navbar */
+const NAV_LINKS = [
+  ["Dashboard", "/college/dashboard", "dashboard"],
+  ["Student Leads", ROUTES.leads, "leads"],
+  ["College Profile", ROUTES.profile, "profile"],
+  ["Plans", ROUTES.plans, "plans"],
+  ["Home", ROUTES.home, "home"],
+];
+
 /* UI SCALE: every px in the CSS (sizes, fonts, breakpoints) and every icon is multiplied by this number.
    0.8 = comfortable on laptops (1366-1920px). Use 0.67 for a more compact look or 1 for bigger. */
 const UI_SCALE = 0.8;
@@ -769,6 +778,7 @@ export default function CollegeDashboard() {
   const [toast, setToast] = useState("");
   const [confetti, setConfetti] = useState(null);
   const [updatedAt, setUpdatedAt] = useState(0);
+  const [navOpen, setNavOpen] = useState(false); // mobile menu of the top navbar
   const [freshIds, setFreshIds] = useState([]); // lead ids that just arrived (glow for a few seconds)
   const ctrlRef = useRef(null);
   const knownIds = useRef(null); // lead ids we already showed (null until first real load)
@@ -980,12 +990,25 @@ export default function CollegeDashboard() {
             <span><b>CollegeConnect</b><small>Student Leads • Better Admissions</small></span>
           </button>
 
+          <nav className={`cd-nav ${navOpen ? "open" : ""}`} aria-label="Dashboard menu">
+            {NAV_LINKS.map(([label, path, key]) => {
+              const on = key === "dashboard" ? /\/dashboard\/?$/.test(pathname) : key === "leads" ? isLeads : false;
+              return (
+                <button key={key} className={on ? "on" : ""} aria-current={on ? "page" : undefined}
+                  onClick={() => { setNavOpen(false); routerNavigate(path); }}>
+                  {label}
+                </button>
+              );
+            })}
+          </nav>
+
           <div className="cd-top-right">
             <button className="cd-icon-btn" onClick={() => load()} aria-label="Refresh" title="Refresh data">
               <span className={loading ? "spin" : ""}><Icon name="refresh" size={18} /></span>
             </button>
             <Avatar college={college} className="cd-top-av" />
             <button className="cd-logout" onClick={logout} aria-label="Logout"><Icon name="logout" size={16} /><span>Logout</span></button>
+            <button className="cd-burger" onClick={() => setNavOpen((o) => !o)} aria-label="Menu" aria-expanded={navOpen}>{navOpen ? "✕" : "☰"}</button>
           </div>
         </div>
       </header>
@@ -1239,6 +1262,22 @@ const CSS = `
 .cd-top-av img,.cd-hero-av img{width:100%;height:100%;object-fit:cover}
 .cd-logout{display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:12px;font-size:14px;font-weight:700;color:#dc2626;background:#fef2f2!important}
 .cd-logout:hover{background:#fee2e2!important}
+.cd-top-in{position:relative}
+.cd-nav{display:flex;align-items:center;gap:4px;margin-left:auto}
+.cd-nav + .cd-top-right{margin-left:0}
+.cd-nav button{position:relative;padding:10px 16px;border-radius:999px;font-size:15px;font-weight:700;color:#1b2a4a;background:transparent!important;transition:background .25s,color .25s}
+.cd-nav button:hover{background:rgba(21,88,214,.08)!important;color:var(--blue)}
+.cd-nav button.on{background:#e6f0ff!important;color:var(--blue)}
+.cd-nav button.on::after{content:"";position:absolute;left:50%;bottom:4px;width:22px;height:3px;border-radius:3px;translate:-50% 0;background:linear-gradient(90deg,#1558d6,#19b3e6)}
+.cd-burger{display:none;width:38px;height:38px;border-radius:12px;font-size:18px;align-items:center;justify-content:center;color:var(--blue);background:rgba(255,255,255,.8)!important;border:1px solid #e1e9f7!important}
+@media (max-width:1250px){
+  .cd-burger{display:inline-flex}
+  .cd-nav{display:none;position:absolute;top:calc(100% + 10px);left:0;right:0;margin:0;padding:10px;flex-direction:column;align-items:stretch;gap:4px;border-radius:20px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:0 18px 44px rgba(21,60,140,.2)}
+  .cd-nav.open{display:flex}
+  .cd-nav button{text-align:left;padding:13px 16px;border-radius:14px}
+  .cd-nav button.on::after{display:none}
+  .cd-top-right{margin-left:auto!important}
+}
 
 .cd-wrap{position:relative;z-index:1;padding:20px 22px 60px}
 .cd-wrap>*+*{margin-top:20px}
