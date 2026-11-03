@@ -1745,8 +1745,10 @@ const CSS = `
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  padding: 0;
   background: #112746;
   color: #fff;
+  line-height: 25.6px;
   overflow: hidden;
   z-index: 60;
   transition: transform .35s cubic-bezier(.4, 0, .2, 1);
@@ -1795,6 +1797,7 @@ const CSS = `
 .um-sidebar .um-menu-title {
   width: 100%;
   margin: 24px 0 10px;
+  padding: 0;
   color: #6f86a7;
   font-size: 9px;
   font-weight: 700;
@@ -1814,10 +1817,14 @@ const CSS = `
   margin-right: -40px;
   padding: 0 52px 0 12px;
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.um-sidebar nav::-webkit-scrollbar {
+.um-sidebar nav::-webkit-scrollbar,
+.um-sidebar *::-webkit-scrollbar {
   display: none;
+  width: 0;
+  height: 0;
 }
 
 .um-sidebar nav a {
@@ -1831,6 +1838,7 @@ const CSS = `
   color: #afbdd1;
   text-decoration: none;
   font-size: 12px;
+  font-weight: 400;
   transition: background .2s, color .2s;
   animation: umNavIn .45s both;
   animation-delay: calc(var(--i, 0) * 45ms);
@@ -1850,11 +1858,13 @@ const CSS = `
 .um-sidebar nav a.active {
   background: #2177e8;
   color: #fff;
+  font-weight: 400;
   box-shadow: 0 6px 18px rgba(33, 119, 232, .2);
 }
 
 .um-sidebar-foot {
   flex-shrink: 0;
+  margin-top: 0;
   padding: 14px;
   border-top: 1px solid rgba(255, 255, 255, .07);
 }
@@ -1903,6 +1913,7 @@ const CSS = `
   width: 100%;
   height: 34px;
   margin-top: 8px;
+  padding: 0;
   color: #93a6c0;
   font-size: 11px;
   border-radius: 8px;

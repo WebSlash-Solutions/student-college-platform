@@ -35,7 +35,7 @@ function AppRoutes() {
         {/* ADMIN */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/applications" element={<Applications />} />
-        <Route path="/admin/coursemanagement" element={<CourseManagement />} />
+        <Route path="/admin/courses" element={<CourseManagement />} />
         <Route path="/admin/students" element={<StudentManagement />} />
         <Route path="/admin/colleges" element={<CollegeManagement />} />
         <Route path="/admin/transactions" element={<Transactions />} />
@@ -46,16 +46,17 @@ function AppRoutes() {
         <Route path="/admin/login" element={<AdminLogin />} />
 
 
-
         {/* STUDENT */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/student/colleges" element={<StudentDashboard />} />
         <Route path="/student/about" element={<StudentDashboard />} />
 
+
         {/* COLLEGE */}
         <Route path="/college/dashboard" element={<CollegeDashboard />} />
+        <Route path="/college/leads" element={<CollegeDashboard />} />
         <Route path="/college/profile" element={<CollegeProfile />} />
-        <Route path="/college/registration" element={<Registeration />} />
+        <Route path="/college/register" element={<CollegeRegistration />} />
         <Route path="/college/collegesite" element={<CollegeSite />} />
         <Route path="/college/payment" element={<CollegePayment />} />
 

@@ -472,7 +472,8 @@ function Registeration() {
     } catch {
       after = "";
     }
-    navigate(after || "/college/profile");
+    // default landing page after login = the college dashboard (profile page stays reachable from the dashboard)
+    navigate(after || "/college/dashboard");
   };
 
   const availableDistricts = formData.state ? districtsByState[formData.state] || [] : [];
