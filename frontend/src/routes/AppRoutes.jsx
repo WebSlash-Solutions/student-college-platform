@@ -2,14 +2,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // ADMIN
 import AdminDashboard from "../pages/admin/AdminDashboard";
-import AdminDashboard from "../pages/admin/Applications";
-import AdminDashboard from "../pages/admin/CourseManagement";
+import Applications from "../pages/admin/Applications";
+import CourseManagement from "../pages/admin/CourseManagement";
 import StudentManagement from "../pages/admin/StudentManagement";
 import CollegeManagement from "../pages/admin/CollegeManagement";
 import Transactions from "../pages/admin/Transactions";
 import Reportsanalytics from "../pages/admin/Reportsanalytics";
 import Users from "../pages/admin/Users";
-import Users from "../pages/admin/Settings";
+import Settings from "../pages/admin/Settings";
 import AdminLogin from "../pages/admin/AdminLogin.jsx";
 import InstitutionDashboard from "../pages/admin/InstitutionDashboard.jsx";
 
