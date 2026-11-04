@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 /* =========================================================
@@ -26912,6 +26912,40 @@ Object.entries(collegeContactData).forEach(([id, details]) => {
    COLLEGE LIST
 ========================================================= */
 
+/* Animated number: counts up smoothly whenever the value changes */
+function CountUp({ value, duration = 900 }) {
+  const [display, setDisplay] = useState(0);
+  const previous = useRef(0);
+
+  useEffect(() => {
+    const from = previous.current;
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduce || from === value) {
+      setDisplay(value);
+      previous.current = value;
+      return undefined;
+    }
+
+    let frame;
+    let startTime;
+    const tick = (now) => {
+      if (startTime === undefined) startTime = now;
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(from + (value - from) * eased));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+      else previous.current = value;
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value, duration]);
+
+  return <>{display}</>;
+}
+
 const placeLabel = (location) =>
   !location || location === "Tamil Nadu" ? "Tamil Nadu" : `${location}, Tamil Nadu`;
 
@@ -27070,7 +27104,9 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
           <span className="stat-icon blue">🏫</span>
           <div>
             <small>Total Colleges</small>
-            <strong>{total}</strong>
+            <strong>
+              <CountUp value={total} />
+            </strong>
           </div>
         </div>
 
@@ -27078,7 +27114,9 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
           <span className="stat-icon green">✓</span>
           <div>
             <small>Verified Colleges</small>
-            <strong>{verified}</strong>
+            <strong>
+              <CountUp value={verified} />
+            </strong>
           </div>
         </div>
 
@@ -27086,7 +27124,9 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
           <span className="stat-icon orange">◷</span>
           <div>
             <small>Pending Colleges</small>
-            <strong>{pending}</strong>
+            <strong>
+              <CountUp value={pending} />
+            </strong>
           </div>
         </div>
 
@@ -27094,7 +27134,9 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
           <span className="stat-icon red">!</span>
           <div>
             <small>Suspended Colleges</small>
-            <strong>{suspended}</strong>
+            <strong>
+              <CountUp value={suspended} />
+            </strong>
           </div>
         </div>
       </div>
@@ -27110,9 +27152,14 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
         <span>{filteredColleges.length} colleges</span>
       </div>
 
-      <div className="college-grid">
-        {filteredColleges.map((college) => (
-          <CollegeCard key={college.id} college={college} onSelect={onSelect} />
+      <div className="college-grid" key={activeCategory}>
+        {filteredColleges.map((college, index) => (
+          <CollegeCard
+            key={college.id}
+            college={college}
+            index={index}
+            onSelect={onSelect}
+          />
         ))}
       </div>
 
@@ -27131,9 +27178,12 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
    COLLEGE CARD
 ========================================================= */
 
-function CollegeCard({ college, onSelect }) {
+function CollegeCard({ college, onSelect, index = 0 }) {
   return (
-    <div className="college-card">
+    <div
+      className="college-card"
+      style={{ "--i": Math.min(index, 14) }}
+    >
       <div className="college-card-top">
         <div className="college-short">{college.short}</div>
 
@@ -27183,6 +27233,30 @@ function CollegeCard({ college, onSelect }) {
 ========================================================= */
 
 function CollegeDetails({ college, onBack, onUpdate }) {
+  // Sections fade / slide in as they scroll into view
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return undefined;
+    const nodes = document.querySelectorAll(
+      ".college-details-page .detail-section",
+    );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.06 },
+    );
+    nodes.forEach((node) => {
+      node.classList.add("reveal");
+      observer.observe(node);
+    });
+    return () => observer.disconnect();
+  }, [college.id]);
+
   const [activeSection, setActiveSection] = useState("overview");
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({});
@@ -29482,6 +29556,547 @@ button { cursor: pointer; }
 @media (max-width: 360px) {
   .college-filter { grid-template-columns: minmax(0, 1fr); }
   .college-stats { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+/* =========================================================
+   ✦ REDESIGN LAYER — clean theme + animations
+   (placed last so it refines everything above; content untouched)
+========================================================= */
+
+.student-layout {
+  --ink: #1b2142;
+  --ink-2: #3d4668;
+  --muted: #6f7898;
+  --line: #e7e9f5;
+  --bg: #f4f5fb;
+  --card: #ffffff;
+  --acc: #5b5ef4;
+  --acc-2: #8b5cf6;
+  --acc-soft: #eef0ff;
+  --acc-grad: linear-gradient(135deg, #5b5ef4 0%, #8b5cf6 100%);
+  --shadow-sm: 0 1px 2px rgba(27,33,66,.04), 0 4px 14px rgba(27,33,66,.05);
+  --shadow-md: 0 2px 4px rgba(27,33,66,.04), 0 14px 32px rgba(91,94,244,.14);
+  --ease: cubic-bezier(.22,.8,.3,1);
+  --spring: cubic-bezier(.34,1.56,.64,1);
+  font-family: "Plus Jakarta Sans", Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(900px 420px at 85% -10%, rgba(139,92,246,.10), transparent 60%),
+    radial-gradient(700px 380px at 0% 100%, rgba(91,94,244,.08), transparent 60%),
+    var(--bg);
+}
+
+/* ---------- keyframes ---------- */
+@keyframes cmFadeUp   { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes cmFadeIn   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cmSlideR   { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes cmSlideDown{ from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+@keyframes cmPop      { 0% { transform: scale(.88); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@keyframes cmFloat    { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(2deg); } }
+@keyframes cmGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes cmPulse    { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,.55); } 70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+@keyframes cmShine    { from { transform: translateX(-120%) skewX(-18deg); } to { transform: translateX(260%) skewX(-18deg); } }
+@keyframes cmModalIn  { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes cmRowIn    { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes cmBlink    { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+
+/* ---------- sidebar: original look kept ---------- */
+.student-layout-sidebar { font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif; }
+
+/* ---------- page entrance ---------- */
+.college-page,
+.college-details-page { animation: cmFadeUp .55s var(--ease) both; }
+
+/* ---------- hero heading ---------- */
+.college-page-heading {
+  min-height: 110px;
+  padding: 20px 26px;
+  border: 0;
+  border-radius: 22px;
+  background: linear-gradient(120deg, #4f46e5, #7c3aed, #6366f1, #4f46e5);
+  background-size: 300% 300%;
+  animation: cmGradient 14s ease infinite;
+  box-shadow: 0 18px 40px rgba(91,94,244,.28);
+}
+.college-page-heading::before {
+  width: 62px; height: 62px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.35);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.18);
+  animation: cmFloat 5s ease-in-out infinite;
+}
+.college-page-heading::after { opacity: .14; right: 24px; filter: grayscale(1) brightness(2); }
+.college-page-heading h2 { color: #fff; font-size: 24px; letter-spacing: -.3px; }
+.college-page-heading p  { color: rgba(255,255,255,.82); font-size: 13.5px; }
+.college-page-heading > div { animation: cmFadeUp .7s var(--ease) .15s both; }
+
+/* ---------- category tabs ---------- */
+.college-tabs {
+  padding: 6px;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  animation: cmFadeUp .55s var(--ease) .08s both;
+}
+.college-tabs button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 13px;
+  font-weight: 700;
+  transition: background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease), box-shadow .25s;
+}
+.college-tabs button:hover { background: var(--acc-soft); color: var(--acc); transform: translateY(-1px); border: 0; }
+.college-tabs button.active {
+  background: var(--acc-grad);
+  color: #fff;
+  border: 0;
+  box-shadow: 0 8px 20px rgba(91,94,244,.35);
+  animation: cmPop .4s var(--spring);
+}
+.college-tabs button .tab-count { background: #eceefb; color: var(--ink-2); transition: background .25s, color .25s; }
+.college-tabs button:hover .tab-count { background: #fff; color: var(--acc); }
+.college-tabs button.active .tab-count { background: rgba(255,255,255,.26); color: #fff; }
+
+/* ---------- filter bar ---------- */
+.college-filter {
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  animation: cmFadeUp .55s var(--ease) .14s both;
+}
+.college-search,
+.college-filter select {
+  background: #f6f7fd;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--ink);
+  transition: background .25s, border-color .25s, box-shadow .25s;
+}
+.college-search:focus-within,
+.college-filter select:focus { background: #fff; border-color: var(--acc); box-shadow: 0 0 0 4px rgba(91,94,244,.14); }
+.college-filter select:hover { background: #eff0fb; }
+.reset-button {
+  background: var(--acc-soft);
+  border: 0;
+  border-radius: 12px;
+  color: var(--acc);
+  font-weight: 700;
+  transition: background .25s, color .25s, transform .25s var(--spring);
+}
+.reset-button:hover { background: var(--acc); color: #fff; transform: translateY(-2px); }
+.reset-button:active { transform: scale(.95); }
+
+/* ---------- stat cards ---------- */
+.college-stats .college-stat-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  animation: cmFadeUp .6s var(--ease) both;
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s;
+}
+.college-stats .college-stat-card:nth-child(1) { animation-delay: .20s; background: #fff; border-color: var(--line); }
+.college-stats .college-stat-card:nth-child(2) { animation-delay: .27s; background: #fff; border-color: var(--line); }
+.college-stats .college-stat-card:nth-child(3) { animation-delay: .34s; background: #fff; border-color: var(--line); }
+.college-stats .college-stat-card:nth-child(4) { animation-delay: .41s; background: #fff; border-color: var(--line); }
+
+.college-stat-card::before,
+.college-stat-card::after { opacity: 0; }
+
+.college-stats .college-stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 40px rgba(27,33,66,.12);
+  border-color: rgba(var(--smoke), .35);
+}
+
+.college-stat-card .stat-icon {
+  width: 48px; height: 48px;
+  border-radius: 16px;
+  font-size: 20px;
+  transition: transform .4s var(--spring);
+}
+.college-stat-card:hover .stat-icon { transform: rotate(-10deg) scale(1.12); }
+.stat-icon.blue   { background: #e5ecff; color: #4f5df0; }
+.stat-icon.green  { background: #ddf6ea; color: #12a465; }
+.stat-icon.orange { background: #fff0d4; color: #e08a00; }
+.stat-icon.red    { background: #ffe2e5; color: #e5484d; }
+
+.college-stat-card small { color: var(--muted); font-size: 12.5px; font-weight: 600; }
+.college-stat-card strong {
+  color: var(--ink);
+  font-size: 28px;
+  letter-spacing: -.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- registered heading ---------- */
+.registered-heading { animation: cmFadeUp .55s var(--ease) .45s both; }
+.registered-heading h3 { color: var(--ink); letter-spacing: 1px; }
+.registered-heading p  { color: var(--muted); }
+.registered-heading > span {
+  background: var(--acc-soft);
+  color: var(--acc);
+  border: 0;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+/* ---------- college cards ---------- */
+.college-card {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+  animation: cmFadeUp .6s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease), border-color .4s;
+}
+.college-card::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 4px;
+  background: var(--acc-grad);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s var(--ease);
+}
+.college-card::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: translateX(-120%) skewX(-18deg);
+  pointer-events: none;
+}
+.college-card:hover {
+  transform: translateY(-8px);
+  border-color: #cfd3fb;
+  box-shadow: var(--shadow-md);
+}
+.college-card:hover::before { transform: scaleX(1); }
+.college-card:hover::after  { animation: cmShine 1s var(--ease) both; }
+
+.college-short {
+  border-radius: 16px;
+  background: var(--acc-grad);
+  box-shadow: 0 10px 22px rgba(91,94,244,.28);
+  transition: transform .45s var(--spring), border-radius .45s var(--ease);
+}
+.college-card:hover .college-short { transform: rotate(-6deg) scale(1.08); border-radius: 22px; }
+.college-card:nth-child(6n+2) .college-short { background: linear-gradient(135deg,#a855f7,#d946ef); box-shadow: 0 10px 22px rgba(168,85,247,.28); }
+.college-card:nth-child(6n+3) .college-short { background: linear-gradient(135deg,#0ea5a4,#34d399); box-shadow: 0 10px 22px rgba(14,165,164,.28); }
+.college-card:nth-child(6n+4) .college-short { background: linear-gradient(135deg,#f59e0b,#fbbf24); box-shadow: 0 10px 22px rgba(245,158,11,.28); }
+.college-card:nth-child(6n+5) .college-short { background: linear-gradient(135deg,#f43f5e,#fb7185); box-shadow: 0 10px 22px rgba(244,63,94,.28); }
+.college-card:nth-child(6n+6) .college-short { background: linear-gradient(135deg,#2563eb,#38bdf8); box-shadow: 0 10px 22px rgba(37,99,235,.28); }
+
+.college-status,
+.detail-status { border-radius: 999px; font-weight: 800; }
+.college-status.verified, .detail-status.verified   { background: #ddf6ea; color: #0f9a5f; }
+.college-status.pending,  .detail-status.pending    { background: #fff0d4; color: #cf8200; }
+.college-status.suspended,.detail-status.suspended  { background: #ffe2e5; color: #d93a49; }
+.college-status.pending { animation: cmBlink 2.4s ease-in-out infinite; }
+
+.college-category { background: var(--acc-soft); color: var(--acc); border-radius: 8px; }
+.college-card h3 { color: var(--ink); letter-spacing: -.1px; transition: color .3s; }
+.college-card:hover h3 { color: var(--acc); }
+.college-location { color: var(--muted); }
+.college-info-row { border-top-color: var(--line); }
+.college-info-row span { color: var(--muted); }
+.college-info-row strong { color: var(--ink-2); }
+
+.view-details-button {
+  position: relative;
+  overflow: hidden;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--acc-soft);
+  color: var(--acc);
+  box-shadow: none;
+  transition: background .3s var(--ease), color .3s var(--ease), transform .3s var(--spring), box-shadow .3s;
+}
+.college-card:hover .view-details-button,
+.view-details-button:hover {
+  background: var(--acc-grad);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(91,94,244,.32);
+  filter: none;
+}
+.view-details-button:hover { transform: translateY(-2px); }
+.view-details-button:active { transform: scale(.97); }
+
+.empty-colleges { animation: cmFadeUp .5s var(--ease) both; }
+.empty-colleges div { display: inline-block; animation: cmFloat 3.5s ease-in-out infinite; }
+
+/* ---------- back button ---------- */
+.back-colleges {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink-2);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  transition: transform .3s var(--ease), background .25s, color .25s, box-shadow .25s;
+}
+.back-colleges:hover { background: var(--acc-soft); color: var(--acc); transform: translateX(-5px); }
+
+/* ---------- detail header ---------- */
+.college-detail-header {
+  position: relative;
+  overflow: hidden;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    radial-gradient(420px 200px at 100% 0%, rgba(139,92,246,.14), transparent 70%),
+    linear-gradient(120deg, #ffffff, #f3f4ff);
+  box-shadow: var(--shadow-sm);
+  animation: cmFadeUp .6s var(--ease) .05s both;
+}
+.college-detail-header::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 5px;
+  background: var(--acc-grad);
+}
+.detail-logo {
+  background: var(--acc-grad);
+  border-radius: 22px;
+  box-shadow: 0 16px 30px rgba(91,94,244,.35);
+  animation: cmPop .7s var(--spring) .2s both;
+  transition: transform .4s var(--spring);
+}
+.detail-logo:hover { transform: rotate(-6deg) scale(1.06); }
+.detail-category { color: var(--acc); }
+.detail-title-row h1 { color: var(--ink); letter-spacing: -.4px; }
+.detail-title-row p { color: var(--muted); }
+.detail-tags span { background: #fff; border: 1px solid var(--line); color: var(--ink-2); border-radius: 999px; transition: transform .25s var(--spring), border-color .25s, color .25s; }
+.detail-tags span:hover { transform: translateY(-3px); border-color: var(--acc); color: var(--acc); }
+.detail-official-link { border-radius: 12px; border-color: var(--line); color: var(--acc); transition: background .25s, transform .25s var(--ease); }
+.detail-official-link:hover { background: var(--acc-soft); transform: translateY(-2px); }
+
+/* ---------- detail side nav ---------- */
+.detail-side-nav {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  animation: cmSlideR .6s var(--ease) .15s both;
+}
+.detail-side-nav p { color: var(--muted); }
+.detail-side-nav button {
+  position: relative;
+  border-radius: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  transition: background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease), box-shadow .25s;
+}
+.detail-side-nav button:hover { background: var(--acc-soft); color: var(--acc); transform: translateX(4px); }
+.detail-side-nav button.active {
+  background: var(--acc-grad);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(91,94,244,.32);
+  transform: translateX(4px);
+}
+
+/* ---------- detail sections (scroll reveal) ---------- */
+.detail-section,
+.admin-actions-section {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+}
+.detail-section.reveal { opacity: 0; transform: translateY(28px); }
+.detail-section.reveal.in-view {
+  opacity: 1;
+  transform: none;
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+}
+.detail-section.reveal.in-view .info-item,
+.detail-section.reveal.in-view .course-detail-card,
+.detail-section.reveal.in-view .facility-card,
+.detail-section.reveal.in-view .fee-item,
+.detail-section.reveal.in-view .admission-card,
+.detail-section.reveal.in-view .contact-grid > div,
+.detail-section.reveal.in-view .placement-summary > div {
+  animation: cmFadeUp .55s var(--ease) both;
+}
+.in-view .info-item:nth-child(2), .in-view .course-detail-card:nth-child(2), .in-view .facility-card:nth-child(2), .in-view .fee-item:nth-child(2), .in-view .admission-card:nth-child(2), .in-view .contact-grid > div:nth-child(2), .in-view .placement-summary > div:nth-child(2) { animation-delay: .06s; }
+.in-view .info-item:nth-child(3), .in-view .course-detail-card:nth-child(3), .in-view .facility-card:nth-child(3), .in-view .fee-item:nth-child(3), .in-view .admission-card:nth-child(3), .in-view .contact-grid > div:nth-child(3), .in-view .placement-summary > div:nth-child(3) { animation-delay: .12s; }
+.in-view .info-item:nth-child(4), .in-view .course-detail-card:nth-child(4), .in-view .facility-card:nth-child(4), .in-view .fee-item:nth-child(4), .in-view .contact-grid > div:nth-child(4), .in-view .placement-summary > div:nth-child(4) { animation-delay: .18s; }
+.in-view .info-item:nth-child(5), .in-view .course-detail-card:nth-child(5), .in-view .facility-card:nth-child(5), .in-view .fee-item:nth-child(5), .in-view .contact-grid > div:nth-child(5) { animation-delay: .24s; }
+.in-view .info-item:nth-child(6), .in-view .course-detail-card:nth-child(6), .in-view .facility-card:nth-child(6), .in-view .fee-item:nth-child(6), .in-view .contact-grid > div:nth-child(6) { animation-delay: .30s; }
+.in-view .info-item:nth-child(n+7), .in-view .course-detail-card:nth-child(n+7), .in-view .facility-card:nth-child(n+7), .in-view .fee-item:nth-child(n+7), .in-view .contact-grid > div:nth-child(n+7) { animation-delay: .36s; }
+
+.section-title { border-bottom-color: var(--line); }
+.section-title h2 { color: var(--ink); }
+.section-title h2::before { width: 5px; height: 20px; background: var(--acc-grad); animation: cmBlink 0s; }
+
+.info-item,
+.fee-item,
+.description-box,
+.admission-card,
+.contact-grid > div {
+  background: #f8f9fe;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s, background .3s;
+}
+.info-item:hover,
+.fee-item:hover,
+.admission-card:hover,
+.contact-grid > div:hover {
+  background: #fff;
+  border-color: #cfd3fb;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.info-item span, .fee-item span, .contact-grid small { color: var(--muted); }
+.info-item strong, .fee-item strong, .contact-grid strong, .description-box h4, .admission-card h4 { color: var(--ink); }
+.description-box p, .admission-card p, .admission-card ul { color: var(--ink-2); }
+.contact-grid > div > span { background: var(--acc-soft); border-radius: 14px; transition: transform .4s var(--spring); }
+.contact-grid > div:hover > span { transform: rotate(-10deg) scale(1.12); }
+.contact-grid a { color: var(--acc); }
+
+.course-detail-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s;
+}
+.course-detail-card:hover { transform: translateY(-5px); border-color: #cfd3fb; box-shadow: var(--shadow-md); }
+.course-icon { background: var(--acc-soft); border-radius: 14px; transition: transform .4s var(--spring); }
+.course-detail-card:hover .course-icon { transform: rotate(-10deg) scale(1.12); }
+.course-detail-card h4 { color: var(--ink); }
+.course-detail-card p { color: var(--muted); }
+
+.facility-card {
+  background: #f8f9fe;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition: transform .35s var(--spring), background .3s, border-color .3s, box-shadow .3s;
+}
+.facility-card:hover { transform: translateY(-6px) scale(1.04); background: #fff; border-color: #cfd3fb; box-shadow: var(--shadow-md); }
+.facility-card span { transition: transform .45s var(--spring); }
+.facility-card:hover span { transform: scale(1.3) rotate(-8deg); }
+.facility-card strong { color: var(--ink-2); }
+
+.placement-summary > div { border-radius: 18px; border: 1px solid var(--line); transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
+.placement-summary > div:nth-child(1) { background: linear-gradient(135deg,#e3f7ee,#f5fcf9); }
+.placement-summary > div:nth-child(2) { background: linear-gradient(135deg,#e7ebff,#f6f7ff); }
+.placement-summary > div:nth-child(3) { background: linear-gradient(135deg,#f1e8ff,#faf6ff); }
+.placement-summary > div:nth-child(4) { background: linear-gradient(135deg,#fff2d9,#fffaf0); }
+.placement-summary > div:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.placement-summary small { color: var(--ink-2); }
+.placement-summary strong { color: var(--ink); }
+.placement-company-heading { color: var(--ink); }
+
+.company-table-wrapper { border: 1px solid var(--line); border-radius: 18px; }
+.company-table th { background: #f4f5fd; color: var(--muted); }
+.company-table td { border-bottom-color: var(--line); color: var(--ink-2); }
+.company-table td strong { color: var(--ink); }
+.company-table tbody tr { transition: background .25s, transform .25s var(--ease); }
+.company-table tbody tr:hover { background: #f6f7ff; transform: translateX(4px); }
+.in-view .company-table tbody tr { animation: cmRowIn .5s var(--ease) both; }
+.in-view .company-table tbody tr:nth-child(1) { animation-delay: .05s; }
+.in-view .company-table tbody tr:nth-child(2) { animation-delay: .10s; }
+.in-view .company-table tbody tr:nth-child(3) { animation-delay: .15s; }
+.in-view .company-table tbody tr:nth-child(4) { animation-delay: .20s; }
+.in-view .company-table tbody tr:nth-child(5) { animation-delay: .25s; }
+.in-view .company-table tbody tr:nth-child(6) { animation-delay: .30s; }
+.in-view .company-table tbody tr:nth-child(7) { animation-delay: .35s; }
+.in-view .company-table tbody tr:nth-child(n+8) { animation-delay: .40s; }
+.company-active { background: #ddf6ea; color: #0f9a5f; animation: cmBlink 2.6s ease-in-out infinite; }
+
+.visit-website-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: 13px;
+  background: var(--acc-grad);
+  box-shadow: 0 12px 26px rgba(91,94,244,.32);
+  transition: transform .3s var(--spring), box-shadow .3s;
+}
+.visit-website-button:hover { transform: translateY(-3px); box-shadow: 0 18px 32px rgba(91,94,244,.4); filter: none; }
+
+/* ---------- admin actions ---------- */
+.admin-actions-section h3 { color: var(--ink); }
+.admin-actions button {
+  border-radius: 14px;
+  transition: transform .3s var(--spring), box-shadow .3s, filter .3s;
+}
+.admin-actions button:hover:not(:disabled) { transform: translateY(-4px); filter: brightness(1.06); }
+.admin-actions button:active:not(:disabled) { transform: scale(.96); }
+.admin-actions .edit    { background: var(--acc-grad); box-shadow: 0 12px 24px rgba(91,94,244,.28); }
+.admin-actions .verify  { background: linear-gradient(135deg,#22c58b,#12a465); box-shadow: 0 12px 24px rgba(18,164,101,.25); }
+.admin-actions .suspend { background: linear-gradient(135deg,#fbbf24,#f59e0b); box-shadow: 0 12px 24px rgba(245,158,11,.25); }
+.admin-actions .reject  { background: linear-gradient(135deg,#fb7185,#e11d48); box-shadow: 0 12px 24px rgba(225,29,72,.25); }
+.admin-notice { background: var(--acc-soft); color: var(--acc); border-radius: 12px; animation: cmSlideDown .45s var(--spring) both; }
+
+/* ---------- edit modal ---------- */
+.edit-overlay {
+  background: rgba(14,18,48,.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: cmFadeIn .3s ease both;
+}
+.edit-modal { border-radius: 24px; animation: cmModalIn .45s var(--spring) both; }
+.edit-modal-head { border-bottom-color: var(--line); }
+.edit-modal-head h3 { color: var(--ink); }
+.edit-modal-head button { border-radius: 12px; background: #f1f2fb; transition: transform .35s var(--spring), background .25s; }
+.edit-modal-head button:hover { background: #ffe2e5; color: #e5484d; transform: rotate(90deg); }
+.edit-field span { color: var(--muted); }
+.edit-field input, .edit-field textarea { border-color: var(--line); border-radius: 12px; background: #f8f9fe; transition: border-color .25s, box-shadow .25s, background .25s; }
+.edit-field input:focus, .edit-field textarea:focus { background: #fff; border-color: var(--acc); box-shadow: 0 0 0 4px rgba(91,94,244,.14); }
+.edit-modal-actions { border-top-color: var(--line); }
+.edit-modal-actions button { border-radius: 12px; transition: transform .3s var(--spring), box-shadow .3s; }
+.edit-modal-actions button:hover { transform: translateY(-2px); }
+.edit-modal-actions .cancel { background: #f1f2fb; color: var(--ink-2); }
+.edit-modal-actions .save { background: var(--acc-grad); box-shadow: 0 10px 22px rgba(91,94,244,.3); }
+
+/* ---------- misc polish ---------- */
+.student-layout-main { scrollbar-width: thin; scrollbar-color: #c9cdf3 transparent; }
+.student-layout-main::-webkit-scrollbar { width: 8px; }
+.student-layout-main::-webkit-scrollbar-thumb { background: #c9cdf3; border-radius: 8px; }
+.student-layout-main::-webkit-scrollbar-thumb:hover { background: var(--acc); }
+.student-layout ::selection { background: rgba(91,94,244,.22); }
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible { outline: 3px solid rgba(91,94,244,.45); outline-offset: 2px; }
+
+/* respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .student-layout *,
+  .student-layout *::before,
+  .student-layout *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: .001ms !important;
+  }
+  .detail-section.reveal { opacity: 1; transform: none; }
+}
+
+@media (max-width: 700px) {
+  .college-page-heading { border-radius: 18px; }
+  .college-page-heading h2 { font-size: 20px; }
+  .college-card:hover { transform: translateY(-4px); }
+  .detail-side-nav button:hover, .detail-side-nav button.active { transform: none; }
 }
 
 `;
