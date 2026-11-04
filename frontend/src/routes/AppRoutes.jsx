@@ -56,7 +56,7 @@ function AppRoutes() {
         <Route path="/college/dashboard" element={<CollegeDashboard />} />
         <Route path="/college/leads" element={<CollegeDashboard />} />
         <Route path="/college/profile" element={<CollegeProfile />} />
-        <Route path="/college/register" element={<CollegeRegistration />} />
+        <Route path="/college/register" element={<Registeration />} />
         <Route path="/college/collegesite" element={<CollegeSite />} />
         <Route path="/college/payment" element={<CollegePayment />} />
 
