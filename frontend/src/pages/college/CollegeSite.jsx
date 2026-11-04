@@ -201,23 +201,15 @@ function CCLogo() {
 
 /* ---------- WHY section: auto-playing feature showcase ---------- */
 const WHY_ITEMS = [
-  { id: "interest", ic: "🎯", short: "Real interest", label: "Student leads", title: "Real student interest", text: "Every lead is a 12th-pass student who tapped “I’m Interested” in a college or course, shared with their consent." },
-  { id: "unlock", ic: "🔓", short: "Free preview", label: "Student profile", title: "Free preview, pay to unlock", text: "See ID, 12th %, course and location free. Pay ₹100 only to unlock mobile and email." },
-  { id: "dash", ic: "📊", short: "Dashboard", label: "College dashboard", title: "Private dashboard", text: "Track interested students, new leads, purchased profiles, spending and transactions in one place." },
-  { id: "reach", ic: "📍", short: "By location", label: "Search by location", title: "Find students by state and district", text: "Filter interested students by course and location, from Engineering and Medicine to Law, Agriculture and Design." },
+  { id: "profile", ic: "🏫", short: "Your profile", label: "College profile", title: "A profile students trust", text: "Show your logo, website, courses, fees, hostel and transport in one complete profile." },
+  { id: "listed", ic: "🧭", short: "Directory", label: "Explore colleges", title: "Found by category", text: "Students browsing Explore Colleges can find you under Engineering, Arts & Science, Management and more." },
+  { id: "edit", ic: "✏️", short: "Edit anytime", label: "Edit profile", title: "Update details anytime", text: "Fees, courses or facilities changed? Edit your profile whenever you need to." },
+  { id: "device", ic: "📱", short: "Any screen", label: "Works everywhere", title: "Works on every screen", text: "Open your college account on laptop, tablet or phone with the same clean layout." },
 ];
-const WHY_LEADS = [
-  ["S", "STU10236", "84%", "B.Sc CS"],
-  ["R", "STU10237", "79%", "B.E Mech"],
-  ["A", "STU10238", "91%", "MBBS"],
-  ["K", "STU10239", "88%", "B.Com"],
-  ["M", "STU10240", "76%", "BBA"],
-  ["P", "STU10241", "93%", "B.Tech CSE"],
-  ["N", "STU10242", "81%", "B.Sc Nursing"],
-  ["V", "STU10243", "86%", "LLB"],
-];
-const WHY_TIMES = ["just now", "2 min", "5 min", "8 min"];
-const WHY_KPIS = [["Interested students", 125, 78, ""], ["New students", 23, 32, ""], ["Profiles purchased", 18, 24, ""], ["Amount spent", 1800, 40, "₹"]];
+const WHY_TAGS = ["Established year", "Hostel", "Transport", "Fees", "Courses", "Website"];
+const WHY_CATS = [["⚙️", "Engineering"], ["📚", "Arts & Science"], ["💼", "Management"], ["🩺", "Medical"], ["🧑‍⚕️", "Nursing"], ["🏃", "Physiotherapy"]];
+const WHY_LAP_BARS = [26, 44, 34, 56, 46, 38];
+const WHY_PH_BARS = [20, 34, 26, 40];
 const WHY_SPARKS = [[8, 6, 9, 0], [22, 4, 12, 3], [37, 7, 10, 6], [52, 5, 13, 1], [66, 6, 11, 4], [79, 4, 9, 7], [91, 7, 12, 2]]; // x%, size px, seconds, delay s
 const WHY_MOTION_OFF = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -239,84 +231,56 @@ function WhyCount({ to, pre = "", suf = "" }) {
   return <>{pre}{v.toLocaleString("en-IN")}{suf}</>;
 }
 
-/* live feed: a new lead drops in at the top every few seconds */
-function WhyFeed() {
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    if (WHY_MOTION_OFF()) return;
-    const t = setInterval(() => setN((v) => v + 1), 2600);
-    return () => clearInterval(t);
-  }, []);
-  const len = WHY_LEADS.length;
-  const top = (len - (n % len)) % len;
-  return (
-    <div className="wy-scene">
-      <span className="wy-toast">🔔 New lead</span>
-      <div className="wy-bar"><b>Interested students</b><span className="wy-live"><i />Live</span></div>
-      {WHY_TIMES.map((time, i) => {
-        const [a, sid, pc, course] = WHY_LEADS[(top + i) % len];
-        return (
-          <div className={`wy-row${i === 0 ? " hot" : ""}`} style={{ "--i": i }} key={sid}>
-            <i>{a}</i>
-            <div><b>{sid}</b><small>{course}</small></div>
-            <span className="wy-pc">{pc}</span>
-            <em>{time}</em>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-const WHY_BARS = [45, 70, 55, 90, 75, 62, 84];
-const WHY_COURSES = ["Engineering", "Management", "Arts", "Science", "Commerce", "Medicine", "Law", "Agriculture", "Computer Applications", "Design"];
-
 function WhyScene({ id }) {
-  if (id === "interest") return <WhyFeed />;
-  if (id === "unlock") {
+  if (id === "profile") {
     return (
       <div className="wy-scene">
-        <span className="wy-toast">✓ Payment verified</span>
+        <span className="wy-toast">✓ Profile complete</span>
         <div className="wy-prof">
           <div className="wy-prof-h">
-            <i>S</i>
-            <div><b>STU10234</b><small>Interested in B.Tech CSE</small></div>
-            <span className="wy-pc">82%</span>
+            <i>🏛️</i>
+            <div><b>Your College</b><small>Logo and official website added</small></div>
+            <span className="wy-pc">Verified</span>
           </div>
-          <div className="wy-fld"><small>Mobile</small><b className="wy-blur">98765 43210</b></div>
-          <div className="wy-fld"><small>Email</small><b className="wy-blur" style={{ "--k": 1 }}>student@gmail.com</b></div>
-          <div className="wy-pay"><span className="a">🔒 Unlock details · ₹100</span><span className="b">✓ Details unlocked</span></div>
+          <div className="wy-tags">{WHY_TAGS.map((t, i) => <span key={t} style={{ "--i": i }}>✓ {t}</span>)}</div>
+          <div className="wy-meter"><small>Profile completeness</small><b><WhyCount to={100} suf="%" /></b><i /></div>
         </div>
       </div>
     );
   }
-  if (id === "dash") {
+  if (id === "listed") {
     return (
       <div className="wy-scene">
-        <span className="wy-toast">📈 Updated live</span>
-        <div className="wy-kpis">
-          {WHY_KPIS.map(([label, val, w, pre], i) => (
-            <div className="wy-kpi" style={{ "--i": i, "--w": `${w}%` }} key={label}>
-              <small>{label}</small><b><WhyCount to={val} pre={pre} /></b><i />
-            </div>
-          ))}
+        <span className="wy-toast">📍 Your college is listed</span>
+        <div className="wy-bar"><b>Explore colleges</b><span className="wy-live"><i />Open</span></div>
+        <div className="wy-cats">
+          {WHY_CATS.map(([ic, t], i) => (<div className="wy-cat" style={{ "--i": i }} key={t}><em>{ic}</em><b>{t}</b></div>))}
         </div>
-        <div className="wy-bars" aria-hidden="true">
-          {WHY_BARS.map((h, i) => <i key={i} style={{ "--h": `${h}%`, "--i": i }} />)}
+      </div>
+    );
+  }
+  if (id === "edit") {
+    return (
+      <div className="wy-scene">
+        <span className="wy-toast">✏️ Edit anytime</span>
+        <div className="wy-prof">
+          <div className="wy-prof-h"><i>✏️</i><div><b>Edit profile</b><small>Update any detail, any time</small></div></div>
+          <div className="wy-fld"><small>Fees</small><b className="wy-swap"><span className="a">₹85,000 / year</span><span className="b">₹90,000 / year</span></b></div>
+          <div className="wy-fld"><small>Courses</small><b className="wy-swap"><span className="a">8 courses</span><span className="b">9 courses</span></b></div>
+          <div className="wy-pay"><span className="a">Save changes</span><span className="b">✓ Changes saved</span></div>
         </div>
       </div>
     );
   }
   return (
-    <div className="wy-scene wy-reach">
-      <span className="wy-toast">📍 Pan-India</span>
-      <div className="wy-radar">
-        <span className="wy-orbit" aria-hidden="true"><i /><i /><i /></span>
-        <div><strong><WhyCount to={TOTAL_DISTRICTS} suf="+" /></strong><small>districts across India</small></div>
+    <div className="wy-scene wy-dev">
+      <span className="wy-toast">📱 Fully responsive</span>
+      <div className="wy-lap">
+        <div className="wy-scr"><b /><span>{[0, 1, 2].map((k) => <i key={k} style={{ "--k": k }} />)}</span><em>{WHY_LAP_BARS.map((h, k) => <i key={k} style={{ "--h": `${h}px`, "--k": k }} />)}</em></div>
+        <u />
       </div>
-      <div className="wy-path"><span>State</span><i>→</i><span>District</span><i>→</i><span>Course</span></div>
-      <div className="wy-chips">
-        {WHY_COURSES.map((c, i) => <span key={c} style={{ "--i": i }}>{c}</span>)}
+      <div className="wy-ph">
+        <div className="wy-scr"><b /><span>{[0, 1].map((k) => <i key={k} style={{ "--k": k }} />)}</span><em>{WHY_PH_BARS.map((h, k) => <i key={k} style={{ "--h": `${h}px`, "--k": k }} />)}</em></div>
       </div>
     </div>
   );
@@ -777,7 +741,11 @@ function AnimatedNumber({ value, prefix = "", className = "" }) {
 
 /* ================= JOURNEY PANELS (Explore more. Choose smarter.) =================
    4 tall panels in one row. Click a panel (or let it auto-play) and it widens while the others fold into slim tabs.
-   On phones/tablets the panels stack and open like an accordion. Everything is scoped with the "jp-" prefix, so no other section is touched. */
+   Laptop / desktop (961px and up): the row. Tablet + phone (960px and below): panels stack and open like an accordion.
+   Motion: one entrance when the section scrolls in, drifting aurora, a light that follows the mouse on the open panel,
+   and a live mini-scene inside each panel (search results, compare, permission switches, activity chart).
+   Auto-play only runs while the section is on screen on laptop. Everything honours "reduce motion".
+   Everything is scoped with the "jp-" prefix and its own <style>, so no other section is touched. */
 const JP_ICONS = {
   discover: <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg>,
   compare: <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="4" width="7" height="16" rx="2" /><rect x="13.5" y="4" width="7" height="16" rx="2" /></svg>,
@@ -786,30 +754,57 @@ const JP_ICONS = {
 };
 
 const JP_ITEMS = [
-  { key: "discover", no: "01", label: "Discover", title: "Find the right direction", desc: "Explore relevant opportunities with clear, useful information.", stat: "SMART DISCOVERY", value: "One clear view", a1: "#4f6ce8", a2: "#27358f", tint: "#edf1ff", sh: "rgba(79,108,232,.38)" },
-  { key: "compare", no: "02", label: "Compare", title: "See what matters most", desc: "Review important details side by side and make informed decisions.", stat: "SIDE-BY-SIDE VIEW", value: "Better clarity", a1: "#8a5cdc", a2: "#42268f", tint: "#f3edff", sh: "rgba(138,92,220,.38)" },
-  { key: "connect", no: "03", label: "Connect", title: "Move forward with trust", desc: "Keep personal information protected with permission-led access.", stat: "SECURE CONNECTION", value: "Privacy first", a1: "#13a9a4", a2: "#0b4f73", tint: "#e8f8f7", sh: "rgba(19,169,164,.38)" },
-  { key: "manage", no: "04", label: "Manage", title: "Keep every step on track", desc: "Follow updates, activity and next actions from one workspace.", stat: "ACTIVITY OVERVIEW", value: "Always organised", a1: "#e0792f", a2: "#7a2f6e", tint: "#fff2e8", sh: "rgba(224,121,47,.36)" },
+  { key: "discover", no: "01", label: "Discover", title: "Find the right students", desc: "Find interested 12th students who match your courses.", stat: "Student discovery", value: "Right students, faster", a1: "#4f6ce8", a2: "#27358f", tint: "#edf1ff", sh: "rgba(79,108,232,.38)" },
+  { key: "compare", no: "02", label: "Compare", title: "Shortlist with clarity", desc: "Compare student interest, course and location side by side.", stat: "Side-by-side view", value: "Better decisions", a1: "#8a5cdc", a2: "#42268f", tint: "#f3edff", sh: "rgba(138,92,220,.38)" },
+  { key: "connect", no: "03", label: "Connect", title: "Connect for admission", desc: "Unlock verified contact details for just ₹100 and start the conversation.", stat: "Secure connection", value: "Just ₹100 per lead", a1: "#13a9a4", a2: "#0b4f73", tint: "#e8f8f7", sh: "rgba(19,169,164,.38)" },
+  { key: "manage", no: "04", label: "Manage", title: "Keep every lead on track", desc: "Follow new leads, follow-ups and admissions from one dashboard.", stat: "Admission overview", value: "Always organised", a1: "#e0792f", a2: "#7a2f6e", tint: "#fff2e8", sh: "rgba(224,121,47,.36)" },
 ];
+
+function JpNum({ to, delay = 0, dur = 1000 }) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches) { setV(to); return undefined; }
+    let raf = 0; let t0 = 0;
+    const tm = setTimeout(() => {
+      const step = (t) => {
+        if (!t0) t0 = t;
+        const q = Math.min((t - t0) / dur, 1);
+        setV(Math.round(to * (1 - Math.pow(1 - q, 3))));
+        if (q < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    }, delay);
+    return () => { clearTimeout(tm); cancelAnimationFrame(raf); };
+  }, [to, delay, dur]);
+  return <>{v}</>;
+}
 
 function JpScene({ k }) {
   if (k === "discover") {
     return (
       <div className="jp-scene jp-s1">
-        <div className="jp-search">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg>
-          <span className="jp-type">Courses, colleges, districts</span><i className="jp-caret" />
+        <div className="jp-radar">
+          <i className="jp-rg jp-rg1" /><i className="jp-rg jp-rg2" /><i className="jp-rg jp-rg3" />
+          <b className="jp-sweep" />
+          {[[20, 52], [85, 36], [150, 56], [210, 34], [265, 50], [325, 58]].map(([a, r], q) => (<u key={a} className="jp-blip" style={{ "--a": a + "deg", "--r": r + "px", "--i": q }} />))}
+          <span className="jp-core">{JP_ICONS.discover}</span>
         </div>
-        <div className="jp-chips"><span style={{ "--i": 0 }}>Engineering</span><span style={{ "--i": 1 }}>Management</span><span style={{ "--i": 2 }}>Near you</span></div>
+        <div className="jp-found">
+          <small>✓ Matched to your courses</small>
+          <strong>Interested students, found</strong>
+          <div className="jp-cats">
+            {["Engineering", "Arts & Science", "Management", "Nursing", "Physiotherapy"].map((t, q) => (<span key={t} style={{ "--i": q }}>{t}</span>))}
+          </div>
+        </div>
       </div>
     );
   }
   if (k === "compare") {
     return (
       <div className="jp-scene jp-s2">
-        <div className="jp-col"><b>Option A</b><span style={{ "--w": "82%", "--i": 0 }} /><span style={{ "--w": "58%", "--i": 1 }} /><span style={{ "--w": "70%", "--i": 2 }} /></div>
+        <div className="jp-col"><b>Student A<em className="jp-score"><JpNum to={74} delay={800} /></em></b><span style={{ "--w": "82%", "--i": 0 }} /><span style={{ "--w": "58%", "--i": 1 }} /><span style={{ "--w": "70%", "--i": 2 }} /></div>
         <em className="jp-vs">VS</em>
-        <div className="jp-col"><b>Option B</b><span style={{ "--w": "60%", "--i": 0 }} /><span style={{ "--w": "88%", "--i": 1 }} /><span style={{ "--w": "64%", "--i": 2 }} /></div>
+        <div className="jp-col win"><b>Student B<em className="jp-score"><JpNum to={92} delay={900} /></em></b><span style={{ "--w": "92%", "--i": 0 }} /><span style={{ "--w": "88%", "--i": 1 }} /><span style={{ "--w": "84%", "--i": 2 }} /><u className="jp-best">Best match</u></div>
       </div>
     );
   }
@@ -818,69 +813,116 @@ function JpScene({ k }) {
       <div className="jp-scene jp-s3">
         <div className="jp-lockwrap">
           <i /><i /><i />
+          <b className="jp-orbit"><u /></b><em className="jp-coin">₹100</em>
           <span className="jp-lock"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5" /><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" /></svg></span>
         </div>
-        <div className="jp-perm"><span style={{ "--i": 0 }}>✓ Permission-led</span><span style={{ "--i": 1 }}>✓ Details protected</span><span style={{ "--i": 2 }}>✓ You stay in control</span></div>
+        <ul className="jp-perm">
+          {["Verified students", "Unlock for ₹100", "Permission-led"].map((t, i) => (<li key={t} style={{ "--i": i }}><span>{t}</span><s className="jp-sw" /></li>))}
+        </ul>
       </div>
     );
   }
   return (
     <div className="jp-scene jp-s4">
+      <div className="jp-chart" aria-hidden="true">
+        <svg viewBox="0 0 220 100">
+          <defs><linearGradient id="jpAg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".5" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></linearGradient></defs>
+          <path className="jp-area" d="M0 82 L30 68 L62 74 L96 46 L130 56 L166 28 L220 12 L220 100 L0 100Z" fill="url(#jpAg)" />
+          <path className="jp-line" pathLength="100" d="M0 82 L30 68 L62 74 L96 46 L130 56 L166 28 L220 12" />
+          <circle className="jp-dot" r="4.5" fill="#fff" opacity="0"><set attributeName="opacity" to="1" begin="2.2s" /><animateMotion dur="3.4s" begin="2.2s" repeatCount="indefinite" path="M0 82 L30 68 L62 74 L96 46 L130 56 L166 28 L220 12" /></circle>
+        </svg>
+        <i className="jp-pulse" />
+        <u className="jp-badge">On track</u>
+      </div>
       <ul className="jp-list">
-        {["Updates", "Activity", "Next actions"].map((t, i) => (<li key={t} style={{ "--i": i }}><b>✓</b>{t}</li>))}
+        {["New leads", "Follow-ups", "Admissions"].map((t, i) => (<li key={t} style={{ "--i": i }}><b>✓</b>{t}</li>))}
       </ul>
-      <div className="jp-meter"><span /></div>
     </div>
   );
 }
 
 function OpportunityHubSection({ onRegister }) {
   const [active, setActive] = useState(0);
-  const [hold, setHold] = useState(false); // hover / keyboard focus pauses the auto-play
-  const [seen, setSeen] = useState(false); // auto-play only while the section is on screen
-  const [wide, setWide] = useState(true); // auto-play only on laptop / desktop layout
+  const [hold, setHold] = useState(false); // mouse hover / keyboard focus pauses the auto-play
+  const [seen, setSeen] = useState(false); // on screen right now (ambient motion + auto-play run only then)
+  const [shown, setShown] = useState(false); // has been on screen once (entrance plays once)
+  const [wide, setWide] = useState(true); // laptop layout (row) vs tablet / phone layout (accordion)
   const rootRef = useRef(null);
 
   useEffect(() => {
     const el = rootRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return undefined;
-    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), { threshold: 0.35 });
+    if (!el || typeof IntersectionObserver === "undefined") { setSeen(true); setShown(true); return undefined; }
+    const io = new IntersectionObserver(([e]) => { setSeen(e.isIntersecting); if (e.isIntersecting) setShown(true); }, { threshold: 0.25 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width:861px)");
+    const mq = window.matchMedia("(min-width:961px)");
     const fn = () => setWide(mq.matches);
     fn();
-    mq.addEventListener("change", fn);
-    return () => mq.removeEventListener("change", fn);
+    if (mq.addEventListener) mq.addEventListener("change", fn); else mq.addListener(fn);
+    return () => { if (mq.removeEventListener) mq.removeEventListener("change", fn); else mq.removeListener(fn); };
   }, []);
 
   const next = () => setActive((a) => (a + 1) % JP_ITEMS.length);
-  const run = wide && seen;
+  const run = wide && seen && shown;
+
+  /* tablet / phone: after a panel opens, bring it fully into view */
+  const choose = (i) => {
+    setActive(i);
+    if (!wide) setTimeout(() => { const el = document.getElementById("jp-panel-" + JP_ITEMS[i].key); if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 560);
+  };
+  const onKey = (e) => {
+    const d = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    const n = (active + d + JP_ITEMS.length) % JP_ITEMS.length;
+    choose(n);
+    const b = document.getElementById("jp-hit-" + JP_ITEMS[n].key);
+    if (b) b.focus();
+  };
+  const glare = (e, on) => {
+    if (!on || e.pointerType !== "mouse") return;
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", ((e.clientX - r.left) / r.width) * 100 + "%");
+    e.currentTarget.style.setProperty("--my", ((e.clientY - r.top) / r.height) * 100 + "%");
+  };
 
   return (
-    <section className="jp-section" ref={rootRef}>
+    <section className={`jp-section ${shown ? "shown" : ""} ${seen ? "" : "off"}`} ref={rootRef}>
       <style>{`
-        .jp-section{position:relative;isolation:isolate;overflow:hidden;width:100%;padding:clamp(58px,6.5vw,88px) clamp(18px,4vw,48px);background:linear-gradient(125deg,#f7f9ff 0%,#eef3ff 52%,#f8f6ff 100%);color:#192747}
-        .jp-section:before{content:"";position:absolute;z-index:-1;width:560px;height:560px;right:-210px;top:-290px;border-radius:50%;background:radial-gradient(circle,rgba(91,113,255,.18),transparent 68%)}
-        .jp-section:after{content:"";position:absolute;z-index:-1;width:480px;height:480px;left:-230px;bottom:-280px;border-radius:50%;background:radial-gradient(circle,rgba(27,190,205,.13),transparent 68%)}
+        .jp-section{--ps:running;position:relative;isolation:isolate;overflow:hidden;width:100%;padding:clamp(54px,6.5vw,92px) clamp(16px,4vw,48px);background:linear-gradient(125deg,#f7f9ff 0%,#eef3ff 52%,#f8f6ff 100%);color:#192747}
+        .jp-section.off{--ps:paused}
+        .jp-section *,.jp-section *:before,.jp-section *:after{box-sizing:border-box}
+        .jp-section:before,.jp-section:after{content:"";position:absolute;z-index:-1;border-radius:50%;pointer-events:none;will-change:transform}
+        .jp-section:before{width:600px;height:600px;right:-220px;top:-300px;background:radial-gradient(circle,rgba(91,113,255,.24),transparent 68%);animation:jpDrift 14s ease-in-out infinite alternate;animation-play-state:var(--ps)}
+        .jp-section:after{width:520px;height:520px;left:-240px;bottom:-290px;background:radial-gradient(circle,rgba(27,190,205,.2),transparent 68%);animation:jpDrift 17s ease-in-out -6s infinite alternate-reverse;animation-play-state:var(--ps)}
+        .jp-grid{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(79,108,232,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(79,108,232,.07) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,#000,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,#000,transparent 75%)}
         .jp-inner{width:100%;max-width:1220px;margin:0 auto}
-        .jp-head{text-align:center;max-width:800px;margin:0 auto 38px}
-        .jp-eyebrow{display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border:1px solid #dce4ff;border-radius:100px;background:rgba(255,255,255,.78);color:#6272d7;font-size:11px;font-weight:850;letter-spacing:1.2px}
-        .jp-eyebrow i{width:7px;height:7px;border-radius:50%;background:#22bdba;box-shadow:0 0 0 4px #22bdba1c}
-        .jp-head h2{margin:19px 0 13px;font-size:clamp(34px,4.2vw,55px);line-height:1.1;letter-spacing:-1.9px;font-weight:850;color:#192747}
-        .jp-head h2 span{background:linear-gradient(95deg,#4e6de8,#9062dc 58%,#20aebd);-webkit-background-clip:text;background-clip:text;color:transparent}
-        .jp-head p{max-width:650px;margin:0 auto;color:#71809e;font-size:15px;line-height:1.8}
+
+        /* entrance: plays once when the section scrolls in */
+        .jp-section:not(.shown) .jp-rv{opacity:0}
+        .jp-section.shown .jp-rv{animation:jpUp .85s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--d,0) * .1s)}
+
+        .jp-head{text-align:center;max-width:820px;margin:0 auto 40px}
+        .jp-eyebrow{display:inline-flex;align-items:center;gap:10px;padding:9px 16px;border:1px solid #dce4ff;border-radius:100px;background:rgba(255,255,255,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#5a6cd8;font-size:12.5px;font-weight:800;letter-spacing:.2px}
+        .jp-eyebrow i{position:relative;width:8px;height:8px;border-radius:50%;background:#22bdba}
+        .jp-eyebrow i:after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #22bdba;animation:jpPing 2s ease-out infinite;animation-play-state:var(--ps)}
+        .jp-head h2{margin:18px 0 12px;font-family:"Bricolage Grotesque","Plus Jakarta Sans",sans-serif;font-size:clamp(34px,4.6vw,58px);line-height:1.06;letter-spacing:-2px;font-weight:800;color:#192747;text-wrap:balance}
+        .jp-w{display:inline-block}
+        .jp-grad{background:linear-gradient(95deg,#4e6de8,#9062dc 35%,#20aebd 65%,#4e6de8);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:jpText 6s linear infinite;animation-play-state:var(--ps)}
+        .jp-head p{max-width:650px;margin:0 auto;color:#71809e;font-size:15.5px;line-height:1.75}
 
         /* ---- the row of panels ---- */
-        .jp-row{display:flex;gap:14px;height:450px}
-        .jp-panel{position:relative;flex:1 1 0;min-width:0;overflow:hidden;border-radius:26px;border:1px solid #e3e8fb;background:linear-gradient(175deg,#fff 0%,var(--tint) 100%);box-shadow:0 14px 38px rgba(39,59,112,.07);transition:flex-grow .65s cubic-bezier(.22,.8,.22,1),transform .35s ease,box-shadow .35s ease,border-color .35s}
-        .jp-panel:not(.on):hover{transform:translateY(-6px);box-shadow:0 22px 44px var(--sh)}
-        .jp-panel.on{flex-grow:4.6;border-color:transparent;background:linear-gradient(150deg,var(--a1) 0%,var(--a2) 100%);box-shadow:0 28px 62px var(--sh)}
-        .jp-panel.on:before{content:"";position:absolute;z-index:0;width:380px;height:380px;right:-170px;top:-190px;border-radius:50%;border:1px solid rgba(255,255,255,.16);box-shadow:0 0 0 34px rgba(255,255,255,.04),0 0 0 72px rgba(255,255,255,.03)}
-        .jp-panel.on:after{content:"";position:absolute;z-index:0;width:240px;height:240px;left:-90px;bottom:-130px;border-radius:50%;background:rgba(255,255,255,.12);filter:blur(24px)}
+        .jp-row{display:flex;gap:14px;height:clamp(560px,72vh,640px)}
+        .jp-panel{position:relative;flex:1 1 0;min-width:0;overflow:hidden;scroll-margin-top:96px;border-radius:28px;border:1px solid #e3e8fb;background:linear-gradient(175deg,#fff 0%,var(--tint) 100%);box-shadow:0 14px 38px rgba(39,59,112,.07);transition:flex-grow .7s cubic-bezier(.22,.8,.22,1),transform .35s ease,box-shadow .35s ease,border-color .35s}
+        .jp-panel:not(.on):hover{transform:translateY(-8px);border-color:var(--a1);box-shadow:0 24px 46px var(--sh)}
+        .jp-panel.on{flex-grow:4.6;border-color:transparent;background:linear-gradient(150deg,var(--a1) 0%,var(--a2) 100%);box-shadow:0 30px 66px var(--sh)}
+        .jp-panel.on:before{content:"";position:absolute;z-index:0;width:380px;height:380px;right:-170px;top:-190px;border-radius:50%;border:1px solid rgba(255,255,255,.18);box-shadow:0 0 0 34px rgba(255,255,255,.04),0 0 0 72px rgba(255,255,255,.03);animation:jpBreathe 6s ease-in-out infinite;animation-play-state:var(--ps)}
+        .jp-panel.on:after{content:"";position:absolute;z-index:0;width:260px;height:260px;left:-90px;bottom:-130px;border-radius:50%;background:rgba(255,255,255,.14);filter:blur(26px);animation:jpDrift 9s ease-in-out infinite alternate;animation-play-state:var(--ps)}
+        .jp-glare{position:absolute;inset:0;z-index:1;opacity:0;pointer-events:none;transition:opacity .4s;background:radial-gradient(380px circle at var(--mx,75%) var(--my,12%),rgba(255,255,255,.2),transparent 62%)}
+        .jp-panel.on .jp-glare{opacity:1}
         .jp-hit{position:absolute;inset:0;z-index:4;width:100%;border:0;background:transparent;border-radius:inherit;cursor:pointer}
         .jp-panel.on .jp-hit{pointer-events:none;cursor:default}
         .jp-hit:focus-visible{outline:3px solid var(--a1);outline-offset:-5px}
@@ -890,82 +932,171 @@ function OpportunityHubSection({ onRegister }) {
         .jp-rest{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:24px 0 26px;transition:opacity .3s ease}
         .jp-panel.on .jp-rest{opacity:0;pointer-events:none}
         .jp-ico{display:grid;place-items:center;flex:none;width:52px;height:52px;border-radius:17px;background:#fff;color:var(--a1);box-shadow:0 9px 22px var(--sh);transition:transform .3s}
-        .jp-panel:not(.on):hover .jp-ico{transform:scale(1.08) rotate(-6deg)}
-        .jp-vlabel{writing-mode:vertical-rl;transform:rotate(180deg);font-size:21px;font-weight:850;letter-spacing:.6px;color:#27365d}
+        .jp-panel:not(.on) .jp-rest .jp-ico{animation:jpFloat 4.2s ease-in-out calc(var(--k) * -.9s) infinite;animation-play-state:var(--ps)}
+        .jp-panel:not(.on):hover .jp-ico{transform:scale(1.1) rotate(-6deg)}
+        .jp-vlabel{writing-mode:vertical-rl;transform:rotate(180deg);font-size:21px;font-weight:850;letter-spacing:.6px;color:#27365d;transition:color .3s}
+        .jp-panel:not(.on):hover .jp-vlabel{color:var(--a1)}
         .jp-n{font-size:13px;font-weight:900;letter-spacing:1px;color:var(--a1)}
 
         /* opened face */
         .jp-open{position:absolute;inset:0;z-index:2;min-width:440px}
         .jp-in{display:flex;flex-direction:column;height:100%;padding:28px 30px 30px;color:#fff;opacity:0;visibility:hidden;transform:translateX(22px);transition:opacity .25s ease,transform .4s ease,visibility 0s .4s}
         .jp-panel.on .jp-in{opacity:1;visibility:visible;transform:none;transition:opacity .5s ease .3s,transform .65s cubic-bezier(.2,.8,.2,1) .25s,visibility 0s}
-        .jp-wm{position:absolute;right:26px;top:2px;font-size:128px;line-height:1;font-weight:900;letter-spacing:-6px;color:rgba(255,255,255,.09);pointer-events:none}
+        .jp-wm{position:absolute;right:26px;top:2px;font-family:"Bricolage Grotesque","Plus Jakarta Sans",sans-serif;font-size:128px;line-height:1;font-weight:800;letter-spacing:-6px;color:rgba(255,255,255,.1);pointer-events:none}
         .jp-top{display:flex;align-items:center;gap:12px}
         .jp-top .jp-ico{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);color:#fff;box-shadow:none}
-        .jp-tag{font-size:10.5px;font-weight:850;letter-spacing:1.3px;color:rgba(255,255,255,.78)}
-        .jp-in h3{margin:18px 0 8px;font-size:clamp(24px,2.4vw,32px);line-height:1.15;letter-spacing:-.8px;color:#fff}
-        .jp-in p{max-width:430px;margin:0;font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.84)}
-        .jp-scene{flex:1;min-height:0;margin-top:18px;display:flex;align-items:center;justify-content:center;gap:14px;padding:14px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);overflow:hidden}
+        .jp-tag{font-size:12.5px;font-weight:750;letter-spacing:.2px;color:rgba(255,255,255,.82)}
+        .jp-in h3{margin:18px 0 8px;font-family:"Bricolage Grotesque","Plus Jakarta Sans",sans-serif;font-size:clamp(25px,2.5vw,34px);line-height:1.12;letter-spacing:-.9px;font-weight:800;color:#fff}
+        .jp-in p{max-width:430px;margin:0;font-size:14px;line-height:1.65;color:rgba(255,255,255,.86)}
+        .jp-scene{flex:1;min-height:0;margin-top:18px;display:flex;align-items:center;justify-content:center;gap:14px;padding:14px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:hidden}
         .jp-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px}
-        .jp-val small{display:block;font-size:9.5px;font-weight:850;letter-spacing:1px;color:rgba(255,255,255,.7)}
-        .jp-val b{display:block;margin-top:3px;font-size:17px;letter-spacing:-.3px;color:#fff}
-        .jp-pg{display:flex;align-items:center;gap:6px}
-        .jp-pg i{width:7px;height:7px;border-radius:9px;background:rgba(255,255,255,.35);transition:width .35s,background .35s}
-        .jp-pg i.cur{width:24px;background:#fff}
-        .jp-pg span{margin-left:8px;font-size:12px;font-weight:850;letter-spacing:.6px;color:#fff}
-        .jp-bar{position:absolute;z-index:3;left:0;bottom:0;width:100%;height:4px;background:rgba(255,255,255,.85);transform-origin:left;transform:scaleX(0);animation:jpFill 7s linear forwards}
+        .jp-val small{display:block;font-size:12px;font-weight:700;color:rgba(255,255,255,.72)}
+        .jp-val b{display:block;margin-top:2px;font-size:18px;letter-spacing:-.3px;color:#fff}
+        .jp-pg{position:relative;z-index:5;display:flex;align-items:center;gap:7px}
+        .jp-pg button{position:relative;width:8px;height:8px;padding:0;border:0;border-radius:9px;background:rgba(255,255,255,.38);cursor:pointer;transition:width .35s,background .35s}
+        .jp-pg button:after{content:"";position:absolute;inset:-9px -3px}
+        .jp-pg button.cur{width:26px;background:#fff}
+        .jp-pg button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+        .jp-pg span{margin-left:8px;font-size:12.5px;font-weight:800;letter-spacing:.5px;color:#fff}
+        .jp-bar{position:absolute;z-index:3;left:0;bottom:0;width:100%;height:4px;background:rgba(255,255,255,.9);transform-origin:left;transform:scaleX(0);animation:jpFill 7s linear forwards}
         .jp-row.hold .jp-bar{animation-play-state:paused}
 
-        /* scene 1: search */
-        .jp-s1{flex-direction:column;gap:14px}
-        .jp-search{display:flex;align-items:center;gap:9px;width:100%;max-width:380px;padding:11px 14px;border-radius:13px;background:#fff;color:#33426a;font-size:13px;font-weight:700;box-shadow:0 10px 24px rgba(10,20,60,.25)}
+        /* scene 1: search + live results */
+        .jp-s1{flex-direction:column;gap:12px}
+        .jp-search{display:flex;align-items:center;gap:9px;width:100%;max-width:400px;padding:11px 14px;border-radius:13px;background:#fff;color:#33426a;font-size:13px;font-weight:700;box-shadow:0 10px 24px rgba(10,20,60,.25)}
         .jp-search svg{flex:none;color:var(--a1)}
         .jp-type{display:inline-block;width:0;overflow:hidden;white-space:nowrap}
-        .jp-panel.on .jp-type{animation:jpType 2s steps(28) .7s forwards}
+        .jp-panel.on .jp-type{animation:jpType 1.8s steps(28) .7s forwards}
         .jp-caret{width:2px;height:16px;margin-left:-6px;background:var(--a1);animation:jpBlink .8s steps(2) infinite}
-        .jp-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-        .jp-chips span{padding:6px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.16);font-size:11.5px;font-weight:750;opacity:0}
-        .jp-panel.on .jp-chips span{animation:jpPop .5s ease both;animation-delay:calc(2.2s + var(--i) * .16s)}
+        .jp-res{display:grid;gap:7px;width:100%;max-width:400px;margin:0;padding:0;list-style:none}
+        .jp-res li{position:relative;overflow:hidden;display:flex;align-items:center;gap:11px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.16);opacity:0}
+        .jp-panel.on .jp-res li{animation:jpPop .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(2.1s + var(--i) * .18s)}
+        .jp-av{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:9px;background:#fff;color:var(--a1);font-size:13px;font-weight:900}
+        .jp-res div{flex:1;min-width:0}
+        .jp-res b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .jp-res small{display:block;font-size:11px;color:rgba(255,255,255,.75)}
+        .jp-res em{font-style:normal;font-size:12px;font-weight:900}
+        .jp-fill{position:absolute;left:0;bottom:0;height:3px;width:var(--p);background:#fff;transform-origin:left;transform:scaleX(0)}
+        .jp-panel.on .jp-fill{animation:jpGrow .9s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(2.4s + var(--i) * .18s)}
 
         /* scene 2: compare */
-        .jp-col{flex:1;min-width:0;max-width:158px;padding:12px 13px 14px;border-radius:14px;background:rgba(255,255,255,.14)}
-        .jp-col b{display:block;font-size:11px;letter-spacing:.7px;color:rgba(255,255,255,.9)}
-        .jp-col span{display:block;height:8px;margin-top:10px;border-radius:9px;width:var(--w);background:linear-gradient(90deg,#fff,rgba(255,255,255,.55));transform-origin:left;transform:scaleX(0)}
+        .jp-col{position:relative;flex:1;min-width:0;max-width:170px;padding:13px 14px 16px;border-radius:15px;background:rgba(255,255,255,.14)}
+        .jp-col b{display:block;font-size:12px;letter-spacing:.3px;color:rgba(255,255,255,.92)}
+        .jp-col span{display:block;height:8px;margin-top:11px;border-radius:9px;width:var(--w);background:linear-gradient(90deg,#fff,rgba(255,255,255,.55));transform-origin:left;transform:scaleX(0)}
         .jp-panel.on .jp-col span{animation:jpGrow .9s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.55s + var(--i) * .14s)}
-        .jp-vs{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#fff;color:var(--a1);font-style:normal;font-size:11px;font-weight:900;box-shadow:0 8px 20px rgba(10,20,60,.25)}
+        .jp-col.win{background:rgba(255,255,255,.2)}
+        .jp-panel.on .jp-col.win{animation:jpGlow 2.6s ease-in-out 1.9s infinite;animation-play-state:var(--ps)}
+        .jp-best{position:absolute;right:10px;top:-11px;padding:4px 10px;border-radius:99px;background:#fff;color:var(--a1);font-size:11px;font-weight:900;text-decoration:none;opacity:0;box-shadow:0 8px 18px rgba(10,20,60,.25)}
+        .jp-panel.on .jp-best{animation:jpPop .5s cubic-bezier(.3,1.5,.5,1) 1.6s both}
+        .jp-vs{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff;color:var(--a1);font-style:normal;font-size:11px;font-weight:900;box-shadow:0 8px 20px rgba(10,20,60,.25)}
 
         /* scene 3: secure connection */
-        .jp-lockwrap{position:relative;flex:none;display:grid;place-items:center;width:92px;height:92px}
-        .jp-lockwrap i{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.55);opacity:0}
-        .jp-panel.on .jp-lockwrap i{animation:jpRing 2.8s ease-out infinite}
+        .jp-lockwrap{position:relative;flex:none;display:grid;place-items:center;width:110px;height:110px}
+        .jp-lockwrap i{position:absolute;inset:8px;border-radius:50%;border:2px solid rgba(255,255,255,.55);opacity:0}
+        .jp-panel.on .jp-lockwrap i{animation:jpRing 2.8s ease-out infinite;animation-play-state:var(--ps)}
         .jp-lockwrap i:nth-child(2){animation-delay:.9s!important}
         .jp-lockwrap i:nth-child(3){animation-delay:1.8s!important}
+        .jp-orbit{position:absolute;inset:0;border-radius:50%;border:1.5px dashed rgba(255,255,255,.4)}
+        .jp-panel.on .jp-orbit{animation:jpSpin 9s linear infinite;animation-play-state:var(--ps)}
+        .jp-orbit u{position:absolute;left:50%;top:-5px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff}
         .jp-lock{position:relative;display:grid;place-items:center;width:62px;height:62px;border-radius:21px;background:#fff;color:var(--a1);box-shadow:0 12px 28px rgba(5,15,50,.3)}
-        .jp-perm{display:flex;flex-direction:column;gap:8px}
-        .jp-perm span{padding:7px 13px;border-radius:11px;background:rgba(255,255,255,.16);font-size:12px;font-weight:750;opacity:0;white-space:nowrap}
-        .jp-panel.on .jp-perm span{animation:jpPop .5s ease both;animation-delay:calc(.6s + var(--i) * .2s)}
+        .jp-perm{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+        .jp-perm li{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.16);font-size:12.5px;font-weight:750;white-space:nowrap;opacity:0}
+        .jp-panel.on .jp-perm li{animation:jpPop .5s ease both;animation-delay:calc(.6s + var(--i) * .22s)}
+        .jp-sw{position:relative;flex:none;width:34px;height:20px;border-radius:99px;background:rgba(255,255,255,.3);text-decoration:none}
+        .jp-sw:after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .3s}
+        .jp-panel.on .jp-sw{animation:jpSwBg .4s ease forwards;animation-delay:calc(1.1s + var(--i) * .3s)}
+        .jp-panel.on .jp-sw:after{animation:jpSwDot .4s cubic-bezier(.3,1.4,.5,1) forwards;animation-delay:calc(1.1s + var(--i) * .3s)}
 
-        /* scene 4: activity */
-        .jp-s4{flex-direction:column;align-items:stretch;gap:12px}
-        .jp-list{display:flex;flex-direction:column;gap:8px;width:100%;max-width:340px;margin:0 auto;padding:0;list-style:none}
+        /* scene 4: activity chart + checklist */
+        .jp-s4{gap:18px}
+        .jp-chart{position:relative;flex:1 1 150px;max-width:270px;aspect-ratio:2.2/1;padding:0}
+        .jp-chart svg{display:block;width:100%;height:100%;overflow:visible}
+        .jp-line{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:100}
+        .jp-panel.on .jp-line{animation:jpDraw 1.5s cubic-bezier(.4,.1,.2,1) .5s forwards}
+        .jp-area{opacity:0}
+        .jp-panel.on .jp-area{animation:jpPop .8s ease 1.6s both}
+        .jp-pulse{position:absolute;right:-5px;top:calc(12% - 6px);width:12px;height:12px;border-radius:50%;background:#fff;opacity:0}
+        .jp-panel.on .jp-pulse{animation:jpPop .4s ease 1.9s both}
+        .jp-pulse:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid #fff;animation:jpPing 1.8s ease-out 2s infinite;animation-play-state:var(--ps)}
+        .jp-list{display:flex;flex-direction:column;gap:8px;flex:none;width:190px;margin:0;padding:0;list-style:none}
         .jp-list li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:11px;background:rgba(255,255,255,.15);font-size:12.5px;font-weight:750;opacity:0}
         .jp-list b{display:grid;place-items:center;flex:none;width:19px;height:19px;border-radius:50%;background:#fff;color:var(--a1);font-size:11px;transform:scale(0)}
         .jp-panel.on .jp-list li{animation:jpPop .5s ease both;animation-delay:calc(.55s + var(--i) * .22s)}
         .jp-panel.on .jp-list b{animation:jpTick .4s cubic-bezier(.3,1.6,.5,1) forwards;animation-delay:calc(.85s + var(--i) * .22s)}
-        .jp-meter{width:100%;max-width:340px;height:7px;margin:0 auto;border-radius:9px;background:rgba(255,255,255,.22);overflow:hidden}
-        .jp-meter span{display:block;width:84%;height:100%;border-radius:9px;background:#fff;transform-origin:left;transform:scaleX(0)}
-        .jp-panel.on .jp-meter span{animation:jpGrow 1.2s cubic-bezier(.2,.8,.2,1) 1.3s forwards}
+
+        /* ===== polish layer: neater fit + extra motion ===== */
+        .jp-scene{min-height:0}
+        .jp-s1{gap:10px;padding:12px 16px}
+        .jp-search{padding:10px 14px}
+        .jp-res{gap:6px}
+        .jp-res li{padding:7px 12px}
+        .jp-av{width:26px;height:26px;border-radius:8px}
+        .jp-res em{min-width:38px;text-align:right}
+        .jp-panel.on .jp-res li{animation-name:jpPop,jpHot;animation-duration:.55s,6s;animation-timing-function:cubic-bezier(.2,.8,.2,1),ease-in-out;animation-iteration-count:1,infinite;animation-fill-mode:both,none;animation-delay:calc(2.1s + var(--i) * .18s),calc(3.6s + var(--i) * 2s);animation-play-state:var(--ps)}
+        .jp-chip{position:absolute;z-index:1;display:none;align-items:center;gap:7px;padding:7px 12px;border-radius:99px;background:#fff;color:var(--a2);font-size:11.5px;font-weight:850;white-space:nowrap;box-shadow:0 10px 22px rgba(10,20,60,.25);opacity:0}
+        .jp-chip i{width:7px;height:7px;border-radius:50%;background:var(--a1)}
+        .jp-c1{left:4%;top:16%}
+        .jp-c2{right:4%;bottom:16%}
+        @media(min-width:1320px){.jp-chip{display:inline-flex}}
+        .jp-panel.on .jp-chip{animation:jpPop .6s cubic-bezier(.3,1.5,.5,1) 2.8s both,jpFloat 4s ease-in-out 3.4s infinite;animation-play-state:var(--ps)}
+        .jp-panel.on .jp-c2{animation-delay:3.1s,3.9s}
+
+        .jp-col b{display:flex;align-items:center;justify-content:space-between;gap:8px}
+        .jp-score{font-style:normal;font-size:11.5px;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.2)}
+        .jp-col.win .jp-score{background:#fff;color:var(--a1)}
+        .jp-panel.on .jp-col span{animation-name:jpGrow,jpBar;animation-duration:.9s,3s;animation-timing-function:cubic-bezier(.2,.8,.2,1),ease-in-out;animation-iteration-count:1,infinite;animation-fill-mode:forwards,none;animation-delay:calc(.55s + var(--i) * .14s),calc(2.2s + var(--i) * .35s);animation-play-state:var(--ps)}
+        .jp-panel.on .jp-vs{animation:jpBeat 2.4s ease-in-out 2s infinite;animation-play-state:var(--ps)}
+
+        .jp-perm li{position:relative;overflow:hidden}
+        .jp-perm li:after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:35%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg)}
+        .jp-panel.on .jp-perm li:after{animation:jpShine 4s ease-in-out calc(2.4s + var(--i) * .5s) infinite;animation-play-state:var(--ps)}
+        .jp-panel.on .jp-lock{animation:jpBeat 2.8s ease-in-out 1.2s infinite;animation-play-state:var(--ps)}
+
+        .jp-badge{position:absolute;left:8px;top:-12px;padding:4px 10px;border-radius:99px;background:#fff;color:var(--a1);font-size:11px;font-weight:900;text-decoration:none;box-shadow:0 8px 18px rgba(10,20,60,.25);opacity:0}
+        .jp-panel.on .jp-badge{animation:jpPop .5s cubic-bezier(.3,1.5,.5,1) 2.1s both,jpFloat 3.6s ease-in-out 2.7s infinite;animation-play-state:var(--ps)}
+        .jp-panel.on .jp-list li{animation-name:jpPop,jpHot;animation-duration:.5s,6s;animation-timing-function:ease,ease-in-out;animation-iteration-count:1,infinite;animation-fill-mode:both,none;animation-delay:calc(.55s + var(--i) * .22s),calc(2.8s + var(--i) * 2s);animation-play-state:var(--ps)}
+
+        .jp-tw{display:inline-block}
+        .jp-panel.on .jp-tw{animation:jpWord .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.35s + var(--t) * .09s)}
+        .jp-panel.on .jp-top{animation:jpFade .7s ease .25s both}
+        .jp-panel.on .jp-in p{animation:jpFade .8s ease .6s both}
+        .jp-panel.on .jp-val{animation:jpFade .7s ease 1s both}
+        .jp-panel.on .jp-wm{animation:jpWm 1s cubic-bezier(.2,.8,.2,1) .2s both}
+
+        .jp-panel:not(.on) .jp-rest .jp-ico{position:relative}
+        .jp-panel:not(.on) .jp-rest .jp-ico:after{content:"";position:absolute;inset:-5px;border-radius:20px;border:2px solid var(--a1);opacity:0;animation:jpPing 3.2s ease-out calc(var(--k) * -.8s) infinite;animation-play-state:var(--ps)}
+        .jp-vlabel{transition:color .3s,letter-spacing .4s}
+        .jp-panel:not(.on):hover .jp-vlabel{letter-spacing:1.8px}
+        .jp-n{transition:transform .3s}
+        .jp-panel:not(.on):hover .jp-n{transform:scale(1.25)}
 
         /* call-to-action band */
-        .jp-cta{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;margin-top:22px;padding:19px 24px 19px 20px;border:1px solid #dfe6fb;border-radius:22px;background:rgba(255,255,255,.78);box-shadow:0 12px 35px rgba(42,61,114,.06)}
+        .jp-cta{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;margin-top:22px;padding:19px 24px 19px 22px;border:1px solid #dfe6fb;border-radius:24px;background:rgba(255,255,255,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 12px 35px rgba(42,61,114,.07)}
         .jp-cta:before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 6px 6px 0;background:linear-gradient(180deg,#4f6ce8,#13a9a4)}
-        .jp-cta-ico{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#edf1ff,#e7f8fb);color:#5c6edb;font-size:20px}
+        .jp-cta-ico{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:15px;background:linear-gradient(145deg,#edf1ff,#e7f8fb);color:#5c6edb;font-size:20px;animation:jpSpin 14s linear infinite;animation-play-state:var(--ps)}
         .jp-cta-txt{flex:1;min-width:0}
-        .jp-cta-txt strong{display:block;color:#263554;font-size:15px}
-        .jp-cta-txt p{margin:4px 0 0;color:#7d8aa5;font-size:12px;line-height:1.6}
-        .jp-btn{position:relative;overflow:hidden;flex:none;padding:14px 22px;border:0;border-radius:13px;background:linear-gradient(105deg,#4f6ce8,#855fdb);color:#fff;font-size:12px;font-weight:850;letter-spacing:.3px;cursor:pointer;box-shadow:0 9px 22px #596bd33a;transition:transform .2s,box-shadow .2s}
-        .jp-btn:hover{transform:translateY(-2px);box-shadow:0 13px 26px #596bd34d}
-        .jp-btn:after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);animation:jpShine 3.6s ease-in-out infinite}
+        .jp-cta-txt strong{display:block;color:#263554;font-size:16px}
+        .jp-cta-txt p{margin:4px 0 0;color:#7d8aa5;font-size:13px;line-height:1.6}
+        .jp-btn{position:relative;overflow:hidden;flex:none;padding:14px 24px;border:0;border-radius:14px;background:linear-gradient(105deg,#4f6ce8,#855fdb);color:#fff;font:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px #596bd33a;transition:transform .2s,box-shadow .2s}
+        .jp-btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px #596bd34d}
+        .jp-btn:focus-visible{outline:3px solid #19b3e6;outline-offset:3px}
+        .jp-btn span{display:inline-block;margin-left:4px;transition:transform .25s}
+        .jp-btn:hover span{transform:translate(3px,-3px)}
+        .jp-btn:after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);animation:jpShine 3.6s ease-in-out infinite;animation-play-state:var(--ps)}
 
+        @keyframes jpHot{0%{background:rgba(255,255,255,.15);translate:0 0}6%,30%{background:rgba(255,255,255,.34);translate:5px 0}38%,100%{background:rgba(255,255,255,.15);translate:0 0}}
+        @keyframes jpBar{50%{opacity:.55}}
+        @keyframes jpBeat{50%{transform:scale(1.12)}}
+        @keyframes jpWord{from{opacity:0;transform:translateY(.6em) rotate(3deg)}}
+        @keyframes jpFade{from{opacity:0;transform:translateY(8px)}}
+        @keyframes jpWm{from{opacity:0;transform:translateX(40px)}}
+        @keyframes jpUp{from{opacity:0;transform:translateY(34px) scale(.97)}}
+        @keyframes jpDrift{to{transform:translate(-50px,40px) scale(1.12)}}
+        @keyframes jpPing{0%{opacity:.8;transform:scale(.6)}100%{opacity:0;transform:scale(1.7)}}
+        @keyframes jpText{to{background-position:220% 0}}
+        @keyframes jpFloat{50%{translate:0 -6px}}
+        @keyframes jpBreathe{50%{transform:scale(1.08)}}
         @keyframes jpFill{to{transform:scaleX(1)}}
         @keyframes jpType{to{width:28ch}}
         @keyframes jpBlink{50%{opacity:0}}
@@ -973,61 +1104,172 @@ function OpportunityHubSection({ onRegister }) {
         @keyframes jpGrow{to{transform:scaleX(1)}}
         @keyframes jpTick{to{transform:scale(1)}}
         @keyframes jpRing{0%{opacity:.7;transform:scale(.62)}100%{opacity:0;transform:scale(1.25)}}
+        @keyframes jpSpin{to{transform:rotate(360deg)}}
+        @keyframes jpGlow{50%{box-shadow:0 0 0 5px rgba(255,255,255,.14),0 0 28px rgba(255,255,255,.4)}}
+        @keyframes jpSwBg{to{background:#fff}}
+        @keyframes jpSwDot{to{transform:translateX(14px);background:var(--a1)}}
+        @keyframes jpDraw{to{stroke-dashoffset:0}}
         @keyframes jpShine{0%,55%{left:-60%}100%{left:130%}}
 
         /* ---- tablet + phone: panels stack and open like an accordion ---- */
-        @media(max-width:860px){
+        @media(max-width:960px){
           .jp-row{flex-direction:column;height:auto;gap:12px}
           .jp-panel,.jp-panel.on{flex:none}
           .jp-panel:not(.on):hover{transform:none}
-          .jp-rest{position:relative;inset:auto;flex-direction:row;justify-content:flex-start;gap:14px;padding:14px 16px;min-height:74px}
+          .jp-rest{position:relative;inset:auto;flex-direction:row;justify-content:flex-start;gap:14px;padding:14px 16px;min-height:76px}
           .jp-panel.on .jp-rest{opacity:1}
+          .jp-panel:not(.on) .jp-rest .jp-ico{animation:none}
           .jp-ico{width:46px;height:46px;border-radius:15px}
           .jp-panel.on .jp-rest .jp-ico{background:rgba(255,255,255,.2);color:#fff;box-shadow:none}
-          .jp-vlabel{writing-mode:horizontal-tb;transform:none;font-size:17px}
+          .jp-vlabel{writing-mode:horizontal-tb;transform:none;font-size:18px}
           .jp-panel.on .jp-vlabel,.jp-panel.on .jp-n{color:#fff}
           .jp-n{margin-left:auto}
-          .jp-open{position:relative;inset:auto;min-width:0;display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s ease}
+          .jp-open{position:relative;inset:auto;min-width:0;display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s ease}
           .jp-panel.on .jp-open{grid-template-rows:1fr}
-          .jp-in{height:auto;min-height:0;overflow:hidden;padding:0 18px;opacity:1;transform:none;transition:visibility 0s .5s}
+          .jp-in{height:auto;min-height:0;overflow:hidden;padding:0 20px;opacity:1;transform:none;transition:visibility 0s .55s}
           .jp-panel.on .jp-in{transition:visibility 0s}
-          .jp-top{display:none}
-          .jp-wm{display:none}
+          .jp-top,.jp-wm,.jp-bar{display:none}
           .jp-in h3{margin-top:2px}
-          .jp-scene{flex:none;min-height:150px}
-          .jp-meta{margin-bottom:20px}
-          .jp-bar{display:none}
+          .jp-scene{flex:none;min-height:170px}
+          .jp-meta{margin-bottom:22px}
         }
         @media(max-width:560px){
-          .jp-section{padding:48px 15px}
-          .jp-head{margin-bottom:27px}
-          .jp-head h2{letter-spacing:-1.1px}
+          .jp-section{padding:46px 14px}
+          .jp-head{margin-bottom:26px}
+          .jp-head h2{letter-spacing:-1.2px}
+          .jp-in{padding:0 16px}
           .jp-scene{padding:12px;gap:10px;flex-wrap:wrap}
-          .jp-perm span{white-space:normal}
+          .jp-col{max-width:none}
+          .jp-perm li{white-space:normal}
+          .jp-list,.jp-chart{width:100%;max-width:none;flex:1 1 100%}
           .jp-cta{flex-wrap:wrap;padding:18px}
           .jp-cta-ico{display:none}
           .jp-cta-txt{flex-basis:100%}
           .jp-btn{width:100%}
         }
+        /* ===== v3: website-matched content, bigger text and extra motion (all CSS-driven, works on touch too) ===== */
+        .jp-head{position:relative}
+        .jp-head p{font-size:clamp(15.5px,1.4vw,17.5px)}
+        .jp-in p{font-size:clamp(14.5px,1.2vw,15.5px)}
+        .jp-tag{font-size:13.5px}
+        .jp-val b{font-size:19px}
+        .jp-res b{font-size:13.5px}
+        .jp-res small{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .jp-res em{font-size:13px}
+        .jp-col b{font-size:13px}
+        .jp-perm li,.jp-list li{font-size:13.5px}
+        .jp-cta-txt strong{font-size:17.5px}
+        .jp-cta-txt p{font-size:14px}
+
+        /* floating icons around the heading (laptop / large tablet) */
+        .jp-fl{position:absolute;z-index:0;display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:#fff;box-shadow:0 14px 30px rgba(60,80,170,.18);font-size:22px;font-weight:900;color:#4f6ce8;pointer-events:none;animation:jpBob 5s ease-in-out infinite;animation-play-state:var(--ps)}
+        .jp-f1{left:2%;top:4%}
+        .jp-f2{right:3%;top:0;color:#13a9a4;animation-delay:-1.6s}
+        .jp-f3{right:12%;bottom:-8%;width:36px;height:36px;border-radius:12px;font-size:16px;color:#8a5cdc;animation-delay:-3s}
+        @media(max-width:900px){.jp-fl{display:none}}
+
+        /* trust pills (same wording as the home hero) */
+        .jp-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:22px}
+        .jp-trust span{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border:1px solid #dfe6fb;border-radius:99px;background:rgba(255,255,255,.92);color:#2b3b66;font-size:13.5px;font-weight:800;box-shadow:0 8px 20px rgba(42,61,114,.08);animation:jpFloat 4.6s ease-in-out calc(var(--i) * -1.3s) infinite;animation-play-state:var(--ps)}
+        .jp-trust b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#4f6ce8,#13a9a4);color:#fff;font-size:12px}
+
+        /* folded panels: a soft light sweeps across, one after another */
+        .jp-panel:not(.on):before{content:"";position:absolute;z-index:0;top:-10%;bottom:-10%;left:-70%;width:45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-18deg);pointer-events:none;animation:jpSweep 5.5s ease-in-out calc(var(--k) * .9s) infinite;animation-play-state:var(--ps)}
+
+        /* opened panel: sparks drifting up */
+        .jp-sparks{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+        .jp-sparks i{position:absolute;bottom:-14px;left:calc(8% + var(--q) * 13%);width:calc(5px + var(--q) * 1.1px);height:calc(5px + var(--q) * 1.1px);border-radius:50%;background:rgba(255,255,255,.7);box-shadow:0 0 12px rgba(255,255,255,.8);opacity:0;animation:jpRise calc(5s + var(--q) * .7s) ease-in calc(var(--q) * -1.1s) infinite;animation-play-state:var(--ps)}
+
+        /* connect scene: Rs.100 coin */
+        .jp-coin{position:absolute;right:-22px;top:-6px;z-index:2;padding:5px 11px;border-radius:99px;background:#fff;color:var(--a2);font-style:normal;font-size:12.5px;font-weight:900;box-shadow:0 8px 18px rgba(10,20,60,.28);animation:jpFloat 3s ease-in-out infinite;animation-play-state:var(--ps)}
+
+        /* CTA button: soft pulse + arrow */
+        .jp-btn{animation:jpBtnPulse 2.8s ease-in-out infinite;animation-play-state:var(--ps)}
+        .jp-btn span{animation:jpArrow 1.8s ease-in-out infinite;animation-play-state:var(--ps)}
+
+        @keyframes jpBob{50%{transform:translateY(-12px) rotate(5deg)}}
+        @keyframes jpSweep{0%,60%{left:-70%}100%{left:140%}}
+        @keyframes jpRise{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:.85}100%{transform:translateY(-420px) translateX(24px) scale(1.1);opacity:0}}
+        @keyframes jpBtnPulse{0%,100%{box-shadow:0 10px 24px #596bd33a,0 0 0 0 rgba(79,108,232,.38)}60%{box-shadow:0 10px 24px #596bd33a,0 0 0 14px rgba(79,108,232,0)}}
+        @keyframes jpArrow{50%{translate:3px -3px}}
+        @keyframes jpNudge{50%{translate:0 4px}}
+
+        /* tablet + phone: clear "tap to open" arrow on every row */
+        @media(max-width:960px){
+          .jp-rest:after{content:"";flex:none;width:9px;height:9px;margin:-3px 4px 0 6px;border-right:2.5px solid var(--a1);border-bottom:2.5px solid var(--a1);transform:rotate(45deg);transition:transform .4s,border-color .3s}
+          .jp-panel.on .jp-rest:after{transform:rotate(-135deg);margin-top:4px;border-color:#fff}
+          .jp-panel:not(.on) .jp-rest:after{animation:jpNudge 2.4s ease-in-out calc(var(--k) * -.5s) infinite;animation-play-state:var(--ps)}
+          .jp-panel.on .jp-sparks{height:100%}
+        }
+        @media(max-width:560px){
+          .jp-trust{gap:8px;margin-top:18px}
+          .jp-trust span{padding:8px 13px;font-size:12.5px}
+          .jp-coin{right:-14px}
+          .jp-perm li,.jp-list li{font-size:13px}
+        }
+        @media(prefers-reduced-motion:reduce){.jp-sparks,.jp-fl{display:none}}
+
+        /* ===== v3.1: Discover scene fits cleanly (no overlapping chips, aligned rows) ===== */
+        .jp-s1{gap:10px}
+        .jp-s1 .jp-search,.jp-s1 .jp-res,.jp-s1 .jp-chips{width:100%;max-width:460px}
+        .jp-chips{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+        .jp-chips .jp-chip{position:static;display:inline-flex;padding:6px 12px;font-size:12px}
+        .jp-panel.on .jp-chips .jp-chip{animation:jpPop .5s cubic-bezier(.3,1.5,.5,1) .45s both}
+        .jp-panel.on .jp-chips .jp-c2{animation-delay:.65s}
+        .jp-s1 .jp-res li{padding:6px 12px}
+        .jp-panel.on .jp-res li{animation-name:jpPop,jpHotS}
+        @keyframes jpHotS{0%{background:rgba(255,255,255,.15)}6%,30%{background:rgba(255,255,255,.3)}38%,100%{background:rgba(255,255,255,.15)}}
+        @media(max-width:560px){.jp-s1{align-items:stretch}.jp-chips{justify-content:center}}
+        /* ===== v3.2: Discover scene = student radar (no lists, no districts) ===== */
+        .jp-s1{flex-direction:row;flex-wrap:wrap;gap:20px;align-items:center;justify-content:center}
+        .jp-radar{position:relative;flex:none;display:grid;place-items:center;width:clamp(130px,15vw,176px);aspect-ratio:1}
+        .jp-rg{position:absolute;border-radius:50%;border:1.5px solid rgba(255,255,255,.35)}
+        .jp-rg1{inset:0;background:rgba(255,255,255,.06)}
+        .jp-rg2{inset:18%}
+        .jp-rg3{inset:36%}
+        .jp-sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,255,255,0) 0deg,rgba(255,255,255,.5) 70deg,rgba(255,255,255,0) 71deg);animation:jpSpin 3.4s linear infinite;animation-play-state:var(--ps)}
+        .jp-core{position:relative;z-index:2;display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:#fff;color:var(--a1);box-shadow:0 10px 24px rgba(5,15,50,.3);animation:jpBeat 2.6s ease-in-out infinite;animation-play-state:var(--ps)}
+        .jp-blip{position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5px 0 0 -5px;border-radius:50%;background:#fff;box-shadow:0 0 14px #fff;text-decoration:none;transform:rotate(var(--a)) translateX(var(--r));opacity:0;animation:jpBlip 3.4s ease-out calc(.5s + var(--i) * .55s) infinite;animation-play-state:var(--ps)}
+        .jp-found{flex:1 1 210px;min-width:0;max-width:280px}
+        .jp-found small{display:block;font-size:12.5px;font-weight:800;letter-spacing:.3px;color:rgba(255,255,255,.8)}
+        .jp-found strong{display:block;margin:5px 0 13px;font-size:clamp(19px,1.9vw,24px);line-height:1.2;letter-spacing:-.4px;color:#fff}
+        .jp-cats{display:flex;flex-wrap:wrap;gap:7px}
+        .jp-cats span{padding:7px 12px;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;font-size:12.5px;font-weight:800;opacity:0}
+        .jp-panel.on .jp-cats span{animation-name:jpPop,jpCat;animation-duration:.5s,6s;animation-timing-function:ease,ease-in-out;animation-iteration-count:1,infinite;animation-fill-mode:both,none;animation-delay:calc(.6s + var(--i) * .15s),calc(2s + var(--i) * 1.2s);animation-play-state:var(--ps)}
+        @keyframes jpBlip{0%{opacity:0;scale:.2}10%{opacity:1;scale:1.5}28%,70%{opacity:.9;scale:1}100%{opacity:0;scale:.6}}
+        @keyframes jpCat{0%,22%,100%{background:rgba(255,255,255,.16);color:#fff}6%,16%{background:#fff;color:var(--a1)}}
+        @media(max-width:560px){.jp-s1{gap:16px}.jp-found{flex:1 1 100%;max-width:none;text-align:center}.jp-cats{justify-content:center}}
+        @media(prefers-reduced-motion:reduce){.jp-cats span,.jp-blip{opacity:1}}
         @media(prefers-reduced-motion:reduce){
-          .jp-panel,.jp-in,.jp-open{transition:none!important}
-          .jp-type{width:28ch!important;animation:none!important}
-          .jp-caret,.jp-lockwrap i,.jp-btn:after,.jp-bar{animation:none!important}
-          .jp-chips span,.jp-perm span,.jp-list li{opacity:1!important;animation:none!important}
-          .jp-col span,.jp-meter span,.jp-list b{transform:none!important;animation:none!important}
+          .jp-section *,.jp-section *:before,.jp-section *:after{animation:none!important;transition:none!important}
+          .jp-section:not(.shown) .jp-rv{opacity:1}
+          .jp-type{width:28ch}
+          .jp-res li,.jp-perm li,.jp-list li,.jp-best,.jp-area,.jp-pulse,.jp-chip,.jp-badge{opacity:1}
+          .jp-dot{display:none}
+          .jp-col span,.jp-fill,.jp-list b{transform:none}
+          .jp-line{stroke-dashoffset:0}
+          .jp-sw{background:#fff}.jp-sw:after{transform:translateX(14px);background:var(--a1)}
         }
       `}</style>
+      <i className="jp-grid" aria-hidden="true" />
       <div className="jp-inner">
         <div className="jp-head">
-          <span className="jp-eyebrow"><i /> CAMPUSCONNECT · YOUR NEXT STEP</span>
-          <h2>Explore more. <span>Choose smarter.</span></h2>
-          <p>Everything you need to make a confident decision, with a simpler experience from discovery to connection.</p>
+          <span className="jp-fl jp-f1" aria-hidden="true">🎓</span><span className="jp-fl jp-f2" aria-hidden="true">₹</span><span className="jp-fl jp-f3" aria-hidden="true">✦</span>
+          <span className="jp-eyebrow jp-rv" style={{ "--d": 0 }}><i /> CampusConnect · For Colleges</span>
+          <h2 className="jp-rv" style={{ "--d": 1 }}><span className="jp-w">Find students.</span> <span className="jp-w jp-grad">Grow admissions.</span></h2>
+          <p className="jp-rv" style={{ "--d": 2 }}>Everything your admission team needs, from finding interested students to confirming admissions.</p>
+          <div className="jp-trust jp-rv" style={{ "--d": 3 }}>
+            {[["Verified Colleges", "Trusted & Genuine"], ["Real Student Leads", "Verified 12th Students"], ["Just ₹100 per Lead", "Quick & Easy"]].map(([t, d], i) => (
+              <span key={t} style={{ "--i": i }} title={d}><b>✓</b>{t}</span>
+            ))}
+          </div>
         </div>
         <div
           className={`jp-row ${hold ? "hold" : ""}`}
-          onMouseEnter={() => setHold(true)}
-          onMouseLeave={() => setHold(false)}
-          onFocus={() => setHold(true)}
+          onKeyDown={onKey}
+          onPointerEnter={(e) => e.pointerType === "mouse" && setHold(true)}
+          onPointerLeave={(e) => e.pointerType === "mouse" && setHold(false)}
+          onFocus={(e) => { try { if (e.target.matches(":focus-visible")) setHold(true); } catch (err) { /* old browser: ignore */ } }}
           onBlur={() => setHold(false)}
         >
           {JP_ITEMS.map((it, i) => {
@@ -1035,10 +1277,13 @@ function OpportunityHubSection({ onRegister }) {
             return (
               <div
                 key={it.key}
-                className={`jp-panel ${on ? "on" : ""}`}
-                style={{ "--a1": it.a1, "--a2": it.a2, "--tint": it.tint, "--sh": it.sh }}
+                id={`jp-panel-${it.key}`}
+                className={`jp-panel jp-rv ${on ? "on" : ""}`}
+                style={{ "--a1": it.a1, "--a2": it.a2, "--tint": it.tint, "--sh": it.sh, "--k": i, "--d": 3 + i }}
+                onPointerMove={(e) => glare(e, on)}
               >
-                <button type="button" className="jp-hit" aria-expanded={on} aria-controls={`jp-body-${it.key}`} aria-label={`${it.label}: ${it.title}`} onClick={() => setActive(i)} />
+                <i className="jp-glare" aria-hidden="true" />
+                <button type="button" id={`jp-hit-${it.key}`} className="jp-hit" aria-expanded={on} aria-controls={`jp-body-${it.key}`} aria-label={`${it.label}: ${it.title}`} onClick={() => choose(i)} />
                 <div className="jp-rest" aria-hidden="true">
                   <span className="jp-ico">{JP_ICONS[it.key]}</span>
                   <span className="jp-vlabel">{it.label}</span>
@@ -1047,13 +1292,17 @@ function OpportunityHubSection({ onRegister }) {
                 <div className="jp-open" id={`jp-body-${it.key}`}>
                   <div className="jp-in" aria-hidden={!on}>
                     <span className="jp-wm" aria-hidden="true">{it.no}</span>
+                    {on && <span className="jp-sparks" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6].map((q) => <i key={q} style={{ "--q": q }} />)}</span>}
                     <div className="jp-top"><span className="jp-ico">{JP_ICONS[it.key]}</span><span className="jp-tag">{it.stat}</span></div>
-                    <h3>{it.title}</h3>
+                    <h3>{it.title.split(" ").flatMap((w, t) => [t ? " " : null, <span key={t} className="jp-tw" style={{ "--t": t }}>{w}</span>])}</h3>
                     <p>{it.desc}</p>
                     {on && <JpScene k={it.key} />}
                     <div className="jp-meta">
-                      <div className="jp-val"><small>YOUR EXPERIENCE</small><b>{it.value}</b></div>
-                      <div className="jp-pg">{JP_ITEMS.map((x, j) => <i key={x.key} className={j === i ? "cur" : ""} />)}<span>{it.no} / 04</span></div>
+                      <div className="jp-val"><small>Your experience</small><b>{it.value}</b></div>
+                      <div className="jp-pg">
+                        {JP_ITEMS.map((x, j) => (<button type="button" key={x.key} className={j === i ? "cur" : ""} aria-label={`Show ${x.label}`} onClick={() => choose(j)} />))}
+                        <span>{it.no} / 04</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1062,10 +1311,10 @@ function OpportunityHubSection({ onRegister }) {
             );
           })}
         </div>
-        <div className="jp-cta">
+        <div className="jp-cta jp-rv" style={{ "--d": 7 }}>
           <span className="jp-cta-ico" aria-hidden="true">✦</span>
-          <div className="jp-cta-txt"><strong>A better experience starts here.</strong><p>Get started and manage your next steps with confidence.</p></div>
-          <button type="button" className="jp-btn" onClick={onRegister}>GET STARTED <span aria-hidden="true"> ↗</span></button>
+          <div className="jp-cta-txt"><strong>Ready to get student leads?</strong><p>Register your college and connect with interested students today.</p></div>
+          <button type="button" className="jp-btn" onClick={onRegister}>Get started <span aria-hidden="true">↗</span></button>
         </div>
       </div>
     </section>
@@ -2039,8 +2288,8 @@ function CollegeSite() {
             <span className="cs-blob b1" /><span className="cs-blob b2" /><span className="cs-blob b3" />
             <span className="wy-grid" aria-hidden="true" />
             <div className="cs-wrap cs-sec">
-              <span className="cs-eyebrow cs-rv">WHY CAMPUSCONNECT</span>
-              <h2 className="cs-h2 cs-rv"><Words>Why colleges use <span className="cs-grad">CampusConnect</span></Words></h2>
+              <span className="cs-eyebrow cs-rv">MADE FOR COLLEGES</span>
+              <h2 className="cs-h2 cs-rv"><Words>Your college, <span className="cs-grad">shown at its best</span></Words></h2>
               <div className="cs-rv zoom"><WhyShowcase /></div>
             </div>
           </section>
@@ -2646,6 +2895,38 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 @keyframes wySpin { to { transform:rotate(360deg); } }
 
 /* tablet + phone: tabs become a swipeable pill row above the stage */
+/* ---- v2 showcase scenes: profile / directory / edit / devices ---- */
+.wy-tags { display:flex; flex-wrap:wrap; gap:8px; }
+.wy-tags span { padding:7px 13px; border-radius:99px; font-size:13.5px; font-weight:800; color:#1349c2; background:#e6f0ff; animation:wyIn .5s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--i)*.18s + .3s); }
+.wy-meter { display:grid; grid-template-columns:1fr auto; align-items:center; gap:6px 12px; }
+.wy-meter small { font-size:13px; font-weight:700; color:#5a6f95; }
+.wy-meter b { font-family:"Bricolage Grotesque",sans-serif; font-size:22px; color:#1558d6; }
+.wy-meter i { grid-column:1/-1; height:8px; overflow:hidden; border-radius:9px; background:#e1ecfb; }
+.wy-meter i::after { content:""; display:block; width:100%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#19b3e6,#34d399); transform-origin:left; animation:wyFill 1.6s cubic-bezier(.2,.8,.2,1) .4s both; }
+.wy-cats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.wy-cat { display:flex; flex-direction:column; align-items:center; gap:6px; padding:16px 8px; text-align:center; color:#fff; border-radius:22px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22); animation:wyIn .55s cubic-bezier(.2,.8,.2,1) calc(var(--i)*.1s + .15s) both,wyCat 9s ease-in-out calc(var(--i)*1.5s + 1.2s) infinite; }
+.wy-cat em { font-size:26px; font-style:normal; line-height:1; }
+.wy-cat b { font-size:14px; font-weight:800; }
+@keyframes wyCat { 0%,16%,100% { background:rgba(255,255,255,.12); color:#fff; transform:none; } 4%,12% { background:#fff; color:#1349c2; transform:translateY(-5px); } }
+.wy-swap { display:grid; }
+.wy-swap span { grid-area:1/1; text-align:right; }
+.wy-swap .a { animation:wyA 6s ease-in-out infinite; }
+.wy-swap .b { opacity:0; animation:wyB 6s ease-in-out infinite; }
+.wy-dev { flex-direction:row; align-items:flex-end; justify-content:center; gap:clamp(14px,3vw,30px); }
+.wy-lap { width:min(62%,330px); animation:wyFloatY 5s ease-in-out infinite; }
+.wy-ph { width:min(24%,118px); animation:wyFloatY 5s ease-in-out -2s infinite; }
+.wy-scr { display:flex; flex-direction:column; gap:7px; padding:9px; overflow:hidden; background:#fff; border:5px solid #dbe8ff; }
+.wy-lap .wy-scr { border-radius:14px 14px 4px 4px; }
+.wy-ph .wy-scr { aspect-ratio:9/17; border-radius:20px; }
+.wy-lap u { display:block; height:9px; margin:0 -8%; border-radius:0 0 12px 12px; background:linear-gradient(#cfe0fb,#9fb9e6); }
+.wy-scr b { display:block; flex:none; height:14px; border-radius:7px; background:linear-gradient(100deg,#1349c2,#19b3e6); }
+.wy-scr span { display:grid; gap:6px; }
+.wy-scr span i { position:relative; display:block; height:9px; overflow:hidden; border-radius:6px; background:#e1ecfb; }
+.wy-scr span i::after { content:""; position:absolute; inset:0; background:linear-gradient(100deg,transparent,rgba(25,179,230,.55),transparent); transform:translateX(-100%); animation:wyScan 2.4s ease-in-out infinite; animation-delay:calc(var(--k)*.3s); }
+.wy-scr em { display:flex; align-items:flex-end; gap:5px; height:60px; margin-top:auto; }
+.wy-ph .wy-scr em { height:48px; }
+.wy-scr em i { flex:1; height:var(--h); border-radius:5px 5px 2px 2px; background:linear-gradient(#19b3e6,#1558d6); transform-origin:bottom; animation:wyBar 2.8s ease-in-out infinite; animation-delay:calc(var(--k)*.2s); }
+@keyframes wyScan { to { transform:translateX(100%); } }
 @media (max-width:1000px) {
   .wy { grid-template-columns:minmax(0,1fr); grid-template-areas:"tabs" "cap" "stage"; gap:18px; }
   .wy-cap { display:block; }
@@ -2669,6 +2950,15 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 @media (max-width:420px) {
   .wy-row em { display:none; }
   .wy-fld { font-size:14px; }
+}
+@media (max-width:640px) {
+  .wy-cat { padding:13px 6px; }
+  .wy-cat em { font-size:22px; }
+  .wy-cat b { font-size:13px; }
+  .wy-tags span { padding:6px 11px; font-size:13px; }
+}
+@media (max-width:420px) {
+  .wy-cats { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (prefers-reduced-motion:reduce) {
   .wy,.wy *,.wy *::before,.wy *::after,.wy-grid { animation:none!important; transition:none!important; }

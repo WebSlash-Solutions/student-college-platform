@@ -2246,18 +2246,29 @@ font-size: 14px;
   will-change: transform, opacity;
 }
 
+/* smoke colour per card (matches each icon colour) */
+.stat-card { --smoke: 120, 138, 168; }
+.stat-card-blue   { --smoke: 47, 128, 237; }
+.stat-card-green  { --smoke: 24, 183, 124; }
+.stat-card-purple { --smoke: 139, 92, 246; }
+.stat-card-orange { --smoke: 233, 153, 47; }
+.stat-card-cyan   { --smoke: 11, 155, 193; }
+.stat-card-gold   { --smoke: 185, 137, 34; }
+.stat-card-pink   { --smoke: 223, 90, 140; }
+.stat-card-red    { --smoke: 224, 91, 101; }
+
 .stat-card::before {
   background:
-    radial-gradient(circle at 18% 78%, rgba(120, 138, 168, 0.55) 0 14%, transparent 42%),
-    radial-gradient(circle at 52% 88%, rgba(150, 165, 190, 0.50) 0 16%, transparent 46%),
-    radial-gradient(circle at 84% 74%, rgba(125, 142, 170, 0.50) 0 13%, transparent 40%);
+    radial-gradient(circle at 18% 78%, rgba(var(--smoke), 0.55) 0 14%, transparent 42%),
+    radial-gradient(circle at 52% 88%, rgba(var(--smoke), 0.48) 0 16%, transparent 46%),
+    radial-gradient(circle at 84% 74%, rgba(var(--smoke), 0.50) 0 13%, transparent 40%);
 }
 
 .stat-card::after {
   background:
-    radial-gradient(circle at 32% 85%, rgba(165, 178, 200, 0.55) 0 15%, transparent 44%),
-    radial-gradient(circle at 68% 80%, rgba(135, 150, 178, 0.45) 0 14%, transparent 42%),
-    radial-gradient(circle at 92% 90%, rgba(160, 174, 196, 0.45) 0 12%, transparent 38%);
+    radial-gradient(circle at 32% 85%, rgba(var(--smoke), 0.45) 0 15%, transparent 44%),
+    radial-gradient(circle at 68% 80%, rgba(var(--smoke), 0.50) 0 14%, transparent 42%),
+    radial-gradient(circle at 92% 90%, rgba(var(--smoke), 0.40) 0 12%, transparent 38%);
 }
 
 .stat-card:hover::before {
@@ -3079,7 +3090,7 @@ function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage, onT
 
 function StatCard({ icon, title, value, change, description, iconClass }) {
   return (
-    <div className="stat-card">
+    <div className={`stat-card stat-card-${iconClass}`}>
       <div className={`stat-icon ${iconClass}`}>{icon}</div>
 
       <div className="stat-content">
@@ -3217,6 +3228,43 @@ function LeadStatusCard() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   LIVE DATE & TIME (12-hour format, updates every second)
+========================================================= */
+
+function LiveDateTime() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const weekday = now.toLocaleDateString("en-US", { weekday: "long" });
+  const day = now.getDate();
+  const month = now.toLocaleDateString("en-US", { month: "short" });
+  const year = now.getFullYear();
+
+  // hour12: true -> after 12 PM it shows 1, 2, 3 ... instead of 13, 14, 15
+  const time = now.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  return (
+    <div className="dashboard-date">
+      <span>
+        {weekday}, {day} {month} {year}
+      </span>
+      <span>•</span>
+      <span style={{ fontVariantNumeric: "tabular-nums" }}>{time}</span>
+      <span className="calendar-icon">▣</span>
     </div>
   );
 }
@@ -3501,10 +3549,7 @@ function DashboardHome() {
           </p>
         </div>
 
-        <div className="dashboard-date">
-          <span>Wednesday, 29 Sep 2026</span>
-          <span className="calendar-icon">▣</span>
-        </div>
+        <LiveDateTime />
       </div>
 
       {/* STAT CARDS */}
