@@ -2489,9 +2489,17 @@ function CollegeSite() {
                 </div>
               </div>
               <div className="cs-rv right cs-about-art">
+                <span className="cs-ab-glow" aria-hidden="true" />
+                <span className="cs-ab-ring" aria-hidden="true" />
+                <span className="cs-ab-ring r2" aria-hidden="true" />
                 <div className="cs-blobframe sm"><Campus /></div>
                 <span className="cs-orb o1 sm"><i>🎓</i></span>
                 <span className="cs-orb o2 sm"><i>📚</i></span>
+                <span className="cs-ab-spark s1" aria-hidden="true">✦</span>
+                <span className="cs-ab-spark s2" aria-hidden="true">✦</span>
+                <span className="cs-ab-spark s3" aria-hidden="true">✦</span>
+                <span className="cs-ab-card c1"><b>🔒</b><em>Contact hidden<small>until you unlock</small></em></span>
+                <span className="cs-ab-card c2"><b>✅</b><em>Student consent<small>every profile</small></em></span>
               </div>
             </div>
           </section>
@@ -3931,6 +3939,57 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
   .pc-dust,.pc-sonar,.pc-tw { display:none; }
   .pc-card.blue .pc-ic svg,.pc-card.green .pc-ic svg,.pc-card.gold .pc-ic svg,.pc-card.gold h3,.pc-sec .pc-slot.c.in .pc-card { animation:none!important; }
 }
+
+/* ===== Our Mission (about) — polish + animations, scoped to .cs-about-sec only ===== */
+.cs-about-sec { background:radial-gradient(900px 420px at 8% 0%,rgba(255,255,255,.75),transparent 60%),radial-gradient(700px 420px at 100% 100%,rgba(25,179,230,.18),transparent 62%),linear-gradient(160deg,#eaf1ff,#e0f2ff); box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 40px 90px -50px rgba(21,70,150,.35); }
+.cs-about-sec::before { content:""; position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(rgba(21,88,214,.16) 1.4px,transparent 1.6px); background-size:26px 26px; -webkit-mask-image:linear-gradient(110deg,transparent 35%,#000 100%); mask-image:linear-gradient(110deg,transparent 35%,#000 100%); opacity:.7; animation:abDots 24s linear infinite; }
+.cs-about-sec::after { content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 12% 78%,rgba(255,122,89,.22) 0 7px,transparent 8px),radial-gradient(circle at 46% 16%,rgba(25,179,230,.28) 0 6px,transparent 7px),radial-gradient(circle at 90% 62%,rgba(108,76,240,.22) 0 8px,transparent 9px),radial-gradient(circle at 60% 90%,rgba(21,88,214,.2) 0 5px,transparent 6px); animation:abFloat 9s ease-in-out infinite; }
+.cs-about-sec .cs-about { position:relative; z-index:2; }
+.cs-about .cs-h2 .cs-grad { background-size:200% auto; animation:abShift 6s linear infinite; }
+.cs-about p { position:relative; padding-left:20px; }
+.cs-about p::before { content:""; position:absolute; left:0; top:8px; bottom:8px; width:4px; border-radius:4px; background:linear-gradient(#1558d6,#19b3e6,#ff7a59,#1558d6); background-size:100% 300%; animation:abLine 4s linear infinite; }
+.cs-pills span { position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:6px; transition:transform .3s cubic-bezier(.2,1.2,.3,1),box-shadow .3s,background .3s,color .3s,border-color .3s; cursor:default; }
+.cs-pills span::after { content:""; position:absolute; top:0; left:-70%; width:45%; height:100%; background:linear-gradient(100deg,transparent,rgba(21,88,214,.22),transparent); transform:skewX(-20deg); animation:shine 4.6s ease-in-out infinite; }
+.cs-pills span:nth-child(2)::after { animation-delay:1.1s; }
+.cs-pills span:nth-child(3)::after { animation-delay:2.2s; }
+.cs-pills span:hover { transform:translateY(-5px) scale(1.04); color:#fff; border-color:transparent; background:linear-gradient(110deg,#1349c2,#19b3e6); box-shadow:0 18px 30px -14px rgba(21,88,214,.7); }
+/* art: everything is sized from the sphere so nothing is clipped by the section */
+.cs-about-art { min-height:0; }
+.cs-ab-glow { position:absolute; z-index:1; width:min(calc(480px * 1.1),100%); aspect-ratio:1; border-radius:50%; background:radial-gradient(circle,rgba(25,179,230,.45),rgba(21,88,214,.12) 55%,transparent 70%); filter:blur(18px); animation:abPulse 5s ease-in-out infinite; }
+.cs-ab-glow::before,.cs-ab-glow::after { content:""; position:absolute; inset:14%; border-radius:50%; border:2px solid rgba(25,179,230,.5); animation:abRipple 4.5s ease-out infinite; }
+.cs-ab-glow::after { animation-delay:-2.25s; }
+.cs-ab-ring { position:absolute; z-index:1; width:min(calc(480px * 1.16),100%); aspect-ratio:1; border-radius:50%; border:2px dashed rgba(21,88,214,.35); animation:spin 40s linear infinite; }
+.cs-ab-ring::after { content:""; position:absolute; top:-7px; left:50%; width:12px; height:12px; margin-left:-6px; border-radius:50%; background:linear-gradient(135deg,#19b3e6,#1558d6); box-shadow:0 0 0 5px rgba(25,179,230,.2),0 0 18px rgba(25,179,230,.8); }
+.cs-ab-ring.r2 { width:min(calc(480px * 1.32),100%); border:2px dotted rgba(25,179,230,.5); animation:spinrev 55s linear infinite; }
+.cs-ab-ring.r2::after { top:auto; bottom:-7px; background:linear-gradient(135deg,#ffb454,#ff7a59); box-shadow:0 0 0 5px rgba(255,122,89,.18),0 0 18px rgba(255,122,89,.8); }
+.cs-about-art .cs-orb.sm.o1 { top:6%; left:max(0px,calc(50% - 330px)); }
+.cs-about-art .cs-orb.sm.o2 { top:36%; bottom:auto; right:max(0px,calc(50% - 345px)); }
+.cs-ab-spark { position:absolute; z-index:5; color:#ff9a3d; font-size:22px; line-height:1; animation:twinkle 3.2s ease-in-out infinite; pointer-events:none; }
+.cs-ab-spark.s1 { top:8%; right:max(0px,calc(50% - 250px)); }
+.cs-ab-spark.s2 { bottom:24%; left:max(0px,calc(50% - 300px)); color:#19b3e6; animation-delay:-1.1s; }
+.cs-ab-spark.s3 { top:50%; right:max(0px,calc(50% - 360px)); color:#6c4cf0; animation-delay:-2s; font-size:16px; }
+.cs-ab-card { position:absolute; z-index:6; overflow:hidden; display:flex; align-items:center; gap:10px; padding:10px 18px 14px 10px; border-radius:20px; background:rgba(255,255,255,.86); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.9); box-shadow:0 20px 40px -18px rgba(21,60,140,.5); animation:bobS 5s ease-in-out infinite; }
+.cs-ab-card::after { content:""; position:absolute; top:0; left:-70%; width:40%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent); transform:skewX(-20deg); animation:shine 5s ease-in-out infinite; }
+.cs-ab-card::before { content:""; position:absolute; left:0; bottom:0; height:4px; width:100%; transform-origin:left; background:linear-gradient(90deg,#1558d6,#19b3e6,#34d399); animation:abFill 4s ease-in-out infinite; }
+.cs-ab-card b { display:grid; place-items:center; width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg,#e1ecff,#cfe6ff); font-size:19px; animation:abWig 3.6s ease-in-out infinite; }
+.cs-ab-card.c2 b { animation-name:abTick; }
+.cs-ab-card em { display:grid; font-style:normal; font-size:15px; font-weight:800; color:#0f2a63; line-height:1.15; }
+.cs-ab-card small { font-size:12px; font-weight:700; color:#5a74a0; }
+.cs-ab-card.c1 { left:max(0px,calc(50% - 390px)); bottom:14%; }
+.cs-ab-card.c2 { right:max(0px,calc(50% - 350px)); bottom:2%; animation-delay:-2.4s; }
+.cs-ab-card.c2::before { animation-delay:-2s; }
+@keyframes abShift { to { background-position:200% center; } }
+@keyframes abPulse { 0%,100% { transform:scale(.92); opacity:.75; } 50% { transform:scale(1.08); opacity:1; } }
+@keyframes abRipple { 0% { transform:scale(.7); opacity:.7; } 100% { transform:scale(1.5); opacity:0; } }
+@keyframes abLine { to { background-position:0 300%; } }
+@keyframes abDots { to { background-position:26px 26px; } }
+@keyframes abFloat { 0%,100% { transform:translate(0,0); } 50% { transform:translate(14px,-16px); } }
+@keyframes abFill { 0% { transform:scaleX(0); } 70%,100% { transform:scaleX(1); } }
+@keyframes abWig { 0%,70%,100% { transform:rotate(0); } 76% { transform:rotate(-14deg); } 84% { transform:rotate(12deg); } 92% { transform:rotate(-6deg); } }
+@keyframes abTick { 0%,70%,100% { transform:scale(1); } 80% { transform:scale(1.28); } 90% { transform:scale(.94); } }
+@media (max-width:1000px) { .cs-ab-card.c1 { left:max(0px,calc(50% - 300px)); } .cs-ab-card.c2 { right:max(0px,calc(50% - 280px)); } }
+@media (max-width:640px) { .cs-about-art { padding-block:14px; } .cs-about-art .cs-orb.sm.o1 { left:2%; top:2%; } .cs-about-art .cs-orb.sm.o2 { right:2%; top:auto; bottom:22%; } .cs-ab-card { padding:8px 14px 12px 8px; border-radius:16px; } .cs-ab-card b { width:32px; height:32px; font-size:16px; } .cs-ab-card em { font-size:13px; } .cs-ab-card small { display:none; } .cs-ab-card.c1 { left:0; bottom:14%; } .cs-ab-card.c2 { right:0; bottom:-2%; } .cs-about p { padding-left:16px; } .cs-ab-ring.r2 { display:none; } .cs-ab-spark.s2,.cs-ab-spark.s3 { display:none; } }
+@media (prefers-reduced-motion:reduce) { .cs-about-sec::before,.cs-about-sec::after,.cs-about p::before,.cs-pills span::after,.cs-ab-glow,.cs-ab-glow::before,.cs-ab-glow::after,.cs-ab-ring,.cs-ab-spark,.cs-ab-card,.cs-ab-card::before,.cs-ab-card::after,.cs-ab-card b,.cs-about .cs-h2 .cs-grad { animation:none!important; } }
 `;
 
 /* scale every "px" in the CSS by UI_SCALE (0.67 = look of 67% browser zoom at 100% zoom).
