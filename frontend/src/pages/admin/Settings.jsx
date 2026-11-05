@@ -1882,8 +1882,9 @@ function Spotlight() {
       lines.push(`${N.transactions} transactions recorded`);
   }
   if (!lines.length) lines.push("Connecting to the server…");
-  const base = [...lines, ...lines];
-  const feed = [...base, ...base];
+  const rep = Math.max(2, Math.ceil(10 / lines.length));
+  const half = Array.from({ length: rep }, () => lines).flat();
+  const feed = [...half, ...half];
   const note = isLive
     ? "Live from server"
     : demo
@@ -3669,6 +3670,18 @@ const CSS = `
     transition:none!important
   }
 }
+/* keep the live ticker scrolling + status dots blinking even with reduced-motion */
+.um-app .sx-roll .sx-track  {
+  animation-name:sxMarq!important;
+  animation-duration:26s!important;
+  animation-timing-function:linear!important;
+  animation-iteration-count:infinite!important
+}
+.um-app .sx-live.demo i  {
+  animation-name:sxPingAmber!important;
+  animation-duration:1.4s!important;
+  animation-iteration-count:infinite!important
+}
 /* ===== SPOTLIGHT (additive - new elements only) ===== */
 .sx-wrap  {
   margin-bottom:18px;
@@ -4189,7 +4202,20 @@ const CSS = `
 }
 .sx-live.demo i  {
   background:#f59e0b;
-  animation:none
+  animation:sxPingAmber 1.4s infinite
+}
+@keyframes sxPingAmber  {
+  0%  {
+    opacity:1;
+    box-shadow:0 0 0 0 rgba(245,158,11,.65)
+  }
+  50%  {
+    opacity:.35
+  }
+  70%,100%  {
+    opacity:1;
+    box-shadow:0 0 0 8px rgba(245,158,11,0)
+  }
 }
 .sx-duo  {
   display:grid;
