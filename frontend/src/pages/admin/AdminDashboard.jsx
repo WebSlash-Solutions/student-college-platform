@@ -244,9 +244,12 @@ const adminStyles = String.raw`/* ==============================================
 ========================================================= */
 
 .admin-login-page {
-  width: 100vw;
-  min-height: 100vh;
-  margin-left: calc(50% - 50vw);
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -517,6 +520,8 @@ const adminStyles = String.raw`/* ==============================================
 @media (max-width: 860px) {
   .admin-login-page {
     padding: 20px 15px;
+    overflow-y: auto;
+    align-items: flex-start;
   }
 
   .login-shell {
@@ -2565,7 +2570,7 @@ function AdminLogin({ onLogin }) {
 
     // Temporary frontend login
     // Backend authentication can be connected later.
-    if (email === "admin@studentcollege.com" && password === "admin123") {
+    if (email === "admin@studentcollege.com" && password === "Admin123") {
       setError("");
       onLogin();
     } else {

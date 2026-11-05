@@ -421,7 +421,22 @@ const ICONS = {
   arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
   crown: <path d="m3.5 8 4.5 4 4-6.5 4 6.5 4.5-4-1.8 10H5.3L3.5 8Z" />,
   trend: <path d="m3.5 17 6-6 3.5 3.5L20.5 7M15 7h5.5v5.5" />,
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3.2 2" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
+      <path d="M3.5 10h17M8 3v4M16 3v4" />
+    </>
+  ),
+  bars: <path d="M6 20V11M12 20V5M18 20v-6" strokeWidth="3" />,
   scan: <path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M8 12h8" />,
+  pulse: <path d="M3 12h4l3-8 4 16 3-8h4" />,
+  bell: <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0" />,
 };
 
 const Icon = ({ name, size = 18 }) => (
@@ -440,21 +455,81 @@ const Icon = ({ name, size = 18 }) => (
   </svg>
 );
 
+/* one shared clock, ticks on the exact second so every clock on the page shows the same time */
+const clockSubs = new Set();
+let clockTimer = null;
+const scheduleClock = () => {
+  clockTimer = setTimeout(() => {
+    const d = new Date();
+    clockSubs.forEach((fn) => fn(d));
+    scheduleClock();
+  }, 1000 - (Date.now() % 1000) + 5);
+};
+const useNow = () => {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    clockSubs.add(setNow);
+    setNow(new Date());
+    if (clockSubs.size === 1) scheduleClock();
+    return () => {
+      clockSubs.delete(setNow);
+      if (!clockSubs.size) {
+        clearTimeout(clockTimer);
+        clockTimer = null;
+      }
+    };
+  }, []);
+  return now;
+};
+
+const LiveClock = ({ big = false }) => {
+  const now = useNow();
+  const time = now
+    .toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true })
+    .toUpperCase();
+  if (big) {
+    return (
+      <div className="cd-hero-clock" aria-label="Current time">
+        <b>{time}</b>
+        <span>Local time</span>
+      </div>
+    );
+  }
+  return (
+    <p className="cd-date">
+      <Icon name="calendar" size={18} />
+      <span>
+        {now.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+      </span>
+    </p>
+  );
+};
+
 const StatCard = ({ icon, label, value, prefix = "", badge, tone, delay }) => {
   const shown = useCountUp(value);
   return (
     <article className={`cd-stat ${tone} cd-anim`} style={{ "--d": `${delay}ms` }}>
-      <div className="cd-stat-top">
-        <span className="cd-stat-icon">
-          <Icon name={icon} />
-        </span>
-        <span className="cd-badge">{badge}</span>
+      <span className="cd-stat-icon">
+        <Icon name={icon} size={24} />
+      </span>
+      <div className="cd-stat-body">
+        <strong>
+          {prefix}
+          {shown.toLocaleString("en-IN")}
+        </strong>
+        <p>{label}</p>
+        <em className="cd-trend">↗ {badge}</em>
       </div>
-      <strong>
-        {prefix}
-        {shown.toLocaleString("en-IN")}
-      </strong>
-      <p>{label}</p>
+      <svg className="cd-spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id={`cdSp-${tone}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="currentColor" stopOpacity=".28" />
+            <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d="M0 34 C12 34 16 14 30 20 S50 36 64 22 S88 2 100 8 V40 H0 Z" fill={`url(#cdSp-${tone})`} />
+        <path d="M0 34 C12 34 16 14 30 20 S50 36 64 22 S88 2 100 8" fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinecap="round" />
+      </svg>
     </article>
   );
 };
@@ -794,7 +869,7 @@ const SMOKE = Array.from({ length: 16 }, (_, i) => {
 
 const PROCESS_STEPS = ["Contacting your bank…", "Verifying payment securely…", "Activating your plan…"];
 
-const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, onPaid, onClose }) => {
+const PaymentModal = ({ title, subtitle, amount, summary, items, promo, receiptLabel, onPaid, onClose }) => {
   const [method, setMethod] = useState("upi");
   const [phase, setPhase] = useState("form"); // form | processing | success
   const [upi, setUpi] = useState("");
@@ -900,14 +975,37 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
 
       {(phase === "form" || phase === "processing") && (
         <form onSubmit={submit} noValidate>
-          <h3 className="cd-modal-title">{title}</h3>
-          {subtitle && <p className="cd-modal-sub">{subtitle}</p>}
-
-          {!promo && (
-            <div className="cd-pay-amount">
-              <span>Amount to pay</span>
-              <strong>{inr(amount)}</strong>
+          <div className="cd-pay-head">
+            <span className="cd-pay-badge">
+              <Icon name="shield" size={24} />
+            </span>
+            <div>
+              <h3 className="cd-modal-title">{title}</h3>
+              {subtitle && <p className="cd-modal-sub">{subtitle}</p>}
             </div>
+          </div>
+
+          {items && items.length ? (
+            <div className="cd-order">
+              <div className="cd-order-title">Order summary</div>
+              {items.map(([k, v]) => (
+                <div className="cd-order-row" key={k}>
+                  <span>{k}</span>
+                  <b>{v}</b>
+                </div>
+              ))}
+              <div className="cd-order-total">
+                <span>Total payable</span>
+                <strong>{inr(amount)}</strong>
+              </div>
+            </div>
+          ) : (
+            !promo && (
+              <div className="cd-pay-amount">
+                <span>Amount to pay</span>
+                <strong>{inr(amount)}</strong>
+              </div>
+            )
           )}
           {summary}
 
@@ -1103,10 +1201,11 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
             </span>
             <Icon name="arrow" size={18} />
           </button>
-          <p className="cd-secure">
-            <Icon name="shield" size={12} />
-            Payments are secure and encrypted.
-          </p>
+          <div className="cd-trust">
+            <span><Icon name="shield" size={13} /> 100% secure</span>
+            <span><Icon name="lock" size={13} /> Encrypted</span>
+            <span><Icon name="check" size={13} /> Instant activation</span>
+          </div>
         </form>
       )}
     </>
@@ -1146,6 +1245,202 @@ const PaymentModal = ({ title, subtitle, amount, summary, promo, receiptLabel, o
         </div>
       )}
     </>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/*  Live data strip (same idea as the admin Settings page)             */
+/*  - tries your backend; falls back to demo numbers that tick up      */
+/*  - set VITE_API_URL in .env or edit API_BASE / liveEndpoints below  */
+/* ------------------------------------------------------------------ */
+
+const API_BASE = (import.meta.env?.VITE_API_URL || "http://localhost:5000/api").replace(/\/$/, "");
+const LIVE_REFRESH_MS = 30000;
+const liveEndpoints = (id) => ({
+  health: "/health",
+  leads: `/colleges/${id}/leads`,
+  enquiries: `/colleges/${id}/enquiries`,
+  views: `/colleges/${id}/profile-views`,
+  reach: `/colleges/${id}/listing-reach`,
+  activity: `/colleges/${id}/activity`,
+});
+
+const listOf = (d) => {
+  if (Array.isArray(d)) return d;
+  const x = d?.data ?? d?.items ?? d?.results ?? d?.rows;
+  return Array.isArray(x) ? x : null;
+};
+const countOf = (d) => {
+  const l = listOf(d);
+  if (l) return l.length;
+  const n = Number(d?.count ?? d?.total ?? d?.totalCount ?? d?.data?.count ?? d?.data?.total);
+  return Number.isFinite(n) ? n : null;
+};
+const textOf = (x) =>
+  typeof x === "string" ? x : x?.message || x?.title || x?.action || x?.description || x?.text || "";
+
+const liveFetch = async (path, signal) => {
+  let token = null;
+  try {
+    token =
+      sessionStorage.getItem("collegeToken") ||
+      sessionStorage.getItem("token") ||
+      localStorage.getItem("token");
+  } catch {
+    /* storage unavailable */
+  }
+  const res = await fetch(`${API_BASE}${path}`, {
+    signal,
+    headers: { Accept: "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json().catch(() => ({}));
+};
+
+const useLiveData = (collegeId) => {
+  const [st, setSt] = useState({ state: "loading", busy: true, ms: null, at: null, n: {}, feed: [] });
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const iv = setInterval(() => setTick((x) => x + 1), LIVE_REFRESH_MS);
+    return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => {
+    let dead = false;
+    const ac = new AbortController();
+    const kill = setTimeout(() => ac.abort(), 8000);
+    const t0 = performance.now();
+    const EP = liveEndpoints(encodeURIComponent(collegeId));
+    const keys = ["leads", "enquiries", "views", "reach"];
+    setSt((p) => ({ ...p, busy: true }));
+    Promise.allSettled([
+      liveFetch(EP.health, ac.signal).then(() => Math.round(performance.now() - t0)),
+      ...keys.map((k) => liveFetch(EP[k], ac.signal)),
+      liveFetch(EP.activity, ac.signal),
+    ]).then(([h, ...rest]) => {
+      clearTimeout(kill);
+      if (dead) return;
+      let ok = h.status === "fulfilled";
+      const n = {};
+      keys.forEach((k, i) => {
+        const r = rest[i];
+        n[k] = r.status === "fulfilled" ? countOf(r.value) : null;
+        if (r.status === "fulfilled") ok = true;
+      });
+      const act = rest[keys.length];
+      const feed =
+        act.status === "fulfilled"
+          ? (listOf(act.value) || []).slice(0, 6).map(textOf).filter(Boolean)
+          : [];
+      setSt((p) => ({
+        state: ok ? "live" : "offline",
+        busy: false,
+        ms: h.status === "fulfilled" ? h.value : null,
+        at: new Date(),
+        n: ok ? n : p.n,
+        feed: ok ? feed : p.feed,
+      }));
+    });
+    return () => {
+      dead = true;
+      clearTimeout(kill);
+      ac.abort();
+    };
+  }, [tick, collegeId]);
+
+  return { ...st, refresh: () => setTick((x) => x + 1) };
+};
+
+const LiveTile = ({ icon, label, to, note, i }) => {
+  const v = useCountUp(to ?? 0, 1100);
+  return (
+    <div className="cl-tile" style={{ "--i": i }}>
+      <span className="cl-tico">
+        <Icon name={icon} size={18} />
+      </span>
+      <b>{to == null ? "—" : v.toLocaleString("en-IN")}</b>
+      <span>{label}</span>
+      <small>{note}</small>
+    </div>
+  );
+};
+
+const LiveStrip = ({ collegeId, demoNums, demoFeed }) => {
+  const live = useLiveData(collegeId);
+  const clock = useNow();
+
+  const have = Object.values(live.n).some((v) => v != null);
+  const isLive = live.state === "live";
+  const demo = live.state === "offline" && !have;
+
+  const N = demo ? demoNums
+    : live.n;
+
+  const lines = demo ? [...demoFeed] : live.feed.length ? [...live.feed] : [];
+  if (!lines.length && !demo) {
+    if (N.leads != null) lines.push(`${N.leads} student leads received`);
+    if (N.enquiries != null) lines.push(`${N.enquiries} enquiries received`);
+    if (N.views != null) lines.push(`${N.views} profile views`);
+    if (N.reach != null) lines.push(`${N.reach} Google listing impressions`);
+  }
+  if (!lines.length) lines.push("Connecting to the server…");
+  const base = [...lines, ...lines];
+  const feed = [...base, ...base];
+
+  const note = isLive
+    ? "Live from server"
+    : demo
+      ? "Live updates"
+      : live.state === "loading"
+        ? "Connecting…"
+        : "Last synced data";
+  const badge = isLive || demo ? "Live" : live.state === "loading" ? "Sync" : "Offline";
+  const stamp = clock
+    .toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true })
+    .toUpperCase();
+
+  return (
+    <section className="cl-wrap cd-anim" style={{ "--d": "40ms" }} aria-label="Live college data">
+      <div className="cl-tiles">
+        <LiveTile i={0} icon="users" label="Student Leads" to={N.leads} note={note} />
+        <LiveTile i={1} icon="mail" label="New Enquiries" to={N.enquiries} note={note} />
+        <LiveTile i={2} icon="search" label="Profile Views" to={N.views} note={note} />
+        <LiveTile i={3} icon="trend" label="Google Listing Reach" to={N.reach} note={note} />
+      </div>
+      <div className="cl-feed" aria-label="Live activity">
+        <span
+          className={`cl-live${isLive || demo ? "" : " off"}`}
+                  >
+          <i /> {badge}
+        </span>
+        <div className="cl-roll">
+          <div className="cl-track" style={{ animationDuration: `${Math.max(24, lines.length * 2 * 2.6)}s` }}>
+            {feed.map((a, k) => (
+              <span key={k}>
+                <Icon name="bell" size={13} />
+                {a}
+              </span>
+            ))}
+          </div>
+        </div>
+        <span className="cl-sync">
+          <span>
+            {isLive && live.ms != null ? `${live.ms} ms · ` : ""}
+            {stamp}
+          </span>
+          <button
+            type="button"
+            className={`cl-rf${live.busy ? " spin" : ""}`}
+            onClick={live.refresh}
+            aria-label="Refresh live data"
+            title="Refresh"
+          >
+            <Icon name="pulse" size={15} />
+          </button>
+        </span>
+      </div>
+    </section>
   );
 };
 
@@ -1759,6 +2054,273 @@ export default function CollegeDashboard() {
           .cd-hero::before, .cd-hero::after, .cd-listing::after, .cd-user-text small i, .cd-spinner { animation-duration: 0s !important; }
           .cd-overlay, .cd-modal, .cd-tick, .cd-pane, .cdp-overlay, .cdp-card { animation: none !important; }
         }
+
+        /* ===== UI refresh (layout + look only) ===== */
+        .cd-shell { background: radial-gradient(1100px 480px at 8% -8%, #dbe7ff 0%, transparent 60%), radial-gradient(900px 480px at 100% 35%, #e4e7ff 0%, transparent 60%), linear-gradient(160deg, #eef3ff 0%, #f6f8ff 50%, #e9efff 100%); }
+        .cd-topbar { display: grid; grid-template-columns: auto minmax(180px, 520px) auto; justify-content: space-between; gap: 20px; width: calc(100% - 2 * clamp(16px, 4vw, 48px)); max-width: 1184px; height: 70px; margin: 14px auto 0; top: 14px; padding: 0 16px; border: 1px solid #e3ebf7; border-radius: 22px; background: rgba(255,255,255,.92); box-shadow: 0 10px 30px rgba(40,70,160,.08); }
+        .cd-top-search { position: relative; display: block; width: 100%; }
+        .cd-top-search svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #1f6fe8; }
+        .cd-top-search input { width: 100%; height: 44px; padding: 0 16px 0 44px; border: 1px solid #e0e8f6; border-radius: 999px; outline: none; background: #f4f7ff; color: #183453; font-size: 13px; font-family: inherit; transition: all .2s; }
+        .cd-top-search input:focus { border-color: #3b8cf0; background: #fff; box-shadow: 0 0 0 3px rgba(59,140,240,.14); }
+        .cd-user { padding: 5px 16px 5px 6px; border: 1px solid #e3ebf7; border-radius: 999px; background: #fff; }
+        .cd-logout { border-radius: 12px; }
+
+        .cd-hero { min-height: 142px; padding: 26px 34px; border-radius: 26px; background: linear-gradient(100deg, #0a2a78 0%, #1245b8 45%, #2f7df0 100%); box-shadow: 0 18px 40px rgba(18,69,184,.28), inset 0 0 0 1px rgba(255,255,255,.22); }
+        .cd-date { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 14px; opacity: .95; }
+        .cd-hero h2 { margin-bottom: 16px; font-size: clamp(22px, 3vw, 34px); font-weight: 800; }
+        .cd-hl { color: #8fd0ff; }
+        .cd-chip { padding: 9px 16px; border: 1px solid rgba(255,255,255,.26); background: rgba(255,255,255,.14); font-size: 13px; }
+        .cd-hero-art { position: absolute; right: 0; bottom: 0; width: min(48%, 540px); height: 100%; opacity: .55; pointer-events: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%); mask-image: linear-gradient(90deg, transparent, #000 45%); }
+        .cd-hero-clock { position: relative; z-index: 1; align-self: flex-start; text-align: right; }
+        .cd-hero-clock b { display: block; font-size: clamp(20px, 2.4vw, 30px); font-weight: 800; letter-spacing: .5px; font-variant-numeric: tabular-nums; text-shadow: 0 2px 12px rgba(0,0,0,.25); }
+        .cd-hero-clock span { font-size: 11.5px; opacity: .85; }
+
+        .cd-stats { gap: 18px; margin: 20px 0; }
+        .cd-stat { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; overflow: hidden; padding: 20px 22px; border-radius: 22px; border-color: #e6ecfb; background: linear-gradient(135deg, #fff 35%, var(--bg) 140%); }
+        .cd-stat-icon { width: 54px; height: 54px; border-radius: 50%; }
+        .cd-stat-body { position: relative; z-index: 1; min-width: 0; }
+        .cd-stat strong { margin: 0; font-size: 28px; }
+        .cd-stat p { margin: 2px 0 6px; }
+        .cd-trend { display: block; font-style: normal; font-size: 11.5px; font-weight: 700; color: #12a07a; }
+        .cd-spark { position: absolute; right: 12px; bottom: 34px; width: 42%; height: 50px; color: var(--c); pointer-events: none; }
+
+        .cd-plan { padding: 22px 26px; border: 1px solid #ddd6ff; border-top: 1px solid #ddd6ff; border-radius: 26px; background: var(--pbg); background: linear-gradient(120deg, color-mix(in srgb, var(--pc) 14%, #fff), #fff 55%, color-mix(in srgb, var(--pc) 8%, #fff)); box-shadow: 0 14px 36px rgba(90,60,200,.12); }
+        .cd-plan-icon { width: 64px; height: 64px; border-radius: 50%; }
+        .cd-plan-title small { font-size: 12.5px; letter-spacing: .3px; color: var(--pc); }
+        .cd-plan-title h3 { font-size: 28px; font-weight: 800; }
+        .cd-plan-status.active { border: 1px solid #bfe9d8; }
+        .cd-plan-grid > div { border-radius: 14px; background: var(--pbg); background: color-mix(in srgb, var(--pc) 12%, #fff); }
+
+        .cd-card { border-color: #e6ecfb; border-radius: 24px; box-shadow: 0 12px 34px rgba(40,70,160,.08); }
+        .cd-card-head { border-bottom: 0; padding: 20px 22px 14px; }
+        .cd-card-head h3 { display: flex; align-items: center; gap: 12px; font-size: 19px; font-weight: 800; }
+        .cd-head-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: #1f6fe8; background: #eaf2ff; }
+        .cd-table th { padding: 14px 16px; background: #f5f8fe; }
+        .cd-unlock { border-radius: 999px; padding: 8px 14px; }
+        .cd-unlock.owned { border-color: #bfe9d8; background: #e4f8ee; }
+
+        .cd-listing { min-height: 200px; padding: 22px; border-radius: 24px; background: radial-gradient(circle at 88% 18%, #3a8dff 0%, transparent 46%), linear-gradient(135deg, #0a2f8f, #1457d6 62%, #0f3fae); box-shadow: 0 16px 34px rgba(20,87,214,.3); }
+        .cd-listing > svg.cd-listing-art { position: absolute; right: 14px; top: 44px; width: 128px; height: 108px; z-index: 0; opacity: .95; }
+        .cd-gl { display: inline-flex; align-items: center; gap: 8px; }
+        .cd-listing h4 { max-width: 64%; font-size: 15px; font-weight: 800; }
+        .cd-listing p { max-width: 70%; font-size: 11px; }
+        .cd-listing .cd-btn { color: #fff; border-radius: 999px; padding: 11px 18px; background: linear-gradient(135deg, #20c8ff, #2f7df0); box-shadow: 0 8px 18px rgba(0,0,0,.22); }
+
+        .cd-activity { padding-left: 28px; border-bottom: 0; }
+        .cd-activity::before { top: 18px; background: #1f6fe8; box-shadow: 0 0 0 4px #e3efff; }
+        .cd-activity::after { content: ""; position: absolute; left: 3px; top: 30px; bottom: -14px; width: 2px; background: #dbe6fb; }
+        .cd-activity:last-child::after { display: none; }
+
+        .cd-courses-wrap { position: relative; margin-top: 18px; padding-left: 210px; }
+        .cd-courses-wrap .cd-courses { margin-top: 0; }
+        .cd-courses-art { position: absolute; left: 4px; bottom: -8px; width: 190px; height: 190px; }
+        .cd-period { padding: 9px 16px; border: 1px solid #dfe8f5; border-radius: 12px; background: #fff; color: #334e70; font-size: 12px; font-weight: 700; white-space: nowrap; }
+        .cd-course { border-bottom: 0; }
+        .cd-course-bar { display: flex; align-items: center; gap: 14px; margin-top: 10px; }
+        .cd-course-bar .cd-progress { flex: 1; height: 9px; margin-top: 0; }
+        .cd-course-bar b { min-width: 46px; text-align: right; font-size: 16px; color: #14335a; }
+
+        .cd-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 28px; padding: 18px 0 0; border-top: 1px solid #e3ebf7; text-align: left; font-size: 12px; }
+        .cd-foot-left, .cd-foot-right { display: inline-flex; align-items: center; gap: 8px; }
+        .cd-foot-right { gap: 18px; }
+        .cd-social { display: inline-flex; gap: 10px; }
+        .cd-social i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #eaf2ff; color: #1245b8; font-style: normal; font-size: 11px; font-weight: 800; }
+
+        @media (max-width: 1050px) {
+          .cd-topbar { grid-template-columns: auto minmax(120px, 1fr) auto; }
+          .cd-hero-art { opacity: .3; }
+        }
+        @media (max-width: 760px) {
+          .cd-topbar { display: flex; }
+          .cd-top-search { display: none; }
+          .cd-hero-clock { align-self: flex-start; text-align: left; }
+          .cd-courses-wrap { padding-left: 0; }
+          .cd-courses-art { display: none; }
+          .cd-stat-icon { width: 44px; height: 44px; }
+          .cd-spark { width: 34%; }
+          .cd-listing h4, .cd-listing p { max-width: 100%; }
+          .cd-listing > svg.cd-listing-art { display: none; }
+          .cd-footer { justify-content: center; text-align: center; }
+        }
+
+        /* ===== payment page refresh (look only, animations untouched) ===== */
+        .cd-overlay { background: rgba(10,24,64,.55); backdrop-filter: blur(8px); }
+        .cd-modal { padding: 28px 28px 24px; border: 1px solid rgba(255,255,255,.8); border-radius: 28px; background: linear-gradient(180deg, #fff, #f8faff); box-shadow: 0 40px 90px rgba(20,40,120,.38); }
+        .cd-x { top: 16px; right: 16px; width: 34px; height: 34px; color: #4b5f86; background: #eef3ff; }
+        .cd-pay-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; padding-right: 34px; }
+        .cd-pay-badge { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #2f7df0, #6d4de0); box-shadow: 0 10px 22px rgba(60,90,220,.32); }
+        .cd-pay-head .cd-modal-title { margin: 0 0 3px; font-size: 21px; font-weight: 800; }
+        .cd-pay-head .cd-modal-sub { margin: 0; }
+        .cd-pay-amount { padding: 16px 18px; border: 1px solid #dfe6ff; border-radius: 18px; background: linear-gradient(120deg, #eaf1ff, #f1ebff); }
+        .cd-pay-amount strong { font-size: 26px; font-weight: 800; color: #2a3fb0; }
+        .cd-teaser { border-color: #d6defa; border-radius: 16px; background: #fbfcff; }
+        .cd-methods-label { font-size: 13px; letter-spacing: .2px; }
+        .cd-methods button { padding: 18px 8px 14px; border-color: #e2e8f8; border-radius: 18px; }
+        .cd-methods button:hover { border-color: #a8b9f5; }
+        .cd-methods button.active { border-color: #4a6cf0; background: linear-gradient(180deg, #f3f6ff, #eef1ff); box-shadow: 0 8px 20px rgba(74,108,240,.2); }
+        .cd-method-check { background: #4a6cf0; }
+        .cd-field { height: 48px; border-color: #e1e7f8; border-radius: 14px; background: #f5f7ff; }
+        .cd-field:focus { border-color: #4a6cf0; box-shadow: 0 0 0 4px rgba(74,108,240,.14); }
+        .cd-field.bad { border-color: #e66a62; background: #fff8f7; }
+        .cd-input-icon { height: 48px; }
+        .cd-upi-app, .cd-banks button { border-radius: 16px; }
+        .cd-upi-app:hover, .cd-upi-app.selected { border-color: #7d96f2; background: #f2f5ff; }
+        .cd-banks button:hover { border-color: #a8b9f5; }
+        .cd-banks button.active { border-color: #4a6cf0; color: #2a3fb0; background: #f2f5ff; }
+        .cd-banks button.active svg { color: #4a6cf0; }
+        .cd-qr-panel { border-color: #dbe3fb; border-radius: 18px; background: linear-gradient(145deg, #f8faff, #eef1ff); }
+        .cd-qr-open { border-radius: 999px; background: linear-gradient(135deg, #2f7df0, #5a4de0); }
+        .cd-qr-open:hover { background: linear-gradient(135deg, #2a6fdc, #4f42d0); }
+        .cd-primary, .cd-primary.pay { border-radius: 999px; background: linear-gradient(135deg, #2f7df0, #5a4de0); box-shadow: 0 12px 24px rgba(74,90,224,.35); }
+        .cd-primary:hover, .cd-primary.pay:hover { background: linear-gradient(135deg, #2a6fdc, #4f42d0); }
+        .cd-primary.pay { height: 54px; }
+        .cd-secure { padding: 9px 12px; border-radius: 12px; background: #f3f6ff; color: #5d6f94; }
+        .cd-receipt { border-radius: 16px; background: #f5f7ff; }
+        .cdp-card { border-radius: 32px; }
+        .cdp-ring i { border-top-color: #4a6cf0; border-right-color: #b3a6ff; }
+        .cd-promo { background: radial-gradient(120% 80% at 80% 10%, #4a72f2 0%, rgba(74,114,242,0) 60%), linear-gradient(165deg, #0a2a78 0%, #1a3aa8 55%, #241a80 100%); }
+        @media (max-width: 640px) {
+          .cd-modal { padding: 24px 18px 20px; border-radius: 24px 24px 0 0; }
+          .cd-pay-badge { width: 44px; height: 44px; }
+        }
+
+        /* ===== live data strip ===== */
+        .cl-wrap { display: grid; gap: 14px; margin: 20px 0 0; }
+        .cl-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+        .cl-tile { position: relative; overflow: hidden; display: grid; gap: 2px; padding: 16px 18px; border: 1px solid #e6ecfb; border-radius: 18px; background: #fff; box-shadow: 0 8px 22px rgba(40,70,160,.06); opacity: 0; animation: cdUp .6s calc(.15s + var(--i) * 90ms) cubic-bezier(.2,.7,.2,1) forwards; transition: transform .25s, box-shadow .25s, border-color .25s; }
+        .cl-tile:hover { transform: translateY(-4px); border-color: #2f7df0; box-shadow: 0 14px 28px -16px rgba(33,119,232,.5); }
+        .cl-tico { display: grid; place-items: center; width: 36px; height: 36px; margin-bottom: 8px; border-radius: 11px; color: #fff; background: linear-gradient(135deg, #1f6fe8, #7c5cf0); transition: transform .35s; }
+        .cl-tile:hover .cl-tico { transform: rotate(-8deg) scale(1.1); }
+        .cl-tile b { font-size: 26px; font-weight: 800; letter-spacing: -.02em; color: #14335a; font-variant-numeric: tabular-nums; }
+        .cl-tile > span:not(.cl-tico) { font-size: 13.5px; font-weight: 600; color: #183453; }
+        .cl-tile small { font-size: 12px; color: #8392a6; }
+
+        .cl-feed { overflow: hidden; display: flex; align-items: center; gap: 12px; padding: 9px 14px; border: 1px solid #e6ecfb; border-radius: 14px; background: #fff; opacity: 0; animation: cdUp .6s .5s ease forwards; }
+        .cl-live { display: inline-flex; align-items: center; gap: 7px; flex: none; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #e11d48; }
+        .cl-live i { width: 8px; height: 8px; border-radius: 50%; background: #e11d48; animation: clPing 1.6s infinite; }
+        .cl-live.demo { color: #d97706; }
+        .cl-live.demo i { background: #f59e0b; animation: none; }
+        .cl-live.off { color: #64748b; }
+        .cl-live.off i { background: #94a3b8; animation: none; }
+        .cl-roll { overflow: hidden; flex: 1; min-width: 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+        .cl-track { display: flex; gap: 34px; width: max-content; animation: clMarq 26s linear infinite; }
+        .cl-roll:hover .cl-track { animation-play-state: paused; }
+        .cl-track span { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; color: #66758f; font-size: 13px; }
+        .cl-track svg { color: #1f6fe8; }
+        .cl-sync { display: inline-flex; align-items: center; gap: 10px; flex: none; }
+        .cl-sync > span { font-size: 12px; color: #8392a6; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .cl-rf { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #e0e8f4; border-radius: 9px; background: #f7f9fd; color: #66758f; cursor: pointer; transition: color .2s, border-color .2s, transform .2s; }
+        .cl-rf:hover { color: #1f6fe8; border-color: #1f6fe8; transform: translateY(-2px); }
+        .cl-rf.spin svg { animation: cdSpin .8s linear infinite; }
+        @keyframes clMarq { to { transform: translateX(-50%); } }
+        @keyframes clPing { 0% { box-shadow: 0 0 0 0 rgba(225,29,72,.6); } 70%, 100% { box-shadow: 0 0 0 8px rgba(225,29,72,0); } }
+        @media (max-width: 1050px) { .cl-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 640px) {
+          .cl-tiles { gap: 10px; }
+          .cl-tile { padding: 13px; }
+          .cl-tile b { font-size: 22px; }
+          .cl-feed { padding: 8px 10px; }
+          .cl-sync > span { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cl-tile, .cl-feed { animation: none !important; opacity: 1 !important; }
+          .cl-track, .cl-live i { animation: none !important; }
+        }
+
+        /* ===== payment modal: compact, fully visible, clean ===== */
+        .cd-overlay { padding: 12px; }
+        .cd-modal { max-width: 480px; max-height: calc(100vh - 24px); padding: 22px 24px 18px; border-radius: 24px; }
+        .cd-modal.wide { max-width: 940px; padding: 0; overflow: hidden; border-radius: 26px; }
+        .cd-split { max-height: calc(100vh - 24px); }
+        .cd-split-main { display: flex; flex-direction: column; justify-content: center; padding: 22px 26px 16px; overflow-y: auto; max-height: calc(100vh - 24px); }
+        .cd-split-main form { display: block; }
+
+        .cd-pay-head { gap: 12px; margin-bottom: 12px; }
+        .cd-pay-badge { width: 44px; height: 44px; }
+        .cd-pay-head .cd-modal-title, .cd-split-main .cd-modal-title { margin: 0 0 2px; font-size: 20px; letter-spacing: -.4px; }
+        .cd-pay-head .cd-modal-sub, .cd-split-main .cd-modal-sub { margin: 0; max-width: none; font-size: 12.5px; line-height: 1.45; }
+        .cd-pay-amount { padding: 12px 16px; border-radius: 14px; }
+        .cd-pay-amount strong { font-size: 22px; }
+        .cd-teaser { margin-top: 10px; padding: 10px 12px; border-radius: 14px; }
+
+        .cd-methods-label { margin: 14px 0 8px; font-size: 12.5px; }
+        .cd-methods { gap: 8px; }
+        .cd-methods button { gap: 2px; padding: 12px 6px 10px; border-radius: 14px; }
+        .cd-methods button > svg { width: 22px; height: 22px; }
+        .cd-methods button b { margin-top: 4px; font-size: 12.5px; }
+        .cd-methods button small { display: none; }
+        .cd-method-check { top: 6px; right: 6px; width: 17px; height: 17px; }
+
+        .cd-label { margin: 10px 0 6px; font-size: 12px; }
+        .cd-field { height: 44px; font-size: 13.5px; border-radius: 12px; }
+        .cd-input-icon { height: 44px; }
+        .cd-field-error { margin-top: 4px; font-size: 11px; }
+        .cd-popular-label { margin-top: 12px; }
+
+        .cd-upi-apps { gap: 8px; margin-top: 6px; }
+        .cd-upi-app { min-height: 62px; gap: 5px; padding: 8px 4px; border-radius: 13px; }
+        .cd-upi-mark { width: 26px; height: 26px; font-size: 14px; }
+        .cd-upi-mark.paytm { width: 46px; font-size: 12px; }
+
+        .cd-qr-panel { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "copy img" "open img"; align-items: center; gap: 8px 14px; margin-top: 10px; padding: 12px 14px; text-align: left; border-radius: 16px; }
+        .cd-qr-copy { grid-area: copy; }
+        .cd-qr-copy small { max-width: none; }
+        .cd-qr-panel img { grid-area: img; width: 112px; height: 112px; }
+        .cd-qr-open { grid-area: open; justify-self: start; padding: 8px 16px; }
+
+        .cd-banks { gap: 7px; }
+        .cd-banks button { min-height: 40px; padding: 6px 10px; border-radius: 12px; }
+
+        .cd-two { gap: 10px; }
+        .cd-primary { height: 46px; margin-top: 16px; }
+        .cd-primary.pay { height: 50px; margin-top: 16px; }
+        .cd-secure { margin: 10px 0 0; padding: 0; background: none; font-size: 11px; }
+
+        /* order summary + trust row */
+        .cd-order { padding: 4px 16px; border: 1px solid #dfe6ff; border-radius: 16px; background: linear-gradient(120deg, #f2f6ff, #f6f2ff); }
+        .cd-order-title { padding: 10px 0 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #7a8ba8; }
+        .cd-order-row { display: flex; justify-content: space-between; gap: 14px; padding: 6px 0; font-size: 12.5px; }
+        .cd-order-row span { color: #6a7d99; }
+        .cd-order-row b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #183453; text-align: right; }
+        .cd-order-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; padding: 10px 0 12px; border-top: 1px dashed #ccd6f5; }
+        .cd-order-total span { font-size: 13px; font-weight: 700; color: #29415f; }
+        .cd-order-total strong { font-size: 23px; font-weight: 800; letter-spacing: -.5px; color: #2a3fb0; }
+        .cd-trust { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font-size: 11px; font-weight: 600; color: #5d6f94; }
+        .cd-trust span { display: inline-flex; align-items: center; gap: 5px; }
+        .cd-trust svg { color: #12a07a; }
+
+        /* left promo panel */
+        .cd-promo { padding: 22px 26px 20px; }
+        .cd-promo-badge { margin-top: 18px; padding: 6px 12px; font-size: 11.5px; }
+        .cd-promo-title { margin: 12px 0 6px; font-size: 28px; }
+        .cd-promo-desc { font-size: 12px; }
+        .cd-gmock { margin: 16px 6px 0 2px; padding: 10px; border-radius: 18px; }
+        .cd-gmock-card { padding: 12px 12px 8px; }
+        .cd-gresult { margin-top: 7px; padding: 7px 9px; }
+        .cd-promo-total { padding-top: 16px; }
+        .cd-promo-total strong { font-size: 28px; }
+        .cd-promo-steps { margin-top: 12px; }
+
+        /* short screens: drop decorative bits so everything fits without scrolling */
+        @media (max-height: 800px) {
+          .cd-promo-desc, .cd-gmock-arrow, .cd-gresult.dim.faint, .cd-order-title { display: none; }
+          .cd-promo-badge { margin-top: 12px; }
+          .cd-gmock { margin-top: 12px; }
+        }
+        @media (max-height: 680px) {
+          .cd-promo-steps, .cd-gresult.dim { display: none; }
+        }
+        @media (max-width: 860px) {
+          .cd-modal.wide { overflow: auto; border-radius: 24px 24px 0 0; }
+          .cd-split, .cd-split-main { max-height: none; }
+          .cd-split-main { overflow: visible; padding: 18px 18px 16px; }
+        }
+        @media (max-width: 640px) {
+          .cd-overlay { padding: 0; }
+          .cd-modal { max-height: 94vh; border-radius: 24px 24px 0 0; padding: 20px 16px 16px; }
+          .cd-qr-panel { grid-template-columns: 1fr; grid-template-areas: "copy" "img" "open"; justify-items: center; text-align: center; }
+          .cd-qr-open { justify-self: center; }
+        }
       `}</style>
 
       <header className="cd-topbar">
@@ -1770,6 +2332,15 @@ export default function CollegeDashboard() {
             Campus<b>Connect</b>
           </span>
         </div>
+        <label className="cd-top-search">
+          <Icon name="search" size={17} />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search students, courses..."
+            aria-label="Search students and courses"
+          />
+        </label>
         <div className="cd-top-right">
           <div className="cd-user">
             <span className="cd-avatar">{initials}</span>
@@ -1790,9 +2361,9 @@ export default function CollegeDashboard() {
       <main className="cd-content">
         <section className="cd-hero cd-anim">
           <div className="cd-hero-text">
-            <p className="cd-date">{today}</p>
+            <LiveClock />
             <h2>
-              {greeting}, {collegeName} 👋
+              {greeting}, <span className="cd-hl">{collegeName}</span> 👋
             </h2>
             <div className="cd-chips">
               <span className="cd-chip">
@@ -1805,7 +2376,36 @@ export default function CollegeDashboard() {
               </span>
             </div>
           </div>
+          <svg className="cd-hero-art" viewBox="0 0 520 160" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+            <defs>
+              <pattern id="cdWin" width="22" height="26" patternUnits="userSpaceOnUse">
+                <rect x="5" y="6" width="10" height="14" fill="#1b4fb8" opacity=".6" />
+              </pattern>
+            </defs>
+            <rect x="110" y="56" width="350" height="104" fill="#cfe0ff" opacity=".6" />
+            <rect x="110" y="56" width="350" height="104" fill="url(#cdWin)" />
+            <rect x="200" y="22" width="170" height="138" fill="#e4eeff" opacity=".8" />
+            <rect x="200" y="22" width="170" height="138" fill="url(#cdWin)" />
+            <polygon points="285,4 195,24 375,24" fill="#eef4ff" opacity=".9" />
+            <circle cx="80" cy="130" r="30" fill="#2f9c6a" opacity=".55" />
+            <circle cx="490" cy="124" r="34" fill="#2f9c6a" opacity=".55" />
+          </svg>
+          <LiveClock big />
         </section>
+
+        <LiveStrip
+          collegeId={college.id ?? college.userId ?? collegeKey}
+          demoNums={{
+            leads: totalStudents,
+            enquiries: newlyAdded,
+            views: totalStudents * 7 + (hash(collegeKey) % 40),
+            reach: totalStudents * 43 + (hash(collegeKey) % 120),
+          }}
+          demoFeed={[
+            ...data.activity.map((a) => `${a.title} - ${a.text}`),
+            ...data.leads.slice(2, 6).map((l) => `${l.name} from ${l.location} viewed ${l.course}`),
+          ]}
+        />
 
         <section className="cd-stats">
           <StatCard
@@ -1854,7 +2454,7 @@ export default function CollegeDashboard() {
           <div className="cd-plan-head">
             <div className="cd-plan-title">
               <span className="cd-plan-icon">
-                <Icon name="shield" size={22} />
+                <Icon name="crown" size={28} />
               </span>
               <div>
                 <small>CURRENT PLAN</small>
@@ -1919,7 +2519,12 @@ export default function CollegeDashboard() {
           <article className="cd-card cd-anim" style={{ "--d": "380ms" }}>
             <div className="cd-card-head">
               <div>
-                <h3>Student Leads</h3>
+                <h3>
+                  <span className="cd-head-icon">
+                    <Icon name="users" size={18} />
+                  </span>
+                  Student Leads
+                </h3>
                 <p>Students who showed interest in {collegeName}</p>
               </div>
               <div className="cd-head-actions">
@@ -2018,8 +2623,24 @@ export default function CollegeDashboard() {
 
           <div className="cd-side">
             <article className="cd-listing cd-anim" style={{ "--d": "420ms" }}>
+              <svg className="cd-listing-art" viewBox="0 0 130 110" aria-hidden="true">
+                <rect x="10" y="70" width="18" height="34" rx="3" fill="#8bbcff" />
+                <rect x="38" y="52" width="18" height="52" rx="3" fill="#6aa8ff" />
+                <rect x="66" y="34" width="18" height="70" rx="3" fill="#a78bfa" />
+                <rect x="94" y="18" width="18" height="86" rx="3" fill="#c4a8ff" />
+                <path d="M8 60 40 40 62 52 116 8" stroke="#35d6ff" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M100 6h18v18" stroke="#35d6ff" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
               <div className="cd-listing-top">
-                <small>GOOGLE TOP LISTING</small>
+                <small className="cd-gl">
+                  <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true">
+                    <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z" />
+                    <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z" />
+                    <path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 0 1 0-9.4l-7.9-6.1a24 24 0 0 0 0 21.6l7.9-6.1z" />
+                    <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z" />
+                  </svg>
+                  GOOGLE TOP LISTING
+                </small>
                 {listingActive && (
                   <span className="cd-live">
                     <i /> Active
@@ -2044,6 +2665,7 @@ export default function CollegeDashboard() {
                 </div>
                 <button className="cd-btn" onClick={startListingPayment} disabled={introOn}>
                   {listingActive ? "Renew" : "Pay Now"}
+                  <Icon name="arrow" size={15} />
                 </button>
               </div>
             </article>
@@ -2051,7 +2673,12 @@ export default function CollegeDashboard() {
             <article className="cd-card cd-anim" style={{ "--d": "500ms" }}>
               <div className="cd-card-head">
                 <div>
-                  <h3>Recent Activity</h3>
+                  <h3>
+                    <span className="cd-head-icon">
+                      <Icon name="clock" size={18} />
+                    </span>
+                    Recent Activity
+                  </h3>
                   <p>Your latest dashboard activity</p>
                 </div>
               </div>
@@ -2068,31 +2695,51 @@ export default function CollegeDashboard() {
           </div>
         </section>
 
-        <section className="cd-card cd-courses cd-anim" style={{ "--d": "560ms" }}>
-          <div className="cd-card-head">
-            <div>
-              <h3>Course Performance</h3>
-              <p>Interest received for your active courses</p>
-            </div>
-          </div>
-          <div className="cd-course-list">
-            {allCourses.map((course, i) => (
-              <div className="cd-course" key={course.name}>
-                <div className="cd-course-head">
-                  <span>{course.name}</span>
-                  <small>
-                    {course.leads} leads • {course.seats} seats
-                  </small>
-                </div>
-                <div className="cd-progress">
-                  <span style={{ width: `${course.fill}%`, "--d": `${700 + i * 120}ms` }} />
-                </div>
+        <div className="cd-courses-wrap">
+          <svg className="cd-courses-art" viewBox="0 0 190 190" aria-hidden="true">
+            <ellipse cx="95" cy="170" rx="82" ry="15" fill="#dfe8ff" />
+            <rect x="32" y="122" width="126" height="26" rx="5" fill="#2f7df0" />
+            <rect x="40" y="98" width="110" height="24" rx="5" fill="#1d5fd0" />
+            <rect x="44" y="130" width="100" height="4" rx="2" fill="#bcd6ff" />
+            <polygon points="95,34 162,62 95,90 28,62" fill="#12275f" />
+            <path d="M60 78v18c0 9 16 15 35 15s35-6 35-15V78l-35 14z" fill="#1b3a86" />
+            <path d="M162 62v32" stroke="#f5b73a" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="162" cy="98" r="4" fill="#f5b73a" />
+          </svg>
+          <section className="cd-card cd-courses cd-anim" style={{ "--d": "560ms" }}>
+            <div className="cd-card-head">
+              <div>
+                <h3>
+                  <span className="cd-head-icon">
+                    <Icon name="bars" size={18} />
+                  </span>
+                  Course Performance
+                </h3>
+                <p>Interest received for your active courses</p>
               </div>
-            ))}
-          </div>
-        </section>
+              <span className="cd-period">Last 30 Days</span>
+            </div>
+            <div className="cd-course-list">
+              {allCourses.map((course, i) => (
+                <div className="cd-course" key={course.name}>
+                  <div className="cd-course-head">
+                    <span>{course.name}</span>
+                    <small>
+                      {course.leads} leads • {course.seats} seats
+                    </small>
+                  </div>
+                  <div className="cd-course-bar">
+                    <div className="cd-progress">
+                      <span style={{ width: `${course.fill}%`, "--d": `${700 + i * 120}ms` }} />
+                    </div>
+                    <b>{course.fill}%</b>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
 
-        <footer className="cd-footer">CampusConnect • Student Lead Management Platform</footer>
       </main>
 
       {addCourseOpen && (
@@ -2108,6 +2755,11 @@ export default function CollegeDashboard() {
           title={`Unlock ${payment.lead.name}'s profile`}
           subtitle="Pay once to see this student's full contact and academic details."
           amount={PROFILE_PRICE}
+          items={[
+            ["Item", "Student profile"],
+            ["Student ID", payment.lead.id],
+            ["Course", payment.lead.course],
+          ]}
           summary={
             <div className="cd-teaser">
               <Icon name="lock" size={20} />
@@ -2131,6 +2783,11 @@ export default function CollegeDashboard() {
           receiptLabel={`Google top listing - ${collegeName}`}
           subtitle={`Secure your top listing for ${collegeName} for ${LISTING_DAYS} days.`}
           amount={LISTING_PRICE}
+          items={[
+            ["Item", "Google top listing"],
+            ["College", collegeName],
+            ["Duration", `${LISTING_DAYS} days`],
+          ]}
           promo={<ListingPromo collegeName={collegeName} amount={LISTING_PRICE} days={LISTING_DAYS} />}
           onPaid={handlePaid}
           onClose={closePayment}
