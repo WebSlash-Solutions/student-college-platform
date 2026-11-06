@@ -2559,18 +2559,48 @@ function CollegeSite() {
           </section>
 
           <footer className="cs-footer">
-            <div className="cs-wrap cs-footer-in">
-              <div className="cs-fbrand">
-                <strong>CampusConnect</strong>
-                <p>Student contact details are shared only with consent and after purchase.</p>
+            <div className="cs-wrap">
+              <div className="cs-ft-grid">
+                <div className="cs-ft-brand">
+                  <div className="cs-ft-logo">
+                    <span className="cs-ft-mark" aria-hidden="true">🎓</span>
+                    <strong>CampusConnect</strong>
+                  </div>
+                  <p>Student Leads · Better Admissions. Student contact details are shared only with consent and after purchase.</p>
+                  <div className="cs-ft-badges">
+                    <span>🔒 Privacy first</span><span>✅ Verified colleges</span><span>🤝 Consent based</span>
+                  </div>
+                </div>
+
+                <nav className="cs-ft-col" aria-label="Explore">
+                  <p className="cs-ft-h">Explore</p>
+                  <ul>
+                    {MENU.slice(0, 5).map(([id, l]) => <li key={id}><button onClick={() => scrollTo(id)}>{l}</button></li>)}
+                  </ul>
+                </nav>
+
+                <nav className="cs-ft-col" aria-label="Company">
+                  <p className="cs-ft-h">Company</p>
+                  <ul>
+                    {MENU.slice(5).map(([id, l]) => <li key={id}><button onClick={() => scrollTo(id)}>{l}</button></li>)}
+                  </ul>
+                </nav>
+
+                <div className="cs-ft-col cs-ft-act">
+                  <p className="cs-ft-h">For Colleges</p>
+                  <ul>
+                    <li><button onClick={goLogin}>College Login</button></li>
+                    <li><button onClick={goRegister}>Register College</button></li>
+                  </ul>
+                  <button className="cs-ft-cta" onClick={goRegister}>Get Started →</button>
+                </div>
               </div>
-              <div className="cs-flinks">
-                {MENU.map(([id, l]) => <button key={id} onClick={() => scrollTo(id)}>{l}</button>)}
-                <button onClick={goLogin}>College Login</button>
-                <button onClick={goRegister}>Register</button>
+
+              <div className="cs-ft-bar">
+                <span>© {new Date().getFullYear()} CampusConnect. All rights reserved.</span>
+                <span>Student data is shared only with consent.</span>
               </div>
             </div>
-            <div className="cs-wordmark" aria-hidden="true">CampusConnect</div>
           </footer>
         </>
       )}
@@ -3095,14 +3125,39 @@ body { display:block!important; background:#f5f8ff!important; color-scheme:light
 .cs-banner>* { position:relative; z-index:2; }
 .cs-banner h2 { margin-bottom:14px!important; font-size:clamp(32px,4.6vw,66px); line-height:1.06; font-weight:800; letter-spacing:-1.2px; text-align:center!important; }
 .cs-banner p { max-width:640px; margin:0 auto 34px!important; font-size:clamp(18px,1.6vw,22px); color:rgba(255,255,255,.92); text-align:center!important; }
-.cs-footer { position:relative; overflow:hidden; padding-top:clamp(50px,6vw,80px); border-radius:clamp(36px,6vw,84px) clamp(36px,6vw,84px) 0 0; background:#081538; color:#bdd0ee; }
-.cs-footer-in { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:30px; }
-.cs-fbrand strong { display:block; margin-bottom:8px; font-family:"Bricolage Grotesque",sans-serif; font-size:30px; font-weight:800; color:#fff; }
-.cs-fbrand p { max-width:420px; font-size:17px; line-height:1.7; }
-.cs-flinks { display:flex; flex-wrap:wrap; gap:6px 8px; max-width:640px; }
-.cs-flinks button { border:0; background:rgba(255,255,255,.07); padding:10px 18px; border-radius:999px; color:#d4e3fa; font-size:16px; font-weight:700; transition:background .25s,transform .25s; }
-.cs-flinks button:hover { background:rgba(255,255,255,.2); transform:translateY(-3px); }
-.cs-wordmark { margin-top:40px; font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(54px,14.5vw,250px); font-weight:800; line-height:.88; letter-spacing:-.04em; text-align:center; white-space:nowrap; user-select:none; background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 85%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.cs-footer { position:relative; overflow:hidden; padding-top:clamp(50px,6vw,84px); border-radius:clamp(36px,6vw,84px) clamp(36px,6vw,84px) 0 0; background:#081538; color:#bdd0ee; }
+.cs-footer::before { content:""; position:absolute; top:-200px; right:-140px; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle,rgba(25,179,230,.2),transparent 70%); pointer-events:none; }
+.cs-footer>* { position:relative; z-index:1; }
+.cs-ft-grid { display:grid; grid-template-columns:1.7fr 1fr 1fr 1fr; gap:clamp(28px,4vw,64px); padding-bottom:clamp(36px,4vw,56px); }
+.cs-ft-grid>* { min-width:0; }
+.cs-ft-logo { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.cs-ft-mark { display:grid; place-items:center; flex:none; width:48px; height:48px; border-radius:16px; font-size:24px; background:linear-gradient(135deg,#1349c2,#19b3e6); box-shadow:0 10px 24px -8px rgba(25,179,230,.6); }
+.cs-ft-logo strong { font-family:"Bricolage Grotesque",sans-serif; font-size:30px; font-weight:800; line-height:1.1; color:#fff; }
+.cs-ft-brand p { max-width:440px; font-size:17px; line-height:1.7; }
+.cs-ft-badges { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.cs-ft-badges span { padding:8px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.05); color:#d4e3fa; font-size:14.5px; font-weight:700; white-space:nowrap; }
+.cs-ft-col ul { list-style:none; margin:0; padding:0; display:grid; gap:4px; }
+.cs-ft-h { margin:0 0 14px!important; font-size:15px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#fff; }
+.cs-ft-col li { margin:0; padding:0; }
+.cs-ft-col li button { display:inline-flex; align-items:center; min-height:38px; padding:0; border:0; background:none; color:#bdd0ee; font-size:17px; font-weight:600; text-align:left; transition:color .25s,transform .25s; }
+.cs-ft-col li button:hover { color:#fff; transform:translateX(6px); }
+.cs-ft-cta { margin-top:18px; padding:12px 24px; border:0; border-radius:999px; background:linear-gradient(100deg,#1349c2,#19b3e6); color:#fff; font-size:16px; font-weight:800; box-shadow:0 12px 26px -10px rgba(25,179,230,.6); transition:transform .25s,box-shadow .25s; }
+.cs-ft-cta:hover { transform:translateY(-3px); box-shadow:0 16px 30px -10px rgba(25,179,230,.8); }
+.cs-ft-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 24px; padding-block:22px clamp(26px,3vw,38px); border-top:1px solid rgba(255,255,255,.12); font-size:15px; color:#8fa8d1; }
+@media (max-width:62.5em) {
+  .cs-ft-grid { grid-template-columns:1fr 1fr 1fr; }
+  .cs-ft-brand { grid-column:1/-1; }
+  .cs-ft-brand p { max-width:620px; }
+}
+@media (max-width:40em) {
+  .cs-ft-grid { grid-template-columns:1fr 1fr; gap:30px 20px; }
+  .cs-ft-act { grid-column:1/-1; }
+  .cs-ft-bar { flex-direction:column; align-items:center; text-align:center; }
+}
+@media (max-width:26em) {
+  .cs-ft-grid { grid-template-columns:1fr; }
+  .cs-ft-badges span { white-space:normal; }
+}
 .cs-top { position:fixed; right:24px; bottom:24px; z-index:250; display:grid; place-items:center; width:58px; height:58px; border:0; border-radius:50% 50% 50% 14%; color:#fff; font-size:26px; font-weight:800; background:linear-gradient(135deg,#1349c2,#19b3e6); box-shadow:0 14px 30px rgba(21,88,214,.45); opacity:0; translate:0 90px; transition:opacity .35s,translate .45s cubic-bezier(.2,.8,.2,1),scale .25s; }
 .cs-top.show { opacity:1; translate:0 0; }
 .cs-top:hover { scale:1.12; }
