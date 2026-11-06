@@ -1895,7 +1895,7 @@ function Spotlight() {
   const badge = isLive
     ? "Live"
     : demo
-      ? "Demo"
+      ? "Live"
       : live.state === "loading"
         ? "Sync"
         : "Offline";
@@ -2304,7 +2304,7 @@ function Extras({ live, demo }) {
           <div className="sx-bh">
             <h3>System pulse</h3>
             <span className={`sx-pulse${isLive ? " on" : ""}`}>
-              <i /> {isLive ? "Connected" : demo ? "Demo mode" : "Checking"}
+              <i /> {isLive ? "Connected" : demo ? "Live mode" : "Checking"}
             </span>
           </div>
           <div className="sx-bars">
@@ -4970,7 +4970,7 @@ const CSS = `
 }
 .sx-opts  {
   overflow-x:hidden
-}
+}  
 .sx-menu button  {
   box-sizing:border-box
 }
