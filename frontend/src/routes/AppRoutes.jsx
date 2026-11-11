@@ -29,7 +29,7 @@ function AppRoutes() {
           element={<CollegeManagement />}
         />
 
-        {/* STUDENT */}
+         {/* STUDENT */}
         <Route
           path="/student/dashboard"
           element={<StudentDashboard />}
@@ -44,7 +44,17 @@ function AppRoutes() {
           path="/student/about"
           element={<StudentDashboard />}
         />
+        <Route path="/student" element={<StudentDashboard />} />
+          <Route path="/student/" element={<StudentDashboard />} />
+          <Route
+  path="/student/courses"
+  element={<StudentDashboard />}
+/>
 
+<Route
+  path="/student/profile"
+  element={<StudentDashboard />}
+/>
       </Routes>
     </BrowserRouter>
   );
