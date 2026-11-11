@@ -47,9 +47,13 @@ function AppRoutes() {
 
 
         {/* STUDENT */}
-        <Route path="/student/dashboard" element={<StudentDashboard />} />
-        <Route path="/student/colleges" element={<StudentDashboard />} />
+        <Route path="/student/dashboard" element={<StudentDashboard />}  />
+        <Route path="/student/colleges" element={<StudentDashboard />}  />
         <Route path="/student/about" element={<StudentDashboard />} />
+        <Route path="/student" element={<StudentDashboard />} />
+        <Route path="/student/" element={<StudentDashboard />} />
+        <Route path="/student/courses" element={<StudentDashboard />} />
+        <Route path="/student/profile" element={<StudentDashboard />} />
 
 
         {/* COLLEGE */}

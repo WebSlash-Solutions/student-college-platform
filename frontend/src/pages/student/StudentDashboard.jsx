@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import dbData from "./db.json";
 import artsData from "./arts.json";
@@ -179,9 +179,9 @@ function Icon({ name, size = 20 }) {
 
 const NAV = [
   { label: "Home", href: "#home", route: "/student/dashboard" },
-  { label: "About", href: "#about", route: "/student/about" },
   { label: "Colleges", href: "#colleges", route: "/student/colleges" },
-  { label: "Courses", href: "#courses", route: "/student/dashboard" },
+  { label: "Courses", href: "#courses", route: "/student/courses" },
+  { label: "About", href: "#about", route: "/student/about" },
 ];
 
 /* =========================================================
@@ -333,6 +333,28 @@ const CUTOFF_INPUTS = [
   "course",
 ];
 
+const CONFETTI_COLORS = [
+  "#2478FC",
+  "#7C3AED",
+  "#EC4899",
+  "#F59E0B",
+  "#10B981",
+  "#EF4444",
+];
+
+const CONFETTI = Array.from({ length: 28 }, (_, i) => {
+  const angle = (i / 28) * Math.PI * 2;
+  const distance = 90 + (i % 3) * 45;
+
+  return {
+    x: `${Math.round(Math.cos(angle) * distance)}px`,
+    y: `${Math.round(Math.sin(angle) * distance - 20)}px`,
+    r: `${(i * 67) % 360}deg`,
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+    delay: `${(i % 5) * 0.04}s`,
+  };
+});
+
 const readApplications = () => {
   try {
     const raw = localStorage.getItem(APPLICATIONS_KEY);
@@ -443,6 +465,441 @@ function ApplyField({ id, label, error, full, children }) {
         </small>
       )}
     </div>
+  );
+}
+
+/* =========================================================
+   COURSE CATALOGUE (general list, NOT per-college availability)
+========================================================= */
+
+const COURSE_CATALOG = [
+  {
+    id: "engineering", label: "Engineering", icon: "grid",
+    courses: [
+      "Computer Science and Engineering (CSE)", "Information Technology (IT)",
+      "Artificial Intelligence and Data Science (AI & DS)",
+      "Artificial Intelligence and Machine Learning (AI & ML)",
+      "Computer Science and Design (CSD)", "Electronics and Communication Engineering (ECE)",
+      "Electrical and Electronics Engineering (EEE)", "Mechanical Engineering",
+      "Civil Engineering", "Biomedical Engineering", "Biotechnology",
+      "Chemical Engineering", "Automobile Engineering", "Robotics and Automation",
+      "Mechatronics Engineering", "Aeronautical Engineering", "Agricultural Engineering",
+      "Cyber Security", "Data Science", "Food Technology", "Textile Technology",
+    ],
+  },
+  {
+    id: "arts", label: "Arts and Science", icon: "book",
+    courses: [
+      "B.Sc Computer Science", "B.Sc Information Technology", "B.Sc Mathematics",
+      "B.Sc Physics", "B.Sc Chemistry", "B.Sc Biotechnology", "B.Sc Microbiology",
+      "B.Sc Biochemistry", "B.Sc Psychology", "B.Sc Visual Communication",
+      "B.Sc Statistics", "BCA", "B.Com", "B.Com Computer Applications", "BBA",
+      "BA English", "BA Tamil", "BA Economics", "BA History", "BA Political Science", "BSW",
+    ],
+  },
+  {
+    id: "physiotherapy", label: "Physiotherapy", icon: "check",
+    courses: [
+      "Bachelor of Physiotherapy (BPT)", "Master of Physiotherapy (MPT)",
+      "MPT Orthopaedics", "MPT Neurology", "MPT Sports Physiotherapy",
+      "MPT Cardiopulmonary", "MPT Paediatrics", "MPT Community Physiotherapy",
+    ],
+  },
+  {
+    id: "allied", label: "Allied Health Sciences", icon: "building",
+    courses: [
+      "B.Sc Medical Laboratory Technology", "B.Sc Radiology and Imaging Technology",
+      "B.Sc Operation Theatre Technology", "B.Sc Cardiac Technology",
+      "B.Sc Dialysis Technology", "B.Sc Anaesthesia Technology",
+      "B.Sc Respiratory Therapy", "B.Sc Optometry", "B.Sc Physician Assistant",
+      "B.Sc Emergency and Trauma Care Technology", "B.Sc Medical Record Science",
+      "B.Sc Nuclear Medicine Technology",
+    ],
+  },
+  {
+    id: "pharmacy", label: "Pharmacy", icon: "sparkle",
+    courses: [
+      "Bachelor of Pharmacy (B.Pharm)", "Diploma in Pharmacy (D.Pharm)",
+      "Doctor of Pharmacy (Pharm.D)", "Master of Pharmacy (M.Pharm)",
+      "M.Pharm Pharmaceutics", "M.Pharm Pharmacology",
+      "M.Pharm Pharmaceutical Chemistry", "M.Pharm Pharmacognosy",
+      "M.Pharm Pharmacy Practice",
+    ],
+  },
+  {
+    id: "law", label: "Law", icon: "cap",
+    courses: ["BA LLB", "BBA LLB", "B.Com LLB", "B.Sc LLB", "LLB", "LLM", "BBA LLB (Hons.)"],
+  },
+  {
+    id: "agriculture", label: "Agriculture", icon: "globe",
+    courses: [
+      "B.Sc Agriculture", "B.Sc Horticulture", "B.Sc Forestry",
+      "B.Tech Agricultural Engineering", "B.Sc Sericulture",
+      "B.Sc Agribusiness Management", "B.Sc Food Science and Technology",
+      "B.Sc Fisheries Science", "B.Sc Seed Science and Technology",
+    ],
+  },
+  {
+    id: "medical", label: "Medical", icon: "star",
+    courses: [
+      "MBBS", "BDS", "BAMS", "BHMS", "BSMS", "BUMS", "B.Sc Nursing",
+      "B.Sc Medical Imaging Technology", "B.Sc Cardiac Technology", "BPT",
+    ],
+  },
+].map((cat) => ({ ...cat, courses: [...new Set(cat.courses)] }));
+
+/* =========================================================
+   STUDENT PROFILE
+========================================================= */
+
+const PROFILES_KEY = "scp_profiles";
+
+const PROFILE_COLLEGE_TYPES = [
+  "Engineering", "Arts and Science", "Physiotherapy", "Allied Health Sciences",
+  "Pharmacy", "Law", "Agriculture", "Medical",
+];
+
+// cutoff applies only to these types (value = max). Others hide the field.
+const PROFILE_CUTOFF_MAX = {
+  Engineering: 200,
+  Physiotherapy: 200,
+  "Allied Health Sciences": 200,
+  Pharmacy: 200,
+  Agriculture: 200,
+  Medical: 720, // NEET-UG score
+};
+
+const PROFILE_LOCATIONS = [
+  "Coimbatore", "Chennai", "Madurai", "Salem", "Trichy", "Erode", "Tiruppur",
+  "Namakkal", "Karur", "Vellore", "Tirunelveli", "Thanjavur", "Kanchipuram",
+  "Dindigul", "Nilgiris", "Krishnagiri", "Dharmapuri",
+];
+
+const EMPTY_PROFILE = {
+  fullName: "", nativePlace: "", schoolName: "", mobileNumber: "",
+  interestedCollegeType: "", interestedLocation: "",
+  twelfthMark: "", tenthMark: "", cutoffMark: "",
+};
+
+const PROFILE_FIELD_ORDER = [
+  "fullName", "nativePlace", "schoolName", "mobileNumber",
+  "interestedCollegeType", "interestedLocation",
+  "twelfthMark", "tenthMark", "cutoffMark",
+];
+
+const PROFILE_LABELS = {
+  fullName: "Full Name",
+  nativePlace: "Native Place",
+  schoolName: "School Name",
+  mobileNumber: "Mobile Number",
+  interestedCollegeType: "Interested College Type",
+  interestedLocation: "Interested Location",
+  twelfthMark: "12th Standard Mark (%)",
+  tenthMark: "10th Standard Mark (%)",
+  cutoffMark: "Cutoff Mark",
+};
+
+const readProfiles = () => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PROFILES_KEY));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const validateProfile = (p) => {
+  const e = {};
+  const name = String(p.fullName ?? "").trim();
+  if (!name) e.fullName = "Full name is required.";
+  else if (name.length < 2 || !/^[A-Za-z][A-Za-z .'-]*$/.test(name))
+    e.fullName = "Enter a valid name (letters, spaces and . ' - only).";
+
+  if (String(p.nativePlace ?? "").trim().length < 2)
+    e.nativePlace = "Native place is required.";
+  if (String(p.schoolName ?? "").trim().length < 2)
+    e.schoolName = "School name is required.";
+
+  const mobile = String(p.mobileNumber ?? "");
+  if (!mobile) e.mobileNumber = "Mobile number is required.";
+  else if (!/^[6-9]\d{9}$/.test(mobile))
+    e.mobileNumber = "Enter a valid 10-digit Indian mobile number.";
+
+  if (!PROFILE_COLLEGE_TYPES.includes(p.interestedCollegeType))
+    e.interestedCollegeType = "Please select a college type.";
+  if (String(p.interestedLocation ?? "").trim().length < 2)
+    e.interestedLocation = "Interested location is required.";
+
+  const e12 = markError(p.twelfthMark ?? "", "12th");
+  if (e12) e.twelfthMark = e12;
+  const e10 = markError(p.tenthMark ?? "", "10th");
+  if (e10) e.tenthMark = e10;
+
+  const max = PROFILE_CUTOFF_MAX[p.interestedCollegeType];
+  if (max) {
+    const raw = String(p.cutoffMark ?? "").trim();
+    const n = Number(raw);
+    if (raw === "") e.cutoffMark = "Cutoff mark is required.";
+    else if (Number.isNaN(n) || n < 0 || n > max)
+      e.cutoffMark = `Cutoff must be a number between 0 and ${max}.`;
+  }
+  return e;
+};
+
+const isProfileComplete = (p) =>
+  Boolean(
+    p && p.isProfileCompleted === true && Object.keys(validateProfile(p)).length === 0,
+  );
+
+function ProfileForm({ initial, mandatory, onSave, onSaved, onCancel }) {
+  const toForm = (src) =>
+    Object.fromEntries(
+      Object.keys(EMPTY_PROFILE).map((k) => [
+        k,
+        src?.[k] === undefined || src?.[k] === null ? "" : String(src[k]),
+      ]),
+    );
+
+  const [form, setForm] = useState(() => toForm(initial));
+  const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const cutoffMax = PROFILE_CUTOFF_MAX[form.interestedCollegeType] || null;
+
+  const set = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[name];
+      delete next.form;
+      if (name === "interestedCollegeType") delete next.cutoffMark;
+      return next;
+    });
+    setDone(false);
+  };
+
+  const submit = (event) => {
+    event.preventDefault();
+    if (saving || done) return;
+
+    const errs = validateProfile(form);
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      const first = PROFILE_FIELD_ORDER.find((f) => errs[f]);
+      if (first) document.getElementById(`profile-${first}`)?.focus();
+      return;
+    }
+
+    const data = {
+      fullName: form.fullName.trim(),
+      nativePlace: form.nativePlace.trim(),
+      schoolName: form.schoolName.trim(),
+      mobileNumber: form.mobileNumber,
+      interestedCollegeType: form.interestedCollegeType,
+      interestedLocation: form.interestedLocation.trim(),
+      twelfthMark: Number(form.twelfthMark),
+      tenthMark: Number(form.tenthMark),
+      cutoffMark: cutoffMax ? Number(form.cutoffMark) : null,
+      isProfileCompleted: true,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setSaving(true);
+    setTimeout(() => {
+      const ok = onSave(data);
+      setSaving(false);
+      if (!ok) {
+        setErrors({ form: "Could not save your profile. Please enable browser storage and try again." });
+        return;
+      }
+      setDone(true);
+      setTimeout(() => onSaved(data), 900);
+    }, 450);
+  };
+
+  const field = (name, props = {}, full = false) => (
+    <ApplyField
+      id={`profile-${name}`}
+      label={PROFILE_LABELS[name]}
+      error={errors[name]}
+      full={full}
+    >
+      <input
+        id={`profile-${name}`}
+        className="cc-apply-control"
+        value={form[name]}
+        aria-invalid={Boolean(errors[name])}
+        onChange={(e) => set(name, props.clean ? props.clean(e.target.value) : e.target.value)}
+        {...props.input}
+      />
+    </ApplyField>
+  );
+
+  const mark = (name, placeholder) =>
+    field(name, {
+      input: {
+        type: "number", inputMode: "decimal", min: "0", max: "100",
+        step: "0.01", placeholder,
+      },
+    });
+
+  return (
+    <section className="cc-section">
+      <div className="cc-wrap">
+        <form className="cc-profile-card" onSubmit={submit} noValidate>
+          <span className="cc-eyebrow">
+            {mandatory ? "Step required" : "My profile"}
+          </span>
+          <h2>{mandatory ? "Complete Your Profile" : "Edit Profile"}</h2>
+          <p className="cc-apply-sub">
+            {mandatory
+              ? "Please fill in all details to continue. You can use the website once your profile is saved."
+              : "Update your details and save the changes."}
+          </p>
+
+          {errors.form && <div className="cc-apply-alert" role="alert">{errors.form}</div>}
+          {done && (
+            <div className="cc-profile-success" role="status">
+              {mandatory ? "Profile saved! Taking you to the Home page…" : "Changes saved successfully."}
+            </div>
+          )}
+
+          <div className="cc-apply-grid">
+            <h3 className="cc-apply-full cc-profile-title">Personal Information</h3>
+            {field("fullName", { input: { type: "text", placeholder: "Your full name", autoComplete: "name" } }, true)}
+            {field("nativePlace", { input: { type: "text", placeholder: "Town / village / city" } })}
+            {field("schoolName", { input: { type: "text", placeholder: "Your school name" } })}
+            {field("mobileNumber", {
+              clean: (v) => v.replace(/\D/g, "").slice(0, 10),
+              input: { type: "tel", inputMode: "numeric", maxLength: 10, placeholder: "10-digit mobile number", autoComplete: "tel-national" },
+            }, true)}
+
+            <h3 className="cc-apply-full cc-profile-title">Education Details</h3>
+            <ApplyField id="profile-interestedCollegeType" label={PROFILE_LABELS.interestedCollegeType} error={errors.interestedCollegeType}>
+              <select
+                id="profile-interestedCollegeType"
+                className="cc-apply-control"
+                value={form.interestedCollegeType}
+                aria-invalid={Boolean(errors.interestedCollegeType)}
+                onChange={(e) => set("interestedCollegeType", e.target.value)}
+              >
+                <option value="">Select college type</option>
+                {PROFILE_COLLEGE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </ApplyField>
+
+            <ApplyField id="profile-interestedLocation" label={PROFILE_LABELS.interestedLocation} error={errors.interestedLocation}>
+              <input
+                id="profile-interestedLocation"
+                className="cc-apply-control"
+                list="profile-locations"
+                placeholder="Select or type a city / district"
+                value={form.interestedLocation}
+                aria-invalid={Boolean(errors.interestedLocation)}
+                onChange={(e) => set("interestedLocation", e.target.value)}
+              />
+              <datalist id="profile-locations">
+                {PROFILE_LOCATIONS.map((l) => <option key={l} value={l} />)}
+              </datalist>
+            </ApplyField>
+
+            {mark("twelfthMark", "e.g. 85.5")}
+            {mark("tenthMark", "e.g. 90")}
+
+            {cutoffMax && (
+              <ApplyField id="profile-cutoffMark" label={form.interestedCollegeType === "Medical" ? "NEET-UG Score (Cutoff)" : "Cutoff Mark"} error={errors.cutoffMark} full>
+                <input
+                  id="profile-cutoffMark"
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  max={cutoffMax}
+                  step="0.01"
+                  className="cc-apply-control"
+                  placeholder={`Out of ${cutoffMax}`}
+                  value={form.cutoffMark}
+                  aria-invalid={Boolean(errors.cutoffMark)}
+                  onChange={(e) => set("cutoffMark", e.target.value)}
+                />
+                <small className="cc-apply-hint">Maximum {cutoffMax}.</small>
+              </ApplyField>
+            )}
+          </div>
+
+          <div className="cc-apply-actions">
+            {mandatory ? (
+              <button
+                type="button"
+                className="cc-btn cc-btn-ghost"
+                disabled={saving || done}
+                onClick={() => { setForm(toForm(null)); setErrors({}); }}
+              >
+                Clear Form
+              </button>
+            ) : (
+              <button type="button" className="cc-btn cc-btn-ghost" disabled={saving || done} onClick={onCancel}>
+                Cancel
+              </button>
+            )}
+            <button type="submit" className="cc-btn cc-btn-primary cc-btn-lg cc-glow-btn" disabled={saving || done}>
+              {saving ? "Saving…" : mandatory ? "Save Profile" : "Save Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+function ProfileView({ profile, onSave, onSaved }) {
+  const [editing, setEditing] = useState(false);
+
+  if (editing) {
+    return (
+      <ProfileForm
+        initial={profile}
+        mandatory={false}
+        onSave={onSave}
+        onSaved={(data) => { onSaved(data); setEditing(false); }}
+        onCancel={() => setEditing(false)}
+      />
+    );
+  }
+
+  const rows = PROFILE_FIELD_ORDER.filter(
+    (k) => k !== "cutoffMark" || profile.cutoffMark !== null,
+  ).map((k) => [
+    k === "cutoffMark" && profile.interestedCollegeType === "Medical"
+      ? "NEET-UG Score (Cutoff)"
+      : PROFILE_LABELS[k],
+    profile[k],
+  ]);
+
+  return (
+    <section className="cc-section">
+      <div className="cc-wrap">
+        <div className="cc-profile-card">
+          <span className="cc-eyebrow">My profile</span>
+          <h2>{profile.fullName}</h2>
+          <dl className="cc-profile-grid">
+            {rows.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{String(value)}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="cc-apply-actions">
+            <button type="button" className="cc-btn cc-btn-primary cc-glow-btn" onClick={() => setEditing(true)}>
+              Edit Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -2171,12 +2628,16 @@ export default function StudentDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // "colleges" and "about" are each their own page; everything else is Home.
+  // every page is rendered on its own route
   const view = location.pathname.startsWith("/student/colleges")
     ? "colleges"
     : location.pathname.startsWith("/student/about")
       ? "about"
-      : "home";
+      : location.pathname.startsWith("/student/courses")
+        ? "courses"
+        : location.pathname.startsWith("/student/profile")
+          ? "profile"
+          : "home";
 
   const [session, setSession] = useState(() => {
     try {
@@ -2216,13 +2677,16 @@ export default function StudentDashboard() {
     }
 
     const anchor = (item.href || "").replace("#", "");
-    if (anchor && item.route === location.pathname) {
-      setTimeout(() => {
-        document.getElementById(anchor)?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 60);
+    if (anchor) {
+      setTimeout(
+        () => {
+          document.getElementById(anchor)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        },
+        item.route === location.pathname ? 60 : 250,
+      );
     }
   };
 
@@ -2409,6 +2873,60 @@ export default function StudentDashboard() {
 
   const userKey = (user?.email || user?.name || "").trim().toLowerCase();
 
+  /* ---------- profile + course category state ---------- */
+  const [profiles, setProfiles] = useState(readProfiles);
+  const [courseCat, setCourseCat] = useState("engineering");
+
+  const profile = profiles[userKey];
+  const profileDone = isProfileComplete(profile);
+
+  // navbar name + round initial + dropdown
+  const displayName = (user?.name || profile?.fullName || "Student").trim();
+  const navInitial = (displayName[0] || "S").toUpperCase();
+  const navFirstName = displayName.split(/\s+/)[0];
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onDown = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    const onKey = (event) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
+  // close the dropdown whenever the page changes
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  const persistProfile = (data) => {
+    try {
+      const next = { ...readProfiles(), [userKey]: data };
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(next));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const profileSaved = (data) => {
+    setProfiles((prev) => ({ ...prev, [userKey]: data }));
+    if (!profileDone) navigate("/student/dashboard");
+  };
+
   const myApplications = useMemo(
     () =>
       applications
@@ -2534,8 +3052,11 @@ export default function StudentDashboard() {
 
     setApplyForm({
       ...EMPTY_APPLY_FORM,
-      studentName: user?.name || "",
+      studentName: profile?.fullName || user?.name || "",
       email: user?.email || "",
+      mobile: profile?.mobileNumber || "",
+      mark12: profile ? String(profile.twelfthMark) : "",
+      mark10: profile ? String(profile.tenthMark) : "",
       ...(preset || {}),
     });
     setApplyLocked(Boolean(preset));
@@ -2897,6 +3418,47 @@ export default function StudentDashboard() {
   }
 
   /* =======================================================
+     PROFILE GATE: nothing else renders until profile is complete
+  ======================================================= */
+
+  if (!profileDone) {
+    return (
+      <>
+        <style>{STYLE}</style>
+        <style>{USER_STYLE}</style>
+        <div className="cc-root">
+          <header className="cc-nav">
+            <div className="cc-wrap cc-nav-inner">
+              <span className="cc-logo">
+                <span className="cc-logo-mark">
+                  <Icon name="cap" size={24} />
+                </span>
+                <span className="cc-logo-text">
+                  <strong>Student College</strong>
+                  <small>Student-College Admission Platform</small>
+                </span>
+              </span>
+              <div className="cc-nav-actions" style={{ marginLeft: "auto" }}>
+                <span className="cc-user-name">{userFirstName}</span>
+                <button type="button" className="cc-btn cc-btn-outline cc-btn-sm" onClick={logout}>
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <ProfileForm
+            mandatory
+            initial={{ ...EMPTY_PROFILE, fullName: user?.name || "" }}
+            onSave={persistProfile}
+            onSaved={profileSaved}
+          />
+        </div>
+      </>
+    );
+  }
+
+  /* =======================================================
      RETURN
   ======================================================= */
 
@@ -2940,7 +3502,7 @@ export default function StudentDashboard() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className={view === "colleges" && item.label === "Colleges" ? "cc-menu-active" : ""}
+                  className={item.label.toLowerCase() === view ? "cc-menu-active" : ""}
                   onClick={(event) => handleNav(event, item)}
                 >
                   {item.label}
@@ -2949,7 +3511,7 @@ export default function StudentDashboard() {
 
               <button
                 type="button"
-                className="cc-btn cc-btn-primary cc-btn-sm cc-menu-apply"
+                className="cc-btn cc-btn-primary cc-btn-sm cc-menu-apply cc-glow-btn"
                 onClick={() => openApply()}
               >
                 Apply Now
@@ -2957,34 +3519,45 @@ export default function StudentDashboard() {
             </nav>
 
             <div className="cc-nav-actions">
-              <a
-                href="#colleges"
-                className="cc-icon-btn"
-                aria-label="Search colleges"
-                onClick={(event) =>
-                  handleNav(event, { href: "#colleges", route: "/student/colleges" })
-                }
-              >
-                <Icon name="search" size={18} />
-              </a>
-
               {user ? (
-                <div className="cc-user">
-                  <span className="cc-user-avatar">
-                    {user.picture ? (
-                      <img src={user.picture} alt="" />
-                    ) : (
-                      userInitials
-                    )}
-                  </span>
-                  <span className="cc-user-name">{userFirstName}</span>
+                <div className="cc-profile-menu" ref={menuRef}>
                   <button
                     type="button"
-                    className="cc-btn cc-btn-outline cc-btn-sm cc-user-signout"
-                    onClick={logout}
+                    className="cc-profile-trigger"
+                    aria-haspopup="menu"
+                    aria-expanded={menuOpen}
+                    onClick={() => setMenuOpen((open) => !open)}
                   >
-                    Sign out
+                    <span className="cc-nav-name">{navFirstName}</span>
+                    <span className="cc-user-avatar">{navInitial}</span>
                   </button>
+
+                  {menuOpen && (
+                    <div className="cc-dropdown" role="menu">
+                      <button
+                        type="button"
+                        role="menuitem"
+                        className="cc-dropdown-item"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          navigate("/student/profile");
+                        }}
+                      >
+                        Profile
+                      </button>
+                      <button
+                        type="button"
+                        role="menuitem"
+                        className="cc-dropdown-item cc-dropdown-danger"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          logout();
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>
@@ -3015,7 +3588,7 @@ export default function StudentDashboard() {
               <a
                 key={item.label}
                 href={item.href}
-                className={view === "colleges" && item.label === "Colleges" ? "cc-menu-active" : ""}
+                className={item.label.toLowerCase() === view ? "cc-menu-active" : ""}
                 onClick={(event) => {
                   document.getElementById("cc-nav-toggle").checked = false;
                   handleNav(event, item);
@@ -3027,7 +3600,7 @@ export default function StudentDashboard() {
 
             <button
               type="button"
-              className="cc-btn cc-btn-primary cc-btn-block cc-apply-mobile"
+              className="cc-btn cc-btn-primary cc-btn-block cc-apply-mobile cc-glow-btn"
               onClick={() => {
                 document.getElementById("cc-nav-toggle").checked = false;
                 openApply();
@@ -3036,21 +3609,7 @@ export default function StudentDashboard() {
               Apply Now
             </button>
 
-            {user ? (
-              <div className="cc-user">
-                <span className="cc-user-avatar">
-                  {user.picture ? <img src={user.picture} alt="" /> : userInitials}
-                </span>
-                <span className="cc-user-name">{userFirstName}</span>
-                <button
-                  type="button"
-                  className="cc-btn cc-btn-outline cc-btn-block"
-                  onClick={logout}
-                >
-                  Sign out
-                </button>
-              </div>
-            ) : (
+            {!user && (
               <>
                 <a href="/login" className="cc-btn cc-btn-outline cc-btn-block">
                   Login
@@ -3309,6 +3868,73 @@ export default function StudentDashboard() {
           </div>
         </section>
           </>
+        )}
+
+        {/* =================================================
+            COURSES  (separate page)
+        ================================================= */}
+
+        {view === "courses" && (() => {
+          const active =
+            COURSE_CATALOG.find((c) => c.id === courseCat) || COURSE_CATALOG[0];
+
+          return (
+            <section className="cc-section cc-colleges" id="courses">
+              <div className="cc-wrap">
+                <div className="cc-col-head">
+                  <span className="cc-eyebrow">Course Catalogue</span>
+                  <h2>{active.label} Courses</h2>
+                  <p>
+                    This is the general course catalogue. Not every college
+                    offers every course, so check each college's details for
+                    what it actually offers.
+                  </p>
+                </div>
+
+                <div className="cc-categories" role="tablist">
+                  {COURSE_CATALOG.map((cat) => (
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={cat.id === active.id}
+                      key={cat.id}
+                      className={`cc-cat-btn ${
+                        cat.id === active.id ? "cc-cat-active" : ""
+                      }`}
+                      onClick={() => setCourseCat(cat.id)}
+                    >
+                      <Icon name={cat.icon} size={16} />
+                      {cat.label}
+                      <span className="cc-cat-count">{cat.courses.length}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="cc-course-cards">
+                  {active.courses.map((course) => (
+                    <div className="cc-course-tile" key={course}>
+                      <span className="cc-icon-circle">
+                        <Icon name={active.icon} size={20} />
+                      </span>
+                      <strong>{course}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })()}
+
+        {/* =================================================
+            PROFILE  (separate page)
+        ================================================= */}
+
+        {view === "profile" && (
+          <ProfileView
+            profile={profile}
+            onSave={persistProfile}
+            onSaved={profileSaved}
+          />
         )}
 
         {/* =================================================
@@ -3661,7 +4287,7 @@ export default function StudentDashboard() {
 
         {applyOpen && (
           <div
-            className="cc-modal-backdrop"
+            className="cc-modal-backdrop cc-apply-backdrop"
             onClick={(event) => {
               if (event.target === event.currentTarget) closeApply();
             }}
@@ -3683,6 +4309,20 @@ export default function StudentDashboard() {
 
               {applySubmitted ? (
                 <div className="cc-apply-success" role="status">
+                  <div className="cc-confetti" aria-hidden="true">
+                    {CONFETTI.map((piece, index) => (
+                      <i
+                        key={index}
+                        style={{
+                          "--x": piece.x,
+                          "--y": piece.y,
+                          "--r": piece.r,
+                          "--c": piece.color,
+                          animationDelay: piece.delay,
+                        }}
+                      />
+                    ))}
+                  </div>
                   <span className="cc-apply-success-icon">
                     <Icon name="check" size={30} />
                   </span>
@@ -3699,7 +4339,7 @@ export default function StudentDashboard() {
                     </button>
                     <button
                       type="button"
-                      className="cc-btn cc-btn-primary"
+                      className="cc-btn cc-btn-primary cc-glow-btn"
                       onClick={viewMyApplications}
                     >
                       View my applications
@@ -4058,7 +4698,7 @@ export default function StudentDashboard() {
                     </button>
                     <button
                       type="submit"
-                      className="cc-btn cc-btn-primary cc-btn-lg"
+                      className="cc-btn cc-btn-primary cc-btn-lg cc-glow-btn"
                     >
                       Apply Now
                     </button>
@@ -4118,7 +4758,7 @@ export default function StudentDashboard() {
                 <div className="cc-modal-apply-row">
                   <button
                     type="button"
-                    className="cc-btn cc-btn-primary"
+                    className="cc-btn cc-btn-primary cc-glow-btn"
                     onClick={() => openApply(selected)}
                   >
                     Apply Now
@@ -4388,7 +5028,7 @@ export default function StudentDashboard() {
 
                   <button
                     type="button"
-                    className="cc-btn cc-btn-primary"
+                    className="cc-btn cc-btn-primary cc-glow-btn"
                     onClick={() => openApply(selected)}
                   >
                     Apply Now
@@ -4472,6 +5112,95 @@ const USER_STYLE = `
 
 .cc-menu-apply {
   margin-left: 8px;
+}
+
+.cc-menu a.cc-menu-active,
+.cc-mobile a.cc-menu-active {
+  color: var(--brand);
+}
+
+.cc-menu a.cc-menu-active {
+  background: var(--blue-25);
+}
+
+.cc-profile-menu {
+  position: relative;
+}
+
+.cc-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cc-nav-name {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--navy);
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cc-profile-trigger .cc-user-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 15px;
+}
+
+.cc-profile-trigger:hover .cc-user-avatar,
+.cc-profile-trigger[aria-expanded="true"] .cc-user-avatar {
+  box-shadow: 0 0 0 4px rgba(124,58,237,.18);
+}
+
+.cc-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 80;
+  min-width: 170px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+}
+
+.cc-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 600;
+  text-align: left;
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.cc-dropdown-item:hover {
+  background: var(--blue-25);
+  color: var(--brand);
+}
+
+.cc-dropdown-danger:hover {
+  background: #FEF2F2;
+  color: #B91C1C;
+}
+
+@media (max-width: 680px) {
+  .cc-nav-name {
+    display: none;
+  }
 }
 
 .cc-apply-hint {
@@ -4768,4 +5497,435 @@ const USER_STYLE = `
     grid-template-columns: 1fr;
   }
 }
+/* ===== Apply Now animations ===== */
+
+@keyframes ccGradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes ccTextShift {
+  to { background-position: 200% center; }
+}
+
+@keyframes ccSheen {
+  0% { transform: translateX(-130%) skewX(-20deg); }
+  55%, 100% { transform: translateX(260%) skewX(-20deg); }
+}
+
+@keyframes ccGlowPulse {
+  0%, 100% { box-shadow: 0 6px 18px rgba(124,58,237,.38); }
+  50% { box-shadow: 0 8px 28px rgba(236,72,153,.55); }
+}
+
+@keyframes ccBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ccModalIn {
+  from { opacity: 0; transform: translateY(34px) scale(.93); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ccFieldIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ccShake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(3px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+
+@keyframes ccDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: .6; }
+}
+
+@keyframes ccPop {
+  0% { transform: scale(0) rotate(-40deg); }
+  60% { transform: scale(1.2) rotate(8deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes ccRing {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,.55); }
+  100% { box-shadow: 0 0 0 30px rgba(16,185,129,0); }
+}
+
+@keyframes ccConfetti {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(.6); }
+}
+
+@keyframes ccCardIn {
+  from { opacity: 0; transform: translateY(26px) scale(.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ccBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .35; }
+}
+
+/* colourful animated buttons */
+.cc-btn.cc-glow-btn {
+  position: relative;
+  overflow: hidden;
+  border-color: transparent;
+  color: #fff;
+  background: linear-gradient(120deg, #2478FC, #7C3AED, #EC4899, #F59E0B, #2478FC);
+  background-size: 300% 100%;
+  animation: ccGradientShift 6s ease infinite, ccGlowPulse 2.6s ease-in-out infinite;
+}
+
+.cc-btn.cc-glow-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  animation: ccSheen 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.cc-btn.cc-glow-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  filter: saturate(1.2);
+}
+
+.cc-btn.cc-glow-btn:active {
+  transform: scale(.97);
+}
+
+.cc-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* modal */
+.cc-apply-backdrop {
+  backdrop-filter: blur(5px);
+  background: radial-gradient(circle at 20% 15%, rgba(124,58,237,.45), transparent 55%),
+              radial-gradient(circle at 85% 85%, rgba(236,72,153,.4), transparent 55%),
+              rgba(6,31,58,.7);
+  animation: ccBackdropIn .3s ease both;
+}
+
+.cc-apply-modal {
+  animation: ccModalIn .5s cubic-bezier(.2,.9,.3,1.2) both;
+}
+
+.cc-apply-modal::before {
+  content: "";
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 6px;
+  margin-bottom: -6px;
+  background: linear-gradient(90deg, #2478FC, #7C3AED, #EC4899, #F59E0B, #10B981, #2478FC);
+  background-size: 300% 100%;
+  animation: ccGradientShift 5s linear infinite;
+}
+
+.cc-apply-form h2,
+.cc-apply-success h2,
+.cc-apps h2,
+.cc-profile-card h2 {
+  background: linear-gradient(90deg, #2478FC, #7C3AED, #EC4899, #F59E0B, #2478FC);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ccTextShift 5s linear infinite;
+}
+
+/* staggered fields with a different accent colour each */
+.cc-apply-grid > * {
+  --accent: #2478FC;
+  animation: ccFieldIn .55s cubic-bezier(.2,.8,.3,1) both;
+}
+
+.cc-apply-grid > :nth-child(5n + 2) { --accent: #7C3AED; }
+.cc-apply-grid > :nth-child(5n + 3) { --accent: #EC4899; }
+.cc-apply-grid > :nth-child(5n + 4) { --accent: #F59E0B; }
+.cc-apply-grid > :nth-child(5n + 5) { --accent: #10B981; }
+
+.cc-apply-grid > :nth-child(1) { animation-delay: .05s; }
+.cc-apply-grid > :nth-child(2) { animation-delay: .10s; }
+.cc-apply-grid > :nth-child(3) { animation-delay: .15s; }
+.cc-apply-grid > :nth-child(4) { animation-delay: .20s; }
+.cc-apply-grid > :nth-child(5) { animation-delay: .25s; }
+.cc-apply-grid > :nth-child(6) { animation-delay: .30s; }
+.cc-apply-grid > :nth-child(7) { animation-delay: .35s; }
+.cc-apply-grid > :nth-child(n + 8) { animation-delay: .40s; }
+
+.cc-apply-field label::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--accent, #2478FC);
+  animation: ccDot 2.2s ease-in-out infinite;
+}
+
+.cc-apply-control {
+  transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+
+.cc-apply-control:hover:not(:disabled) {
+  border-color: var(--accent, #2478FC);
+}
+
+.cc-apply-field .cc-apply-control:focus {
+  border-color: var(--accent, #2478FC);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent, #2478FC) 24%, transparent);
+  transform: translateY(-1px);
+}
+
+.cc-apply-field.has-error .cc-apply-control {
+  animation: ccShake .5s ease both;
+}
+
+.cc-apply-error {
+  animation: ccFieldIn .3s ease both;
+}
+
+/* college chosen from a college page */
+.cc-apply-locked {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--blue-25), var(--blue-25)) padding-box,
+    linear-gradient(120deg, #2478FC, #7C3AED, #EC4899, #F59E0B, #2478FC) border-box;
+  background-size: 100% 100%, 300% 100%;
+  animation: ccFieldIn .55s cubic-bezier(.2,.8,.3,1) both, ccGradientShift 6s linear infinite;
+}
+
+/* success */
+.cc-apply-success {
+  position: relative;
+  overflow: hidden;
+}
+
+.cc-apply-success-icon {
+  background: linear-gradient(135deg, #10B981, #2478FC);
+  color: #fff;
+  animation: ccPop .7s cubic-bezier(.2,.9,.3,1.3) both, ccRing 1.6s ease-out .4s 2;
+}
+
+.cc-apply-success p {
+  animation: ccFieldIn .6s ease .35s both;
+}
+
+.cc-apply-success .cc-apply-actions {
+  animation: ccFieldIn .6s ease .55s both;
+}
+
+.cc-confetti {
+  position: absolute;
+  top: 88px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cc-confetti i {
+  position: absolute;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--c);
+  opacity: 0;
+  animation: ccConfetti 1.4s cubic-bezier(.15,.7,.3,1) forwards;
+}
+
+.cc-confetti i:nth-child(even) {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* my applications */
+.cc-app-card {
+  position: relative;
+  overflow: hidden;
+  animation: ccCardIn .6s cubic-bezier(.2,.8,.3,1) both;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.cc-app-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #2478FC, #7C3AED, #EC4899, #F59E0B, #10B981, #2478FC);
+  background-size: 300% 100%;
+  animation: ccGradientShift 5s linear infinite;
+}
+
+.cc-app-card:nth-child(1) { animation-delay: .05s; }
+.cc-app-card:nth-child(2) { animation-delay: .15s; }
+.cc-app-card:nth-child(3) { animation-delay: .25s; }
+.cc-app-card:nth-child(4) { animation-delay: .35s; }
+.cc-app-card:nth-child(n + 5) { animation-delay: .45s; }
+
+.cc-app-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(124,58,237,.22);
+}
+
+.cc-app-course {
+  background: linear-gradient(90deg, #E0EDFF, #F3E8FF, #FCE7F3, #E0EDFF);
+  background-size: 300% 100%;
+  animation: ccGradientShift 8s ease infinite;
+}
+
+.cc-app-status::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  animation: ccBlink 1.6s ease-in-out infinite;
+}
+
+/* ===== Profile + Courses pages ===== */
+
+.cc-profile-card {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 34px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.cc-profile-card h2 {
+  margin-top: 12px;
+  font-size: 1.6rem;
+}
+
+.cc-profile-title {
+  font-size: .82rem !important;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--brand) !important;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cc-profile-success {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #E6F6F0;
+  border: 1px solid #A7E3CC;
+  color: var(--success);
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+.cc-profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  margin: 22px 0 0;
+}
+
+.cc-profile-grid dt {
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+
+.cc-profile-grid dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.cc-course-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.cc-course-tile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  transition: .2s ease;
+}
+
+.cc-course-tile:hover {
+  transform: translateY(-3px);
+  border-color: #cfe2fb;
+}
+
+.cc-course-tile strong {
+  color: var(--navy);
+  font-size: .92rem;
+  line-height: 1.35;
+}
+
+.cc-course-tile .cc-icon-circle {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 680px) {
+  .cc-profile-card {
+    padding: 26px 18px;
+  }
+
+  .cc-profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-btn.cc-glow-btn,
+  .cc-btn.cc-glow-btn::after,
+  .cc-apply-backdrop,
+  .cc-apply-modal,
+  .cc-apply-modal::before,
+  .cc-apply-modal *,
+  .cc-apply-modal *::before,
+  .cc-confetti i,
+  .cc-app-card,
+  .cc-app-card *,
+  .cc-app-card::before,
+  .cc-apps h2 {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .cc-confetti {
+    display: none;
+  }
+}
+
 `;
