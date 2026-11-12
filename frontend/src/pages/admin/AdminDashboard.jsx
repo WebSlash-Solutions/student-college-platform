@@ -162,7 +162,18 @@ const adminStyles = String.raw`/* ==============================================
 }
 
 .dynamic-chart-svg {
-  animation: chartDraw 0.9s ease both;
+  animation: chartReveal 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes chartReveal {
+  from {
+    clip-path: inset(-6px 100% -6px -6px);
+    opacity: 0.6;
+  }
+  to {
+    clip-path: inset(-6px -6px -6px -6px);
+    opacity: 1;
+  }
 }
 
 .donut-chart {
@@ -1160,8 +1171,94 @@ const adminStyles = String.raw`/* ==============================================
   position: absolute;
   left: 0;
   right: 0;
-  height: 1px;
-  background: #edf1f5;
+  height: 0;
+  border-top: 1px dashed #e6ebf1;
+}
+
+/* hover interaction */
+.chart-hover-layer {
+  position: absolute;
+  inset: 8px 0 28px;
+  cursor: crosshair;
+  z-index: 3;
+}
+
+.chart-crosshair {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed #b9c6d8;
+  transform: translateX(-0.5px);
+  pointer-events: none;
+}
+
+.chart-hover-dot {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border: 2.5px solid #2f80ed;
+  border-radius: 50%;
+  background: #ffffff;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 6px rgba(33, 60, 91, 0.18);
+  pointer-events: none;
+  animation: dotIn 0.18s ease both;
+}
+
+@keyframes dotIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.chart-tooltip {
+  position: absolute;
+  top: 6px;
+  min-width: 128px;
+  padding: 9px 11px;
+  border: 1px solid #e3eaf2;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(24, 63, 112, 0.14);
+  pointer-events: none;
+  animation: tooltipIn 0.15s ease both;
+}
+
+.chart-tooltip.right { margin-left: 12px; }
+.chart-tooltip.left { transform: translateX(-100%); margin-left: -12px; }
+
+@keyframes tooltipIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.chart-tooltip strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #233854;
+  font-size: 11px;
+}
+
+.chart-tooltip span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  color: #71839c;
+  font-size: 11px;
+}
+
+.chart-tooltip span i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.chart-tooltip span b {
+  margin-left: auto;
+  padding-left: 12px;
+  color: #233854;
+  font-weight: 700;
 }
 
 .line-1 {
@@ -2090,6 +2187,10 @@ font-size: 14px;
   .line-chart svg {
     inset: 8px 0 32px;
     height: calc(100% - 40px);
+  }
+
+  .chart-hover-layer {
+    inset: 8px 0 32px;
   }
 
   .chart-x-axis {
@@ -3299,6 +3400,7 @@ function DashboardHome() {
   ========================================================= */
 
   const [chartPeriod, setChartPeriod] = useState("30D");
+  const [hoverIndex, setHoverIndex] = useState(null);
 
   // Keep graph dates current instead of leaving the old September demo dates.
   const today = new Date();
@@ -3368,16 +3470,43 @@ function DashboardHome() {
         Math.round(v * 0.48 + (i % 3) * 18),
       ),
     },
-  ].map((series) => ({
-    ...series,
-    points: series.values
-      .map((value, index) => {
-        const x = (index / (series.values.length - 1)) * 700;
-        const y = 260 - (Math.min(value, 1000) / 1000) * 250;
-        return `${x},${y}`;
-      })
-      .join(" "),
-  }));
+  ].map((series) => {
+    const coords = series.values.map((value, index) => ({
+      x: (index / (series.values.length - 1)) * 700,
+      y: 255 - (Math.min(value, 1000) / 1000) * 245,
+    }));
+
+    // smooth curve (Catmull-Rom -> cubic bezier)
+    let linePath = `M${coords[0].x},${coords[0].y}`;
+    for (let i = 0; i < coords.length - 1; i++) {
+      const p0 = coords[i - 1] || coords[i];
+      const p1 = coords[i];
+      const p2 = coords[i + 1];
+      const p3 = coords[i + 2] || p2;
+      const t = 0.18;
+      const c1x = p1.x + (p2.x - p0.x) * t;
+      const c1y = p1.y + (p2.y - p0.y) * t;
+      const c2x = p2.x - (p3.x - p1.x) * t;
+      const c2y = p2.y - (p3.y - p1.y) * t;
+      linePath += ` C${c1x},${c1y} ${c2x},${c2y} ${p2.x},${p2.y}`;
+    }
+
+    return {
+      ...series,
+      coords,
+      linePath,
+      areaPath: `${linePath} L700,260 L0,260 Z`,
+    };
+  });
+
+  const handleChartMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const ratio = Math.min(
+      Math.max((event.clientX - rect.left) / rect.width, 0),
+      1,
+    );
+    setHoverIndex(Math.round(ratio * (activeChart.values.length - 1)));
+  };
 
   const formatLeadDate = (daysAgo) => {
     const date = new Date(today);
@@ -3651,7 +3780,10 @@ function DashboardHome() {
                   key={period}
                   type="button"
                   className={chartPeriod === period ? "selected" : ""}
-                  onClick={() => setChartPeriod(period)}
+                  onClick={() => {
+                    setHoverIndex(null);
+                    setChartPeriod(period);
+                  }}
                   aria-pressed={chartPeriod === period}
                 >
                   {period}
@@ -3695,29 +3827,84 @@ function DashboardHome() {
                       <stop
                         offset="0%"
                         stopColor={series.color}
-                        stopOpacity="0.13"
+                        stopOpacity="0.22"
                       />
                       <stop
                         offset="100%"
                         stopColor={series.color}
-                        stopOpacity="0.01"
+                        stopOpacity="0"
                       />
                     </linearGradient>
                   ))}
                 </defs>
+                {chartSeries.map((series, index) => (
+                  <path
+                    key={`${series.name}-area`}
+                    d={series.areaPath}
+                    fill={`url(#areaGradient${index})`}
+                    stroke="none"
+                  />
+                ))}
                 {chartSeries.map((series) => (
-                  <polyline
+                  <path
                     key={series.name}
-                    points={series.points}
+                    d={series.linePath}
                     fill="none"
                     stroke={series.color}
-                    strokeWidth="3"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     vectorEffect="non-scaling-stroke"
                   />
                 ))}
               </svg>
+
+              <div
+                className="chart-hover-layer"
+                onMouseMove={handleChartMove}
+                onMouseLeave={() => setHoverIndex(null)}
+              >
+                {hoverIndex !== null && (
+                  <>
+                    <div
+                      className="chart-crosshair"
+                      style={{
+                        left: `${(hoverIndex / (activeChart.values.length - 1)) * 100}%`,
+                      }}
+                    />
+                    {chartSeries.map((series) => (
+                      <span
+                        key={series.name}
+                        className="chart-hover-dot"
+                        style={{
+                          left: `${(hoverIndex / (activeChart.values.length - 1)) * 100}%`,
+                          top: `${(series.coords[hoverIndex].y / 260) * 100}%`,
+                          borderColor: series.color,
+                        }}
+                      />
+                    ))}
+                    <div
+                      className={`chart-tooltip ${
+                        hoverIndex / (activeChart.values.length - 1) > 0.65
+                          ? "left"
+                          : "right"
+                      }`}
+                      style={{
+                        left: `${(hoverIndex / (activeChart.values.length - 1)) * 100}%`,
+                      }}
+                    >
+                      <strong>{activeChart.labels[hoverIndex]}</strong>
+                      {chartSeries.map((series) => (
+                        <span key={series.name}>
+                          <i style={{ backgroundColor: series.color }} />
+                          {series.name}
+                          <b>{series.values[hoverIndex].toLocaleString()}</b>
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
 
               <div className="chart-x-axis">
                 {activeChart.labels.map((label, index) => (
