@@ -186,11 +186,13 @@ const NAV = [
 
 /* =========================================================
    APPLY NOW  (applications are stored in localStorage)
+   Moved out of StudentDashboard.jsx. Logic is unchanged.
 ========================================================= */
 
 const APPLICATIONS_KEY = "scp_applications";
 
 const APPLY_STREAMS = [
+  "Bio-Maths",
   "Biology",
   "Computer Science",
   "Arts",
@@ -303,15 +305,15 @@ const EMPTY_APPLY_FORM = {
 };
 
 const APPLY_FIELD_ORDER = [
-  "categoryId",
-  "collegeKey",
-  "course",
   "studentName",
   "mobile",
   "email",
-  "mark12",
-  "mark10",
+  "categoryId",
   "stream",
+  "collegeKey",
+  "course",
+  "mark10",
+  "mark12",
   "maths",
   "biology",
   "bioMaths",
@@ -386,6 +388,7 @@ const computeCutoff = (rule, form) => {
   return Math.round(total * 100) / 100;
 };
 
+// also used by the Profile form in StudentDashboard.jsx
 const markError = (value, label) => {
   if (String(value).trim() === "") return `${label} mark is required.`;
   const number = Number(value);
@@ -412,8 +415,8 @@ const validateApplication = (form, rule, cutoffValue) => {
 
   if (!form.mobile) {
     errors.mobile = "Mobile number is required.";
-  } else if (!/^\d{10}$/.test(form.mobile)) {
-    errors.mobile = "Enter a valid 10-digit mobile number.";
+  } else if (!/^[6-9]\d{9}$/.test(form.mobile)) {
+    errors.mobile = "Enter a valid 10-digit Indian mobile number.";
   }
 
   const email = form.email.trim();
@@ -450,6 +453,7 @@ const validateApplication = (form, rule, cutoffValue) => {
   return errors;
 };
 
+// also used by the Profile form in StudentDashboard.jsx
 function ApplyField({ id, label, error, full, children }) {
   return (
     <div
@@ -465,6 +469,843 @@ function ApplyField({ id, label, error, full, children }) {
         </small>
       )}
     </div>
+  );
+}
+
+/* =========================================================
+   STYLES  (card layout; reuses the existing .cc-apply-* rules)
+========================================================= */
+
+const APPLY_STYLE = `
+.cc-apply-modal.cc-ap-modal {
+  width: min(940px, 100%);
+  background: #F4F7FB;
+}
+
+.cc-ap-modal .cc-apply-success {
+  background: #fff;
+}
+
+.cc-apply-form.cc-ap-form {
+  padding: 30px 28px 26px;
+}
+
+.cc-ap-head {
+  margin-bottom: 18px;
+  padding-right: 44px;
+}
+
+.cc-ap-head .cc-apply-sub {
+  margin-bottom: 0;
+}
+
+.cc-ap-body {
+  display: grid;
+  gap: 16px;
+}
+
+.cc-ap-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px 24px;
+  box-shadow: 0 2px 10px rgba(6,31,58,.05);
+}
+
+.cc-ap-card .cc-ap-card-title {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: .95rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.cc-ap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.cc-ap-card .cc-apply-control {
+  border-radius: 12px;
+  background: #fff;
+}
+
+.cc-ap-card .cc-apply-control:disabled {
+  background: #F8FAFC;
+}
+
+.cc-ap-note {
+  grid-column: 1 / -1;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--blue-25);
+  border: 1px solid #d5e6fb;
+  color: var(--muted-dark);
+  font-size: .88rem;
+  text-align: center;
+}
+
+.cc-ap-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+  margin: 0;
+  text-align: center;
+}
+
+.cc-ap-summary dt {
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+.cc-ap-summary dd {
+  margin: 4px 0 0;
+  font-weight: 700;
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.cc-ap-actions {
+  margin-top: 20px;
+}
+
+@media (max-width: 680px) {
+  .cc-apply-form.cc-ap-form {
+    padding: 24px 14px 18px;
+  }
+
+  .cc-ap-card {
+    padding: 18px 16px 20px;
+  }
+
+  .cc-ap-grid,
+  .cc-ap-summary {
+    grid-template-columns: 1fr;
+  }
+}
+`;
+
+/* =========================================================
+   COMPONENT
+
+   props
+   - college            college opened from a college page (or null)
+   - colleges           all loaded colleges
+   - courseIndex        course lookup built by the dashboard
+   - helpers            { getCategory, getCollegeName, getLocation,
+                          courseDetails, toText } from the dashboard
+   - user, profile      logged-in user + saved profile (used to pre-fill)
+   - userKey            key used to store/find this user's applications
+   - myApplications     this user's saved applications (duplicate check)
+   - onClose            close the form
+   - onSubmitted(list)  called with the full saved applications list
+   - onViewApplications go to "My applications" after success
+========================================================= */
+
+function ApplyNow({
+  college,
+  colleges,
+  courseIndex,
+  helpers,
+  user,
+  profile,
+  userKey,
+  myApplications,
+  onClose,
+  onSubmitted,
+  onViewApplications,
+}) {
+  // every loaded college tagged with its apply category. A college that
+  // appears in two files (e.g. Medical and Allied) is merged into one entry
+  // with the combined course list.
+  const applyColleges = useMemo(() => {
+    const { getCategory, getCollegeName, getLocation, courseDetails, toText } =
+      helpers;
+    const merged = new Map();
+
+    colleges.forEach((item) => {
+      const raw = getCategory(item);
+      const category = APPLY_CATEGORIES.find((entry) =>
+        entry.match.includes(raw),
+      );
+      if (!category) return;
+
+      const name = getCollegeName(item);
+      const place = getLocation(item);
+      const key = applyKeyFor(category.id, name, place);
+
+      const names = courseDetails(item, courseIndex)
+        .map((course) => toText(course.courseName))
+        .filter(Boolean);
+
+      const existing = merged.get(key);
+
+      if (existing) {
+        names.forEach((courseName) => {
+          if (!existing.courses.includes(courseName)) {
+            existing.courses.push(courseName);
+          }
+        });
+        return;
+      }
+
+      merged.set(key, {
+        key,
+        categoryId: category.id,
+        name,
+        place,
+        group: APPLY_SUB_LABELS[raw] || raw,
+        courses: [...new Set(names)],
+      });
+    });
+
+    return [...merged.values()]
+      .map((item) => {
+        const label = item.place ? `${item.name} — ${item.place}` : item.name;
+        return {
+          ...item,
+          label: item.courses.length ? label : `${label} (courses not listed)`,
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [colleges, courseIndex, helpers]);
+
+  // college opened from a college page -> category + college pre-selected
+  const [preset] = useState(() => {
+    if (!college) return null;
+
+    const raw = helpers.getCategory(college);
+    const category = APPLY_CATEGORIES.find((item) => item.match.includes(raw));
+    if (!category) return null;
+
+    const key = applyKeyFor(
+      category.id,
+      helpers.getCollegeName(college),
+      helpers.getLocation(college),
+    );
+
+    return applyColleges.some((item) => item.key === key)
+      ? { categoryId: category.id, collegeKey: key }
+      : null;
+  });
+
+  const [applyForm, setApplyForm] = useState(() => ({
+    ...EMPTY_APPLY_FORM,
+    studentName: profile?.fullName || user?.name || "",
+    email: user?.email || "",
+    mobile: profile?.mobileNumber || "",
+    mark12: profile ? String(profile.twelfthMark) : "",
+    mark10: profile ? String(profile.tenthMark) : "",
+    ...(preset || {}),
+  }));
+  const [applyErrors, setApplyErrors] = useState({});
+  const [applySubmitted, setApplySubmitted] = useState(false);
+  const [applyLocked, setApplyLocked] = useState(Boolean(preset));
+
+  const applyCategory = APPLY_CATEGORIES.find(
+    (item) => item.id === applyForm.categoryId,
+  );
+
+  const applyGroups = useMemo(() => {
+    const groups = {};
+    applyColleges
+      .filter((item) => item.categoryId === applyForm.categoryId)
+      .forEach((item) => {
+        (groups[item.group] = groups[item.group] || []).push(item);
+      });
+    return Object.entries(groups);
+  }, [applyColleges, applyForm.categoryId]);
+
+  const applyCollegeCount = applyGroups.reduce(
+    (total, [, items]) => total + items.length,
+    0,
+  );
+
+  const applyCollege = applyColleges.find(
+    (item) =>
+      item.key === applyForm.collegeKey &&
+      item.categoryId === applyForm.categoryId,
+  );
+
+  const ruleKey = ruleKeyFor(applyCategory, applyForm.course);
+  const cutoffRule = ruleKey ? CUTOFF_RULES[ruleKey] : null;
+  const calculatedCutoff = cutoffRule
+    ? computeCutoff(cutoffRule, applyForm)
+    : null;
+  // shows the auto-calculated value unless the student typed their own
+  const cutoffValue =
+    applyForm.cutoff !== ""
+      ? applyForm.cutoff
+      : calculatedCutoff !== null
+        ? String(calculatedCutoff)
+        : "";
+
+  useEffect(() => {
+    const onKey = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const updateApplyField = (name, value) => {
+    setApplyForm((prev) => {
+      if (name === "categoryId") {
+        return { ...prev, categoryId: value, collegeKey: "", course: "", cutoff: "" };
+      }
+      if (name === "collegeKey") {
+        return { ...prev, collegeKey: value, course: "" };
+      }
+      return { ...prev, [name]: value };
+    });
+
+    setApplyErrors((prev) => {
+      const next = { ...prev };
+      delete next[name];
+      delete next.form;
+      if (name === "categoryId") {
+        delete next.collegeKey;
+        delete next.course;
+      }
+      if (name === "collegeKey") delete next.course;
+      if (CUTOFF_INPUTS.includes(name)) delete next.cutoff;
+      return next;
+    });
+  };
+
+  const submitApplication = (event) => {
+    event.preventDefault();
+
+    const errors = validateApplication(applyForm, cutoffRule, cutoffValue);
+
+    if (applyCollege && applyCollege.courses.length === 0) {
+      errors.course = "Course details for this college are not available yet.";
+    }
+
+    if (!errors.course && applyCollege) {
+      if (!applyCollege.courses.includes(applyForm.course)) {
+        errors.course = "This course is not offered by the selected college.";
+      } else if (
+        myApplications.some(
+          (item) =>
+            item.collegeName === applyCollege.name &&
+            item.city === applyCollege.place &&
+            item.courseName === applyForm.course,
+        )
+      ) {
+        errors.course = "You have already applied for this course here.";
+      }
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setApplyErrors(errors);
+      const first = APPLY_FIELD_ORDER.find((field) => errors[field]);
+      if (first) document.getElementById(`apply-${first}`)?.focus();
+      return;
+    }
+
+    const subjects = {};
+    (cutoffRule ? cutoffRule.fields : []).forEach((key) => {
+      subjects[key] = Number(applyForm[key]);
+    });
+
+    const record = {
+      id: Date.now(),
+      userKey,
+      categoryLabel: applyCategory.label,
+      collegeName: applyCollege.name,
+      city: applyCollege.place,
+      courseName: applyForm.course,
+      studentName: applyForm.studentName.trim(),
+      mobile: applyForm.mobile,
+      email: applyForm.email.trim(),
+      mark12: Number(applyForm.mark12),
+      mark10: Number(applyForm.mark10),
+      stream: applyForm.stream,
+      subjects,
+      cutoff: cutoffRule ? Number(cutoffValue) : null,
+      cutoffMax: cutoffRule ? cutoffRule.max : null,
+      status: "Submitted",
+      appliedOn: new Date().toISOString(),
+    };
+
+    const next = [record, ...readApplications()];
+
+    try {
+      localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(next));
+    } catch {
+      setApplyErrors({
+        form: "Could not save your application. Please enable browser storage and try again.",
+      });
+      return;
+    }
+
+    onSubmitted(next);
+    setApplyErrors({});
+    setApplySubmitted(true);
+  };
+
+  /* ---------- small field helpers ---------- */
+
+  const textField = (name, label, props, full) => (
+    <ApplyField
+      id={`apply-${name}`}
+      label={label}
+      error={applyErrors[name]}
+      full={full}
+    >
+      <input
+        id={`apply-${name}`}
+        className="cc-apply-control"
+        value={applyForm[name]}
+        aria-invalid={Boolean(applyErrors[name])}
+        onChange={(event) =>
+          updateApplyField(
+            name,
+            props.clean ? props.clean(event.target.value) : event.target.value,
+          )
+        }
+        {...props.input}
+      />
+    </ApplyField>
+  );
+
+  const markField = (name, label, placeholder, full) => (
+    <ApplyField
+      key={name}
+      id={`apply-${name}`}
+      label={label}
+      error={applyErrors[name]}
+      full={full}
+    >
+      <input
+        id={`apply-${name}`}
+        type="number"
+        inputMode="decimal"
+        min="0"
+        max="100"
+        step="0.01"
+        className="cc-apply-control"
+        placeholder={placeholder}
+        value={applyForm[name]}
+        aria-invalid={Boolean(applyErrors[name])}
+        onChange={(event) => updateApplyField(name, event.target.value)}
+      />
+    </ApplyField>
+  );
+
+  return (
+    <>
+      <style>{APPLY_STYLE}</style>
+
+      <div
+        className="cc-modal-backdrop cc-apply-backdrop"
+        onClick={(event) => {
+          if (event.target === event.currentTarget) onClose();
+        }}
+      >
+        <div
+          className="cc-modal cc-apply-modal cc-ap-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="apply-title"
+        >
+          <button
+            type="button"
+            className="cc-modal-close"
+            aria-label="Close application form"
+            onClick={onClose}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+
+          {applySubmitted ? (
+            <div className="cc-apply-success" role="status">
+              <div className="cc-confetti" aria-hidden="true">
+                {CONFETTI.map((piece, index) => (
+                  <i
+                    key={index}
+                    style={{
+                      "--x": piece.x,
+                      "--y": piece.y,
+                      "--r": piece.r,
+                      "--c": piece.color,
+                      animationDelay: piece.delay,
+                    }}
+                  />
+                ))}
+              </div>
+              <span className="cc-apply-success-icon">
+                <svg
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4.5 12.5l4.5 4.5L19.5 6.5" />
+                </svg>
+              </span>
+              <h2 id="apply-title">Application submitted</h2>
+              <p>Your application has been submitted successfully!</p>
+
+              <div className="cc-apply-actions">
+                <button
+                  type="button"
+                  className="cc-btn cc-btn-ghost"
+                  onClick={onClose}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="cc-btn cc-btn-primary cc-glow-btn"
+                  onClick={onViewApplications}
+                >
+                  View my applications
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form
+              className="cc-apply-form cc-ap-form"
+              onSubmit={submitApplication}
+              noValidate
+            >
+              <div className="cc-ap-head">
+                <span className="cc-eyebrow">Admission application</span>
+                <h2 id="apply-title">Apply Now</h2>
+                <p className="cc-apply-sub">
+                  Fill in each section below and submit your application.
+                </p>
+              </div>
+
+              {applyErrors.form && (
+                <div className="cc-apply-alert" role="alert">
+                  {applyErrors.form}
+                </div>
+              )}
+
+              <div className="cc-ap-body">
+                {/* A. PERSONAL DETAILS */}
+                <section className="cc-ap-card">
+                  <h3 className="cc-ap-card-title">Personal Details</h3>
+
+                  <div className="cc-ap-grid">
+                    {textField(
+                      "studentName",
+                      "Student Name",
+                      {
+                        input: {
+                          type: "text",
+                          autoComplete: "name",
+                          placeholder: "Full name",
+                        },
+                      },
+                      true,
+                    )}
+
+                    {textField("mobile", "Mobile Number", {
+                      clean: (value) => value.replace(/\D/g, "").slice(0, 10),
+                      input: {
+                        type: "tel",
+                        inputMode: "numeric",
+                        maxLength: 10,
+                        autoComplete: "tel-national",
+                        placeholder: "10-digit mobile number",
+                      },
+                    })}
+
+                    {textField("email", "Email Address", {
+                      input: {
+                        type: "email",
+                        autoComplete: "email",
+                        placeholder: "you@example.com",
+                      },
+                    })}
+                  </div>
+                </section>
+
+                {/* B. EDUCATION DETAILS */}
+                <section className="cc-ap-card">
+                  <h3 className="cc-ap-card-title">Education Details</h3>
+
+                  <div className="cc-ap-grid">
+                    <ApplyField
+                      id="apply-categoryId"
+                      label="College Category"
+                      error={applyErrors.categoryId}
+                    >
+                      <select
+                        id="apply-categoryId"
+                        className="cc-apply-control"
+                        value={applyForm.categoryId}
+                        disabled={applyLocked}
+                        aria-invalid={Boolean(applyErrors.categoryId)}
+                        onChange={(event) =>
+                          updateApplyField("categoryId", event.target.value)
+                        }
+                      >
+                        <option value="">Select a category</option>
+                        {APPLY_CATEGORIES.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </ApplyField>
+
+                    <ApplyField
+                      id="apply-stream"
+                      label="Group"
+                      error={applyErrors.stream}
+                    >
+                      <select
+                        id="apply-stream"
+                        className="cc-apply-control"
+                        value={applyForm.stream}
+                        aria-invalid={Boolean(applyErrors.stream)}
+                        onChange={(event) =>
+                          updateApplyField("stream", event.target.value)
+                        }
+                      >
+                        <option value="">Select your group</option>
+                        {APPLY_STREAMS.map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </ApplyField>
+
+                    {applyLocked && applyCollege && applyCategory ? (
+                      <div className="cc-apply-full cc-apply-locked">
+                        <div>
+                          <span className="cc-apply-locked-label">
+                            Applying to
+                          </span>
+                          <strong>{applyCollege.name}</strong>
+                          <span>
+                            {[applyCollege.place, applyCategory.label]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          className="cc-apply-link"
+                          onClick={() => setApplyLocked(false)}
+                        >
+                          Change college
+                        </button>
+                      </div>
+                    ) : (
+                      <ApplyField
+                        id="apply-collegeKey"
+                        label="College Name"
+                        error={applyErrors.collegeKey}
+                        full
+                      >
+                        <select
+                          id="apply-collegeKey"
+                          className="cc-apply-control"
+                          value={applyForm.collegeKey}
+                          disabled={!applyCategory || applyCollegeCount === 0}
+                          aria-invalid={Boolean(applyErrors.collegeKey)}
+                          onChange={(event) =>
+                            updateApplyField("collegeKey", event.target.value)
+                          }
+                        >
+                          <option value="">
+                            {!applyCategory
+                              ? "Select a category first"
+                              : applyCollegeCount === 0
+                                ? "No colleges available for this category yet"
+                                : "Select a college"}
+                          </option>
+                          {applyGroups.map(([group, items]) =>
+                            applyGroups.length > 1 ? (
+                              <optgroup key={group} label={group}>
+                                {items.map((item) => (
+                                  <option key={item.key} value={item.key}>
+                                    {item.label}
+                                  </option>
+                                ))}
+                              </optgroup>
+                            ) : (
+                              items.map((item) => (
+                                <option key={item.key} value={item.key}>
+                                  {item.label}
+                                </option>
+                              ))
+                            ),
+                          )}
+                        </select>
+                      </ApplyField>
+                    )}
+
+                    <ApplyField
+                      id="apply-course"
+                      label="Course Name"
+                      error={applyErrors.course}
+                      full
+                    >
+                      <select
+                        id="apply-course"
+                        className="cc-apply-control"
+                        value={applyForm.course}
+                        disabled={!applyCollege}
+                        aria-invalid={Boolean(applyErrors.course)}
+                        onChange={(event) =>
+                          updateApplyField("course", event.target.value)
+                        }
+                      >
+                        <option value="">
+                          {!applyCollege
+                            ? "Select a college first"
+                            : applyCollege.courses.length === 0
+                              ? "No courses listed for this college"
+                              : "Select a course"}
+                        </option>
+                        {applyCollege?.courses.map((course) => (
+                          <option key={course} value={course}>
+                            {course}
+                          </option>
+                        ))}
+                      </select>
+                      {applyCollege && applyCollege.courses.length > 0 && (
+                        <small className="cc-apply-hint">
+                          {applyCollege.courses.length} course
+                          {applyCollege.courses.length === 1 ? "" : "s"}{" "}
+                          available at this college
+                        </small>
+                      )}
+                    </ApplyField>
+                  </div>
+                </section>
+
+                {/* C. 10TH STANDARD MARKS */}
+                <section className="cc-ap-card">
+                  <h3 className="cc-ap-card-title">10th Standard Marks</h3>
+
+                  <div className="cc-ap-grid">
+                    {markField("mark10", "10th Standard Mark (%)", "e.g. 90", true)}
+                  </div>
+                </section>
+
+                {/* D. 12TH STANDARD MARKS */}
+                <section className="cc-ap-card">
+                  <h3 className="cc-ap-card-title">12th Standard Marks</h3>
+
+                  <div className="cc-ap-grid">
+                    {markField(
+                      "mark12",
+                      "12th Standard Mark (%)",
+                      "e.g. 85.5",
+                      !cutoffRule || cutoffRule.fields.length === 0,
+                    )}
+
+                    {cutoffRule &&
+                      cutoffRule.fields.map((key) =>
+                        markField(
+                          key,
+                          `${SUBJECT_FIELDS[key]} Mark`,
+                          "out of 100",
+                        ),
+                      )}
+
+                    {cutoffRule ? (
+                      <ApplyField
+                        id="apply-cutoff"
+                        label={cutoffRule.label || "Cutoff Mark"}
+                        error={applyErrors.cutoff}
+                        full
+                      >
+                        <input
+                          id="apply-cutoff"
+                          type="number"
+                          inputMode="decimal"
+                          min="0"
+                          max={cutoffRule.max}
+                          step="0.01"
+                          className="cc-apply-control"
+                          placeholder={`Out of ${cutoffRule.max}`}
+                          value={cutoffValue}
+                          aria-invalid={Boolean(applyErrors.cutoff)}
+                          onChange={(event) =>
+                            updateApplyField("cutoff", event.target.value)
+                          }
+                        />
+                        <small className="cc-apply-hint">
+                          {cutoffRule.manual
+                            ? `Enter ${cutoffRule.formula} (max ${cutoffRule.max}).`
+                            : `Auto-calculated as ${cutoffRule.formula} (max ${cutoffRule.max}). You can type your own value.`}
+                        </small>
+                      </ApplyField>
+                    ) : (
+                      <ApplyField
+                        id="apply-cutoff"
+                        label="Cutoff Mark"
+                        full
+                      >
+                        <input
+                          id="apply-cutoff"
+                          type="number"
+                          className="cc-apply-control"
+                          placeholder={
+                            applyCategory
+                              ? "Not required for this category"
+                              : "Select a category first"
+                          }
+                          value=""
+                          disabled
+                          readOnly
+                        />
+                      </ApplyField>
+                    )}
+                  </div>
+                </section>
+
+                <div className="cc-apply-actions cc-ap-actions">
+                  <button
+                    type="button"
+                    className="cc-btn cc-btn-ghost"
+                    onClick={onClose}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="cc-btn cc-btn-primary cc-btn-lg cc-glow-btn"
+                  >
+                    Submit Application
+                  </button>
+                </div>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -1176,6 +2017,15 @@ const courseDetails = (college, courseIndex) => {
       entranceExam: toText(course.entranceExam) || "TNEA",
       fees: formatFee(course.fees || course.fee || getFee(college)),
     }));
+};
+
+// helpers handed to ApplyNow.jsx so it reads college data the same way
+const APPLY_HELPERS = {
+  getCategory,
+  getCollegeName,
+  getLocation,
+  courseDetails,
+  toText,
 };
 
 const matchesCollege = (college, courseIndex, search) => {
@@ -2861,14 +3711,13 @@ export default function StudentDashboard() {
   }, [courses]);
 
   /* =======================================================
-     APPLY NOW
+     APPLY NOW  (the form itself lives in ApplyNow.jsx)
+     applyTarget === null          -> form closed
+     applyTarget === { college }   -> form open
+                                      (college is null when opened from navbar)
   ======================================================= */
 
-  const [applyOpen, setApplyOpen] = useState(false);
-  const [applyForm, setApplyForm] = useState(EMPTY_APPLY_FORM);
-  const [applyErrors, setApplyErrors] = useState({});
-  const [applySubmitted, setApplySubmitted] = useState(false);
-  const [applyLocked, setApplyLocked] = useState(false);
+  const [applyTarget, setApplyTarget] = useState(null);
   const [applications, setApplications] = useState(readApplications);
 
   const userKey = (user?.email || user?.name || "").trim().toLowerCase();
@@ -2935,249 +3784,17 @@ export default function StudentDashboard() {
     [applications, userKey],
   );
 
-  // every loaded college tagged with its apply category. Built from the same
-  // loaded data; a college that appears in two files (e.g. Medical and Allied)
-  // is merged into one entry with the combined course list.
-  const applyColleges = useMemo(() => {
-    const merged = new Map();
-
-    colleges.forEach((college) => {
-      const raw = getCategory(college);
-      const category = APPLY_CATEGORIES.find((item) =>
-        item.match.includes(raw),
-      );
-      if (!category) return;
-
-      const name = getCollegeName(college);
-      const place = getLocation(college);
-      const key = applyKeyFor(category.id, name, place);
-
-      const names = courseDetails(college, courseIndex)
-        .map((course) => toText(course.courseName))
-        .filter(Boolean);
-
-      const existing = merged.get(key);
-
-      if (existing) {
-        names.forEach((courseName) => {
-          if (!existing.courses.includes(courseName)) {
-            existing.courses.push(courseName);
-          }
-        });
-        return;
-      }
-
-      merged.set(key, {
-        key,
-        categoryId: category.id,
-        name,
-        place,
-        group: APPLY_SUB_LABELS[raw] || raw,
-        courses: [...new Set(names)],
-      });
-    });
-
-    return [...merged.values()]
-      .map((item) => {
-        const label = item.place ? `${item.name} — ${item.place}` : item.name;
-        return {
-          ...item,
-          label: item.courses.length ? label : `${label} (courses not listed)`,
-        };
-      })
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }, [colleges, courseIndex]);
-
-  const applyCategory = APPLY_CATEGORIES.find(
-    (item) => item.id === applyForm.categoryId,
-  );
-
-  const applyGroups = useMemo(() => {
-    const groups = {};
-    applyColleges
-      .filter((item) => item.categoryId === applyForm.categoryId)
-      .forEach((item) => {
-        (groups[item.group] = groups[item.group] || []).push(item);
-      });
-    return Object.entries(groups);
-  }, [applyColleges, applyForm.categoryId]);
-
-  const applyCollegeCount = applyGroups.reduce(
-    (total, [, items]) => total + items.length,
-    0,
-  );
-
-  const applyCollege = applyColleges.find(
-    (item) =>
-      item.key === applyForm.collegeKey &&
-      item.categoryId === applyForm.categoryId,
-  );
-
-  const ruleKey = ruleKeyFor(applyCategory, applyForm.course);
-  const cutoffRule = ruleKey ? CUTOFF_RULES[ruleKey] : null;
-  const calculatedCutoff = cutoffRule
-    ? computeCutoff(cutoffRule, applyForm)
-    : null;
-  // shows the auto-calculated value unless the student typed their own
-  const cutoffValue =
-    applyForm.cutoff !== ""
-      ? applyForm.cutoff
-      : calculatedCutoff !== null
-        ? String(calculatedCutoff)
-        : "";
-
   // openApply()         -> blank form (navbar)
   // openApply(college)  -> college and category pre-selected (college page)
   const openApply = (college) => {
-    let preset = null;
-
-    if (college) {
-      const raw = getCategory(college);
-      const category = APPLY_CATEGORIES.find((item) =>
-        item.match.includes(raw),
-      );
-
-      if (category) {
-        const key = applyKeyFor(
-          category.id,
-          getCollegeName(college),
-          getLocation(college),
-        );
-
-        if (applyColleges.some((item) => item.key === key)) {
-          preset = { categoryId: category.id, collegeKey: key };
-        }
-      }
-    }
-
-    setApplyForm({
-      ...EMPTY_APPLY_FORM,
-      studentName: profile?.fullName || user?.name || "",
-      email: user?.email || "",
-      mobile: profile?.mobileNumber || "",
-      mark12: profile ? String(profile.twelfthMark) : "",
-      mark10: profile ? String(profile.tenthMark) : "",
-      ...(preset || {}),
-    });
-    setApplyLocked(Boolean(preset));
-    setApplyErrors({});
-    setApplySubmitted(false);
     setSelected(null);
-    setApplyOpen(true);
+    setApplyTarget({ college: college || null });
   };
 
-  const closeApply = () => setApplyOpen(false);
-
-  useEffect(() => {
-    if (!applyOpen) return undefined;
-
-    const onKey = (event) => {
-      if (event.key === "Escape") setApplyOpen(false);
-    };
-
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [applyOpen]);
-
-  const updateApplyField = (name, value) => {
-    setApplyForm((prev) => {
-      if (name === "categoryId") {
-        return { ...prev, categoryId: value, collegeKey: "", course: "", cutoff: "" };
-      }
-      if (name === "collegeKey") {
-        return { ...prev, collegeKey: value, course: "" };
-      }
-      return { ...prev, [name]: value };
-    });
-
-    setApplyErrors((prev) => {
-      const next = { ...prev };
-      delete next[name];
-      delete next.form;
-      if (name === "categoryId") {
-        delete next.collegeKey;
-        delete next.course;
-      }
-      if (name === "collegeKey") delete next.course;
-      if (CUTOFF_INPUTS.includes(name)) delete next.cutoff;
-      return next;
-    });
-  };
-
-  const submitApplication = (event) => {
-    event.preventDefault();
-
-    const errors = validateApplication(applyForm, cutoffRule, cutoffValue);
-
-    if (applyCollege && applyCollege.courses.length === 0) {
-      errors.course = "Course details for this college are not available yet.";
-    }
-
-    if (!errors.course && applyCollege) {
-      if (!applyCollege.courses.includes(applyForm.course)) {
-        errors.course = "This course is not offered by the selected college.";
-      } else if (
-        myApplications.some(
-          (item) =>
-            item.collegeName === applyCollege.name &&
-            item.city === applyCollege.place &&
-            item.courseName === applyForm.course,
-        )
-      ) {
-        errors.course = "You have already applied for this course here.";
-      }
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setApplyErrors(errors);
-      const first = APPLY_FIELD_ORDER.find((field) => errors[field]);
-      if (first) document.getElementById(`apply-${first}`)?.focus();
-      return;
-    }
-
-    const subjects = {};
-    (cutoffRule ? cutoffRule.fields : []).forEach((key) => {
-      subjects[key] = Number(applyForm[key]);
-    });
-
-    const record = {
-      id: Date.now(),
-      userKey,
-      categoryLabel: applyCategory.label,
-      collegeName: applyCollege.name,
-      city: applyCollege.place,
-      courseName: applyForm.course,
-      studentName: applyForm.studentName.trim(),
-      mobile: applyForm.mobile,
-      email: applyForm.email.trim(),
-      mark12: Number(applyForm.mark12),
-      mark10: Number(applyForm.mark10),
-      stream: applyForm.stream,
-      subjects,
-      cutoff: cutoffRule ? Number(cutoffValue) : null,
-      cutoffMax: cutoffRule ? cutoffRule.max : null,
-      status: "Submitted",
-      appliedOn: new Date().toISOString(),
-    };
-
-    const next = [record, ...readApplications()];
-
-    try {
-      localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(next));
-    } catch {
-      setApplyErrors({
-        form: "Could not save your application. Please enable browser storage and try again.",
-      });
-      return;
-    }
-
-    setApplications(next);
-    setApplyErrors({});
-    setApplySubmitted(true);
-  };
+  const closeApply = () => setApplyTarget(null);
 
   const viewMyApplications = () => {
-    setApplyOpen(false);
+    setApplyTarget(null);
 
     if (location.pathname !== "/student/dashboard") {
       navigate("/student/dashboard");
@@ -4282,431 +4899,23 @@ export default function StudentDashboard() {
         )}
 
         {/* =================================================
-            APPLY NOW MODAL
+            APPLY NOW  (component lives in ApplyNow.jsx)
         ================================================= */}
 
-        {applyOpen && (
-          <div
-            className="cc-modal-backdrop cc-apply-backdrop"
-            onClick={(event) => {
-              if (event.target === event.currentTarget) closeApply();
-            }}
-          >
-            <div
-              className="cc-modal cc-apply-modal"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="apply-title"
-            >
-              <button
-                type="button"
-                className="cc-modal-close"
-                aria-label="Close application form"
-                onClick={closeApply}
-              >
-                <Icon name="close" size={18} />
-              </button>
-
-              {applySubmitted ? (
-                <div className="cc-apply-success" role="status">
-                  <div className="cc-confetti" aria-hidden="true">
-                    {CONFETTI.map((piece, index) => (
-                      <i
-                        key={index}
-                        style={{
-                          "--x": piece.x,
-                          "--y": piece.y,
-                          "--r": piece.r,
-                          "--c": piece.color,
-                          animationDelay: piece.delay,
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <span className="cc-apply-success-icon">
-                    <Icon name="check" size={30} />
-                  </span>
-                  <h2 id="apply-title">Application submitted</h2>
-                  <p>Your application has been submitted successfully!</p>
-
-                  <div className="cc-apply-actions">
-                    <button
-                      type="button"
-                      className="cc-btn cc-btn-ghost"
-                      onClick={closeApply}
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="button"
-                      className="cc-btn cc-btn-primary cc-glow-btn"
-                      onClick={viewMyApplications}
-                    >
-                      View my applications
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <form
-                  className="cc-apply-form"
-                  onSubmit={submitApplication}
-                  noValidate
-                >
-                  <span className="cc-eyebrow">Admission application</span>
-                  <h2 id="apply-title">Apply Now</h2>
-                  <p className="cc-apply-sub">
-                    Choose a category, college and course, then fill in your
-                    details.
-                  </p>
-
-                  {applyErrors.form && (
-                    <div className="cc-apply-alert" role="alert">
-                      {applyErrors.form}
-                    </div>
-                  )}
-
-                  <div className="cc-apply-grid">
-                    {applyLocked && applyCollege && applyCategory ? (
-                      <div className="cc-apply-full cc-apply-locked">
-                        <div>
-                          <span className="cc-apply-locked-label">
-                            Applying to
-                          </span>
-                          <strong>{applyCollege.name}</strong>
-                          <span>
-                            {[applyCollege.place, applyCategory.label]
-                              .filter(Boolean)
-                              .join(" · ")}
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          className="cc-apply-link"
-                          onClick={() => setApplyLocked(false)}
-                        >
-                          Change college
-                        </button>
-                      </div>
-                    ) : (
-                      <>
-                    <ApplyField
-                      id="apply-categoryId"
-                      label="College Category"
-                      error={applyErrors.categoryId}
-                      full
-                    >
-                      <select
-                        id="apply-categoryId"
-                        className="cc-apply-control"
-                        value={applyForm.categoryId}
-                        aria-invalid={Boolean(applyErrors.categoryId)}
-                        onChange={(event) =>
-                          updateApplyField("categoryId", event.target.value)
-                        }
-                      >
-                        <option value="">Select a category</option>
-                        {APPLY_CATEGORIES.map((item) => (
-                          <option key={item.id} value={item.id}>
-                            {item.label}
-                          </option>
-                        ))}
-                      </select>
-                    </ApplyField>
-
-                    <ApplyField
-                      id="apply-collegeKey"
-                      label="College Name"
-                      error={applyErrors.collegeKey}
-                      full
-                    >
-                      <select
-                        id="apply-collegeKey"
-                        className="cc-apply-control"
-                        value={applyForm.collegeKey}
-                        disabled={!applyCategory || applyCollegeCount === 0}
-                        aria-invalid={Boolean(applyErrors.collegeKey)}
-                        onChange={(event) =>
-                          updateApplyField("collegeKey", event.target.value)
-                        }
-                      >
-                        <option value="">
-                          {!applyCategory
-                            ? "Select a category first"
-                            : applyCollegeCount === 0
-                              ? "No colleges available for this category yet"
-                              : "Select a college"}
-                        </option>
-                        {applyGroups.map(([group, items]) =>
-                          applyGroups.length > 1 ? (
-                            <optgroup key={group} label={group}>
-                              {items.map((item) => (
-                                <option key={item.key} value={item.key}>
-                                  {item.label}
-                                </option>
-                              ))}
-                            </optgroup>
-                          ) : (
-                            items.map((item) => (
-                              <option key={item.key} value={item.key}>
-                                {item.label}
-                              </option>
-                            ))
-                          ),
-                        )}
-                      </select>
-                    </ApplyField>
-
-                      </>
-                    )}
-
-                    <ApplyField
-                      id="apply-course"
-                      label="Course Name"
-                      error={applyErrors.course}
-                      full
-                    >
-                      <select
-                        id="apply-course"
-                        className="cc-apply-control"
-                        value={applyForm.course}
-                        disabled={!applyCollege}
-                        aria-invalid={Boolean(applyErrors.course)}
-                        onChange={(event) =>
-                          updateApplyField("course", event.target.value)
-                        }
-                      >
-                        <option value="">
-                          {!applyCollege
-                            ? "Select a college first"
-                            : applyCollege.courses.length === 0
-                              ? "No courses listed for this college"
-                              : "Select a course"}
-                        </option>
-                        {applyCollege?.courses.map((course) => (
-                          <option key={course} value={course}>
-                            {course}
-                          </option>
-                        ))}
-                      </select>
-                      {applyCollege && applyCollege.courses.length > 0 && (
-                        <small className="cc-apply-hint">
-                          {applyCollege.courses.length} course
-                          {applyCollege.courses.length === 1 ? "" : "s"}{" "}
-                          available at this college
-                        </small>
-                      )}
-                    </ApplyField>
-
-                    <ApplyField
-                      id="apply-studentName"
-                      label="Student Name"
-                      error={applyErrors.studentName}
-                    >
-                      <input
-                        id="apply-studentName"
-                        type="text"
-                        className="cc-apply-control"
-                        autoComplete="name"
-                        placeholder="Full name"
-                        value={applyForm.studentName}
-                        aria-invalid={Boolean(applyErrors.studentName)}
-                        onChange={(event) =>
-                          updateApplyField("studentName", event.target.value)
-                        }
-                      />
-                    </ApplyField>
-
-                    <ApplyField
-                      id="apply-mobile"
-                      label="Mobile Number"
-                      error={applyErrors.mobile}
-                    >
-                      <input
-                        id="apply-mobile"
-                        type="tel"
-                        inputMode="numeric"
-                        maxLength={10}
-                        className="cc-apply-control"
-                        autoComplete="tel-national"
-                        placeholder="10-digit mobile number"
-                        value={applyForm.mobile}
-                        aria-invalid={Boolean(applyErrors.mobile)}
-                        onChange={(event) =>
-                          updateApplyField(
-                            "mobile",
-                            event.target.value.replace(/\D/g, "").slice(0, 10),
-                          )
-                        }
-                      />
-                    </ApplyField>
-
-                    <ApplyField
-                      id="apply-email"
-                      label="Email Address"
-                      error={applyErrors.email}
-                      full
-                    >
-                      <input
-                        id="apply-email"
-                        type="email"
-                        className="cc-apply-control"
-                        autoComplete="email"
-                        placeholder="you@example.com"
-                        value={applyForm.email}
-                        aria-invalid={Boolean(applyErrors.email)}
-                        onChange={(event) =>
-                          updateApplyField("email", event.target.value)
-                        }
-                      />
-                    </ApplyField>
-
-                    <ApplyField
-                      id="apply-mark12"
-                      label="12th Standard Mark (%)"
-                      error={applyErrors.mark12}
-                    >
-                      <input
-                        id="apply-mark12"
-                        type="number"
-                        inputMode="decimal"
-                        min="0"
-                        max="100"
-                        step="0.01"
-                        className="cc-apply-control"
-                        placeholder="e.g. 85.5"
-                        value={applyForm.mark12}
-                        aria-invalid={Boolean(applyErrors.mark12)}
-                        onChange={(event) =>
-                          updateApplyField("mark12", event.target.value)
-                        }
-                      />
-                    </ApplyField>
-
-                    <ApplyField
-                      id="apply-mark10"
-                      label="10th Standard Mark (%)"
-                      error={applyErrors.mark10}
-                    >
-                      <input
-                        id="apply-mark10"
-                        type="number"
-                        inputMode="decimal"
-                        min="0"
-                        max="100"
-                        step="0.01"
-                        className="cc-apply-control"
-                        placeholder="e.g. 90"
-                        value={applyForm.mark10}
-                        aria-invalid={Boolean(applyErrors.mark10)}
-                        onChange={(event) =>
-                          updateApplyField("mark10", event.target.value)
-                        }
-                      />
-                    </ApplyField>
-
-                    <ApplyField
-                      id="apply-stream"
-                      label="Stream / Group"
-                      error={applyErrors.stream}
-                      full
-                    >
-                      <select
-                        id="apply-stream"
-                        className="cc-apply-control"
-                        value={applyForm.stream}
-                        aria-invalid={Boolean(applyErrors.stream)}
-                        onChange={(event) =>
-                          updateApplyField("stream", event.target.value)
-                        }
-                      >
-                        <option value="">Select your stream</option>
-                        {APPLY_STREAMS.map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </ApplyField>
-
-                    {cutoffRule && cutoffRule.fields.length > 0 && (
-                      <div className="cc-apply-full cc-apply-subjects">
-                        {cutoffRule.fields.map((key) => (
-                          <ApplyField
-                            key={key}
-                            id={`apply-${key}`}
-                            label={`${SUBJECT_FIELDS[key]} Mark`}
-                            error={applyErrors[key]}
-                          >
-                            <input
-                              id={`apply-${key}`}
-                              type="number"
-                              inputMode="decimal"
-                              min="0"
-                              max="100"
-                              step="0.01"
-                              className="cc-apply-control"
-                              placeholder="out of 100"
-                              value={applyForm[key]}
-                              aria-invalid={Boolean(applyErrors[key])}
-                              onChange={(event) =>
-                                updateApplyField(key, event.target.value)
-                              }
-                            />
-                          </ApplyField>
-                        ))}
-                      </div>
-                    )}
-
-                    {cutoffRule && (
-                      <ApplyField
-                        id="apply-cutoff"
-                        label={cutoffRule.label || "Cutoff Mark"}
-                        error={applyErrors.cutoff}
-                        full
-                      >
-                        <input
-                          id="apply-cutoff"
-                          type="number"
-                          inputMode="decimal"
-                          min="0"
-                          max={cutoffRule.max}
-                          step="0.01"
-                          className="cc-apply-control"
-                          placeholder={`Out of ${cutoffRule.max}`}
-                          value={cutoffValue}
-                          aria-invalid={Boolean(applyErrors.cutoff)}
-                          onChange={(event) =>
-                            updateApplyField("cutoff", event.target.value)
-                          }
-                        />
-                        <small className="cc-apply-hint">
-                          {cutoffRule.manual
-                            ? `Enter ${cutoffRule.formula} (max ${cutoffRule.max}).`
-                            : `Auto-calculated as ${cutoffRule.formula} (max ${cutoffRule.max}). You can type your own value.`}
-                        </small>
-                      </ApplyField>
-                    )}
-                  </div>
-
-                  <div className="cc-apply-actions">
-                    <button
-                      type="button"
-                      className="cc-btn cc-btn-ghost"
-                      onClick={closeApply}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="cc-btn cc-btn-primary cc-btn-lg cc-glow-btn"
-                    >
-                      Apply Now
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
+        {applyTarget && (
+          <ApplyNow
+            college={applyTarget.college}
+            colleges={colleges}
+            courseIndex={courseIndex}
+            helpers={APPLY_HELPERS}
+            user={user}
+            profile={profile}
+            userKey={userKey}
+            myApplications={myApplications}
+            onClose={closeApply}
+            onSubmitted={setApplications}
+            onViewApplications={viewMyApplications}
+          />
         )}
 
         {/* =================================================

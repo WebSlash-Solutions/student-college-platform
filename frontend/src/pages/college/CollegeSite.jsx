@@ -2876,9 +2876,153 @@ function OpportunityHubSection({ onRegister }) {
   );
 }
 
+/* ---------- EXPORT HELPERS: Excel (.xlsx) + PDF, built right here (no extra library needed) ---------- */
+const DL_COLS = ["No.", "Student ID", "12th %", "Course", "City", "Name", "Mobile", "Email"];
+const dlTable = (leads) => leads.map((l, i) => [String(i + 1), l.id, l.pc, l.course, l.city, l.name, l.mobile, l.email]);
+
+const dlSave = (blob, name) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+};
+
+const CRC_TABLE = (() => {
+  const t = [];
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+const crc32 = (u8) => {
+  let c = 0xffffffff;
+  for (let i = 0; i < u8.length; i++) c = CRC_TABLE[(c ^ u8[i]) & 255] ^ (c >>> 8);
+  return (c ^ 0xffffffff) >>> 0;
+};
+
+/* tiny ZIP writer (no compression) - an .xlsx file is just a zip of XML files */
+const zipStore = (files) => {
+  const enc = new TextEncoder();
+  const u16 = (v) => [v & 255, (v >>> 8) & 255];
+  const u32 = (v) => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+  const parts = [];
+  const central = [];
+  let offset = 0;
+  files.forEach(([name, text]) => {
+    const nm = enc.encode(name);
+    const data = enc.encode(text);
+    const crc = crc32(data);
+    const local = new Uint8Array([0x50, 0x4b, 3, 4, ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nm.length), ...u16(0)]);
+    parts.push(local, nm, data);
+    central.push(new Uint8Array([0x50, 0x4b, 1, 2, ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nm.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset)]), nm);
+    offset += local.length + nm.length + data.length;
+  });
+  const cdSize = central.reduce((s, p) => s + p.length, 0);
+  const end = new Uint8Array([0x50, 0x4b, 5, 6, ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(offset), ...u16(0)]);
+  return new Blob([...parts, ...central, end], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+};
+
+const xmlEsc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const buildXlsx = (leads) => {
+  const rows = dlTable(leads);
+  const widths = [6, 14, 9, 20, 16, 18, 16, 28];
+  const L = (i) => String.fromCharCode(65 + i);
+  const cell = (r, c, v, s) => `<c r="${L(c)}${r}" s="${s}" t="inlineStr"><is><t>${xmlEsc(v)}</t></is></c>`;
+  const head = `<row r="1" ht="26" customHeight="1">${DL_COLS.map((h, c) => cell(1, c, h, 1)).join("")}</row>`;
+  const body = rows.map((row, i) => `<row r="${i + 2}" ht="22" customHeight="1">${row.map((v, c) => cell(i + 2, c, v, i % 2 ? 3 : 2)).join("")}</row>`).join("");
+  const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols>${widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${head}${body}</sheetData></worksheet>`;
+  const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><color rgb="FF1B2B44"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1F5FD1"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFEEF5FF"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color rgb="FFD7E5F7"/></left><right style="thin"><color rgb="FFD7E5F7"/></right><top style="thin"><color rgb="FFD7E5F7"/></top><bottom style="thin"><color rgb="FFD7E5F7"/></bottom><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" indent="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" indent="1"/></xf><xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" indent="1"/></xf></cellXfs></styleSheet>`;
+  const R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+  return zipStore([
+    ["[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`],
+    ["_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+    ["xl/workbook.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="${R}"><sheets><sheet name="Purchased Leads" sheetId="1" r:id="rId1"/></sheets></workbook>`],
+    ["xl/_rels/workbook.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/styles" Target="styles.xml"/></Relationships>`],
+    ["xl/styles.xml", styles],
+    ["xl/worksheets/sheet1.xml", sheet],
+  ]);
+};
+
+/* PDF: A4 landscape table, drawn with plain PDF commands (Helvetica) */
+const buildPdf = (leads) => {
+  const rows = dlTable(leads);
+  const W = 842, H = 595, M = 36, HEAD = 28, ROW = 26;
+  const cw = [30, 70, 46, 120, 92, 100, 92, 220];
+  const esc = (s) => String(s).replace(/[^\x20-\x7e]/g, "?").replace(/([\\()])/g, "\\$1");
+  const fit = (s, w) => { const n = Math.floor((w - 14) / 4.9); s = String(s); return s.length > n ? s.slice(0, n - 2) + ".." : s; };
+  const topFirst = H - 112, topNext = H - M, bottom = 52;
+  const capFirst = Math.max(1, Math.floor((topFirst - bottom - HEAD) / ROW));
+  const capNext = Math.max(1, Math.floor((topNext - bottom - HEAD) / ROW));
+  const pages = [];
+  for (let i = 0, cap = capFirst; i < rows.length || !pages.length; i += cap, cap = capNext) pages.push(rows.slice(i, i + cap));
+  const total = pages.length;
+  const tw = cw.reduce((a, b) => a + b, 0);
+  const txt = (x, y, size, font, rgb, s) => `BT /${font} ${size} Tf ${rgb} rg ${x} ${y} Td (${esc(s)}) Tj ET\n`;
+  const streams = pages.map((chunk, p) => {
+    let s = "";
+    let y = p === 0 ? topFirst : topNext;
+    if (p === 0) {
+      s += "0.12 0.37 0.82 rg 36 " + (H - 60) + " 5 30 re f\n";
+      s += txt(50, H - 48, 20, "F2", "0.08 0.16 0.3", "Purchased Student Leads");
+      s += txt(50, H - 66, 10, "F1", "0.4 0.47 0.56", `CampusConnect  |  Exported on ${new Date().toLocaleDateString("en-GB")}  |  Sample demo data`);
+      s += txt(36, H - 96, 11, "F2", "0.12 0.37 0.82", `${rows.length} lead${rows.length === 1 ? "" : "s"}   |   Rs. ${rows.length * DL_BASE.price} paid`);
+    }
+    s += `0.12 0.37 0.82 rg ${M} ${y - HEAD} ${tw} ${HEAD} re f\n`;
+    let x = M;
+    DL_COLS.forEach((h, c) => { s += txt(x + 7, y - 18, 9.5, "F2", "1 1 1", h); x += cw[c]; });
+    y -= HEAD;
+    chunk.forEach((row, i) => {
+      if (i % 2) s += `0.93 0.96 1 rg ${M} ${y - ROW} ${tw} ${ROW} re f\n`;
+      s += `0.84 0.9 0.97 RG 0.5 w ${M} ${y - ROW} m ${M + tw} ${y - ROW} l S\n`;
+      let cx = M;
+      row.forEach((v, c) => { s += txt(cx + 7, y - 17, 9.5, "F1", "0.1 0.17 0.27", fit(v, cw[c])); cx += cw[c]; });
+      y -= ROW;
+    });
+    s += txt(M, 26, 8.5, "F1", "0.5 0.56 0.64", "CampusConnect - sample demo data, not real students");
+    s += txt(W - M - 52, 26, 8.5, "F1", "0.5 0.56 0.64", `Page ${p + 1} of ${total}`);
+    return s;
+  });
+  const objs = [];
+  objs[1] = "<< /Type /Catalog /Pages 2 0 R >>";
+  objs[2] = `<< /Type /Pages /Kids [${streams.map((_, k) => `${5 + 2 * k} 0 R`).join(" ")}] /Count ${total} >>`;
+  objs[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>";
+  objs[4] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>";
+  streams.forEach((s, k) => {
+    objs[5 + 2 * k] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${6 + 2 * k} 0 R >>`;
+    objs[6 + 2 * k] = `<< /Length ${s.length} >>\nstream\n${s}endstream`;
+  });
+  let out = "%PDF-1.4\n";
+  const offs = [];
+  for (let i = 1; i < objs.length; i++) { offs[i] = out.length; out += `${i} 0 obj\n${objs[i]}\nendobj\n`; }
+  const xref = out.length;
+  out += `xref\n0 ${objs.length}\n0000000000 65535 f \n` + offs.slice(1).map((o) => String(o).padStart(10, "0") + " 00000 n \n").join("");
+  out += `trailer\n<< /Size ${objs.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  const bytes = new Uint8Array(out.length);
+  for (let i = 0; i < out.length; i++) bytes[i] = out.charCodeAt(i) & 255;
+  return new Blob([bytes], { type: "application/pdf" });
+};
+
 function DownloadsSection({ onRegister, onBrowse }) {
   const [state, setState] = useState({}); // id -> "paying" | "done"
   const [live, setLive] = useState(null); // real total from backend (null = not loaded yet)
+  const [menu, setMenu] = useState(false); // Excel / PDF download menu
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!menu) return undefined;
+    const away = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setMenu(false); };
+    const esc = (e) => { if (e.key === "Escape") setMenu(false); };
+    document.addEventListener("mousedown", away);
+    document.addEventListener("keydown", esc);
+    return () => { document.removeEventListener("mousedown", away); document.removeEventListener("keydown", esc); };
+  }, [menu]);
 
   useEffect(() => {
     let off = false;
@@ -2907,20 +3051,12 @@ function DownloadsSection({ onRegister, onBrowse }) {
     setTimeout(() => setState((s) => ({ ...s, [id]: "done" })), 1100); // demo of "backend verified the payment"
   };
 
-  const csv = () => {
+  const exportAs = (fmt) => {
     const rows = DL_LEADS.filter((l) => state[l.id] === "done");
-    const text = [["Student ID", "12th %", "Course", "City", "Name", "Mobile", "Email"]]
-      .concat(rows.map((l) => [l.id, l.pc, l.course, l.city, l.name, l.mobile, l.email]))
-      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
-      .join("\n");
-    const url = URL.createObjectURL(new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" }));
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "campusconnect-sample-leads.csv";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (!rows.length) return;
+    if (fmt === "xlsx") dlSave(buildXlsx(rows), "campusconnect-sample-leads.xlsx");
+    else dlSave(buildPdf(rows), "campusconnect-sample-leads.pdf");
+    setMenu(false);
   };
 
   // real backend number when connected; the demo rows below are fake so they only affect the sample fallback
@@ -2971,8 +3107,25 @@ function DownloadsSection({ onRegister, onBrowse }) {
             <div className="dl-session">
               <span><b><AnimatedNumber value={mine} /></b> downloaded</span>
               <span><b><AnimatedNumber value={mine * DL_BASE.price} prefix="₹" /></b> spent</span>
-              <button className="cs-ghost" onClick={csv} disabled={!mine}>⬇ Download CSV ({mine})</button>
-              <button className="dl-reset" onClick={() => setState({})} disabled={!mine}>Reset</button>
+              <div className="dl-exp" ref={menuRef}>
+                <button className={`cs-ghost dl-exp-btn ${menu ? "on" : ""}`} onClick={() => setMenu((v) => !v)} disabled={!mine} aria-haspopup="menu" aria-expanded={menu}>
+                  ⬇ Download ({mine}) <i className="dl-caret" />
+                </button>
+                {menu && (
+                  <div className="dl-menu" role="menu">
+                    <span className="dl-menu-t">Download as</span>
+                    <button className="dl-opt" role="menuitem" onClick={() => exportAs("xlsx")}>
+                      <i className="dl-fi x">XLS</i>
+                      <span><b>Excel</b><small>.xlsx</small></span>
+                    </button>
+                    <button className="dl-opt" role="menuitem" onClick={() => exportAs("pdf")}>
+                      <i className="dl-fi p">PDF</i>
+                      <span><b>PDF</b><small>.pdf</small></span>
+                    </button>
+                  </div>
+                )}
+              </div>
+              <button className="dl-reset" onClick={() => { setState({}); setMenu(false); }} disabled={!mine}>Reset</button>
             </div>
           </div>
 
@@ -7974,6 +8127,129 @@ body {
   color: #5a6f8a;
   font-weight: 800;
   text-decoration: underline;
+}
+.dl-exp {
+  position: relative;
+}
+.dl-exp-btn {
+  display: inline-flex;
+  align-items: center;
+}
+.dl-caret {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin: 0 0 3px 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform .2s;
+}
+.dl-exp-btn.on .dl-caret {
+  margin: 3px 0 0 10px;
+  transform: rotate(-135deg);
+}
+.dl-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 40;
+  min-width: 190px;
+  padding: 8px;
+  display: grid;
+  gap: 2px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid #d7e5f7;
+  box-shadow: 0 20px 40px -20px rgba(21,60,140,.5);
+  animation: dlMenuIn .18s ease-out;
+}
+.dl-menu-t {
+  padding: 4px 8px 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #7a8ca6;
+}
+.dl-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s;
+}
+.dl-opt:hover {
+  background: #eef5ff;
+}
+.dl-fi {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .03em;
+  color: #fff;
+}
+.dl-fi.x {
+  background: linear-gradient(135deg,#22b573,#128a55);
+}
+.dl-fi.p {
+  background: linear-gradient(135deg,#f0584f,#c8312a);
+}
+.dl-menu .dl-opt span {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.dl-menu .dl-opt b {
+  display: inline;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.dl-menu .dl-opt small {
+  display: inline;
+  max-width: none;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+@keyframes dlMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width:640px) {
+  .dl-exp {
+    width: 100%;
+  }
+  .dl-exp-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .dl-menu {
+    left: 0;
+    right: 0;
+    min-width: 0;
+  }
 }
 .dl-rows {
   display: grid;

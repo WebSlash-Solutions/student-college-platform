@@ -271,6 +271,141 @@ const addAcademicDetails = (student, index) => {
 
 studentsData.forEach(addAcademicDetails);
 
+// Shared with StudentDashboard.jsx -> Apply Now.
+const APPLICATIONS_KEY = "scp_applications";
+const readSubmittedApplications = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(APPLICATIONS_KEY) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+};
+
+const mergeSubmittedApplications = (currentStudents, submittedApplications) => {
+  let nextStudents = [...currentStudents];
+
+  submittedApplications.forEach((application) => {
+    if (!application || !application.email) return;
+
+    const email = String(application.email).trim().toLowerCase();
+    const applicationId = String(application.id || "");
+    const existingIndex = nextStudents.findIndex(
+      (student) => String(student.email || "").trim().toLowerCase() === email,
+    );
+
+    const applicationItem = {
+      college: application.collegeName || "—",
+      course: application.courseName || "—",
+      status: application.status || "Submitted",
+      appliedOn: application.appliedOn || "",
+    };
+
+    if (existingIndex >= 0) {
+      const existing = nextStudents[existingIndex];
+      const existingApplications = existing.applicationList || [];
+      if (
+        applicationId &&
+        existingApplications.some((item) => String(item.applicationId || "") === applicationId)
+      ) {
+        return;
+      }
+
+      nextStudents[existingIndex] = {
+        ...existing,
+        name: application.studentName || existing.name,
+        phone: application.mobile ? `+91 ${application.mobile}` : existing.phone,
+        college: application.collegeName || existing.college,
+        course: application.courseName || existing.course,
+        city: application.city || existing.city,
+        applications: (Number(existing.applications) || existingApplications.length) + 1,
+        applicationList: [
+          ...existingApplications,
+          { ...applicationItem, applicationId },
+        ],
+        leadStatus: existing.leadStatus || "New",
+        cutoff: application.cutoff ?? existing.cutoff,
+        tenthMarks: {
+          ...(existing.tenthMarks || {}),
+          Percentage: Number(application.mark10 || 0),
+        },
+        twelfthMarks: {
+          ...(existing.twelfthMarks || {}),
+          Percentage: Number(application.mark12 || 0),
+          ...(application.subjects || {}),
+          Subjects: [
+            ...new Set([
+              ...(existing.twelfthMarks?.Subjects || []),
+              ...Object.keys(application.subjects || {}),
+            ]),
+          ],
+        },
+      };
+      return;
+    }
+
+    const maxNumber = nextStudents.reduce((max, student) => {
+      const number = parseInt(String(student.id || "").replace("STU", ""), 10);
+      return Number.isFinite(number) ? Math.max(max, number) : max;
+    }, 10928);
+
+    const newStudent = {
+      id: `STU${maxNumber + 1}`,
+      name: application.studentName || "—",
+      email: application.email,
+      phone: application.mobile ? `+91 ${application.mobile}` : "—",
+      college: application.collegeName || "—",
+      course: application.courseName || "—",
+      applications: 1,
+      status: "Pending", // new submission -> waits in "New Requests" until approved/blocked
+      registered: application.appliedOn
+        ? new Date(application.appliedOn).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+        : new Date().toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
+      dob: "—",
+      gender: "—",
+      address: "—",
+      city: application.city || "—",
+      leadStatus: "New",
+      purchasedBy: "—",
+      leadPrice: "₹100",
+      applicationList: [{ ...applicationItem, applicationId }],
+    };
+
+    const mark10 = Number(application.mark10 || 0);
+    const mark12 = Number(application.mark12 || 0);
+    const submittedSubjects = Object.fromEntries(
+      Object.entries(application.subjects || {}).map(([key, value]) => [key, Number(value)]),
+    );
+    newStudent.tenthMarks = {
+      Tamil: "—",
+      English: "—",
+      Mathematics: "—",
+      Science: "—",
+      SocialScience: "—",
+      Total: mark10 * 5,
+      Percentage: mark10,
+    };
+    newStudent.twelfthMarks = {
+      ...submittedSubjects,
+      Total: mark12 * 5,
+      Percentage: mark12,
+      Subjects: Object.keys(submittedSubjects),
+    };
+    newStudent.cutoff = application.cutoff ?? "—";
+    nextStudents.unshift(newStudent);
+  });
+
+  return nextStudents;
+};
+
 const EMPTY_FORM = {
   name: "",
   email: "",
@@ -312,9 +447,31 @@ const statusClass = (status) =>
 ========================================================= */
 
 function StudentManagementContent({ topSearch = "" }) {
-  const [students, setStudents] = useState(studentsData);
+  const [students, setStudents] = useState(() =>
+    mergeSubmittedApplications(studentsData, readSubmittedApplications()),
+  );
   const [selectedId, setSelectedId] = useState(null);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const syncApplications = (event) => {
+      const submitted = Array.isArray(event?.detail)
+        ? event.detail
+        : readSubmittedApplications();
+
+      setStudents((current) =>
+        mergeSubmittedApplications(current, submitted),
+      );
+    };
+
+    window.addEventListener("scp:applications-updated", syncApplications);
+    window.addEventListener("storage", syncApplications);
+
+    return () => {
+      window.removeEventListener("scp:applications-updated", syncApplications);
+      window.removeEventListener("storage", syncApplications);
+    };
+  }, []);
 
   useEffect(() => {
     setSearch(topSearch);
@@ -326,6 +483,7 @@ function StudentManagementContent({ topSearch = "" }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [modal, setModal] = useState(null); // { mode: 'add' | 'edit', form }
   const [formError, setFormError] = useState("");
+  const [tab, setTab] = useState("accepted"); // 'new' | 'accepted' | 'blocked'
 
   const studentsPerPage = 5;
 
@@ -344,7 +502,13 @@ function StudentManagementContent({ topSearch = "" }) {
     const matchesCollege = collegeFilter === "All Colleges" || s.college === collegeFilter;
     const matchesCourse = courseFilter === "All Courses" || s.course === courseFilter;
     const matchesStatus = statusFilter === "All Status" || s.status === statusFilter;
-    return matchesSearch && matchesCollege && matchesCourse && matchesStatus;
+    const matchesTab =
+      tab === "new"
+        ? s.status === "Pending"
+        : tab === "blocked"
+          ? s.status === "Blocked"
+          : s.status === "Active";
+    return matchesSearch && matchesCollege && matchesCourse && matchesStatus && matchesTab;
   });
 
   const totalPages = Math.max(1, Math.ceil(filteredStudents.length / studentsPerPage));
@@ -355,6 +519,7 @@ function StudentManagementContent({ topSearch = "" }) {
   const totalApplications = students.reduce((sum, s) => sum + s.applications, 0);
   const activeCount = students.filter((s) => s.status === "Active").length;
   const blockedCount = students.filter((s) => s.status === "Blocked").length;
+  const newCount = students.filter((s) => s.status === "Pending").length;
 
   // jump to top whenever a profile page opens / closes
   useEffect(() => {
@@ -390,6 +555,25 @@ function StudentManagementContent({ topSearch = "" }) {
     const next = student.status === "Blocked" ? "Active" : "Blocked";
     setStudents((prev) =>
       prev.map((s) => (s.id === student.id ? { ...s, status: next } : s)),
+    );
+  };
+
+  // Accept / Block a new request: moves it out of "New Requests"
+  const decideRequest = (student, decision) => {
+    const nextStatus = decision === "accept" ? "Active" : "Blocked";
+    const appStatus = decision === "accept" ? "Accepted" : "Rejected";
+    setStudents((prev) =>
+      prev.map((s) =>
+        s.id === student.id
+          ? {
+              ...s,
+              status: nextStatus,
+              applicationList: (s.applicationList || []).map((a) =>
+                a.status === "Submitted" ? { ...a, status: appStatus } : a,
+              ),
+            }
+          : s,
+      ),
     );
   };
 
@@ -815,6 +999,29 @@ function StudentManagementContent({ topSearch = "" }) {
 .sm-page .panel-btn.block { background: linear-gradient(135deg,#f0525e,#dc3545); box-shadow: 0 8px 18px rgba(220,53,69,.22); }
 .sm-page .panel-btn.activate { background: linear-gradient(135deg,#22b573,#139a5c); box-shadow: 0 8px 18px rgba(19,154,92,.22); }
 .sm-page .panel-btn:hover { filter: brightness(1.06); }
+.sm-page .panel-actions.three { grid-template-columns: 1fr 1fr 1fr; }
+/* New / Accepted / Blocked sections */
+.sm-page .sm-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.sm-page .sm-tab {
+          height: 38px; padding: 0 16px;
+          border: 1px solid #dbe5f2; border-radius: 10px;
+          background: #fff; color: #4b6586;
+          font-size: 13px; font-weight: 600; cursor: pointer;
+          display: inline-flex; align-items: center; gap: 8px;
+        }
+.sm-page .sm-tab:hover { background: #eef4fd; }
+.sm-page .sm-tab.active { background: #2d7df0; border-color: #2d7df0; color: #fff; }
+.sm-page .sm-tab.active.sm-tab-accepted { background: #1fb36d; border-color: #1fb36d; }
+.sm-page .sm-tab.active.sm-tab-blocked { background: #e5484d; border-color: #e5484d; }
+.sm-page .sm-tab-count { padding: 1px 8px; border-radius: 20px; background: rgba(20,50,92,.08); font-size: 11px; font-weight: 700; }
+.sm-page .sm-tab.active .sm-tab-count { background: rgba(255,255,255,.25); }
+.sm-page .decide-btn {
+          height: 34px; padding: 0 14px; border: 0; border-radius: 9px;
+          color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+        }
+.sm-page .decide-btn.accept { background: linear-gradient(135deg,#22b573,#139a5c); }
+.sm-page .decide-btn.block { background: linear-gradient(135deg,#f0525e,#dc3545); }
+.sm-page .decide-btn:hover { filter: brightness(1.06); }
 .sm-page .modal-overlay {
           position: fixed; inset: 0; z-index: 400;
           display: flex; align-items: center; justify-content: center;
@@ -889,7 +1096,7 @@ function StudentManagementContent({ topSearch = "" }) {
 }
 @media (max-width: 420px) {
 .sm-page .filter-select { flex-basis: 100%; }
-.sm-page .panel-actions { grid-template-columns: 1fr; }
+.sm-page .panel-actions, .sm-page .panel-actions.three { grid-template-columns: 1fr; }
 .sm-page .metric strong { font-size: 15px; }
 
 
@@ -1095,6 +1302,26 @@ function StudentManagementContent({ topSearch = "" }) {
                 👤＋ Add Student
               </button>
             </section>
+
+            {/* ---------- SECTIONS: New / Accepted / Blocked ---------- */}
+            <section className="sm-tabs">
+              {[
+                ["new", "🆕 New Requests", newCount],
+                ["accepted", "✔ Accepted", activeCount],
+                ["blocked", "🚫 Blocked", blockedCount],
+              ].map(([key, label, count]) => (
+                <button
+                  key={key}
+                  className={`sm-tab ${tab === key ? "active" : ""} sm-tab-${key}`}
+                  onClick={() => {
+                    setTab(key);
+                    setCurrentPage(1);
+                  }}
+                >
+                  {label} <span className="sm-tab-count">{count}</span>
+                </button>
+              ))}
+            </section>
               </>
             )}
 
@@ -1136,6 +1363,29 @@ function StudentManagementContent({ topSearch = "" }) {
                             📄 {student.applications}{" "}
                             {student.applications === 1 ? "Application" : "Applications"}
                           </div>
+
+                          {student.status === "Pending" && (
+                            <>
+                              <button
+                                className="decide-btn accept"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  decideRequest(student, "accept");
+                                }}
+                              >
+                                ✔ Accept
+                              </button>
+                              <button
+                                className="decide-btn block"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  decideRequest(student, "block");
+                                }}
+                              >
+                                ⊘ Block
+                              </button>
+                            </>
+                          )}
 
                           <button
                             className="view-btn"
@@ -1389,18 +1639,39 @@ function StudentManagementContent({ topSearch = "" }) {
                       </div>
 
                       {/* Actions */}
-                      <div className="panel-actions">
+                      <div
+                        className={`panel-actions ${
+                          selectedStudent.status === "Pending" ? "three" : ""
+                        }`}
+                      >
                         <button className="panel-btn edit" onClick={() => openEdit(selectedStudent)}>
                           ✏ Edit Details
                         </button>
-                        <button
-                          className={`panel-btn ${
-                            selectedStudent.status === "Blocked" ? "activate" : "block"
-                          }`}
-                          onClick={() => toggleBlock(selectedStudent)}
-                        >
-                          {selectedStudent.status === "Blocked" ? "✔ Activate Student" : "⊘ Block Student"}
-                        </button>
+                        {selectedStudent.status === "Pending" ? (
+                          <>
+                            <button
+                              className="panel-btn activate"
+                              onClick={() => decideRequest(selectedStudent, "accept")}
+                            >
+                              ✔ Accept Student
+                            </button>
+                            <button
+                              className="panel-btn block"
+                              onClick={() => decideRequest(selectedStudent, "block")}
+                            >
+                              ⊘ Block Student
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className={`panel-btn ${
+                              selectedStudent.status === "Blocked" ? "activate" : "block"
+                            }`}
+                            onClick={() => toggleBlock(selectedStudent)}
+                          >
+                            {selectedStudent.status === "Blocked" ? "✔ Activate Student" : "⊘ Block Student"}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </aside>
@@ -1465,6 +1736,7 @@ function StudentManagementContent({ topSearch = "" }) {
                     setModal({ ...modal, form: { ...modal.form, status: e.target.value } })
                   }
                 >
+                  {modal.form.status === "Pending" && <option>Pending</option>}
                   <option>Active</option>
                   <option>Blocked</option>
                 </select>
