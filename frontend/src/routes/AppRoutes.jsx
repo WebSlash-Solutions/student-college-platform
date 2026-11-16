@@ -55,6 +55,8 @@ function AppRoutes() {
   path="/student/profile"
   element={<StudentDashboard />}
 />
+
+<Route path="/student/applications" element={<StudentDashboard />} /> 
       </Routes>
     </BrowserRouter>
   );
