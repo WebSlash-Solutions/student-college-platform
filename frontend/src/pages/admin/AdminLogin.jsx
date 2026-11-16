@@ -38,6 +38,34 @@ const CheckIcon = () => (
   </svg>
 );
 
+const GoogleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5Z" />
+    <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5Z" />
+    <path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.9-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1Z" />
+    <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48Z" />
+  </svg>
+);
+
+const GithubIcon = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="#111" aria-hidden="true">
+    <path d="M12 .5a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.7 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" />
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="12" fill="#1877F2" />
+    <path fill="#fff" d="M16.67 15.47 17.2 12h-3.33V9.75c0-.95.47-1.87 1.96-1.87h1.52V4.93s-1.38-.23-2.69-.23c-2.75 0-4.54 1.66-4.54 4.67V12H6.5v3.47h3.02V24h4.35v-8.53h2.8Z" />
+  </svg>
+);
+
+const PROVIDERS = {
+  google: { label: "Google", Icon: GoogleIcon, placeholder: "Email", type: "email" },
+  github: { label: "GitHub", Icon: GithubIcon, placeholder: "Email or username", type: "text" },
+  facebook: { label: "Facebook", Icon: FacebookIcon, placeholder: "Email or phone", type: "text" },
+};
+
 export default function AdminLogin() {
   const navigate = useNavigate();
 
@@ -47,6 +75,13 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
+
+  // Social account chooser (React-only, no redirect)
+  const [provider, setProvider] = useState(null); // "google" | "github" | "facebook" | null
+  const [socialStep, setSocialStep] = useState("list"); // "list" | "add"
+  const [accounts, setAccounts] = useState([]);
+  const [accountId, setAccountId] = useState("");
+  const [socialError, setSocialError] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -115,6 +150,95 @@ export default function AdminLogin() {
     sessionStorage.removeItem("collegeToken");
     sessionStorage.setItem("collegeLoggedIn", "true");
     navigate("/institution/dashboard", { replace: true });
+  };
+
+  const openProvider = (name) => {
+    let saved = [];
+    try {
+      const stored = JSON.parse(localStorage.getItem(`${name}SavedAccounts`) || "[]");
+      saved = Array.isArray(stored) ? stored : [];
+    } catch {
+      saved = [];
+    }
+    setAccounts(saved);
+    setAccountId("");
+    setSocialError("");
+    setSocialStep(saved.length ? "list" : "add");
+    setProvider(name);
+  };
+
+  const closeSocial = () => setProvider(null);
+
+  const nameFromEmail = (mail) =>
+    mail
+      .split("@")[0]
+      .replace(/[._-]+/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+
+  const loginWithAccount = (mail) => {
+    const loginId = mail.trim().toLowerCase();
+    let savedColleges = [];
+    try {
+      const stored = localStorage.getItem("registeredCollegeLogins");
+      savedColleges = stored ? JSON.parse(stored) : [];
+      if (!Array.isArray(savedColleges)) savedColleges = [];
+    } catch {
+      savedColleges = [];
+    }
+
+    const college = savedColleges.find((item) =>
+      [item.userId, item.username, item.email, item.collegeEmail, item.officialEmail].some(
+        (id) => String(id || "").trim().toLowerCase() === loginId
+      )
+    );
+
+    if (!college) {
+      setSocialError("No registered college account found for this account.");
+      return;
+    }
+
+    const collegeDetails = {
+      id: college.id,
+      name: college.name || college.collegeName || "Registered College",
+      type: college.type || college.collegeType || "College",
+      city: college.city || college.district || "",
+      userId:
+        college.userId ||
+        college.username ||
+        college.email ||
+        college.collegeEmail ||
+        college.officialEmail ||
+        loginId,
+    };
+
+    sessionStorage.setItem("collegeUser", JSON.stringify(collegeDetails));
+    sessionStorage.removeItem("collegeToken");
+    sessionStorage.setItem("collegeLoggedIn", "true");
+    navigate("/institution/dashboard", { replace: true });
+  };
+
+  const handleAddNext = (e) => {
+    e.preventDefault();
+    const mail = accountId.trim().toLowerCase();
+    if (!mail) {
+      setSocialError("Please enter your account details.");
+      return;
+    }
+    if (provider === "google" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
+      setSocialError("Enter a valid email address.");
+      return;
+    }
+    const updated = accounts.some((a) => a.email === mail)
+      ? accounts
+      : [...accounts, { email: mail, name: nameFromEmail(mail) }];
+    setAccounts(updated);
+    try {
+      localStorage.setItem(`${provider}SavedAccounts`, JSON.stringify(updated));
+    } catch {
+      /* ignore storage errors */
+    }
+    setSocialError("");
+    loginWithAccount(mail);
   };
 
   const handleForgotPassword = () => {
@@ -298,6 +422,95 @@ export default function AdminLogin() {
           transform: translateY(-1px);
           box-shadow: 0 10px 22px rgba(23,105,232,.24);
         }
+        .cc-social-row {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-top: 18px;
+        }
+        .cc-social-btn {
+          text-decoration: none;
+          display: grid;
+          place-items: center;
+          width: 52px;
+          height: 52px;
+          border: 0;
+          border-radius: 50%;
+          background: #fff;
+          box-shadow: 0 4px 14px rgba(40, 60, 120, .14);
+          cursor: pointer;
+          transition: transform .18s, box-shadow .18s;
+        }
+        .cc-social-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(40, 60, 120, .22);
+        }
+        .cc-social-btn:focus-visible { outline: 3px solid rgba(23,105,232,.35); outline-offset: 2px; }
+        .cc-gmodal-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 1100;
+          display: grid;
+          place-items: center;
+          padding: 16px;
+          background: rgba(20, 24, 40, .45);
+        }
+        .cc-gmodal {
+          width: 100%;
+          max-width: 400px;
+          padding: 32px 28px 24px;
+          border-radius: 16px;
+          background: #fff;
+          box-shadow: 0 24px 70px rgba(20, 30, 70, .35);
+        }
+        .cc-gmodal-head { text-align: center; margin-bottom: 18px; }
+        .cc-gmodal-head h3 { margin: 10px 0 4px; font-size: 22px; font-weight: 500; color: #1b1b1f; }
+        .cc-gmodal-head p { margin: 0; font-size: 14px; color: #5f6368; }
+        .cc-gaccount {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          width: 100%;
+          padding: 11px 8px;
+          border: 0;
+          border-top: 1px solid #e6e8ee;
+          background: transparent;
+          text-align: left;
+          cursor: pointer;
+        }
+        .cc-gaccount:hover { background: #f5f7fb; }
+        .cc-gavatar {
+          display: grid;
+          place-items: center;
+          flex: none;
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          color: #fff;
+          background: #1769e8;
+          font-size: 15px;
+          font-weight: 600;
+        }
+        .cc-gavatar.plain { color: #5f6368; background: #fff; border: 1.5px solid #dadce0; font-size: 20px; font-weight: 400; }
+        .cc-ginfo { min-width: 0; display: flex; flex-direction: column; }
+        .cc-ginfo b { font-size: 14px; font-weight: 500; color: #1b1b1f; }
+        .cc-ginfo span { font-size: 12.5px; color: #5f6368; overflow: hidden; text-overflow: ellipsis; }
+        .cc-gmodal .cc-input { padding: 0 14px; }
+        .cc-gactions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+        .cc-glink { border: 0; padding: 8px 4px; color: #1769e8; background: transparent; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .cc-gnext {
+          height: 38px;
+          padding: 0 22px;
+          border: 0;
+          border-radius: 8px;
+          color: #fff;
+          background: #1769e8;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .cc-gnext:hover { background: #1255c4; }
+        .cc-gerror { margin: 10px 0 0; font-size: 13px; color: #b42318; }
         .cc-verified-note {
           margin: 14px 0 0;
           font-size: 11.5px;
@@ -486,6 +699,36 @@ export default function AdminLogin() {
               </button>
             </form>
 
+            <div className="cc-social-row">
+              <button
+                type="button"
+                className="cc-social-btn"
+                onClick={() => openProvider("google")}
+                aria-label="Continue with Google"
+                title="Continue with Google"
+              >
+                <GoogleIcon />
+              </button>
+              <button
+                type="button"
+                className="cc-social-btn"
+                onClick={() => openProvider("github")}
+                aria-label="Continue with GitHub"
+                title="Continue with GitHub"
+              >
+                <GithubIcon />
+              </button>
+              <button
+                type="button"
+                className="cc-social-btn"
+                onClick={() => openProvider("facebook")}
+                aria-label="Continue with Facebook"
+                title="Continue with Facebook"
+              >
+                <FacebookIcon />
+              </button>
+            </div>
+
             <p className="cc-verified-note">
               Only verified college accounts can log in.
             </p>
@@ -506,6 +749,96 @@ export default function AdminLogin() {
 
           </section>
         </div>
+        {provider && (
+          <div className="cc-gmodal-overlay" onClick={closeSocial}>
+            <div
+              className="cc-gmodal"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Sign in with ${PROVIDERS[provider].label}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="cc-gmodal-head">
+                {(() => {
+                  const ProviderIcon = PROVIDERS[provider].Icon;
+                  return <ProviderIcon />;
+                })()}
+                <h3>
+                  {socialStep === "list"
+                    ? "Choose an account"
+                    : `Sign in with ${PROVIDERS[provider].label}`}
+                </h3>
+                <p>to continue to CampusConnect</p>
+              </div>
+
+              {socialStep === "list" ? (
+                <>
+                  {accounts.map((acc) => (
+                    <button
+                      key={acc.email}
+                      type="button"
+                      className="cc-gaccount"
+                      onClick={() => loginWithAccount(acc.email)}
+                    >
+                      <span className="cc-gavatar">{acc.name.charAt(0).toUpperCase()}</span>
+                      <span className="cc-ginfo">
+                        <b>{acc.name}</b>
+                        <span>{acc.email}</span>
+                      </span>
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="cc-gaccount"
+                    onClick={() => {
+                      setSocialError("");
+                      setSocialStep("add");
+                    }}
+                  >
+                    <span className="cc-gavatar plain">+</span>
+                    <span className="cc-ginfo"><b>Use another account</b></span>
+                  </button>
+                  {socialError && <p className="cc-gerror">{socialError}</p>}
+                </>
+              ) : (
+                <form onSubmit={handleAddNext}>
+                  <input
+                    className="cc-input"
+                    type={PROVIDERS[provider].type}
+                    placeholder={PROVIDERS[provider].placeholder}
+                    value={accountId}
+                    onChange={(e) => {
+                      setAccountId(e.target.value);
+                      setSocialError("");
+                    }}
+                    autoFocus
+                    required
+                  />
+                  {socialError && <p className="cc-gerror">{socialError}</p>}
+                  <div className="cc-gactions">
+                    {accounts.length > 0 ? (
+                      <button
+                        type="button"
+                        className="cc-glink"
+                        onClick={() => {
+                          setSocialError("");
+                          setSocialStep("list");
+                        }}
+                      >
+                        Back
+                      </button>
+                    ) : (
+                      <button type="button" className="cc-glink" onClick={closeSocial}>
+                        Cancel
+                      </button>
+                    )}
+                    <button type="submit" className="cc-gnext">Next</button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </main>
     </>
   );

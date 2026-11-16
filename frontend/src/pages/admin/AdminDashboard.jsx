@@ -275,7 +275,7 @@ const adminStyles = String.raw`/* ==============================================
   position: relative;
   width: 100%;
   max-width: 920px;
-  height: 450px;
+  height: 490px;
   display: flex;
   align-items: stretch;
   border-radius: 24px;
@@ -524,6 +524,141 @@ const adminStyles = String.raw`/* ==============================================
   text-align: center;
   color: #a1adbd;
   font-size: 11px;
+}
+
+/* ---------- social sign in ---------- */
+
+.login-social-text {
+  margin: 18px 0 12px;
+  text-align: center;
+  color: #8a96a8;
+  font-size: 13px;
+}
+
+.login-social {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.social-button {
+  width: 76px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 14px;
+  background: #f3f5f8;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.social-button:hover {
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(25, 52, 92, 0.14);
+  transform: translateY(-2px);
+}
+
+.social-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.social-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+  box-shadow: none;
+}
+
+.social-button.loading {
+  opacity: 1;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px #2478e5;
+  animation: socialPulse 0.9s ease-in-out infinite;
+}
+
+@keyframes socialPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+
+/* ---------- dashboard greeting (two colour) ---------- */
+
+.greeting-accent {
+  color: #2478e5;
+}
+
+/* Morning: slides in, then a golden shimmer keeps sweeping across */
+@keyframes greetingSlideIn {
+  from { opacity: 0; transform: translateX(-22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes greetingShimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* Afternoon: pops up with a bounce, then the colour flows */
+@keyframes greetingBounceIn {
+  0%   { opacity: 0; transform: translateY(18px) scale(0.9); }
+  60%  { opacity: 1; transform: translateY(-5px) scale(1.04); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes greetingFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Evening: fades in from blur, then glows softly like the night sky */
+@keyframes greetingBlurIn {
+  from { opacity: 0; filter: blur(8px); letter-spacing: 3px; }
+  to   { opacity: 1; filter: blur(0); letter-spacing: normal; }
+}
+
+@keyframes greetingGlow {
+  0%, 100% { text-shadow: 0 0 4px rgba(124, 58, 237, 0.15); }
+  50%      { text-shadow: 0 0 16px rgba(124, 58, 237, 0.55); }
+}
+
+.greeting-morning,
+.greeting-afternoon,
+.greeting-evening {
+  display: inline-block;
+}
+
+.greeting-morning {
+  color: #f59e0b;
+  background: linear-gradient(90deg, #f59e0b 0%, #ff7a18 25%, #ffd166 50%, #ff7a18 75%, #f59e0b 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    greetingSlideIn 0.7s ease both,
+    greetingShimmer 3s linear 0.7s infinite;
+}
+
+.greeting-afternoon {
+  color: #10b981;
+  background: linear-gradient(90deg, #10b981, #06b6d4, #84cc16, #10b981);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    greetingBounceIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    greetingFlow 4s ease-in-out 0.8s infinite;
+}
+
+.greeting-evening {
+  color: #7c3aed;
+  animation:
+    greetingBlurIn 0.9s ease both,
+    greetingGlow 2.8s ease-in-out 0.9s infinite;
 }
 
 /* ---------- responsive ---------- */
@@ -2655,7 +2790,19 @@ font-size: 14px;
    ADMIN LOGIN
 ========================================================= */
 
+// Backend social-login base URL. Example: "http://localhost:5000/api/auth"
+// -> Google button goes to  <URL>/google, Facebook to <URL>/facebook, Apple to <URL>/apple
+// Leave it empty ("") to use the temporary frontend demo login.
+const SOCIAL_AUTH_URL = "";
+
+const SOCIAL_PROVIDERS = {
+  google: "Google",
+  facebook: "Facebook",
+  apple: "Apple",
+};
+
 function AdminLogin({ onLogin }) {
+  const [socialLoading, setSocialLoading] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -2677,6 +2824,25 @@ function AdminLogin({ onLogin }) {
     } else {
       setError("Invalid admin email or password.");
     }
+  };
+
+  const handleSocialLogin = (provider) => {
+    if (socialLoading) return;
+
+    setError("");
+    setSocialLoading(provider);
+
+    // Real backend OAuth: redirect the browser to the provider route
+    if (SOCIAL_AUTH_URL) {
+      window.location.href = `${SOCIAL_AUTH_URL}/${provider}`;
+      return;
+    }
+
+    // Temporary frontend demo (same as the email/password demo login)
+    setTimeout(() => {
+      setSocialLoading("");
+      onLogin();
+    }, 900);
   };
 
   return (
@@ -2791,6 +2957,53 @@ function AdminLogin({ onLogin }) {
             <button className="admin-login-button" type="submit">
               Sign In
             </button>
+
+            <p className="login-social-text">
+              {socialLoading
+                ? `Connecting to ${SOCIAL_PROVIDERS[socialLoading]}...`
+                : "Or sign in with"}
+            </p>
+
+            <div className="login-social">
+              <button
+                type="button"
+                className={`social-button ${socialLoading === "google" ? "loading" : ""}`}
+                aria-label="Sign in with Google"
+                disabled={!!socialLoading}
+                onClick={() => handleSocialLogin("google")}
+              >
+                <svg viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z" />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                className={`social-button ${socialLoading === "facebook" ? "loading" : ""}`}
+                aria-label="Sign in with Facebook"
+                disabled={!!socialLoading}
+                onClick={() => handleSocialLogin("facebook")}
+              >
+                <svg viewBox="0 0 24 24">
+                  <path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z" />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                className={`social-button ${socialLoading === "apple" ? "loading" : ""}`}
+                aria-label="Sign in with Apple"
+                disabled={!!socialLoading}
+                onClick={() => handleSocialLogin("apple")}
+              >
+                <svg viewBox="0 0 24 24">
+                  <path fill="#000000" d="M16.37 1.43c0 1.14-.46 2.22-1.2 3.01-.8.85-2.1 1.5-3.16 1.42-.13-1.1.41-2.25 1.15-3.01.82-.86 2.2-1.5 3.21-1.42zM20.5 17.1c-.55 1.27-.82 1.84-1.53 2.96-1 1.57-2.4 3.52-4.14 3.54-1.55.02-1.95-1-4.05-.99-2.1.01-2.54 1.01-4.09.99-1.74-.02-3.07-1.78-4.07-3.35C-.2 15.9-.5 11.3 1.2 8.7c1.2-1.84 3.1-2.92 4.88-2.92 1.81 0 2.95 1 4.45 1 1.45 0 2.34-1 4.44-1 1.58 0 3.27.86 4.47 2.35-3.93 2.15-3.29 7.76.06 8.97z" />
+                </svg>
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -3384,10 +3597,17 @@ function DashboardHome() {
 
   const greeting =
     currentHour < 12
-      ? "Good Morning, Admin"
+      ? "Good Morning,"
       : currentHour < 17
-        ? "Good Afternoon, Admin"
-        : "Good Evening, Admin";
+        ? "Good Afternoon,"
+        : "Good Evening,";
+
+  const greetingClass =
+    currentHour < 12
+      ? "greeting-morning"
+      : currentHour < 17
+        ? "greeting-afternoon"
+        : "greeting-evening";
 
   const greetingIcon =
     currentHour < 12 ? "☀️" : currentHour < 17 ? "🌤️" : "🌙";
@@ -3671,7 +3891,8 @@ function DashboardHome() {
       <div className="dashboard-heading">
         <div>
           <h1>
-            {greeting}{" "}
+            <span className={greetingClass}>{greeting}</span>{" "}
+            <span className="greeting-accent">Admin</span>{" "}
             <span aria-hidden="true" style={{ marginLeft: "6px" }}>
               {greetingIcon}
             </span>

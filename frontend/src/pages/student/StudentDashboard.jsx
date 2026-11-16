@@ -828,7 +828,7 @@ function ApplyNow({
       subjects,
       cutoff: cutoffRule ? Number(cutoffValue) : null,
       cutoffMax: cutoffRule ? cutoffRule.max : null,
-      status: "Submitted",
+      status: "Pending",
       appliedOn: new Date().toISOString(),
     };
 
@@ -3479,15 +3479,17 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
 
   // every page is rendered on its own route
-  const view = location.pathname.startsWith("/student/colleges")
-    ? "colleges"
-    : location.pathname.startsWith("/student/about")
-      ? "about"
-      : location.pathname.startsWith("/student/courses")
-        ? "courses"
-        : location.pathname.startsWith("/student/profile")
-          ? "profile"
-          : "home";
+  const view = location.pathname.startsWith("/student/applications")
+    ? "applications"
+    : location.pathname.startsWith("/student/colleges")
+      ? "colleges"
+      : location.pathname.startsWith("/student/about")
+        ? "about"
+        : location.pathname.startsWith("/student/courses")
+          ? "courses"
+          : location.pathname.startsWith("/student/profile")
+            ? "profile"
+            : "home";
 
   const [session, setSession] = useState(() => {
     try {
@@ -3795,17 +3797,7 @@ export default function StudentDashboard() {
 
   const viewMyApplications = () => {
     setApplyTarget(null);
-
-    if (location.pathname !== "/student/dashboard") {
-      navigate("/student/dashboard");
-    }
-
-    setTimeout(() => {
-      document.getElementById("applications")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 200);
+    navigate("/student/applications");
   };
 
   /* =======================================================
@@ -4043,6 +4035,7 @@ export default function StudentDashboard() {
       <>
         <style>{STYLE}</style>
         <style>{USER_STYLE}</style>
+        <style>{EXTRA_STYLE}</style>
         <div className="cc-root">
           <header className="cc-nav">
             <div className="cc-wrap cc-nav-inner">
@@ -4083,6 +4076,7 @@ export default function StudentDashboard() {
     <>
       <style>{STYLE}</style>
       <style>{USER_STYLE}</style>
+      <style>{EXTRA_STYLE}</style>
 
       <div className="cc-root" id="home">
         {/* =================================================
@@ -4161,6 +4155,17 @@ export default function StudentDashboard() {
                         }}
                       >
                         Profile
+                      </button>
+                      <button
+                        type="button"
+                        role="menuitem"
+                        className="cc-dropdown-item"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          navigate("/student/applications");
+                        }}
+                      >
+                        My Applications
                       </button>
                       <button
                         type="button"
@@ -4353,81 +4358,6 @@ export default function StudentDashboard() {
           </div>
         </section>
 
-        {myApplications.length > 0 && (
-          <section className="cc-section cc-apps" id="applications">
-            <div className="cc-wrap">
-              <span className="cc-eyebrow">My applications</span>
-              <h2>Your submitted applications</h2>
-
-              <div className="cc-apps-grid">
-                {myApplications.map((app) => (
-                  <article className="cc-app-card" key={app.id}>
-                    <div className="cc-app-head">
-                      <div>
-                        <h3>{app.collegeName}</h3>
-                        <p>
-                          {[app.city, app.categoryLabel]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </p>
-                      </div>
-                      <span className="cc-app-status">{app.status}</span>
-                    </div>
-
-                    <div className="cc-app-course">{app.courseName}</div>
-
-                    <dl className="cc-app-facts">
-                      <div>
-                        <dt>Student</dt>
-                        <dd>{app.studentName}</dd>
-                      </div>
-                      <div>
-                        <dt>Mobile</dt>
-                        <dd>{app.mobile}</dd>
-                      </div>
-                      {app.email && (
-                        <div>
-                          <dt>Email</dt>
-                          <dd>{app.email}</dd>
-                        </div>
-                      )}
-                      <div>
-                        <dt>12th mark</dt>
-                        <dd>{app.mark12}%</dd>
-                      </div>
-                      <div>
-                        <dt>10th mark</dt>
-                        <dd>{app.mark10}%</dd>
-                      </div>
-                      <div>
-                        <dt>Stream</dt>
-                        <dd>{app.stream}</dd>
-                      </div>
-                      {app.cutoff != null && (
-                        <div>
-                          <dt>Cutoff</dt>
-                          <dd>
-                            {app.cutoff} / {app.cutoffMax}
-                          </dd>
-                        </div>
-                      )}
-                      <div>
-                        <dt>Applied on</dt>
-                        <dd>
-                          {new Date(app.appliedOn).toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </dd>
-                      </div>
-                    </dl>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
           </>
         )}
 
@@ -4491,56 +4421,15 @@ export default function StudentDashboard() {
             COURSES  (separate page)
         ================================================= */}
 
-        {view === "courses" && (() => {
-          const active =
-            COURSE_CATALOG.find((c) => c.id === courseCat) || COURSE_CATALOG[0];
+        {view === "courses" && <CoursesView catalog={COURSE_CATALOG} />}
 
-          return (
-            <section className="cc-section cc-colleges" id="courses">
-              <div className="cc-wrap">
-                <div className="cc-col-head">
-                  <span className="cc-eyebrow">Course Catalogue</span>
-                  <h2>{active.label} Courses</h2>
-                  <p>
-                    This is the general course catalogue. Not every college
-                    offers every course, so check each college's details for
-                    what it actually offers.
-                  </p>
-                </div>
-
-                <div className="cc-categories" role="tablist">
-                  {COURSE_CATALOG.map((cat) => (
-                    <button
-                      type="button"
-                      role="tab"
-                      aria-selected={cat.id === active.id}
-                      key={cat.id}
-                      className={`cc-cat-btn ${
-                        cat.id === active.id ? "cc-cat-active" : ""
-                      }`}
-                      onClick={() => setCourseCat(cat.id)}
-                    >
-                      <Icon name={cat.icon} size={16} />
-                      {cat.label}
-                      <span className="cc-cat-count">{cat.courses.length}</span>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="cc-course-cards">
-                  {active.courses.map((course) => (
-                    <div className="cc-course-tile" key={course}>
-                      <span className="cc-icon-circle">
-                        <Icon name={active.icon} size={20} />
-                      </span>
-                      <strong>{course}</strong>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          );
-        })()}
+        {view === "applications" && (
+          <MyApplicationsView
+            applications={myApplications}
+            onApply={() => openApply()}
+            onBrowse={() => navigate("/student/colleges")}
+          />
+        )}
 
         {/* =================================================
             PROFILE  (separate page)
@@ -6137,4 +6026,151 @@ const USER_STYLE = `
   }
 }
 
+`;
+
+
+/* =========================================================
+   COURSES + MY APPLICATIONS + EXTRA VISUAL THEME
+   Integrated into StudentDashboard.jsx
+========================================================= */
+
+const CATEGORY_META = {
+  engineering: { emoji: "⚙️", grad: "linear-gradient(135deg,#dbeafe,#ede9fe)", accent: "#4f46e5", duration: "4 Years", eligibility: "12th with Physics, Chemistry & Maths", desc: "Build technical expertise through labs, projects and industry internships." },
+  arts: { emoji: "🎨", grad: "linear-gradient(135deg,#fce7f3,#ede9fe)", accent: "#c026d3", duration: "3 Years", eligibility: "12th pass in any relevant group", desc: "Strong academic foundation with flexible, career-focused electives." },
+  physiotherapy: { emoji: "💪", grad: "linear-gradient(135deg,#ccfbf1,#dbeafe)", accent: "#0d9488", duration: "4.5 Years", eligibility: "12th with Physics, Chemistry & Biology", desc: "Learn rehabilitation, movement science and hands-on patient care." },
+  allied: { emoji: "🧪", grad: "linear-gradient(135deg,#cffafe,#e0e7ff)", accent: "#0891b2", duration: "3–4 Years", eligibility: "12th with Physics, Chemistry & Biology", desc: "Support healthcare teams with diagnostic and technical skills." },
+  pharmacy: { emoji: "💊", grad: "linear-gradient(135deg,#dcfce7,#ccfbf1)", accent: "#059669", duration: "4 Years", eligibility: "12th with Physics, Chemistry & Biology/Maths", desc: "Study drug science, formulation, pharmacology and clinical practice." },
+  law: { emoji: "⚖️", grad: "linear-gradient(135deg,#fef3c7,#fce7f3)", accent: "#d97706", duration: "3–5 Years", eligibility: "12th pass (any group) / degree for LLB", desc: "Develop legal reasoning, advocacy and research skills." },
+  agriculture: { emoji: "🌾", grad: "linear-gradient(135deg,#ecfccb,#ccfbf1)", accent: "#65a30d", duration: "4 Years", eligibility: "12th with Biology or Maths", desc: "Modern farming science, crop management and agri-business." },
+  medical: { emoji: "🩺", grad: "linear-gradient(135deg,#fee2e2,#ede9fe)", accent: "#e11d48", duration: "4–5.5 Years", eligibility: "12th with PCB and NEET-UG qualification", desc: "Clinical training and patient care in recognised medical streams." },
+};
+
+const courseMeta = (catId, name) => {
+  const base = CATEGORY_META[catId] || CATEGORY_META.engineering;
+  let { duration, eligibility } = base;
+  if (/^M\\.?Pharm|^MPT|^Master of|^LLM/i.test(name)) {
+    duration = /^LLM/i.test(name) ? "1–2 Years" : "2 Years";
+    eligibility = "Relevant bachelor's degree";
+  } else if (/^Diploma|D\\.Pharm/i.test(name)) {
+    duration = "2 Years";
+    eligibility = "12th with Physics, Chemistry & Biology/Maths";
+  } else if (/Pharm\\.D/i.test(name)) duration = "6 Years";
+  else if (/^(BA|B\\.Com|B\\.Sc) LLB|BBA LLB/i.test(name)) { duration = "5 Years"; eligibility = "12th pass (any group)"; }
+  else if (/^LLB$/i.test(name)) { duration = "3 Years"; eligibility = "Any bachelor's degree"; }
+  else if (/^(MBBS)/i.test(name)) { duration = "5.5 Years"; eligibility = "12th PCB with NEET-UG"; }
+  else if (/^(BDS)/i.test(name)) { duration = "5 Years"; eligibility = "12th PCB with NEET-UG"; }
+  else if (/^B(AMS|HMS|SMS|UMS)/i.test(name)) { duration = "5.5 Years"; eligibility = "12th PCB with NEET-UG"; }
+  else if (/Nursing/i.test(name)) { duration = "4 Years"; eligibility = "12th with Physics, Chemistry & Biology"; }
+  else if (/^(BPT|Bachelor of Physio)/i.test(name)) duration = "4.5 Years";
+  else if (catId === "arts") {
+    if (/^B\\.Sc|^BCA|^BBA|^B\\.Com|^BA|^BSW/i.test(name)) duration = "3 Years";
+    if (/Computer|Information Tech|BCA|Statistics|Mathematics|Physics|Chemistry/i.test(name)) eligibility = "12th with Maths / Science group";
+    else if (/^B\\.Com|BBA|Economics/i.test(name)) eligibility = "12th pass (Commerce preferred)";
+  }
+  return { ...base, duration, eligibility };
+};
+
+function CoursesView({ catalog }) {
+  const [cat, setCat] = useState("all");
+  const [query, setQuery] = useState("");
+  const items = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return catalog.filter((c) => cat === "all" || c.id === cat)
+      .flatMap((c) => c.courses.map((name) => ({ catId: c.id, catLabel: c.label, name })))
+      .filter((item) => !q || `${item.name} ${item.catLabel}`.toLowerCase().includes(q));
+  }, [catalog, cat, query]);
+  const total = catalog.reduce((n, c) => n + c.courses.length, 0);
+  return (
+    <section className="cc-section cc-courses-page" id="courses">
+      <div className="cc-wrap">
+        <div className="cc-page-hero">
+          <span className="cc-eyebrow">Course Catalogue</span>
+          <h2>Discover your perfect course</h2>
+          <p>Browse {total}+ courses across {catalog.length} categories. This is a general guide — check each college for the courses it actually offers.</p>
+        </div>
+        <div className="cc-course-search"><span aria-hidden="true">🔍</span><input type="search" placeholder="Search courses (e.g. CSE, B.Pharm, LLB)…" value={query} onChange={(e) => setQuery(e.target.value)} /></div>
+        <div className="cc-categories" role="tablist">
+          <button type="button" role="tab" aria-selected={cat === "all"} className={`cc-cat-btn ${cat === "all" ? "cc-cat-active" : ""}`} onClick={() => setCat("all")}>✨ All <span className="cc-cat-count">{total}</span></button>
+          {catalog.map((c) => <button type="button" role="tab" aria-selected={cat === c.id} key={c.id} className={`cc-cat-btn ${cat === c.id ? "cc-cat-active" : ""}`} onClick={() => setCat(c.id)}>{(CATEGORY_META[c.id] || {}).emoji} {c.label}<span className="cc-cat-count">{c.courses.length}</span></button>)}
+        </div>
+        <p className="cc-count" style={{ margin: "18px 0" }}>Showing {items.length} course{items.length === 1 ? "" : "s"}</p>
+        {items.length === 0 ? <div className="cc-state"><span style={{ fontSize: 40 }}>🔎</span><strong>No courses match your search</strong><button type="button" className="cc-link-btn" onClick={() => { setQuery(""); setCat("all"); }}>Clear search</button></div> :
+          <div className="cc-cx-grid">{items.map((item, i) => { const m = courseMeta(item.catId, item.name); return <article className="cc-cx-card" key={`${item.catId}-${item.name}`} style={{ background: m.grad, "--accent": m.accent, animationDelay: `${Math.min(i, 12) * 40}ms` }}><div className="cc-cx-top"><span className="cc-cx-icon">{m.emoji}</span><span className="cc-cx-chip">{item.catLabel}</span></div><h3>{item.name}</h3><p>{m.desc}</p><dl><div><dt>⏱ Duration</dt><dd>{m.duration}</dd></div><div><dt>🎓 Eligibility</dt><dd>{m.eligibility}</dd></div></dl></article>; })}</div>}
+      </div>
+    </section>
+  );
+}
+
+const STATUS_STYLE = { Pending: { icon: "⏳", cls: "pending" }, Approved: { icon: "✅", cls: "approved" }, Rejected: { icon: "❌", cls: "rejected" } };
+const normalizeStatus = (status) => STATUS_STYLE[status] ? status : "Pending";
+
+function MyApplicationsView({ applications, onApply, onBrowse }) {
+  const [filter, setFilter] = useState("All");
+  const list = applications.map((app) => ({ ...app, status: normalizeStatus(app.status) }));
+  const counts = list.reduce((acc, app) => ({ ...acc, [app.status]: (acc[app.status] || 0) + 1 }), {});
+  const shown = filter === "All" ? list : list.filter((app) => app.status === filter);
+  return (
+    <section className="cc-section cc-apps-page"><div className="cc-wrap">
+      {list.length === 0 ? <div className="cc-empty"><div className="cc-empty-art" aria-hidden="true">📄✨</div><h2>No applications yet</h2><p>You haven't applied to any college. Start your journey by applying to your dream course.</p><div className="cc-apply-actions" style={{ justifyContent: "center" }}><button type="button" className="cc-btn cc-btn-ghost" onClick={onBrowse}>Browse colleges</button><button type="button" className="cc-btn cc-btn-primary cc-glow-btn" onClick={onApply}>Apply Now</button></div></div> : <>
+        <div className="cc-page-hero"><span className="cc-eyebrow">My Applications</span><h2>Track your applications</h2><p>All applications you have submitted, in one place.</p></div>
+        <div className="cc-categories">{["All", "Pending", "Approved", "Rejected"].map((status) => <button key={status} type="button" className={`cc-cat-btn ${filter === status ? "cc-cat-active" : ""}`} onClick={() => setFilter(status)}>{status}<span className="cc-cat-count">{status === "All" ? list.length : counts[status] || 0}</span></button>)}<button type="button" className="cc-btn cc-btn-primary cc-btn-sm cc-glow-btn" style={{ marginLeft: "auto" }} onClick={onApply}>+ New application</button></div>
+        {shown.length === 0 ? <div className="cc-state"><strong>No {filter.toLowerCase()} applications</strong></div> : <div className="cc-myapps">{shown.map((app, i) => { const status = STATUS_STYLE[app.status]; return <article className="cc-myapp" key={app.id} style={{ animationDelay: `${Math.min(i, 8) * 50}ms` }}><div className="cc-myapp-main"><h3>{app.collegeName}</h3><p>{[app.city, app.categoryLabel].filter(Boolean).join(" · ")}</p><div className="cc-myapp-course">🎓 {app.courseName}</div></div><div className="cc-myapp-side"><span className={`cc-badge cc-badge-${status.cls}`}>{status.icon} {app.status}</span><small>Applied on {new Date(app.appliedOn).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</small></div></article>; })}</div>}
+      </>}
+    </div></section>
+  );
+}
+
+const EXTRA_STYLE = `
+.cc-root { --brand:#4f46e5; --brand-dark:#4338ca; --deep:#3730a3; --blue-25:#eef2ff; --blue-50:#e0e7ff; --teal:#14b8a6; --shadow-brand:0 12px 28px rgba(79,70,229,.30); background:radial-gradient(circle at 8% 0%,rgba(99,102,241,.14),transparent 40%),radial-gradient(circle at 95% 25%,rgba(20,184,166,.13),transparent 40%),linear-gradient(180deg,#f5f7ff,#f0fdfa); background-attachment:fixed; }
+.cc-root > section { animation:ccPageIn .5s ease both; }
+@keyframes ccPageIn { from {opacity:0;transform:translateY(14px)} to {opacity:1;transform:none} }
+.cc-nav { background:rgba(255,255,255,.82); }
+.cc-hero { background:linear-gradient(135deg,#eef2ff 0%,#f0fdfa 55%,#fdf4ff 100%); }
+.cc-colleges { background:transparent;border-top:0; }
+.cc-strip { background:linear-gradient(120deg,#312e81,#4f46e5 55%,#0d9488); }
+.cc-card,.cc-profile-card,.cc-course-tile { border-radius:22px;border-color:#e0e7ff; }
+.cc-card:hover { box-shadow:0 22px 44px rgba(79,70,229,.18); }
+.cc-btn-primary { background:linear-gradient(135deg,#4f46e5,#7c3aed); }
+.cc-btn-primary:hover { background:linear-gradient(135deg,#4338ca,#6d28d9); }
+.cc-dropdown { animation:ccDrop .18s ease both;transform-origin:top right; }
+@keyframes ccDrop { from {opacity:0;transform:translateY(-6px) scale(.97)} to {opacity:1;transform:none} }
+.cc-page-hero { text-align:center;max-width:720px;margin:0 auto 28px;padding:34px 20px;border-radius:26px;background:linear-gradient(135deg,#4f46e5,#7c3aed 55%,#14b8a6);box-shadow:0 18px 40px rgba(79,70,229,.25); }
+.cc-page-hero h2 { color:#fff;-webkit-text-fill-color:#fff;background:none;animation:none;font-size:clamp(1.5rem,3vw,2.1rem); }
+.cc-page-hero p { color:rgba(255,255,255,.88);margin-top:10px; }
+.cc-page-hero .cc-eyebrow { background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);color:#fff; }
+.cc-course-search { display:flex;align-items:center;gap:10px;max-width:560px;margin:0 auto 20px;padding:0 18px;background:#fff;border:1px solid #e0e7ff;border-radius:999px;box-shadow:var(--shadow-md); }
+.cc-course-search input { flex:1;height:50px;border:0;outline:0;background:transparent;font:inherit;font-size:.95rem;color:var(--navy); }
+.cc-cx-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px; }
+.cc-cx-card { border-radius:22px;padding:22px;border:1px solid rgba(255,255,255,.8);box-shadow:0 8px 22px rgba(49,46,129,.08);transition:transform .25s ease,box-shadow .25s ease;animation:ccPageIn .5s ease both; }
+.cc-cx-card:hover { transform:translateY(-6px) scale(1.015);box-shadow:0 20px 40px rgba(49,46,129,.18); }
+.cc-cx-top { display:flex;justify-content:space-between;align-items:center;gap:8px; }
+.cc-cx-icon { display:grid;place-items:center;width:50px;height:50px;border-radius:16px;background:#fff;font-size:26px;box-shadow:0 6px 14px rgba(0,0,0,.08);transition:transform .3s ease; }
+.cc-cx-card:hover .cc-cx-icon { transform:rotate(-8deg) scale(1.1); }
+.cc-cx-chip { padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.75);color:var(--accent);font-size:.72rem;font-weight:700; }
+.cc-cx-card h3 { margin:14px 0 6px;font-size:1.05rem;line-height:1.3; }
+.cc-cx-card p { color:var(--muted-dark);font-size:.86rem; }
+.cc-cx-card dl { display:grid;gap:8px;margin:14px 0 0; }
+.cc-cx-card dl>div { padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.7); }
+.cc-cx-card dt { font-size:.72rem;font-weight:700;color:var(--muted); }
+.cc-cx-card dd { margin:2px 0 0;font-size:.86rem;font-weight:600;color:var(--navy); }
+.cc-myapps { display:grid;gap:16px;max-width:900px;margin:22px auto 0; }
+.cc-myapp { display:flex;justify-content:space-between;align-items:center;gap:18px;padding:20px 24px;background:#fff;border:1px solid #e0e7ff;border-left:6px solid var(--brand);border-radius:20px;box-shadow:var(--shadow-md);animation:ccPageIn .5s ease both;transition:transform .25s ease,box-shadow .25s ease; }
+.cc-myapp:hover { transform:translateY(-3px);box-shadow:0 18px 36px rgba(79,70,229,.18); }
+.cc-myapp h3 { font-size:1.05rem; }
+.cc-myapp p { font-size:.86rem; }
+.cc-myapp-course { display:inline-block;margin-top:10px;padding:6px 14px;border-radius:999px;background:var(--blue-25);color:var(--deep);font-size:.85rem;font-weight:700; }
+.cc-myapp-side { display:flex;flex-direction:column;align-items:flex-end;gap:8px;text-align:right; }
+.cc-myapp-side small { color:var(--muted);font-size:.8rem; }
+.cc-badge { padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:800;white-space:nowrap; }
+.cc-badge-pending { background:#fef3c7;color:#b45309; }
+.cc-badge-approved { background:#d1fae5;color:#047857; }
+.cc-badge-rejected { background:#fee2e2;color:#b91c1c; }
+.cc-empty { max-width:520px;margin:20px auto;padding:44px 28px;text-align:center;background:#fff;border:1px solid #e0e7ff;border-radius:28px;box-shadow:var(--shadow-lg); }
+.cc-empty-art { font-size:64px;margin-bottom:12px;animation:ccFloat 3.5s ease-in-out infinite; }
+@keyframes ccFloat { 50% {transform:translateY(-8px)} }
+.cc-empty h2 { margin-bottom:8px; }
+.cc-skeleton { border-radius:12px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:ccShimmer 1.3s linear infinite; }
+@keyframes ccShimmer { to {background-position:-200% 0} }
+@media(max-width:680px) { .cc-myapp {flex-direction:column;align-items:flex-start}.cc-myapp-side {align-items:flex-start;text-align:left} }
+@media(prefers-reduced-motion:reduce) { .cc-root>section,.cc-cx-card,.cc-myapp,.cc-empty-art,.cc-dropdown {animation:none!important;transition:none!important} }
 `;

@@ -185,6 +185,9 @@ function normalize(raw) {
       score: x.percentage != null || x.twelfthPercentage != null || x.score != null ? `${num(x.percentage, x.twelfthPercentage, x.score)}%` : "—",
       status: str(x.status) || "New",
       unlocked: x.unlocked === true || x.purchased === true || x.isUnlocked === true,
+      phone: str(x.phone, x.mobile, x.phoneNumber, x.contact),
+      email: str(x.email, x.emailId),
+      school: str(x.school, x.schoolName, x.institution),
     })),
     courses: (d.courses || d.courseDemand || []).map((x) => {
       const leads = num(x.leads, x.interested, x.enquiries);
@@ -226,6 +229,7 @@ function rng(seed) {
 const NAMES = ["Keerthi", "Rahul K", "Ananya R", "Arun P", "Priya S", "Karthik M", "Divya L", "Vignesh T", "Meena S", "Suresh B", "Harini V", "Naveen R", "Sneha G", "Deepak J", "Lakshmi N"];
 const COURSE_POOL = ["B.Tech CSE", "B.Tech IT", "B.Tech ECE", "B.Tech AI & DS", "BCA", "B.Sc CS", "B.Com", "MBA", "B.Tech Mechanical", "B.Sc Maths"];
 const CITIES = ["Coimbatore", "Chennai", "Erode", "Salem", "Madurai", "Tiruppur", "Trichy", "Namakkal"];
+const SCHOOLS = ["Govt Hr Sec School", "St. Joseph Matric", "Vidya Mandir", "Sri Ramakrishna School", "Kendriya Vidyalaya"];
 const PLAN_POOL = ["Elite", "Gold", "Diamond"];
 
 function makeSample() {
@@ -238,14 +242,19 @@ function makeSample() {
   const interested = ri(60, 420);
   const purchased = ri(Math.round(interested * 0.08), Math.round(interested * 0.35));
   const newLeads = ri(8, Math.max(12, Math.round(interested * 0.25)));
-  const leads = shuffle(NAMES).slice(0, 5).map((name, i) => ({
+  const sampleNames = shuffle(NAMES.filter((n) => n !== "Arun P")).slice(0, 9);
+  sampleNames.splice(1, 0, "Arun P"); /* Arun P is always shown as an unlocked student in sample mode */
+  const leads = sampleNames.map((name, i) => ({
     id: `STU${10200 + ri(10, 899)}`,
     name,
     course: pick(COURSE_POOL),
     location: pick(CITIES),
     score: `${ri(62, 96)}%`,
     status: pick(["New", "New", "Interested", "Contacted"]),
-    unlocked: i % 3 === 2,
+    unlocked: i % 3 === 2 || name === "Arun P",
+    phone: `+91 9${ri(1000, 9999)} ${ri(10000, 99999)}`,
+    email: `${name.toLowerCase().replace(/[^a-z]/g, "")}@gmail.com`,
+    school: pick(SCHOOLS),
   }));
   const courses = shuffle(COURSE_POOL).slice(0, 4).map((name) => {
     const l = ri(8, Math.max(14, Math.round(interested * 0.4)));
@@ -619,9 +628,77 @@ function TrendChart({ data }) {
   );
 }
 
+/* leads per city: coloured vertical bars with value labels */
+const BAR_COLORS = ["#3b82f6", "#34d399", "#fbbf24", "#fb7185", "#a78bfa", "#6366f1"];
+function CityBars({ items }) {
+  const W = 360, H = 210, padL = 28, padR = 8, padT = 24, padB = 28;
+  const [hi, setHi] = useState(-1);
+  const top = Math.ceil(Math.max(4, ...items.map((i) => i.n)) / 4) * 4;
+  const y = (v) => padT + (1 - v / top) * (H - padT - padB);
+  const slot = (W - padL - padR) / items.length;
+  const bw = Math.min(30, slot * 0.6);
+  return (
+    <svg className="cd-chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Leads by city" onMouseLeave={() => setHi(-1)}>
+      {[0, 0.25, 0.5, 0.75, 1].map((t) => (
+        <g key={t}>
+          <line x1={padL} x2={W - padR} y1={y(top * t)} y2={y(top * t)} className="cd-grid-line" />
+          <text x={padL - 6} y={y(top * t) + 4} textAnchor="end" className="cd-axis">{Math.round(top * t)}</text>
+        </g>
+      ))}
+      {items.map((it, i) => {
+        const x = padL + slot * i + (slot - bw) / 2;
+        const hgt = Math.max(3, H - padB - y(it.n));
+        return (
+          <g key={it.name} onMouseEnter={() => setHi(i)} style={{ opacity: hi < 0 || hi === i ? 1 : 0.45, transition: "opacity .2s" }}>
+            <rect x={x} y={H - padB - hgt} width={bw} height={hgt} rx="5" fill={BAR_COLORS[i % BAR_COLORS.length]} className="cd-cbar" style={{ animationDelay: `${i * 0.08}s` }} />
+            <text x={x + bw / 2} y={H - padB - hgt - 6} textAnchor="middle" className="cd-axis" style={{ fontWeight: 800 }}>{it.n}</text>
+            <text x={x + bw / 2} y={H - 9} textAnchor="middle" className="cd-axis">{it.name.length > 9 ? `${it.name.slice(0, 8)}…` : it.name}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/* small pop-up with the full details of an unlocked student */
+function StudentModal({ lead, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [onClose]);
+  const rows = [["Student ID", lead.id], ["Interested course", lead.course], ["City", lead.location], ["12th mark", lead.score], ["School", lead.school], ["Phone", lead.phone], ["Email", lead.email]]
+    .filter(([, v]) => v && v !== "—");
+  return (
+    <div className="sm-back" onClick={onClose}>
+      <div className="sm-box" role="dialog" aria-modal="true" aria-label={`${lead.name} details`} onClick={(e) => e.stopPropagation()}>
+        <div className="sm-head">
+          <div className="sm-av">{lead.name.charAt(0).toUpperCase()}</div>
+          <div className="sm-who">
+            <b>{lead.name}</b>
+            <span className={`cd-badge s-${lead.status.toLowerCase().replace(/\s+/g, "-")}`}>{lead.status}</span>
+          </div>
+          <button className="sm-close" onClick={onClose} aria-label="Close"><Icon name="close" size={16} /></button>
+        </div>
+        <div className="sm-body">
+          {rows.map(([k, v]) => <div className="sm-row" key={k}><span>{k}</span><b>{v}</b></div>)}
+          {(lead.phone || lead.email) && (
+            <div className="sm-actions">
+              {lead.phone && <a href={`tel:${lead.phone.replace(/\s+/g, "")}`}>Call</a>}
+              {lead.email && <a className="alt" href={`mailto:${lead.email}`}>Send email</a>}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const PALETTE = ["#1558d6", "#19b3e6", "#7c3aed", "#10b981", "#f59e0b", "#ef4444"];
 
-function Donut({ items }) {
+function Donut({ items, pct: showPct = false }) {
   const [hi, setHi] = useState(-1);
   const total = items.reduce((a, c) => a + c.leads, 0);
   let acc = 0;
@@ -647,7 +724,7 @@ function Donut({ items }) {
           <li key={c.name} onMouseEnter={() => setHi(i)} onMouseLeave={() => setHi(-1)} className={hi === i ? "on" : ""}>
             <i style={{ background: PALETTE[i % PALETTE.length] }} />
             <span>{c.name}</span>
-            <b>{c.leads}</b>
+            <b>{showPct && total ? `${Math.round((c.leads / total) * 100)}%` : c.leads}</b>
           </li>
         ))}
       </ul>
@@ -669,7 +746,7 @@ const FILTERS = ["All", "New", "Interested", "Contacted", "Unlocked"];
 /* ============ STUDENT LEADS VIEW (route: /college/leads) ============ */
 const SORTS = [["recent", "Newest first"], ["score", "Highest 12th %"], ["name", "Name A-Z"]];
 
-function LeadsView({ d, college, live, loading, ago, counts, leads, query, setQuery, filter, setFilter, sort, setSort, busyId, unlock, freshIds, rate, back }) {
+function LeadsView({ d, college, live, loading, ago, counts, leads, query, setQuery, filter, setFilter, sort, setSort, busyId, unlock, openLead, freshIds, rate, back }) {
   return (
     <>
       <section className="cl-hero">
@@ -740,7 +817,7 @@ function LeadsView({ d, college, live, loading, ago, counts, leads, query, setQu
                 </div>
                 <div className="cl-meter" title={`12th mark ${l.score}`}><i style={{ width: `${p}%` }} /></div>
                 {l.unlocked ? (
-                  <div className="cd-unlocked"><Icon name="check" size={15} />Details unlocked</div>
+                  <button className="cd-unlocked cd-unlocked-btn" onClick={() => openLead(l)}><Icon name="check" size={15} />View student details<Icon name="arrow" size={14} /></button>
                 ) : (
                   <button className="cd-unlock" disabled={busyId === l.id} onClick={() => unlock(l)}>
                     <Icon name="unlock" size={15} />{busyId === l.id ? "Please wait…" : "Unlock ₹100"}
@@ -776,6 +853,7 @@ export default function CollegeDashboard() {
   const [sort, setSort] = useState("recent");
   const [busyId, setBusyId] = useState("");
   const [toast, setToast] = useState("");
+  const [selected, setSelected] = useState(null); // unlocked student shown in the pop-up
   const [confetti, setConfetti] = useState(null);
   const [updatedAt, setUpdatedAt] = useState(0);
   const [navOpen, setNavOpen] = useState(false); // mobile menu of the top navbar
@@ -784,6 +862,8 @@ export default function CollegeDashboard() {
   const knownIds = useRef(null); // lead ids we already showed (null until first real load)
   const liveRef = useRef(false);
   useRipple();
+
+  const openLead = (l) => setSelected(l);
 
   const say = (m) => {
     setToast(m);
@@ -970,6 +1050,14 @@ export default function CollegeDashboard() {
 
   if (!loggedIn) return null;
 
+  const cityMap = {};
+  d.leads.forEach((l) => { if (l.location && l.location !== "—") cityMap[l.location] = (cityMap[l.location] || 0) + 1; });
+  const cityItems = Object.entries(cityMap).map(([name, n]) => ({ name, n })).sort((x, y) => y.n - x.n).slice(0, 6);
+  const statusItems = [["New", counts.New], ["Interested", counts.Interested], ["Contacted", counts.Contacted], ["Others", Math.max(0, counts.All - counts.New - counts.Interested - counts.Contacted)]]
+    .filter(([, n]) => n > 0).map(([name, leads]) => ({ name, leads }));
+  const unlockedN = counts.Unlocked;
+  const lockedN = Math.max(0, counts.All - unlockedN);
+  const unlockedPct = counts.All ? Math.round((unlockedN / counts.All) * 100) : 0;
   const sparkInterested = d.trend.map((t) => t.interested);
   const sparkPurchased = d.trend.map((t) => t.purchased);
   const ticker = d.activities.length ? [...d.activities, ...d.activities] : [];
@@ -1018,7 +1106,7 @@ export default function CollegeDashboard() {
         {isLeads && (
           <LeadsView d={d} college={college} live={live} loading={loading} ago={ago} counts={counts} leads={leads}
             query={query} setQuery={setQuery} filter={filter} setFilter={setFilter} sort={sort} setSort={setSort}
-            busyId={busyId} unlock={unlock} freshIds={freshIds} rate={rate} back={() => routerNavigate("/college/dashboard")} />
+            busyId={busyId} unlock={unlock} openLead={openLead} freshIds={freshIds} rate={rate} back={() => routerNavigate("/college/dashboard")} />
         )}
         {!isLeads && (<>
         {/* ---------- hero ---------- */}
@@ -1088,27 +1176,41 @@ export default function CollegeDashboard() {
           </Tile>
         </section>
 
-        {/* ---------- trend + pipeline ---------- */}
-        <section className="cd-row r1">
-          <Glass className="cd-card" delay={0.05}>
-            <div className="cd-card-head">
-              <div><h2>Last 7 days</h2><p>Students interested vs profiles purchased · hover the chart</p></div>
-              <div className="cd-legend"><span className="blue">Interested</span><span className="green">Purchased</span></div>
+        {/* ---------- lead analytics ---------- */}
+        <Glass className="cd-card cd-an" delay={0.05}>
+          <div className="cd-card-head">
+            <div className="cd-an-title">
+              <span className="cd-an-ic"><Icon name="trend" size={20} /></span>
+              <div><h2>Lead analytics</h2><p>Where your leads come from and how they are moving</p></div>
             </div>
-            {d.trend.length ? <TrendChart data={d.trend} /> : <div className="cd-empty">Weekly numbers will appear here</div>}
-          </Glass>
-
-          <Glass className="cd-card" delay={0.12}>
-            <div className="cd-card-head"><div><h2>Admission pipeline</h2><p>From interest to purchase</p></div></div>
-            {[["Interested", d.stats.interested, "f1", "users"], ["New leads", d.stats.newLeads, "f2", "spark"], ["Purchased", d.stats.purchased, "f3", "unlock"]].map(([label, v, cls, ic], i) => (
-              <div className="cd-pipe" key={label}>
-                <div className="cd-pipe-top"><span><Icon name={ic} size={15} />{label}</span><b><Num v={v} /></b></div>
-                <div className="cd-bar flow"><i className={cls} style={{ width: `${d.stats.interested ? Math.max(3, Math.round((v / d.stats.interested) * 100)) : 0}%`, animationDelay: `${0.3 + i * 0.2}s` }} /></div>
-              </div>
-            ))}
-            <div className="cd-pipe-note"><Icon name="trend" size={16} />Your purchase rate is <b>{rate}%</b></div>
-          </Glass>
-        </section>
+            <span className="cd-chip-date">Last 7 days</span>
+          </div>
+          <div className="cd-an-grid">
+            <div className="cd-an-panel">
+              <h3>Leads by city</h3>
+              {cityItems.length ? <CityBars items={cityItems} /> : <div className="cd-empty">City data will appear here</div>}
+            </div>
+            <div className="cd-an-panel">
+              <div className="cd-an-ph"><h3>Daily trend</h3><div className="cd-legend"><span className="blue">Interested</span><span className="green">Purchased</span></div></div>
+              {d.trend.length ? <TrendChart data={d.trend} /> : <div className="cd-empty">Weekly numbers will appear here</div>}
+            </div>
+            <div className="cd-an-panel">
+              <h3>Lead status</h3>
+              {statusItems.length ? <Donut items={statusItems} pct /> : <div className="cd-empty">No leads yet</div>}
+            </div>
+          </div>
+          <div className="cd-an-foot">
+            <div className="cd-an-panel">
+              <h3>Unlocked vs locked</h3>
+              <div className="cd-split"><i style={{ width: `${unlockedPct}%` }} /></div>
+              <div className="cd-split-l"><span>Unlocked {unlockedN} ({unlockedPct}%)</span><span>Locked {lockedN} ({100 - unlockedPct}%)</span></div>
+            </div>
+            <div className="cd-an-panel">
+              <h3>Purchase rate</h3>
+              <div className="cd-an-big"><b>{rate}%</b><span>of interested students</span></div>
+            </div>
+          </div>
+        </Glass>
 
         {/* ---------- leads ---------- */}
         <Glass className="cd-card cd-leads" delay={0.05}>
@@ -1126,7 +1228,7 @@ export default function CollegeDashboard() {
           </div>
 
           <div className="cd-lead-grid">
-            {leads.map((l, i) => {
+            {leads.slice(0, 6).map((l, i) => {
               const p = parseInt(l.score, 10) || 0;
               return (
                 <article className={`cd-lead ${freshIds.includes(l.id) ? "fresh" : ""}`} key={l.id} style={{ animationDelay: `${i * 0.06}s` }}>
@@ -1142,7 +1244,7 @@ export default function CollegeDashboard() {
                     <span className="mark">12th: <b>{l.score}</b></span>
                   </div>
                   {l.unlocked ? (
-                    <div className="cd-unlocked"><Icon name="check" size={15} />Details unlocked</div>
+                    <button className="cd-unlocked cd-unlocked-btn" onClick={() => openLead(l)}><Icon name="check" size={15} />View student details<Icon name="arrow" size={14} /></button>
                   ) : (
                     <button className="cd-unlock" disabled={busyId === l.id} onClick={() => unlock(l)}>
                       <Icon name="unlock" size={15} />{busyId === l.id ? "Please wait…" : "Unlock ₹100"}
@@ -1202,6 +1304,8 @@ export default function CollegeDashboard() {
         </Glass>
         </>)}
       </main>
+
+      {selected && <StudentModal lead={selected} onClose={() => setSelected(null)} />}
 
       {confetti && (
         <div className="cd-confetti" aria-hidden="true">
@@ -1601,6 +1705,58 @@ const CSS = `
 .cl-meter{height:6px;border-radius:999px;background:#eaf0fb;overflow:hidden;margin:0 0 14px}
 .cl-meter i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#10b981,#34d399);transform-origin:left;animation:cdgrow 1.2s cubic-bezier(.2,.8,.2,1) .2s backwards}
 .cl-tiles{margin-top:20px}
+
+/* ---------- weekly bars + student pop-up ---------- */
+.cd-wk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.cd-wk div{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border-radius:14px;background:#f4f8ff;border:1px solid #e6edf9}
+.cd-wk b{font-size:22px;line-height:1.2;color:var(--ink)}
+.cd-wk span{font-size:12px;font-weight:700;color:var(--mut)}
+.cd-vbar{transform-box:fill-box;transform-origin:bottom;transition:opacity .2s;animation:cdgrowy .7s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes cdgrowy{from{transform:scaleY(0)}}
+.cd-toggle{display:inline-flex;gap:4px;padding:4px;margin-bottom:10px;border-radius:12px;background:#eef3fc}
+.cd-toggle button{padding:6px 16px;border-radius:9px;font-size:13px;font-weight:800;color:var(--mut)!important;transition:.2s}
+.cd-toggle button.on{color:var(--blue)!important;background:#fff!important;box-shadow:0 2px 8px rgba(21,60,140,.14)}
+.cd-toggle button:focus-visible{outline:3px solid rgba(21,88,214,.45);outline-offset:2px}
+.cd-unlocked-btn{width:100%;border:0;cursor:pointer;font:inherit;font-weight:800;transition:background .2s,transform .2s}
+.cd-unlocked-btn:hover{background:#cdf3e0;transform:translateY(-1px)}
+.cd-unlocked-btn:focus-visible,.sm-close:focus-visible,.sm-actions a:focus-visible{outline:3px solid rgba(21,88,214,.45);outline-offset:2px}
+.sm-back{opacity:0;position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:16px;background:rgba(11,27,59,.48);backdrop-filter:blur(4px);animation:cdfade .2s ease both}
+.sm-box{width:100%;max-width:420px;max-height:calc(100vh - 32px);overflow:auto;border-radius:24px;background:#fff;box-shadow:0 30px 70px rgba(11,27,59,.35);animation:cdrise .3s cubic-bezier(.2,.8,.2,1) both}
+.sm-head{position:relative;display:flex;align-items:center;gap:14px;padding:22px 56px 18px 22px;color:#fff;background:linear-gradient(120deg,#0e2f86,#1558d6)}
+.sm-av{flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:22px;font-weight:800;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5)}
+.sm-who{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.sm-who b{font-size:20px;line-height:1.2}
+.sm-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#fff!important;background:rgba(255,255,255,.18)!important}
+.sm-close:hover{background:rgba(255,255,255,.32)!important}
+.sm-body{padding:8px 22px 22px}
+.sm-row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid #eef2f9;font-size:14px}
+.sm-row span{color:var(--mut);font-weight:600}
+.sm-row b{text-align:right;word-break:break-word}
+.sm-actions{display:flex;gap:10px;margin-top:16px}
+.sm-actions a{flex:1;text-align:center;padding:11px;border-radius:12px;font-size:14px;font-weight:800;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--blue),var(--sky))}
+.sm-actions a.alt{color:var(--blue);background:#eaf1ff}
+@media (max-width:480px){.cd-wk{grid-template-columns:1fr}.cd-wk div{flex-direction:row;justify-content:space-between;align-items:center}}
+
+/* ---------- lead analytics ---------- */
+.cd-an-title{display:flex;align-items:center;gap:12px}
+.cd-an-ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--blue);background:#eaf1ff}
+.cd-chip-date{padding:7px 14px;border-radius:10px;font-size:13px;font-weight:700;color:var(--mut);background:#f4f8ff;border:1px solid #e6edf9}
+.cd-an-grid{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:16px}
+.cd-an-foot{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:16px}
+.cd-an-panel{min-width:0;padding:16px;border-radius:16px;background:#fff;border:1px solid #e6edf9}
+.cd-an-panel h3{margin:0 0 10px;font:inherit;font-size:14px;font-weight:800;color:var(--ink)}
+.cd-an-ph{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.cd-an-ph h3{margin:0}
+.cd-an-ph .cd-legend{gap:10px;font-size:12px}
+.cd-cbar{transform-box:fill-box;transform-origin:bottom;animation:cdgrowy .7s cubic-bezier(.2,.8,.2,1) backwards}
+.cd-split{display:flex;height:12px;border-radius:999px;overflow:hidden;background:#fecdd3}
+.cd-split i{display:block;height:100%;background:linear-gradient(90deg,#10b981,#34d399);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.cd-split-l{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:13px;font-weight:700;color:var(--mut)}
+.cd-an-big{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.cd-an-big b{font-size:32px;line-height:1.1;color:#059669}
+.cd-an-big span{font-size:13px;font-weight:700;color:var(--mut)}
+@media (max-width:1100px){.cd-an-grid{grid-template-columns:1fr 1fr}.cd-an-grid>:last-child{grid-column:1/-1}}
+@media (max-width:700px){.cd-an-grid,.cd-an-foot{grid-template-columns:1fr}}
 
 /* laptop / tablet */
 @media (max-width:1250px){
