@@ -11,6 +11,8 @@ const LISTING_DAYS = 30;
 const GOOGLE_QUERY = "best college"; // what the Google mock-up shows being searched
 const ROWS_COLLAPSED = 6;
 const DAY = 86400000;
+const DEMO_UNLOCKED = 2; // how many student leads are open by default; the rest stay locked until paid
+const DONUT_COLORS = ["#1f4fd8", "#22b3e6", "#7c3aed", "#10b981", "#f59e0b", "#ec4899"];
 
 // Plans a college can choose. Replace with real plan data from your backend.
 // students = profiles included in the plan, days = plan validity
@@ -279,7 +281,7 @@ const buildCollegeData = (college) => {
 /*  Saved state (per college)                                          */
 /* ------------------------------------------------------------------ */
 
-const EMPTY_STORE = { purchased: {}, listing: null, courses: [], events: [] };
+const EMPTY_STORE = { purchased: {}, listing: null, courses: [], events: [], profile: {} };
 
 const loadStore = (key) => {
   try {
@@ -290,6 +292,7 @@ const loadStore = (key) => {
       listing: p.listing || null,
       courses: Array.isArray(p.courses) ? p.courses : [],
       events: Array.isArray(p.events) ? p.events : [],
+      profile: p.profile && typeof p.profile === "object" ? p.profile : {},
     };
   } catch {
     return EMPTY_STORE;
@@ -437,6 +440,18 @@ const ICONS = {
   scan: <path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M8 12h8" />,
   pulse: <path d="M3 12h4l3-8 4 16 3-8h4" />,
   bell: <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0" />,
+  pin: (
+    <>
+      <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </>
+  ),
+  eye: (
+    <>
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </>
+  ),
 };
 
 const Icon = ({ name, size = 18 }) => (
@@ -724,6 +739,86 @@ const AddCourseModal = ({ existing, onAdd, onClose }) => {
         <button className="cd-primary" type="submit">
           Add Course
         </button>
+      </form>
+    </Modal>
+  );
+};
+
+/* ------------------------- Complete profile ------------------------ */
+
+const FACILITIES = ["Hostel", "Library", "Transport", "Wi-Fi campus", "Labs", "Sports", "Placement cell", "Canteen"];
+const PROFILE_ITEMS = ["about", "phone", "website", "address", "facilities"];
+const isFilled = (p, k) =>
+  k === "facilities" ? Array.isArray(p.facilities) && p.facilities.length > 0 : String(p[k] || "").trim().length > 0;
+// base = what the profile already has; every extra item filled moves it closer to 100%
+const calcProfilePct = (base, p) =>
+  Math.round(base + ((100 - base) * PROFILE_ITEMS.filter((k) => isFilled(p || {}, k)).length) / PROFILE_ITEMS.length);
+
+const ProfileEditModal = ({ base, initial, onSave, onClose }) => {
+  const [form, setForm] = useState({ about: "", phone: "", website: "", address: "", ...initial, facilities: Array.isArray(initial?.facilities) ? initial.facilities : [] });
+  const [error, setError] = useState("");
+  const pct = calcProfilePct(base, form);
+
+  const set = (k, v) => {
+    setForm((f) => ({ ...f, [k]: v }));
+    setError("");
+  };
+  const toggle = (name) =>
+    set("facilities", form.facilities.includes(name) ? form.facilities.filter((x) => x !== name) : [...form.facilities, name]);
+  const Tick = ({ k }) => (isFilled(form, k) ? <i className="cdf-tick"><Icon name="check" size={11} /></i> : null);
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (form.phone && form.phone.length !== 10) return setError("Enter a 10 digit phone number.");
+    onSave(form);
+    return onClose();
+  };
+
+  return (
+    <Modal title="Complete your profile" onClose={onClose}>
+      <form className="cdf-form" onSubmit={submit} noValidate>
+        <h3 className="cd-modal-title">Complete your profile</h3>
+        <p className="cd-modal-sub">A complete profile shows up more in student searches.</p>
+
+        <div className="cdf-progress">
+          <div className="cdf-progress-top">
+            <span>Profile strength</span>
+            <b>{pct}%</b>
+          </div>
+          <div className="cdf-track">
+            <span style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+
+        <label className="cd-label" htmlFor="pf-about">About your college <Tick k="about" /></label>
+        <textarea id="pf-about" className="cd-field cdf-area" rows="3" placeholder="Tell students what makes your college special" value={form.about} onChange={(e) => set("about", e.target.value)} />
+
+        <div className="cd-two">
+          <div>
+            <label className="cd-label" htmlFor="pf-phone">Phone <Tick k="phone" /></label>
+            <input id="pf-phone" className="cd-field" inputMode="numeric" placeholder="10 digit number" value={form.phone} onChange={(e) => set("phone", e.target.value.replace(/\D/g, "").slice(0, 10))} />
+          </div>
+          <div>
+            <label className="cd-label" htmlFor="pf-web">Website <Tick k="website" /></label>
+            <input id="pf-web" className="cd-field" placeholder="www.yourcollege.edu" value={form.website} onChange={(e) => set("website", e.target.value)} />
+          </div>
+        </div>
+
+        <label className="cd-label" htmlFor="pf-addr">Address <Tick k="address" /></label>
+        <input id="pf-addr" className="cd-field" placeholder="Street, city, pincode" value={form.address} onChange={(e) => set("address", e.target.value)} />
+
+        <div className="cd-label">Facilities <Tick k="facilities" /></div>
+        <div className="cdf-chips">
+          {FACILITIES.map((f) => (
+            <button key={f} type="button" className={form.facilities.includes(f) ? "on" : ""} onClick={() => toggle(f)}>
+              {form.facilities.includes(f) && <Icon name="check" size={12} />}
+              {f}
+            </button>
+          ))}
+        </div>
+
+        {error && <div className="cd-error">{error}</div>}
+        <button className="cd-primary" type="submit">Save profile</button>
       </form>
     </Modal>
   );
@@ -1469,6 +1564,18 @@ export default function CollegeDashboard() {
   const [payment, setPayment] = useState(null); // { kind: 'unlock'|'listing', lead? }
   const [profile, setProfile] = useState(null);
   const [introOn, setIntroOn] = useState(false);
+  const [filter, setFilter] = useState("all"); // all | New | Interested | Contacted | unlocked
+  const [gate, setGate] = useState(null); // locked lead waiting for "go to payment"
+  const [activeCourse, setActiveCourse] = useState(null); // course picked in Course demand
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null); // student shown in the spotlight
+  const [hoverCourse, setHoverCourse] = useState(null);
+  const [demandReady, setDemandReady] = useState(false); // donut draws in once
+
+  useEffect(() => {
+    const t = setTimeout(() => setDemandReady(true), 150);
+    return () => clearTimeout(t);
+  }, []);
   const introTimers = useRef([]);
 
   useEffect(() => () => introTimers.current.forEach(clearTimeout), []);
@@ -1550,13 +1657,64 @@ export default function CollegeDashboard() {
     }));
   }, [data, store.courses]);
 
-  const filteredLeads = data.leads.filter((lead) =>
-    `${lead.name} ${lead.id} ${lead.course} ${lead.location}`
+  /* leads: only DEMO_UNLOCKED are open, the rest are locked until the college pays */
+  const demoUnlocked = new Set(data.leads.slice(1, 1 + DEMO_UNLOCKED).map((l) => l.id));
+  const isUnlocked = (lead) => demoUnlocked.has(lead.id) || Boolean(store.purchased[lead.id]);
+  const openLead = (lead) => (isUnlocked(lead) ? setProfile(lead) : setGate(lead));
+  const countStatus = (s) => data.leads.filter((l) => l.status === s).length;
+  const leadTabs = [
+    ["all", "All", data.leads.length],
+    ["New", "New", countStatus("New")],
+    ["Interested", "Interested", countStatus("Interested")],
+    ["Contacted", "Contacted", countStatus("Contacted")],
+    ["unlocked", "Unlocked", data.leads.filter(isUnlocked).length],
+  ];
+
+  const filteredLeads = data.leads.filter((lead) => {
+    if (filter === "unlocked" && !isUnlocked(lead)) return false;
+    if ((filter === "New" || filter === "Interested" || filter === "Contacted") && lead.status !== filter) return false;
+    return `${lead.name} ${lead.id} ${lead.course} ${lead.location}`
       .toLowerCase()
-      .includes(search.trim().toLowerCase())
-  );
+      .includes(search.trim().toLowerCase());
+  });
   const visibleLeads =
     search.trim() || expanded ? filteredLeads : filteredLeads.slice(0, ROWS_COLLAPSED);
+  const spotlight = visibleLeads.find((l) => l.id === selectedLead) || visibleLeads[0] || null;
+  const spotIdx = spotlight ? visibleLeads.findIndex((l) => l.id === spotlight.id) : -1;
+  const stepLead = (dir) => {
+    if (!visibleLeads.length) return;
+    setSelectedLead(visibleLeads[(Math.max(spotIdx, 0) + dir + visibleLeads.length) % visibleLeads.length].id);
+  };
+
+  /* bottom cards */
+  const demandSorted = [...allCourses].sort((x, y) => y.leads - x.leads);
+  const demandTotal = demandSorted.reduce((sum, c) => sum + c.leads, 0);
+  const demandAnim = useCountUp(demandTotal);
+  let demandAcc = 0;
+  const demandArcs = demandSorted.map((c, i) => {
+    const pct = demandTotal ? (c.leads / demandTotal) * 100 : 0;
+    const arc = { name: c.short, full: c.name, leads: c.leads, pct, start: demandAcc, color: DONUT_COLORS[i % DONUT_COLORS.length] };
+    demandAcc += pct;
+    return arc;
+  });
+  const profileBase = 72 + (hash(collegeKey) % 24);
+  const profilePct = calcProfilePct(profileBase, store.profile);
+  const profileViews = totalStudents * 7 + (hash(collegeKey) % 40);
+  const searchAppearances = totalStudents * 43 + (hash(collegeKey) % 120);
+  const RING_C = 2 * Math.PI * 52;
+  const shownCourse = hoverCourse || activeCourse;
+  const shownArc = demandArcs.find((a) => a.full === shownCourse) || null;
+  const toggleCourse = (full) => setActiveCourse((cur) => (cur === full ? null : full));
+  const DR = 52;
+  const DC = 2 * Math.PI * DR;
+  const DGAP = 6;
+  let segAcc = 0;
+  const demandSegs = demandArcs.map((a) => {
+    const len = demandTotal ? (a.leads / demandTotal) * DC : 0;
+    const seg = { ...a, len, offset: segAcc };
+    segAcc += len;
+    return seg;
+  });
 
   const activity = [
     ...store.events.map((e) => ({ title: e.title, text: e.text, ago: timeAgo(e.ts) })),
@@ -1572,6 +1730,13 @@ export default function CollegeDashboard() {
       ...s,
       courses: [...s.courses, course],
       events: addEvent(s, "Course added", `${course.name} added with ${course.seats} seats`),
+    }));
+
+  const handleSaveProfile = (profile) =>
+    setStore((s) => ({
+      ...s,
+      profile,
+      events: addEvent(s, "Profile updated", `College profile is now ${calcProfilePct(profileBase, profile)}% complete`),
     }));
 
   const handlePaid = (txn) => {
@@ -1606,7 +1771,7 @@ export default function CollegeDashboard() {
     navigate("/admin/login", { replace: true });
   };
 
-  const modalOpen = addCourseOpen || payment || profile;
+  const modalOpen = addCourseOpen || payment || profile || gate || profileOpen;
 
   return (
     <div className={`cd-shell ${modalOpen ? "cd-lock" : ""}`}>
@@ -1912,6 +2077,13 @@ export default function CollegeDashboard() {
         .cd-gline { display: block; height: 5px; margin-top: 5px; border-radius: 4px; background: #d3deef; }
         .cd-gline.short { width: 62%; }
         .cd-gmock-arrow { position: absolute; right: -8px; bottom: -6px; width: 84px; height: 62px; opacity: .95; }
+        /* share-market arrow animation (only the arrow moves) */
+        .cd-gmock-arrow { overflow: visible; animation: cdArrowBob 2.4s ease-in-out infinite; }
+        .cd-gmock-arrow path:nth-child(1) { stroke-dasharray: 120; animation: cdArrowLine 3.6s ease-in-out infinite; }
+        .cd-gmock-arrow path:nth-child(2) { stroke-dasharray: 50; animation: cdArrowHead 3.6s ease-in-out infinite; }
+        @keyframes cdArrowLine { 0% { stroke-dashoffset: 120; opacity: 1; } 42% { stroke-dashoffset: 0; } 88% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+        @keyframes cdArrowHead { 0%, 38% { opacity: 0; stroke-dashoffset: 50; } 52% { opacity: 1; stroke-dashoffset: 0; } 88% { opacity: 1; stroke-dashoffset: 0; } 100% { opacity: 0; stroke-dashoffset: 0; } }
+        @keyframes cdArrowBob { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(3px, -4px); } }
         .cd-promo-total { margin-top: auto; padding-top: 22px; }
         .cd-promo-total small { display: block; font-size: 11.5px; color: #b9d0f3; }
         .cd-promo-total strong { font-size: 32px; letter-spacing: -1px; }
@@ -1999,7 +2171,7 @@ export default function CollegeDashboard() {
         .cd-plan-bar-text b { color: var(--pc); font-weight: 700; text-align: center; }
 
         @media (prefers-reduced-motion: reduce) {
-          .cd-smoke i, .cd-plan::after, .cd-plan-icon, .cd-plan-status i, .cd-plan-track span { animation: none !important; }
+          .cd-smoke i, .cd-plan::after, .cd-plan-icon, .cd-plan-status i, .cd-plan-track span, .cd-gmock-arrow, .cd-gmock-arrow path { animation: none !important; }
           .cd-plan-grid > div { animation: none !important; opacity: 1 !important; }
         }
         @media (max-width: 1050px) {
@@ -2321,6 +2493,237 @@ export default function CollegeDashboard() {
           .cd-qr-panel { grid-template-columns: 1fr; grid-template-areas: "copy" "img" "open"; justify-items: center; text-align: center; }
           .cd-qr-open { justify-self: center; }
         }
+
+        /* ===== student leads (cards) + bottom cards ===== */
+        .cdl-card { padding: 22px 24px 18px; border: 1px solid #e6ecfb; border-radius: 24px; background: linear-gradient(135deg, #fff 0%, #f6f9ff 100%); box-shadow: 0 12px 34px rgba(40,70,160,.08); }
+        .cdl-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+        .cdl-head h3 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.3px; color: #0f2a4d; }
+        .cdl-head p { margin: 5px 0 0; font-size: 12.5px; color: #7a8ba0; }
+        .cdl-search { position: relative; }
+        .cdl-search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #8a9bb0; }
+        .cdl-search input { width: 270px; max-width: 100%; height: 40px; padding: 0 14px 0 36px; border: 1px solid #e0e8f4; border-radius: 12px; outline: none; background: #fff; color: #183453; font-size: 12.5px; font-family: inherit; transition: all .2s; }
+        .cdl-search input:focus { border-color: #3b8cf0; box-shadow: 0 0 0 3px rgba(59,140,240,.14); }
+        .cdl-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 18px; }
+        .cdl-tab { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 0; border-radius: 999px; color: #5c7390; background: #eaf0fb; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all .18s; }
+        .cdl-tab b { min-width: 22px; padding: 2px 7px; border-radius: 999px; color: #5c7390; background: #dbe5f6; font-size: 11px; text-align: center; }
+        .cdl-tab:hover { background: #dfe9fa; }
+        .cdl-tab.active { color: #fff; background: linear-gradient(135deg, #1558d6, #2f9bf0); box-shadow: 0 8px 16px rgba(21,88,214,.28); }
+        .cdl-tab.active b { color: #fff; background: rgba(255,255,255,.25); }
+        .cdl-foot { margin-top: 14px; font-size: 13px; }
+        .cdl-empty { grid-column: 1 / -1; padding: 30px 10px; text-align: center; font-size: 13px; color: #8392a6; }
+
+        .cdl-gate { text-align: center; }
+        .cd-modal:has(.cdl-gate) { max-width: 400px; }
+        .cdl-gate-ico { display: grid; place-items: center; width: 64px; height: 64px; margin: 4px auto 14px; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #1558d6, #27a9ee); box-shadow: 0 10px 22px rgba(21,88,214,.32); }
+        .cdl-gate h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; letter-spacing: -.3px; color: #10294a; }
+        .cdl-gate p { margin: 0; font-size: 13px; line-height: 1.55; color: #6a7d99; }
+        .cdl-gate-who { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 10px 12px; border: 1px dashed #cfdaf1; border-radius: 14px; text-align: left; }
+        .cdl-gate-who strong { display: block; font-size: 13.5px; color: #10294a; }
+        .cdl-gate-who small { display: block; margin-top: 2px; font-size: 11px; color: #8392a6; }
+
+        .cd-listing.wide { min-height: 0; margin-top: 18px; padding: 24px 30px; }
+        .cd-listing.wide h4 { max-width: 58%; font-size: 18px; }
+        .cd-listing.wide p { max-width: 58%; font-size: 12.5px; }
+        .cd-listing.wide .cd-listing-row { align-items: center; justify-content: flex-start; gap: 22px; }
+        .cd-listing.wide > svg.cd-listing-art { top: 50%; right: 36px; width: 170px; height: 144px; transform: translateY(-50%); }
+
+        .cdb-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+        .cdb-card { min-width: 0; padding: 22px 24px; border: 1px solid #e6ecfb; border-radius: 24px; background: #fff; box-shadow: 0 12px 34px rgba(40,70,160,.08); }
+        .cdb-card h3 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.3px; color: #0f2a4d; }
+        .cdb-card > p { margin: 5px 0 0; font-size: 12.5px; color: #7a8ba0; }
+        .cdb-demand, .cdb-perf { display: flex; align-items: center; gap: 20px; margin-top: 22px; }
+        .cdb-donut, .cdb-ring { position: relative; flex: none; }
+        .cdb-donut { width: 158px; height: 158px; }
+        .cdb-ring { width: 128px; height: 128px; }
+        .cdb-donut svg, .cdb-ring svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
+        .cdb-donut-c, .cdb-ring-c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+        .cdb-donut-c b { font-size: 30px; font-weight: 800; line-height: 1; color: #14335a; }
+        .cdb-ring-c b { font-size: 26px; font-weight: 800; line-height: 1; color: #14335a; }
+        .cdb-donut-c span, .cdb-ring-c span { margin-top: 4px; font-size: 11px; color: #7a8ba0; }
+        .cdb-legend { display: grid; flex: 1; gap: 14px; min-width: 0; margin: 0; padding: 0; list-style: none; }
+        .cdb-legend li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #29415f; }
+        .cdb-legend i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+        .cdb-legend span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .cdb-legend b { color: #14335a; }
+        .cdb-perf-card { background: linear-gradient(160deg, #fff 0%, #eaf5ff 100%); }
+        .cdb-metrics { display: grid; flex: 1; gap: 10px; min-width: 0; }
+        .cdb-metric { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 14px; background: #e1f0ff; }
+        .cdb-metric svg { flex: none; color: #1f6fe8; }
+        .cdb-metric b { display: block; font-size: 14px; color: #14335a; font-variant-numeric: tabular-nums; }
+        .cdb-metric small { font-size: 11.5px; color: #6a7d99; }
+        .cdb-cta { width: 100%; height: 46px; margin-top: 20px; border: 0; border-radius: 12px; color: #fff; background: linear-gradient(100deg, #1558d6, #27a9ee); box-shadow: 0 10px 20px rgba(21,88,214,.28); font-size: 14px; font-weight: 700; cursor: pointer; transition: transform .18s, box-shadow .18s; }
+        .cdb-cta:hover { transform: translateY(-1px); box-shadow: 0 14px 24px rgba(21,88,214,.34); }
+        .cdb-feed { margin: 20px 0 0; padding: 0; list-style: none; }
+        .cdb-feed li { position: relative; display: flex; justify-content: space-between; gap: 12px; padding: 0 0 18px 24px; }
+        .cdb-feed li:last-child { padding-bottom: 0; }
+        .cdb-feed li::before { content: ""; position: absolute; left: 0; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: #1fa8e8; box-shadow: 0 0 0 4px #e3f4fd; }
+        .cdb-feed li::after { content: ""; position: absolute; left: 4px; top: 18px; bottom: 0; width: 2px; background: #dbe6fb; }
+        .cdb-feed li:last-child::after { display: none; }
+        .cdb-feed strong { display: block; font-size: 13px; color: #10294a; }
+        .cdb-feed p { margin: 3px 0 0; font-size: 12px; color: #7a8ba0; overflow-wrap: anywhere; }
+        .cdb-feed small { flex: none; font-size: 11px; color: #8392a6; white-space: nowrap; }
+
+        @media (max-width: 1100px) {
+          .cdb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .cdb-grid > :last-child { grid-column: 1 / -1; }
+        }
+        @media (max-width: 760px) {
+          .cd-listing.wide { padding: 20px; }
+          .cd-listing.wide h4, .cd-listing.wide p { max-width: 100%; }
+        }
+        @media (max-width: 700px) {
+          .cdb-grid { grid-template-columns: 1fr; }
+          .cdb-demand, .cdb-perf { flex-wrap: wrap; justify-content: center; }
+          .cdl-search, .cdl-search input { width: 100%; }
+        }
+        @media (max-width: 640px) {
+          .cd-listing.wide .cd-listing-row { align-items: stretch; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+        }
+
+        /* ===== leads: wave bubbles + spotlight ===== */
+        @keyframes cdwWave { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-8px); } 75% { transform: translateY(8px); } 50% { transform: translateY(0); } }
+        @keyframes cdwPop { from { opacity: 0; transform: scale(.4) translateY(14px); } to { opacity: 1; transform: none; } }
+        @keyframes cdwSea { to { transform: translateX(-50%); } }
+        @keyframes cdwSwap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        @keyframes cdwShine { 0%, 55% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+        @keyframes cdwRing { to { transform: rotate(360deg); } }
+        .cdw-stage { position: relative; overflow: hidden; padding: 26px 14px 64px; border: 1px solid #e1ebfb; border-radius: 22px; background: linear-gradient(180deg, #f4f8ff 0%, #e3efff 100%); }
+        .cdw-sea { position: absolute; left: 0; bottom: 0; width: 200%; height: 64px; pointer-events: none; animation: cdwSea 14s linear infinite; }
+        .cdw-sea path { fill: rgba(47,125,240,.16); }
+        .cdw-sea.b { bottom: -8px; height: 54px; animation-duration: 9s; animation-delay: -4s; }
+        .cdw-sea.b path { fill: rgba(39,169,238,.28); }
+        .cdw-strip { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 22px; }
+        .cdw-bub { padding: 6px; border: 0; background: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: cdwWave 3.4s ease-in-out infinite; animation-delay: calc(var(--i) * -.45s); }
+        .cdw-bub-in { display: grid; justify-items: center; gap: 9px; animation: cdwPop .55s cubic-bezier(.2,.9,.3,1.3) backwards; animation-delay: var(--d, 0ms); transition: transform .25s; }
+        .cdw-bub:hover .cdw-bub-in, .cdw-bub:focus-visible .cdw-bub-in { transform: scale(1.1); }
+        .cdw-bub.sel .cdw-bub-in { transform: scale(1.14); }
+        .cdw-bub:focus-visible { outline: 2px solid #1f6fe8; outline-offset: 4px; border-radius: 16px; }
+        .cdw-bub em { max-width: 78px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-style: normal; font-size: 12px; font-weight: 700; color: #29415f; }
+        .cdw-bub.sel em { color: #1558d6; }
+        .cdw-bub.locked .cdw-av b { color: #6f8fc4; }
+        .cdw-av { position: relative; display: grid; place-items: center; flex: none; width: 62px; height: 62px; border-radius: 50%; box-shadow: 0 8px 18px rgba(21,88,214,.18); transition: box-shadow .25s; }
+        .cdw-av::before { content: ""; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(#1558d6, #27a9ee, #7c3aed, #1558d6); }
+        .cdw-av::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; }
+        .cdw-av b { position: relative; z-index: 1; font-size: 20px; font-weight: 800; color: #1f5fd8; }
+        .cdw-bub.sel .cdw-av { box-shadow: 0 0 0 5px rgba(31,111,232,.18), 0 12px 26px rgba(21,88,214,.38); }
+        .cdw-bub.sel .cdw-av::before, .cdw-av.big::before { animation: cdwRing 4s linear infinite; }
+        .cdw-av.big { width: 76px; height: 76px; }
+        .cdw-av.big b { font-size: 26px; }
+        .cdw-dot { position: absolute; top: 0; right: 0; z-index: 2; width: 14px; height: 14px; border: 2px solid #fff; border-radius: 50%; background: #3b82f6; }
+        .cdw-dot.interested { background: #10b981; }
+        .cdw-dot.contacted { background: #f59e0b; }
+        .cdw-badge { position: absolute; right: -2px; bottom: -2px; z-index: 2; display: grid; place-items: center; width: 20px; height: 20px; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #1558d6; }
+        .cdw-badge.ok { background: #12a07a; }
+        .cdw-av.big .cdw-badge { width: 24px; height: 24px; }
+
+        .cdw-spot { margin-top: 16px; padding: 16px 20px 20px; border: 1px solid #e1ebfb; border-radius: 20px; background: linear-gradient(135deg, #fff, #f4f8ff); animation: cdwSwap .45s ease both; }
+        .cdw-spot-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: #8392a6; }
+        .cdw-step { display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0; text-transform: none; }
+        .cdw-step button { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #dfe8f5; border-radius: 50%; color: #1558d6; background: #fff; cursor: pointer; transition: all .18s; }
+        .cdw-step button:hover { color: #fff; border-color: #1558d6; background: #1558d6; }
+        .cdw-step .rev svg { transform: rotate(180deg); }
+        .cdw-step b { min-width: 44px; text-align: center; font-size: 12px; color: #29415f; }
+        .cdw-spot-main { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 20px; margin-top: 14px; }
+        .cdw-spot-info { flex: 1 1 280px; min-width: 0; }
+        .cdw-spot-name { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .cdw-spot-name h4 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.3px; color: #10294a; overflow-wrap: anywhere; }
+        .cdw-spot-info > small { display: block; margin-top: 3px; font-size: 12px; color: #8392a6; }
+        .cdw-pill { padding: 5px 11px; border-radius: 999px; font-size: 10.5px; font-weight: 800; }
+        .cdw-pill.new { color: #1f5fd0; background: #e3efff; }
+        .cdw-pill.interested { color: #0f8a62; background: #dcf7ea; }
+        .cdw-pill.contacted { color: #b7791f; background: #fff0cf; }
+        .cdw-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+        .cdw-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; color: #4a607c; background: #eef3fb; font-size: 11.5px; font-weight: 600; }
+        .cdw-chip.mark { color: #0f8a62; background: #e3f8ee; font-weight: 700; }
+        .cdw-contact { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: 12.5px; color: #29415f; }
+        .cdw-contact span { display: inline-flex; align-items: center; gap: 7px; min-width: 0; overflow-wrap: anywhere; }
+        .cdw-contact svg { flex: none; color: #1f6fe8; }
+        .cdw-contact.masked span { color: #9aa8bd; }
+        .cdw-spot-act { display: grid; flex: 0 1 230px; gap: 8px; min-width: 200px; text-align: center; }
+        .cdw-spot-act p { margin: 0; font-size: 12px; line-height: 1.45; color: #6a7d99; }
+        .cdw-act { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 44px; border: 0; border-radius: 999px; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: transform .18s, box-shadow .18s, background .18s, color .18s; }
+        .cdw-unlock { color: #fff; background: linear-gradient(100deg, #1558d6, #27a9ee); box-shadow: 0 8px 16px rgba(21,88,214,.25); }
+        .cdw-unlock::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%); transform: translateX(-130%); animation: cdwShine 3.2s ease-in-out infinite; pointer-events: none; }
+        .cdw-unlock:hover { transform: translateY(-1px); box-shadow: 0 12px 20px rgba(21,88,214,.32); }
+        .cdw-view { color: #0f8a62; background: #e6f8f1; }
+        .cdw-view:hover { color: #fff; background: #12a07a; }
+        .cdw-empty { padding: 30px 10px; text-align: center; font-size: 13px; color: #8392a6; }
+        .cdl-gate-who .cdw-av { width: 44px; height: 44px; }
+        .cdl-gate-who .cdw-av b { font-size: 15px; }
+
+        @media (max-width: 720px) {
+          .cdw-stage { padding: 20px 8px 58px; }
+          .cdw-strip { gap: 8px 10px; }
+          .cdw-av { width: 54px; height: 54px; }
+          .cdw-av b { font-size: 17px; }
+          .cdw-bub em { max-width: 64px; font-size: 11px; }
+          .cdw-spot { padding: 14px 14px 16px; }
+          .cdw-spot-main { flex-direction: column; align-items: flex-start; }
+          .cdw-spot-info, .cdw-spot-act { flex: 1 1 auto; width: 100%; min-width: 0; }
+        }
+        @media (max-width: 640px) {
+          .cdl-card { padding: 18px 14px 14px; }
+          .cdl-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+          .cdl-tabs::-webkit-scrollbar { display: none; }
+          .cdl-tab { flex: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cdw-bub, .cdw-bub-in, .cdw-sea, .cdw-spot, .cdw-unlock::after, .cdw-av::before { animation: none !important; }
+        }
+
+        /* ===== course demand (same style as admin Lead Status) ===== */
+        @keyframes cddPop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+        @keyframes cddSlide { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+        @keyframes cddGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        .cdd-wrap { display: flex; align-items: center; gap: 22px; margin-top: 20px; }
+        .cdd-donut { position: relative; flex: none; width: 150px; height: 150px; animation: cddPop .5s ease both; }
+        .cdd-donut svg { display: block; width: 100%; height: 100%; overflow: visible; transform: rotate(-90deg); }
+        .cdd-track { fill: none; stroke: #eef2f7; stroke-width: 14; }
+        .cdd-seg { fill: none; stroke-width: 14; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: stroke-dasharray 1.1s cubic-bezier(.2,.8,.2,1), stroke-width .25s, opacity .25s; }
+        .cdd-seg.on { stroke-width: 19; }
+        .cdd-seg.dim { opacity: .25; }
+        .cdd-seg.gone { opacity: .08; }
+        .cdd-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; padding: 0 24px; text-align: center; pointer-events: none; }
+        .cdd-center strong { font-size: 26px; font-weight: 800; line-height: 1.1; color: #14335a; font-variant-numeric: tabular-nums; }
+        .cdd-center span { max-width: 88px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: #8b99aa; }
+        .cdd-center b { margin-top: 3px; font-size: 11px; color: var(--c, #2f80ed); }
+        .cdd-list { display: flex; flex: 1; flex-direction: column; gap: 8px; min-width: 0; }
+        .cdd-row { padding: 8px 11px; border: 1px solid #e5ebf2; border-radius: 12px; background: #fff; cursor: pointer; animation: cddSlide .5s backwards; transition: border-color .2s, box-shadow .2s, transform .2s; }
+        .cdd-row:hover, .cdd-row.on { border-color: var(--c); box-shadow: 0 6px 14px rgba(33,60,91,.08); transform: translateX(2px); }
+        .cdd-row:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+        .cdd-row-top { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto auto; align-items: center; gap: 8px; font-size: 12px; color: #687a92; }
+        .cdd-row-top i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+        .cdd-row-top span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: #29415f; }
+        .cdd-row-top strong { font-size: 12.5px; color: #14335a; }
+        .cdd-row-top small { min-width: 30px; font-size: 11px; text-align: right; color: #8d9aac; }
+        .cdd-bar { height: 5px; margin-top: 7px; overflow: hidden; border-radius: 99px; background: #eef2f7; }
+        .cdd-bar i { display: block; height: 100%; border-radius: 99px; background: var(--c); transform: scaleX(0); transform-origin: left; }
+        .cdd-bar i.go { animation: cddGrow 1s cubic-bezier(.2,.8,.2,1) both; }
+        .cdb-ring circle:last-child { transition: stroke-dashoffset .9s ease; }
+        @media (max-width: 480px) {
+          .cdd-wrap { flex-direction: column; align-items: stretch; }
+          .cdd-donut { align-self: center; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cdd-donut, .cdd-row, .cdd-bar i.go { animation: none !important; }
+          .cdd-bar i { transform: none; }
+        }
+
+        /* ===== complete profile form ===== */
+        .cd-modal:has(.cdf-form) { max-width: 540px; }
+        .cdf-progress { margin-top: 2px; padding: 12px 14px; border-radius: 14px; background: #eef5ff; }
+        .cdf-progress-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #4d6586; }
+        .cdf-progress-top b { color: #1558d6; }
+        .cdf-track { height: 8px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: #dbe8fb; }
+        .cdf-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1558d6, #27a9ee); transition: width .35s ease; }
+        .cdf-area { height: auto; min-height: 76px; padding: 11px 14px; resize: vertical; line-height: 1.5; }
+        .cdf-tick { display: inline-grid; place-items: center; width: 16px; height: 16px; margin-left: 6px; border-radius: 50%; color: #fff; background: #12a07a; vertical-align: middle; }
+        .cdf-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .cdf-chips button { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border: 1.5px solid #e1e8f3; border-radius: 999px; color: #3d5a80; background: #fff; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; }
+        .cdf-chips button:hover { border-color: #9cc3f5; }
+        .cdf-chips button.on { color: #fff; border-color: transparent; background: linear-gradient(100deg, #1558d6, #27a9ee); }
       `}</style>
 
       <header className="cd-topbar">
@@ -2515,230 +2918,345 @@ export default function CollegeDashboard() {
           </div>
         </section>
 
-        <section className="cd-grid">
-          <article className="cd-card cd-anim" style={{ "--d": "380ms" }}>
-            <div className="cd-card-head">
-              <div>
-                <h3>
-                  <span className="cd-head-icon">
-                    <Icon name="users" size={18} />
-                  </span>
-                  Student Leads
-                </h3>
-                <p>Students who showed interest in {collegeName}</p>
-              </div>
-              <div className="cd-head-actions">
-                <label className="cd-search">
-                  <Icon name="search" size={15} />
-                  <input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search students, courses..."
-                    aria-label="Search students"
-                  />
-                </label>
-                {totalStudents > ROWS_COLLAPSED && !search.trim() && (
-                  <button className="cd-link" onClick={() => setExpanded((v) => !v)}>
-                    {expanded ? "Show less ↑" : `View all (${totalStudents}) →`}
-                  </button>
-                )}
-              </div>
+        <section className="cdl-card cd-anim" style={{ "--d": "380ms" }}>
+          <div className="cdl-head">
+            <div>
+              <h3>Student leads</h3>
+              <p>Students interested in your courses</p>
             </div>
-            <div className="cd-table-wrap">
-              <table className="cd-table">
-                <thead>
-                  <tr>
-                    <th>STUDENT</th>
-                    <th>COURSE</th>
-                    <th>LOCATION</th>
-                    <th>12TH %</th>
-                    <th>STATUS</th>
-                    <th>ACTION</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <label className="cdl-search">
+              <Icon name="search" size={15} />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search name, course, city"
+                aria-label="Search students"
+              />
+            </label>
+          </div>
+
+          <div className="cdl-tabs" role="tablist">
+            {leadTabs.map(([key, label, count]) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={filter === key}
+                className={`cdl-tab ${filter === key ? "active" : ""}`}
+                onClick={() => setFilter(key)}
+              >
+                {label} <b>{count}</b>
+              </button>
+            ))}
+          </div>
+
+          {spotlight ? (
+            <>
+              <div className="cdw-stage" key={filter}>
+                <svg className="cdw-sea a" viewBox="0 0 2400 100" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 50 Q150 0 300 50 T600 50 T900 50 T1200 50 T1500 50 T1800 50 T2100 50 T2400 50 V100 H0 Z" />
+                </svg>
+                <svg className="cdw-sea b" viewBox="0 0 2400 100" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 50 Q150 0 300 50 T600 50 T900 50 T1200 50 T1500 50 T1800 50 T2100 50 T2400 50 V100 H0 Z" />
+                </svg>
+                <div className="cdw-strip">
                   {visibleLeads.map((lead, i) => {
-                    const fromPlan = planIds.has(lead.id);
-                    const owned = fromPlan || Boolean(store.purchased[lead.id]);
+                    const open = isUnlocked(lead);
+                    const sel = spotlight.id === lead.id;
                     return (
-                      <tr key={lead.id} style={{ "--d": `${Math.min(i, 8) * 60 + 80}ms` }}>
-                        <td data-label="Student">
-                          <div className="cd-student">
-                            {lead.name}
-                            <small>
-                              {lead.id}
-                              {fromPlan && <em className="cd-bought">Purchased</em>}
-                            </small>
-                          </div>
-                        </td>
-                        <td data-label="Course">{lead.course}</td>
-                        <td data-label="Location">{lead.location}</td>
-                        <td data-label="12th %">
-                          <b>{lead.marks}</b>
-                        </td>
-                        <td data-label="Status">
-                          <span className={`cd-status ${lead.status.toLowerCase()}`}>{lead.status}</span>
-                        </td>
-                        <td data-label="Action">
-                          {owned ? (
-                            <button className="cd-unlock owned" onClick={() => setProfile(lead)}>
-                              <Icon name="check" size={13} />
-                              View Profile
-                            </button>
-                          ) : (
-                            <button
-                              className="cd-unlock"
-                              onClick={() => {
-                                const now = Date.now();
-                                setStore((current) => ({
-                                  ...current,
-                                  purchased: {
-                                    ...current.purchased,
-                                    [lead.id]: { ts: now, txn: "FREE-UNLOCK", amountPaid: 0 },
-                                  },
-                                  events: addEvent(current, "Student profile unlocked", `${lead.id} (${lead.name}) unlocked without payment`),
-                                }));
-                                setProfile(lead);
-                              }}
-                            >
-                              <Icon name="unlock" size={13} />
-                              Unlock Profile
-                            </button>
-                          )}
-                        </td>
-                      </tr>
+                      <button
+                        key={lead.id}
+                        type="button"
+                        className={`cdw-bub ${open ? "open" : "locked"} ${sel ? "sel" : ""}`}
+                        style={{ "--i": i, "--d": `${Math.min(i, 12) * 60 + 60}ms` }}
+                        aria-pressed={sel}
+                        aria-label={`${lead.name}, ${lead.status}, ${open ? "unlocked" : "locked"}`}
+                        onClick={() => setSelectedLead(lead.id)}
+                      >
+                        <span className="cdw-bub-in">
+                          <span className="cdw-av">
+                            <b>{lead.name.charAt(0)}</b>
+                            <i className={`cdw-dot ${lead.status.toLowerCase()}`} />
+                            <i className={`cdw-badge ${open ? "ok" : ""}`}>
+                              <Icon name={open ? "check" : "lock"} size={10} />
+                            </i>
+                          </span>
+                          <em>{lead.name.split(" ")[0]}</em>
+                        </span>
+                      </button>
                     );
                   })}
-                  {filteredLeads.length === 0 && (
-                    <tr style={{ "--d": "0ms" }}>
-                      <td className="cd-empty" colSpan="6">
-                        No students match your search.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </article>
-
-          <div className="cd-side">
-            <article className="cd-listing cd-anim" style={{ "--d": "420ms" }}>
-              <svg className="cd-listing-art" viewBox="0 0 130 110" aria-hidden="true">
-                <rect x="10" y="70" width="18" height="34" rx="3" fill="#8bbcff" />
-                <rect x="38" y="52" width="18" height="52" rx="3" fill="#6aa8ff" />
-                <rect x="66" y="34" width="18" height="70" rx="3" fill="#a78bfa" />
-                <rect x="94" y="18" width="18" height="86" rx="3" fill="#c4a8ff" />
-                <path d="M8 60 40 40 62 52 116 8" stroke="#35d6ff" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M100 6h18v18" stroke="#35d6ff" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <div className="cd-listing-top">
-                <small className="cd-gl">
-                  <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true">
-                    <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z" />
-                    <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z" />
-                    <path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 0 1 0-9.4l-7.9-6.1a24 24 0 0 0 0 21.6l7.9-6.1z" />
-                    <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z" />
-                  </svg>
-                  GOOGLE TOP LISTING
-                </small>
-                {listingActive && (
-                  <span className="cd-live">
-                    <i /> Active
-                  </span>
-                )}
-              </div>
-              <h4>
-                {listingActive
-                  ? `${collegeName} is listed on top of Google`
-                  : `Show ${collegeName} at the top when students search on Google`}
-              </h4>
-              <p>
-                {listingActive
-                  ? `Active until ${fmtDate(store.listing.expiresAt)} • ${daysLeft} day${
-                      daysLeft > 1 ? "s" : ""
-                    } left`
-                  : `Get more student enquiries. Pay ${inr(LISTING_PRICE)} every month to keep your college on top.`}
-              </p>
-              <div className="cd-listing-row">
-                <div className="cd-price">
-                  {inr(LISTING_PRICE)} <span>/ month</span>
                 </div>
-                <button className="cd-btn" onClick={startListingPayment} disabled={introOn}>
-                  {listingActive ? "Renew" : "Pay Now"}
-                  <Icon name="arrow" size={15} />
-                </button>
               </div>
-            </article>
 
-            <article className="cd-card cd-anim" style={{ "--d": "500ms" }}>
-              <div className="cd-card-head">
-                <div>
-                  <h3>
-                    <span className="cd-head-icon">
-                      <Icon name="clock" size={18} />
+              {(() => {
+                const open = isUnlocked(spotlight);
+                const d = spotlight.details;
+                return (
+                  <div className={`cdw-spot ${open ? "open" : "locked"}`} key={spotlight.id}>
+                    <div className="cdw-spot-head">
+                      <span>Selected student</span>
+                      <div className="cdw-step">
+                        <button type="button" className="rev" onClick={() => stepLead(-1)} aria-label="Previous student">
+                          <Icon name="arrow" size={14} />
+                        </button>
+                        <b>
+                          {spotIdx + 1} / {visibleLeads.length}
+                        </b>
+                        <button type="button" onClick={() => stepLead(1)} aria-label="Next student">
+                          <Icon name="arrow" size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="cdw-spot-main">
+                      <span className="cdw-av big">
+                        <b>{spotlight.name.charAt(0)}</b>
+                        <i className={`cdw-badge ${open ? "ok" : ""}`}>
+                          <Icon name={open ? "check" : "lock"} size={11} />
+                        </i>
+                      </span>
+                      <div className="cdw-spot-info">
+                        <div className="cdw-spot-name">
+                          <h4>{spotlight.name}</h4>
+                          <span className={`cdw-pill ${spotlight.status.toLowerCase()}`}>{spotlight.status}</span>
+                        </div>
+                        <small>{spotlight.id}</small>
+                        <div className="cdw-chips">
+                          <span className="cdw-chip">{spotlight.course}</span>
+                          <span className="cdw-chip">
+                            <Icon name="pin" size={12} />
+                            {spotlight.location}
+                          </span>
+                          <span className="cdw-chip mark">12th: {spotlight.marks}</span>
+                        </div>
+                        <div className={`cdw-contact ${open ? "" : "masked"}`}>
+                          <span>
+                            <Icon name={open ? "phone" : "lock"} size={13} />
+                            {open ? d.phone : "+91 ••••• •••••"}
+                          </span>
+                          <span>
+                            <Icon name={open ? "mail" : "lock"} size={13} />
+                            {open ? d.email : "••••••••@gmail.com"}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="cdw-spot-act">
+                        {open ? (
+                          <>
+                            <p>Details are unlocked for this student.</p>
+                            <button type="button" className="cdw-act cdw-view" onClick={() => openLead(spotlight)}>
+                              <Icon name="check" size={14} />
+                              View student details
+                              <Icon name="arrow" size={14} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <p>Complete your payment and unlock the details.</p>
+                            <button type="button" className="cdw-act cdw-unlock" onClick={() => openLead(spotlight)}>
+                              <Icon name="lock" size={14} />
+                              Unlock {inr(PROFILE_PRICE)}
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </>
+          ) : (
+            <div className="cdw-empty">No students match your search.</div>
+          )}
+
+          {!search.trim() && filteredLeads.length > ROWS_COLLAPSED && (
+            <button type="button" className="cd-link cdl-foot" onClick={() => setExpanded((v) => !v)}>
+              {expanded ? "Show less ↑" : "View all leads →"}
+            </button>
+          )}
+        </section>
+
+              <article className="cd-listing wide cd-anim" style={{ "--d": "420ms" }}>
+                <svg className="cd-listing-art" viewBox="0 0 130 110" aria-hidden="true">
+                  <rect x="10" y="70" width="18" height="34" rx="3" fill="#8bbcff" />
+                  <rect x="38" y="52" width="18" height="52" rx="3" fill="#6aa8ff" />
+                  <rect x="66" y="34" width="18" height="70" rx="3" fill="#a78bfa" />
+                  <rect x="94" y="18" width="18" height="86" rx="3" fill="#c4a8ff" />
+                  <path d="M8 60 40 40 62 52 116 8" stroke="#35d6ff" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M100 6h18v18" stroke="#35d6ff" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <div className="cd-listing-top">
+                  <small className="cd-gl">
+                    <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true">
+                      <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z" />
+                      <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z" />
+                      <path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 0 1 0-9.4l-7.9-6.1a24 24 0 0 0 0 21.6l7.9-6.1z" />
+                      <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z" />
+                    </svg>
+                    GOOGLE TOP LISTING
+                  </small>
+                  {listingActive && (
+                    <span className="cd-live">
+                      <i /> Active
                     </span>
-                    Recent Activity
-                  </h3>
-                  <p>Your latest dashboard activity</p>
+                  )}
+                </div>
+                <h4>
+                  {listingActive
+                    ? `${collegeName} is listed on top of Google`
+                    : `Show ${collegeName} at the top when students search on Google`}
+                </h4>
+                <p>
+                  {listingActive
+                    ? `Active until ${fmtDate(store.listing.expiresAt)} • ${daysLeft} day${
+                        daysLeft > 1 ? "s" : ""
+                      } left`
+                    : `Get more student enquiries. Pay ${inr(LISTING_PRICE)} every month to keep your college on top.`}
+                </p>
+                <div className="cd-listing-row">
+                  <div className="cd-price">
+                    {inr(LISTING_PRICE)} <span>/ month</span>
+                  </div>
+                  <button className="cd-btn" onClick={startListingPayment} disabled={introOn}>
+                    {listingActive ? "Renew" : "Pay Now"}
+                    <Icon name="arrow" size={15} />
+                  </button>
+                </div>
+              </article>
+
+        <section className="cdb-grid">
+          <article className="cdb-card cd-anim" style={{ "--d": "440ms" }}>
+            <h3>Course demand</h3>
+            <p>Interested students per course</p>
+            <div className="cdd-wrap">
+              <div className="cdd-donut">
+                <svg viewBox="0 0 140 140" role="img" aria-label="Interested students per course">
+                  <circle className="cdd-track" cx="70" cy="70" r={DR} />
+                  {demandSegs.map((s) => (
+                    <circle
+                      key={s.full}
+                      className={`cdd-seg ${shownCourse === s.full ? "on" : ""} ${shownCourse && shownCourse !== s.full ? "dim" : ""} ${activeCourse && activeCourse !== s.full ? "gone" : ""}`}
+                      cx="70"
+                      cy="70"
+                      r={DR}
+                      stroke={s.color}
+                      strokeDasharray={`${demandReady ? Math.max(s.len - DGAP, 0) : 0} ${DC}`}
+                      strokeDashoffset={-(s.offset + DGAP / 2)}
+                      onMouseEnter={() => setHoverCourse(s.full)}
+                      onMouseLeave={() => setHoverCourse(null)}
+                      onClick={() => toggleCourse(s.full)}
+                    />
+                  ))}
+                </svg>
+                <div className="cdd-center" style={shownArc ? { "--c": shownArc.color } : undefined}>
+                  <strong>{shownArc ? shownArc.leads : demandAnim}</strong>
+                  <span>{shownArc ? shownArc.name : "total leads"}</span>
+                  {shownArc && <b>{Math.round(shownArc.pct)}% of total</b>}
                 </div>
               </div>
-              <div className="cd-list">
-                {activity.map((item, i) => (
-                  <div className="cd-activity" key={`${item.title}-${i}`}>
-                    <strong>{item.title}</strong>
-                    <p>{item.text}</p>
-                    <small>{item.ago}</small>
+              <div className="cdd-list">
+                {demandArcs.map((a, i) => (
+                  <div
+                    key={a.full}
+                    className={`cdd-row ${shownCourse === a.full ? "on" : ""}`}
+                    style={{ "--c": a.color, animationDelay: `${i * 70}ms` }}
+                    role="button"
+                    tabIndex={0}
+                    onMouseEnter={() => setHoverCourse(a.full)}
+                    onMouseLeave={() => setHoverCourse(null)}
+                    onFocus={() => setHoverCourse(a.full)}
+                    onBlur={() => setHoverCourse(null)}
+                    onClick={() => toggleCourse(a.full)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleCourse(a.full);
+                      }
+                    }}
+                  >
+                    <div className="cdd-row-top">
+                      <i />
+                      <span title={a.full}>{a.name}</span>
+                      <strong>{a.leads}</strong>
+                      <small>{Math.round(a.pct)}%</small>
+                    </div>
+                    <div className="cdd-bar">
+                      <i className={demandReady ? "go" : ""} style={{ width: `${Math.round(a.pct)}%`, animationDelay: `${i * 90}ms` }} />
+                    </div>
                   </div>
                 ))}
               </div>
-            </article>
-          </div>
-        </section>
-
-        <div className="cd-courses-wrap">
-          <svg className="cd-courses-art" viewBox="0 0 190 190" aria-hidden="true">
-            <ellipse cx="95" cy="170" rx="82" ry="15" fill="#dfe8ff" />
-            <rect x="32" y="122" width="126" height="26" rx="5" fill="#2f7df0" />
-            <rect x="40" y="98" width="110" height="24" rx="5" fill="#1d5fd0" />
-            <rect x="44" y="130" width="100" height="4" rx="2" fill="#bcd6ff" />
-            <polygon points="95,34 162,62 95,90 28,62" fill="#12275f" />
-            <path d="M60 78v18c0 9 16 15 35 15s35-6 35-15V78l-35 14z" fill="#1b3a86" />
-            <path d="M162 62v32" stroke="#f5b73a" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="162" cy="98" r="4" fill="#f5b73a" />
-          </svg>
-          <section className="cd-card cd-courses cd-anim" style={{ "--d": "560ms" }}>
-            <div className="cd-card-head">
-              <div>
-                <h3>
-                  <span className="cd-head-icon">
-                    <Icon name="bars" size={18} />
-                  </span>
-                  Course Performance
-                </h3>
-                <p>Interest received for your active courses</p>
-              </div>
-              <span className="cd-period">Last 30 Days</span>
             </div>
-            <div className="cd-course-list">
-              {allCourses.map((course, i) => (
-                <div className="cd-course" key={course.name}>
-                  <div className="cd-course-head">
-                    <span>{course.name}</span>
-                    <small>
-                      {course.leads} leads • {course.seats} seats
-                    </small>
-                  </div>
-                  <div className="cd-course-bar">
-                    <div className="cd-progress">
-                      <span style={{ width: `${course.fill}%`, "--d": `${700 + i * 120}ms` }} />
-                    </div>
-                    <b>{course.fill}%</b>
+          </article>
+
+          <article className="cdb-card cdb-perf-card cd-anim" style={{ "--d": "500ms" }}>
+            <h3>Listing performance</h3>
+            <p>How your college profile is doing</p>
+            <div className="cdb-perf">
+              <div className="cdb-ring">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="cdbRingG" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stopColor="#1558d6" />
+                      <stop offset="1" stopColor="#27a9ee" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="#dcebfb" strokeWidth="12" />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="52"
+                    fill="none"
+                    stroke="url(#cdbRingG)"
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                    strokeDasharray={RING_C}
+                    strokeDashoffset={RING_C * (1 - profilePct / 100)}
+                  />
+                </svg>
+                <div className="cdb-ring-c">
+                  <b>{profilePct}%</b>
+                  <span>complete</span>
+                </div>
+              </div>
+              <div className="cdb-metrics">
+                <div className="cdb-metric">
+                  <Icon name="eye" size={18} />
+                  <div>
+                    <b>{profileViews.toLocaleString("en-IN")}</b>
+                    <small>Profile views</small>
                   </div>
                 </div>
-              ))}
+                <div className="cdb-metric">
+                  <Icon name="search" size={18} />
+                  <div>
+                    <b>{searchAppearances.toLocaleString("en-IN")}</b>
+                    <small>Search appearances</small>
+                  </div>
+                </div>
+              </div>
             </div>
-          </section>
-        </div>
+            <button type="button" className="cdb-cta" onClick={() => setProfileOpen(true)}>
+              {profilePct >= 100 ? "Update your profile" : "Complete your profile"}
+            </button>
+          </article>
+
+          <article className="cdb-card cd-anim" style={{ "--d": "560ms" }}>
+            <h3>Recent activity</h3>
+            <p>Latest updates for your college</p>
+            <ul className="cdb-feed">
+              {activity.map((item, i) => (
+                <li key={`${item.title}-${i}`}>
+                  <div>
+                    <strong>{item.title}</strong>
+                    <p>{item.text}</p>
+                  </div>
+                  <small>{item.ago}</small>
+                </li>
+              ))}
+            </ul>
+          </article>
+        </section>
 
       </main>
 
@@ -2792,6 +3310,47 @@ export default function CollegeDashboard() {
           onPaid={handlePaid}
           onClose={closePayment}
         />
+      )}
+
+      {profileOpen && (
+        <ProfileEditModal
+          base={profileBase}
+          initial={store.profile}
+          onSave={handleSaveProfile}
+          onClose={() => setProfileOpen(false)}
+        />
+      )}
+
+      {gate && (
+        <Modal title="Unlock student details" onClose={() => setGate(null)}>
+          <div className="cdl-gate">
+            <span className="cdl-gate-ico">
+              <Icon name="lock" size={28} />
+            </span>
+            <h3>Complete your payment and unlock the details</h3>
+            <p>Pay {inr(PROFILE_PRICE)} once to see this student's contact and academic details.</p>
+            <div className="cdl-gate-who">
+              <span className="cdw-av"><b>{gate.name.charAt(0)}</b></span>
+              <div>
+                <strong>{gate.name}</strong>
+                <small>
+                  {gate.id} • {gate.course} • {gate.location}
+                </small>
+              </div>
+            </div>
+            <button
+              className="cd-primary"
+              type="button"
+              onClick={() => {
+                setPayment({ kind: "unlock", lead: gate });
+                setGate(null);
+              }}
+            >
+              Continue to payment
+              <Icon name="arrow" size={16} />
+            </button>
+          </div>
+        </Modal>
       )}
 
       {profile && <ProfileModal lead={profile} onClose={() => setProfile(null)} />}
