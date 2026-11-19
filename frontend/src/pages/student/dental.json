@@ -1,0 +1,1887 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Tamil Nadu Government Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Parrys, George Town",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Government",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1953,
+      "rating": 4.6,
+      "fee": 15000,
+      "about": "Tamil Nadu Government Dental College and Hospital is a dental college in Chennai district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://tngdch.ac.in",
+      "locality2": "Parrys, George Town",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Rajah Muthiah Dental College and Hospital, Annamalai University",
+      "city": "Chidambaram",
+      "district": "Cuddalore",
+      "locality": "Annamalainagar",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "State University",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Annamalai University",
+      "autonomous": false,
+      "established": 1946,
+      "rating": 4.3,
+      "fee": 250000,
+      "about": "Rajah Muthiah Dental College and Hospital, Annamalai University is a dental college in Cuddalore district, Tamil Nadu, affiliated to Annamalai University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://annamalaiuniversity.ac.in",
+      "locality2": "Annamalainagar",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Saveetha Dental College and Hospitals",
+      "city": "Chennai",
+      "district": "Tiruvallur",
+      "locality": "Poonamallee High Road, Velappanchavadi",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Saveetha Institute of Medical and Technical Sciences",
+      "autonomous": true,
+      "established": 1988,
+      "rating": 4.6,
+      "fee": 700000,
+      "about": "Saveetha Dental College and Hospitals is a dental college in Tiruvallur district, Tamil Nadu, affiliated to Saveetha Institute of Medical and Technical Sciences, offering 11 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410,
+        412
+      ],
+      "website": "https://saveethadental.com",
+      "locality2": "Poonamallee High Road, Velappanchavadi",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        },
+        {
+          "code": "DDH",
+          "name": "Diploma in Dental Hygiene"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Sri Ramachandra Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Porur",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Sri Ramachandra Institute of Higher Education and Research",
+      "autonomous": true,
+      "established": 1994,
+      "rating": 4.6,
+      "fee": 750000,
+      "about": "Sri Ramachandra Dental College and Hospital is a dental college in Chennai district, Tamil Nadu, affiliated to Sri Ramachandra Institute of Higher Education and Research, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://sriramachandra.edu.in",
+      "locality2": "Porur",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Meenakshi Ammal Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Tiruvallur",
+      "locality": "Maduravoyal",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Meenakshi Academy of Higher Education and Research",
+      "autonomous": true,
+      "established": 1992,
+      "rating": 4.5,
+      "fee": 700000,
+      "about": "Meenakshi Ammal Dental College and Hospital is a dental college in Tiruvallur district, Tamil Nadu, affiliated to Meenakshi Academy of Higher Education and Research, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://maherdental.edu.in",
+      "locality2": "Maduravoyal",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "SRM Dental College, Ramapuram",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Bharathi Salai, Ramapuram",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "SRM Institute of Science and Technology",
+      "autonomous": true,
+      "established": 2006,
+      "rating": 4.3,
+      "fee": 650000,
+      "about": "SRM Dental College, Ramapuram is a dental college in Chennai district, Tamil Nadu, affiliated to SRM Institute of Science and Technology, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://srmdental.edu.in",
+      "locality2": "Bharathi Salai, Ramapuram",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Sree Balaji Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Pallikaranai",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Bharath Institute of Higher Education and Research",
+      "autonomous": true,
+      "established": 1992,
+      "rating": 4.2,
+      "fee": 600000,
+      "about": "Sree Balaji Dental College and Hospital is a dental college in Chennai district, Tamil Nadu, affiliated to Bharath Institute of Higher Education and Research, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://sbdch.bharathuniv.ac.in",
+      "locality2": "Pallikaranai",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Sathyabama Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Rajiv Gandhi Salai, Sholinganallur",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Sathyabama Institute of Science and Technology",
+      "autonomous": true,
+      "established": 2003,
+      "rating": 4.2,
+      "fee": 550000,
+      "about": "Sathyabama Dental College and Hospital is a dental college in Chengalpattu district, Tamil Nadu, affiliated to Sathyabama Institute of Science and Technology, offering 6 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        404,
+        405,
+        406,
+        409
+      ],
+      "website": "https://sathyabama.ac.in",
+      "locality2": "Rajiv Gandhi Salai, Sholinganallur",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Chettinad Dental College and Research Institute",
+      "city": "Kelambakkam",
+      "district": "Chengalpattu",
+      "locality": "Kelambakkam",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Chettinad Academy of Research and Education",
+      "autonomous": true,
+      "established": 2006,
+      "rating": 4.3,
+      "fee": 600000,
+      "about": "Chettinad Dental College and Research Institute is a dental college in Chengalpattu district, Tamil Nadu, affiliated to Chettinad Academy of Research and Education, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://cdcri.cahcet.in",
+      "locality2": "Kelambakkam",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Vinayaka Mission's Sankarachariyar Dental College",
+      "city": "Salem",
+      "district": "Salem",
+      "locality": "Ariyanoor",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Private (Deemed University)",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "Vinayaka Mission's Research Foundation",
+      "autonomous": true,
+      "established": 2008,
+      "rating": 4.0,
+      "fee": 500000,
+      "about": "Vinayaka Mission's Sankarachariyar Dental College is a dental college in Salem district, Tamil Nadu, affiliated to Vinayaka Mission's Research Foundation, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://vmrf.edu.in",
+      "locality2": "Ariyanoor",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Tagore Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "Rathinamangalam, Vandalur",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2001,
+      "rating": 4.1,
+      "fee": 400000,
+      "about": "Tagore Dental College and Hospital is a dental college in Chengalpattu district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://tagoredental.com",
+      "locality2": "Rathinamangalam, Vandalur",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Madha Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Kancheepuram",
+      "locality": "Kundrathur",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2007,
+      "rating": 4.0,
+      "fee": 380000,
+      "about": "Madha Dental College and Hospital is a dental college in Kancheepuram district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "",
+      "locality2": "Kundrathur",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Thai Moogambigai Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Golden George Nagar, Mogappair",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2004,
+      "rating": 4.0,
+      "fee": 380000,
+      "about": "Thai Moogambigai Dental College and Hospital is a dental college in Chennai district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://tmdch.edu.in",
+      "locality2": "Golden George Nagar, Mogappair",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Priyadarshini Dental College and Hospital",
+      "city": "Pannur",
+      "district": "Tiruvallur",
+      "locality": "Pannur",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2003,
+      "rating": 3.9,
+      "fee": 350000,
+      "about": "Priyadarshini Dental College and Hospital is a dental college in Tiruvallur district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "",
+      "locality2": "Pannur",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Ragas Dental College and Hospital",
+      "city": "Chennai",
+      "district": "Chengalpattu",
+      "locality": "East Coast Road, Uthandi",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 1994,
+      "rating": 4.1,
+      "fee": 380000,
+      "about": "Ragas Dental College and Hospital is a dental college in Chengalpattu district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://ragasdental.com",
+      "locality2": "East Coast Road, Uthandi",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Adhiparasakthi Dental College and Hospital",
+      "city": "Melmaruvathur",
+      "district": "Chengalpattu",
+      "locality": "Melmaruvathur",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2005,
+      "rating": 4.0,
+      "fee": 350000,
+      "about": "Adhiparasakthi Dental College and Hospital is a dental college in Chengalpattu district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "",
+      "locality2": "Melmaruvathur",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "KSR Institute of Dental Science and Research",
+      "city": "Tiruchengode",
+      "district": "Namakkal",
+      "locality": "Tiruchengode",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2004,
+      "rating": 4.0,
+      "fee": 380000,
+      "about": "KSR Institute of Dental Science and Research is a dental college in Namakkal district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "",
+      "locality2": "Tiruchengode",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Vivekanandha Dental College for Women",
+      "city": "Tiruchengode",
+      "district": "Namakkal",
+      "locality": "Elayampalayam",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2004,
+      "rating": 4.0,
+      "fee": 380000,
+      "about": "Vivekanandha Dental College for Women is a dental college in Namakkal district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "",
+      "locality2": "Elayampalayam",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "J.K.K. Nattraja Dental College and Hospital",
+      "city": "Komarapalayam",
+      "district": "Namakkal",
+      "locality": "Komarapalayam",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2004,
+      "rating": 4.0,
+      "fee": 380000,
+      "about": "J.K.K. Nattraja Dental College and Hospital is a dental college in Namakkal district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "https://jkknattrajadentalcollege.com",
+      "locality2": "Komarapalayam",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Sri Ramakrishna Dental College and Hospital",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Ramnagar",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2008,
+      "rating": 4.1,
+      "fee": 400000,
+      "about": "Sri Ramakrishna Dental College and Hospital is a dental college in Coimbatore district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 10 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410
+      ],
+      "website": "",
+      "locality2": "Ramnagar",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        },
+        {
+          "code": "MDS-OMS",
+          "name": "MDS - Oral and Maxillofacial Surgery"
+        },
+        {
+          "code": "MDS-ORTHO",
+          "name": "MDS - Orthodontics and Dentofacial Orthopaedics"
+        },
+        {
+          "code": "MDS-PROS",
+          "name": "MDS - Prosthodontics and Crown & Bridge"
+        },
+        {
+          "code": "MDS-PERIO",
+          "name": "MDS - Periodontology"
+        },
+        {
+          "code": "MDS-CONS",
+          "name": "MDS - Conservative Dentistry and Endodontics"
+        },
+        {
+          "code": "MDS-OMR",
+          "name": "MDS - Oral Medicine and Radiology"
+        },
+        {
+          "code": "MDS-OPATH",
+          "name": "MDS - Oral Pathology and Microbiology"
+        },
+        {
+          "code": "MDS-PEDO",
+          "name": "MDS - Paedodontics and Preventive Dentistry"
+        },
+        {
+          "code": "MDS-PHD",
+          "name": "MDS - Public Health Dentistry"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "RVS Dental College and Hospital",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "Kannampalayam",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2004,
+      "rating": 3.9,
+      "fee": 350000,
+      "about": "RVS Dental College and Hospital is a dental college in Coimbatore district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 1 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401
+      ],
+      "website": "",
+      "locality2": "Kannampalayam",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Best Dental Science College",
+      "city": "Madurai",
+      "district": "Madurai",
+      "locality": "Madurai",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2007,
+      "rating": 3.9,
+      "fee": 350000,
+      "about": "Best Dental Science College is a dental college in Madurai district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 1 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401
+      ],
+      "website": "",
+      "locality2": "Madurai",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Rajas Dental College and Hospital",
+      "city": "Kavalkinaru",
+      "district": "Tirunelveli",
+      "locality": "Kavalkinaru",
+      "state": "Tamil Nadu",
+      "category": "Dental",
+      "type": "Self-Financing",
+      "autonomyNote": "Dental college approved by the Dental Council of India",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": 2003,
+      "rating": 4.0,
+      "fee": 350000,
+      "about": "Rajas Dental College and Hospital is a dental college in Tirunelveli district, Tamil Nadu, affiliated to The Tamil Nadu Dr. M.G.R. Medical University, offering 1 programmes including Bachelor of Dental Surgery (BDS).",
+      "facilities": [
+        "Library",
+        "Dental Clinics",
+        "Hospital",
+        "Hostel",
+        "Pre-clinical Labs",
+        "Radiology Unit",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with Physics, Chemistry, Biology and qualified NEET (TN counselling)",
+      "courseIds": [
+        401
+      ],
+      "website": "",
+      "locality2": "Kavalkinaru",
+      "branches": [
+        {
+          "code": "BDS",
+          "name": "Bachelor of Dental Surgery (BDS)"
+        }
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": 401,
+      "code": "BDS",
+      "name": "Bachelor of Dental Surgery (BDS)",
+      "category": "Dental",
+      "degree": "BDS",
+      "duration": "5 Years (4 + 1 Internship)",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Biology and qualified NEET-UG",
+      "entranceExam": "NEET-UG"
+    },
+    {
+      "id": 402,
+      "code": "MDS-OMS",
+      "name": "MDS - Oral and Maxillofacial Surgery",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 403,
+      "code": "MDS-ORTHO",
+      "name": "MDS - Orthodontics and Dentofacial Orthopaedics",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 404,
+      "code": "MDS-PROS",
+      "name": "MDS - Prosthodontics and Crown & Bridge",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 405,
+      "code": "MDS-PERIO",
+      "name": "MDS - Periodontology",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 406,
+      "code": "MDS-CONS",
+      "name": "MDS - Conservative Dentistry and Endodontics",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 407,
+      "code": "MDS-OMR",
+      "name": "MDS - Oral Medicine and Radiology",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 408,
+      "code": "MDS-OPATH",
+      "name": "MDS - Oral Pathology and Microbiology",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 409,
+      "code": "MDS-PEDO",
+      "name": "MDS - Paedodontics and Preventive Dentistry",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 410,
+      "code": "MDS-PHD",
+      "name": "MDS - Public Health Dentistry",
+      "category": "Dental",
+      "degree": "MDS",
+      "duration": "3 Years",
+      "eligibility": "BDS with 1-year internship and qualified NEET-MDS",
+      "entranceExam": "NEET-MDS"
+    },
+    {
+      "id": 411,
+      "code": "DDM",
+      "name": "Diploma in Dental Mechanics",
+      "category": "Dental",
+      "degree": "Diploma",
+      "duration": "2 Years",
+      "eligibility": "12th / HSC pass with Science subjects",
+      "entranceExam": "Merit-based / College admission"
+    },
+    {
+      "id": 412,
+      "code": "DDH",
+      "name": "Diploma in Dental Hygiene",
+      "category": "Dental",
+      "degree": "Diploma",
+      "duration": "2 Years",
+      "eligibility": "12th / HSC pass with Science subjects",
+      "entranceExam": "Merit-based / College admission"
+    }
+  ],
+  "collegeCourses": [],
+  "users": []
+}

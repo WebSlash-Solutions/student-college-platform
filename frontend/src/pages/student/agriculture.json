@@ -1,0 +1,1310 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Agricultural College and Research Institute, Coimbatore",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "TNAU Campus, Lawley Road",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": 1906,
+      "rating": 4.7,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Coimbatore is an agriculture college in Coimbatore district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture, B.Sc. (Hons.) Agri Business Management.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301,
+        310
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "TNAU Campus, Lawley Road",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        },
+        {
+          "code": "ABM",
+          "name": "B.Sc. (Hons.) Agri Business Management"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Tamil Nadu Agricultural University - Coimbatore Main Campus (Technology Programmes)",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "TNAU Campus, Lawley Road",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": 1971,
+      "rating": 4.6,
+      "fee": 70000,
+      "about": "Tamil Nadu Agricultural University - Coimbatore Main Campus (Technology Programmes) is an agriculture college in Coimbatore district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Tech. Food Technology, B.Tech. Biotechnology, B.Tech. Agricultural Information Technology.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        307,
+        308,
+        305
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "TNAU Campus, Lawley Road",
+      "branches": [
+        {
+          "code": "BIO",
+          "name": "B.Tech. Biotechnology"
+        },
+        {
+          "code": "AIT",
+          "name": "B.Tech. Agricultural Information Technology"
+        },
+        {
+          "code": "FDT",
+          "name": "B.Tech. Food Technology"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Horticultural College and Research Institute, Coimbatore",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "TNAU Campus, Lawley Road",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": 1971,
+      "rating": 4.5,
+      "fee": 45000,
+      "about": "Horticultural College and Research Institute, Coimbatore is an agriculture college in Coimbatore district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Horticulture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        302
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "TNAU Campus, Lawley Road",
+      "branches": [
+        {
+          "code": "HORT",
+          "name": "B.Sc. (Hons.) Horticulture"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Forest College and Research Institute, Mettupalayam",
+      "city": "Mettupalayam",
+      "district": "Coimbatore",
+      "locality": "Mettupalayam",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": 1985,
+      "rating": 4.5,
+      "fee": 45000,
+      "about": "Forest College and Research Institute, Mettupalayam is an agriculture college in Coimbatore district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Forestry.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        303
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Mettupalayam",
+      "branches": [
+        {
+          "code": "FOR",
+          "name": "B.Sc. (Hons.) Forestry"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Agricultural College and Research Institute, Madurai",
+      "city": "Madurai",
+      "district": "Madurai",
+      "locality": "Madurai",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": 1965,
+      "rating": 4.6,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Madurai is an agriculture college in Madurai district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Madurai",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Home Science College and Research Institute, Madurai",
+      "city": "Madurai",
+      "district": "Madurai",
+      "locality": "Madurai",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.4,
+      "fee": 45000,
+      "about": "Home Science College and Research Institute, Madurai is an agriculture college in Madurai district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Community Science (Home Science).",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        309
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Madurai",
+      "branches": [
+        {
+          "code": "HSC",
+          "name": "B.Sc. (Hons.) Community Science (Home Science)"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Agricultural College and Research Institute, Killikulam",
+      "city": "Vallanadu",
+      "district": "Thoothukudi",
+      "locality": "Killikulam",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": 1985,
+      "rating": 4.4,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Killikulam is an agriculture college in Thoothukudi district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Killikulam",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Agricultural College and Research Institute, Eachangkottai",
+      "city": "Thanjavur",
+      "district": "Thanjavur",
+      "locality": "Eachangkottai",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.2,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Eachangkottai is an agriculture college in Thanjavur district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Eachangkottai",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Agricultural College and Research Institute, Kudumiyanmalai",
+      "city": "Pudukkottai",
+      "district": "Pudukkottai",
+      "locality": "Kudumiyanmalai",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.2,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Kudumiyanmalai is an agriculture college in Pudukkottai district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Kudumiyanmalai",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Agricultural College and Research Institute, Kumulur",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Kumulur",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.3,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Kumulur is an agriculture college in Tiruchirappalli district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Kumulur",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Agricultural Engineering College and Research Institute, Kumulur",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Kumulur",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.4,
+      "fee": 70000,
+      "about": "Agricultural Engineering College and Research Institute, Kumulur is an agriculture college in Tiruchirappalli district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Tech. Agricultural Engineering, B.Tech. Food Technology, B.Tech. Energy and Environmental Engineering, B.Tech. Agricultural Information Technology.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        304,
+        305,
+        306,
+        308
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Kumulur",
+      "branches": [
+        {
+          "code": "AGE",
+          "name": "B.Tech. Agricultural Engineering"
+        },
+        {
+          "code": "FDT",
+          "name": "B.Tech. Food Technology"
+        },
+        {
+          "code": "EEE",
+          "name": "B.Tech. Energy and Environmental Engineering"
+        },
+        {
+          "code": "AIT",
+          "name": "B.Tech. Agricultural Information Technology"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Agricultural College and Research Institute, Vazhavachanur",
+      "city": "Thiruvannamalai",
+      "district": "Tiruvannamalai",
+      "locality": "Vazhavachanur",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.2,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Vazhavachanur is an agriculture college in Tiruvannamalai district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Vazhavachanur",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Agricultural College and Research Institute, Needamangalam",
+      "city": "Needamangalam",
+      "district": "Tiruvarur",
+      "locality": "Needamangalam",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.2,
+      "fee": 45000,
+      "about": "Agricultural College and Research Institute, Needamangalam is an agriculture college in Tiruvarur district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Needamangalam",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Horticultural College and Research Institute, Periyakulam",
+      "city": "Periyakulam",
+      "district": "Theni",
+      "locality": "Periyakulam",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": 1984,
+      "rating": 4.4,
+      "fee": 45000,
+      "about": "Horticultural College and Research Institute, Periyakulam is an agriculture college in Theni district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Horticulture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        302
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Periyakulam",
+      "branches": [
+        {
+          "code": "HORT",
+          "name": "B.Sc. (Hons.) Horticulture"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Horticultural College and Research Institute for Women, Navalur Kuttapattu",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Navalur Kuttapattu",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.3,
+      "fee": 45000,
+      "about": "Horticultural College and Research Institute for Women, Navalur Kuttapattu is an agriculture college in Tiruchirappalli district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Horticulture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        302
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Navalur Kuttapattu",
+      "branches": [
+        {
+          "code": "HORT",
+          "name": "B.Sc. (Hons.) Horticulture"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Anbil Dharmalingam Agricultural College and Research Institute, Navalur Kuttapattu",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Navalur Kuttapattu",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.3,
+      "fee": 45000,
+      "about": "Anbil Dharmalingam Agricultural College and Research Institute, Navalur Kuttapattu is an agriculture college in Tiruchirappalli district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "Navalur Kuttapattu",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Fisheries College and Research Institute, Thoothukudi",
+      "city": "Thoothukudi",
+      "district": "Thoothukudi",
+      "locality": "Thoothukudi",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Dr. J. Jayalalithaa Fisheries University",
+      "autonomous": false,
+      "established": 1977,
+      "rating": 4.4,
+      "fee": 45000,
+      "about": "Fisheries College and Research Institute, Thoothukudi is an agriculture college in Thoothukudi district, Tamil Nadu, affiliated to Tamil Nadu Dr. J. Jayalalithaa Fisheries University, offering B.F.Sc. Fisheries Science.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        312
+      ],
+      "website": "https://tnjfu.ac.in",
+      "locality2": "Thoothukudi",
+      "branches": [
+        {
+          "code": "BFSC",
+          "name": "B.F.Sc. Fisheries Science"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Dr. M.G.R. Fisheries College and Research Institute, Ponneri",
+      "city": "Ponneri",
+      "district": "Tiruvallur",
+      "locality": "Ponneri",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Dr. J. Jayalalithaa Fisheries University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.2,
+      "fee": 45000,
+      "about": "Dr. M.G.R. Fisheries College and Research Institute, Ponneri is an agriculture college in Tiruvallur district, Tamil Nadu, affiliated to Tamil Nadu Dr. J. Jayalalithaa Fisheries University, offering B.F.Sc. Fisheries Science.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        312
+      ],
+      "website": "https://tnjfu.ac.in",
+      "locality2": "Ponneri",
+      "branches": [
+        {
+          "code": "BFSC",
+          "name": "B.F.Sc. Fisheries Science"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Fisheries Engineering College, Nagapattinam",
+      "city": "Nagapattinam",
+      "district": "Nagapattinam",
+      "locality": "Nagapattinam",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Dr. J. Jayalalithaa Fisheries University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.2,
+      "fee": 60000,
+      "about": "Fisheries Engineering College, Nagapattinam is an agriculture college in Nagapattinam district, Tamil Nadu, affiliated to Tamil Nadu Dr. J. Jayalalithaa Fisheries University, offering B.Tech. Fisheries Engineering.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        313
+      ],
+      "website": "https://tnjfu.ac.in",
+      "locality2": "Nagapattinam",
+      "branches": [
+        {
+          "code": "FEN",
+          "name": "B.Tech. Fisheries Engineering"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Faculty of Agriculture, Annamalai University",
+      "city": "Chidambaram",
+      "district": "Cuddalore",
+      "locality": "Annamalainagar",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "State University",
+      "autonomyNote": "State university faculty",
+      "affiliation": "Annamalai University",
+      "autonomous": false,
+      "established": 1929,
+      "rating": 4.4,
+      "fee": 50000,
+      "about": "Faculty of Agriculture, Annamalai University is an agriculture college in Cuddalore district, Tamil Nadu, affiliated to Annamalai University, offering B.Sc. (Hons.) Agriculture, B.Sc. (Hons.) Horticulture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301,
+        302
+      ],
+      "website": "https://annamalaiuniversity.ac.in",
+      "locality2": "Annamalainagar",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        },
+        {
+          "code": "HORT",
+          "name": "B.Sc. (Hons.) Horticulture"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Adhiparasakthi Agricultural College, Kalavai",
+      "city": "Kalavai",
+      "district": "Ranipet",
+      "locality": "Kalavai",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.0,
+      "fee": 110000,
+      "about": "Adhiparasakthi Agricultural College, Kalavai is an agriculture college in Ranipet district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture, B.Sc. (Hons.) Horticulture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301,
+        302
+      ],
+      "website": "",
+      "locality2": "Kalavai",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        },
+        {
+          "code": "HORT",
+          "name": "B.Sc. (Hons.) Horticulture"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Imayam Institute of Agriculture and Technology, Thuraiyur",
+      "city": "Tiruchirappalli",
+      "district": "Tiruchirappalli",
+      "locality": "Thuraiyur",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 3.9,
+      "fee": 100000,
+      "about": "Imayam Institute of Agriculture and Technology, Thuraiyur is an agriculture college in Tiruchirappalli district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "",
+      "locality2": "Thuraiyur",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Dhanalakshmi Srinivasan Agriculture College, Perambalur",
+      "city": "Perambalur",
+      "district": "Perambalur",
+      "locality": "Perambalur",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 3.9,
+      "fee": 100000,
+      "about": "Dhanalakshmi Srinivasan Agriculture College, Perambalur is an agriculture college in Perambalur district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "",
+      "locality2": "Perambalur",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Sethu Bhaskara Agricultural College and Research Foundation, Karaikudi",
+      "city": "Karaikudi",
+      "district": "Sivaganga",
+      "locality": "Karaikudi",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 3.9,
+      "fee": 100000,
+      "about": "Sethu Bhaskara Agricultural College and Research Foundation, Karaikudi is an agriculture college in Sivaganga district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "",
+      "locality2": "Karaikudi",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Vanavarayar Institute of Agriculture, Pollachi",
+      "city": "Pollachi",
+      "district": "Coimbatore",
+      "locality": "Manakkadavu, Pollachi",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.1,
+      "fee": 110000,
+      "about": "Vanavarayar Institute of Agriculture, Pollachi is an agriculture college in Coimbatore district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "",
+      "locality2": "Manakkadavu, Pollachi",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Arulmigu Palaniandavar Agricultural College, Palani",
+      "city": "Palani",
+      "district": "Dindigul",
+      "locality": "Palani",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 3.9,
+      "fee": 100000,
+      "about": "Arulmigu Palaniandavar Agricultural College, Palani is an agriculture college in Dindigul district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "",
+      "locality2": "Palani",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Kalasalingam School of Agriculture and Horticulture, Krishnankoil",
+      "city": "Krishnankoil",
+      "district": "Virudhunagar",
+      "locality": "Krishnankoil",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.0,
+      "fee": 110000,
+      "about": "Kalasalingam School of Agriculture and Horticulture, Krishnankoil is an agriculture college in Virudhunagar district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture, B.Sc. (Hons.) Horticulture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301,
+        302
+      ],
+      "website": "",
+      "locality2": "Krishnankoil",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        },
+        {
+          "code": "HORT",
+          "name": "B.Sc. (Hons.) Horticulture"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "E.G.S. Pillay Agricultural College, Nagapattinam",
+      "city": "Nagapattinam",
+      "district": "Nagapattinam",
+      "locality": "Thethi",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Self-Financing",
+      "autonomyNote": "Private self-financing college affiliated to Tamil Nadu Agricultural University",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 3.9,
+      "fee": 100000,
+      "about": "E.G.S. Pillay Agricultural College, Nagapattinam is an agriculture college in Nagapattinam district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering B.Sc. (Hons.) Agriculture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        301
+      ],
+      "website": "",
+      "locality2": "Thethi",
+      "branches": [
+        {
+          "code": "AGR",
+          "name": "B.Sc. (Hons.) Agriculture"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Agricultural Polytechnic College, Coimbatore (TNAU)",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "TNAU Campus",
+      "state": "Tamil Nadu",
+      "category": "Agriculture",
+      "type": "Government",
+      "autonomyNote": "Government college run under the Tamil Nadu Agricultural University / state government",
+      "affiliation": "Tamil Nadu Agricultural University",
+      "autonomous": false,
+      "established": null,
+      "rating": 4.0,
+      "fee": 15000,
+      "about": "Agricultural Polytechnic College, Coimbatore (TNAU) is an agriculture college in Coimbatore district, Tamil Nadu, affiliated to Tamil Nadu Agricultural University, offering Diploma in Agriculture, Diploma in Horticulture.",
+      "facilities": [
+        "Library",
+        "Computer Lab",
+        "Hostel",
+        "Sports Ground",
+        "Experimental Farm",
+        "Laboratories",
+        "Transport"
+      ],
+      "eligibility": "Passed 12th / HSC with the respective stream (TNAU counselling / university admission)",
+      "courseIds": [
+        314,
+        315
+      ],
+      "website": "https://tnau.ac.in",
+      "locality2": "TNAU Campus",
+      "branches": [
+        {
+          "code": "DAG",
+          "name": "Diploma in Agriculture"
+        },
+        {
+          "code": "DHO",
+          "name": "Diploma in Horticulture"
+        }
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": 301,
+      "code": "AGR",
+      "name": "B.Sc. (Hons.) Agriculture",
+      "category": "Agriculture",
+      "degree": "B.Sc (Hons)",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Biology / Agriculture / Maths stream",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 302,
+      "code": "HORT",
+      "name": "B.Sc. (Hons.) Horticulture",
+      "category": "Agriculture",
+      "degree": "B.Sc (Hons)",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Biology / Agriculture / Maths stream",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 303,
+      "code": "FOR",
+      "name": "B.Sc. (Hons.) Forestry",
+      "category": "Agriculture",
+      "degree": "B.Sc (Hons)",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Biology / Agriculture / Maths stream",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 304,
+      "code": "AGE",
+      "name": "B.Tech. Agricultural Engineering",
+      "category": "Agriculture",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Maths",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 305,
+      "code": "FDT",
+      "name": "B.Tech. Food Technology",
+      "category": "Agriculture",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Maths / Biology",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 306,
+      "code": "EEE",
+      "name": "B.Tech. Energy and Environmental Engineering",
+      "category": "Agriculture",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Maths",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 307,
+      "code": "BIO",
+      "name": "B.Tech. Biotechnology",
+      "category": "Agriculture",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Maths / Biology",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 308,
+      "code": "AIT",
+      "name": "B.Tech. Agricultural Information Technology",
+      "category": "Agriculture",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Maths",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 309,
+      "code": "HSC",
+      "name": "B.Sc. (Hons.) Community Science (Home Science)",
+      "category": "Agriculture",
+      "degree": "B.Sc (Hons)",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass in any stream with Science subjects",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 310,
+      "code": "ABM",
+      "name": "B.Sc. (Hons.) Agri Business Management",
+      "category": "Agriculture",
+      "degree": "B.Sc (Hons)",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Biology / Agriculture / Maths stream",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 311,
+      "code": "SER",
+      "name": "B.Sc. (Hons.) Sericulture",
+      "category": "Agriculture",
+      "degree": "B.Sc (Hons)",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Biology / Agriculture / Maths stream",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 312,
+      "code": "BFSC",
+      "name": "B.F.Sc. Fisheries Science",
+      "category": "Agriculture",
+      "degree": "B.F.Sc",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Biology",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 313,
+      "code": "FEN",
+      "name": "B.Tech. Fisheries Engineering",
+      "category": "Agriculture",
+      "degree": "B.Tech",
+      "duration": "4 Years",
+      "eligibility": "12th / HSC pass with Physics, Chemistry, Maths",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 314,
+      "code": "DAG",
+      "name": "Diploma in Agriculture",
+      "category": "Agriculture",
+      "degree": "Diploma",
+      "duration": "2 Years",
+      "eligibility": "10th / SSLC pass",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    },
+    {
+      "id": 315,
+      "code": "DHO",
+      "name": "Diploma in Horticulture",
+      "category": "Agriculture",
+      "degree": "Diploma",
+      "duration": "2 Years",
+      "eligibility": "10th / SSLC pass",
+      "entranceExam": "TNAU online counselling (12th cut-off merit) / ICAR AIEEA-UG for All India quota"
+    }
+  ],
+  "collegeCourses": [],
+  "users": []
+}

@@ -1,0 +1,36 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Example Homeopathy Medical College",
+      "city": "Chennai",
+      "district": "Chennai",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "rating": 4.2,
+      "fee": 100000,
+      "about": "Homeopathy medical college offering BHMS education.",
+      "facilities": [
+        "Library",
+        "Hostel",
+        "Laboratories",
+        "Hospital",
+        "Research Centre"
+      ],
+      "courseIds": [1101],
+      "website": ""
+    }
+  ],
+  "courses": [
+    {
+      "id": 1101,
+      "name": "BHMS",
+      "degree": "Bachelor of Homoeopathic Medicine and Surgery",
+      "duration": "5.5 Years",
+      "eligibility": "12th with Physics, Chemistry and Biology",
+      "entranceExam": "NEET-UG"
+    }
+  ]
+}

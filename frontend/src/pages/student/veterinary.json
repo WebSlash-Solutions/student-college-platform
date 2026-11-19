@@ -1,0 +1,37 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Example Veterinary College",
+      "city": "Namakkal",
+      "district": "Namakkal",
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "rating": 4.2,
+      "fee": 50000,
+      "about": "Veterinary college offering undergraduate and postgraduate veterinary education.",
+      "facilities": [
+        "Library",
+        "Hostel",
+        "Laboratories",
+        "Veterinary Hospital",
+        "Animal Farms",
+        "Research Centre"
+      ],
+      "courseIds": [1001],
+      "website": ""
+    }
+  ],
+  "courses": [
+    {
+      "id": 1001,
+      "name": "B.V.Sc. & A.H.",
+      "degree": "Bachelor of Veterinary Science and Animal Husbandry",
+      "duration": "5.5 Years",
+      "eligibility": "12th with Physics, Chemistry and Biology",
+      "entranceExam": "NEET-UG"
+    }
+  ]
+}
