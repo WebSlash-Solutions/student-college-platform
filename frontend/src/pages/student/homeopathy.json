@@ -1,0 +1,484 @@
+
+{
+  "colleges": [
+    {
+      "id": 1302,
+      "name": "Government Homoeopathic Medical College and Hospital",
+      "city": "Thirumangalam",
+      "district": "Madurai",
+      "locality": "Thirumangalam",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government homoeopathic medical college and hospital in Thirumangalam, Madurai District offering BHMS education.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and Tamil Nadu counselling rules",
+      "courseIds": [12001],
+      "website": "https://www.tnhealth.tn.gov.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1303,
+      "name": "Dr. Hahnemann Homoeopathy Medical College and Research Centre",
+      "city": "Rasipuram",
+      "district": "Namakkal",
+      "locality": "Koneripatti",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathy medical college and research centre at Koneripatti, Rasipuram, Namakkal District.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1304,
+      "name": "Excel Homeopathy Medical College",
+      "city": "Komarapalayam",
+      "district": "Namakkal",
+      "locality": "Pallakkapalayam, Sankari West",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathy medical college at Pallakkapalayam, Komarapalayam, Namakkal District.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "https://www.excelcolleges.com/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1305,
+      "name": "Maria Homoeopathic Medical College and Hospital",
+      "city": "Thiruvattar",
+      "district": "Kanyakumari",
+      "locality": "Perai, Thiruvattar Post",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathic medical college and hospital in Thiruvattar, Kanyakumari District.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001, 12002],
+      "website": "",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        },
+        {
+          "code": "MDHOM",
+          "name": "M.D. (Homoeopathy) – Postgraduate"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1306,
+      "name": "Martin Homoeopathy Medical College and Hospital",
+      "city": "Coimbatore",
+      "district": "Coimbatore",
+      "locality": "G.N. Mills, Mettupalayam Road",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathy medical college and hospital at G.N. Mills, Mettupalayam Road, Coimbatore.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1307,
+      "name": "RVS Homoeopathic Medical College",
+      "city": "Sulur",
+      "district": "Coimbatore",
+      "locality": "242-B, Trichy Road, Sulur",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathic medical college at Sulur, Trichy Road, Coimbatore District.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "https://www.rvsgroup.com/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1308,
+      "name": "White Memorial Homoeopathy Medical College",
+      "city": "Attoor",
+      "district": "Kanyakumari",
+      "locality": "Veeyannoor Post, Attoor",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathy medical college at Attoor, Kanyakumari District.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001, 12002],
+      "website": "",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        },
+        {
+          "code": "MDHOM",
+          "name": "M.D. (Homoeopathy) – Postgraduate"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1309,
+      "name": "Sarada Krishna Homoeopathy Medical College",
+      "city": "Kulasekharam",
+      "district": "Kanyakumari",
+      "locality": "Convent Junction, Kulasekharam",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathy medical college at Kulasekharam, Kanyakumari District offering BHMS and postgraduate specializations.",
+      "facilities": [],
+      "eligibility": "As per current admission and counselling rules",
+      "courseIds": [12001, 12002, 12003, 12004, 12005, 12006, 12007],
+      "website": "https://www.skhmc.org/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        },
+        {
+          "code": "MDHOM",
+          "name": "M.D. (Homoeopathy) – Postgraduate"
+        },
+        {
+          "code": "MDHOM-1",
+          "name": "MD – Homoeopathic Materia Medica"
+        },
+        {
+          "code": "MDHOM-2",
+          "name": "MD – Organon of Medicine with Homoeopathic Philosophy"
+        },
+        {
+          "code": "MDHOM-3",
+          "name": "MD – Practice of Medicine"
+        },
+        {
+          "code": "MDHOM-4",
+          "name": "MD – Paediatrics"
+        },
+        {
+          "code": "MDHOM-5",
+          "name": "MD – Repertory"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1310,
+      "name": "Sivaraj Homoeopathic Medical College and Research Institute",
+      "city": "Salem",
+      "district": "Salem",
+      "locality": "Siddhar Kovil Road, Perumampatty",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathic medical college and research institute at Perumampatty, Salem District.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1311,
+      "name": "Sri Sairam Homoeopathy Medical College and Research Centre",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Sai Leo Nagar, West Tambaram",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathy medical college and research centre at West Tambaram, Chennai.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "https://sairamhomoeo.edu.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1312,
+      "name": "Venkateswara Homoeopathic Medical College",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Karambakkam, Porur",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathic medical college at Karambakkam, Porur, Chennai.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "https://www.venkateswarahomoeo.com/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1313,
+      "name": "Shri Barani Homoeopathy Medical College",
+      "city": "Tiruchengode",
+      "district": "Namakkal",
+      "locality": "Tiruchengode",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Private",
+      "autonomyNote": null,
+      "affiliation": "The Tamil Nadu Dr. M.G.R. Medical University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Private homoeopathy medical college listed in the Tamil Nadu Government Gazette Bill Schedule (2025). Verify current recognition and admission availability.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and counselling rules",
+      "courseIds": [12001],
+      "website": "",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 1314,
+      "name": "Vinayaka Mission's Homoeopathic Medical College",
+      "city": "Salem",
+      "district": "Salem",
+      "locality": "Sankari Main Road, NH-47, Ariyanoor",
+      "state": "Tamil Nadu",
+      "category": "Homeopathy",
+      "type": "Deemed University",
+      "autonomyNote": "Listed separately under Deemed University; verify current NCH permission and intake.",
+      "affiliation": "Vinayaka Mission's Research Foundation (Deemed to be University)",
+      "autonomous": false,
+      "established": 1988,
+      "rating": null,
+      "fee": null,
+      "about": "Homoeopathic medical college listed under the Deemed University section of the university's BHMS information.",
+      "facilities": [],
+      "eligibility": "As per current NEET-UG and applicable counselling rules",
+      "courseIds": [12001],
+      "website": "",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BHMS",
+          "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery"
+        }
+      ],
+      "image": null
+    }
+  ],
+  "courses": [
+    {
+      "id": 12001,
+      "name": "BHMS – Bachelor of Homoeopathic Medicine and Surgery",
+      "degree": "Bachelor of Homoeopathic Medicine and Surgery",
+      "duration": "5.5 Years (including compulsory internship)",
+      "eligibility": "10+2 with Physics, Chemistry and Biology; confirm current eligibility rules",
+      "entranceExam": "NEET-UG",
+      "category": "Homeopathy"
+    },
+    {
+      "id": 12002,
+      "name": "M.D. (Homoeopathy) – Postgraduate",
+      "degree": "Doctor of Medicine in Homoeopathy",
+      "duration": "3 Years",
+      "eligibility": "Recognised BHMS degree and current admission requirements",
+      "entranceExam": "AIAPGET",
+      "category": "Homeopathy"
+    },
+    {
+      "id": 12003,
+      "name": "MD (Homoeopathy) – Homoeopathic Materia Medica",
+      "degree": "Doctor of Medicine in Homoeopathy",
+      "specialization": "Materia Medica",
+      "duration": "3 Years",
+      "eligibility": "Recognised BHMS degree and current admission requirements",
+      "entranceExam": "AIAPGET",
+      "category": "Homeopathy"
+    },
+    {
+      "id": 12004,
+      "name": "MD (Homoeopathy) – Organon of Medicine with Homoeopathic Philosophy",
+      "degree": "Doctor of Medicine in Homoeopathy",
+      "specialization": "Organon of Medicine with Homoeopathic Philosophy",
+      "duration": "3 Years",
+      "eligibility": "Recognised BHMS degree and current admission requirements",
+      "entranceExam": "AIAPGET",
+      "category": "Homeopathy"
+    },
+    {
+      "id": 12005,
+      "name": "MD (Homoeopathy) – Practice of Medicine",
+      "degree": "Doctor of Medicine in Homoeopathy",
+      "specialization": "Practice of Medicine",
+      "duration": "3 Years",
+      "eligibility": "Recognised BHMS degree and current admission requirements",
+      "entranceExam": "AIAPGET",
+      "category": "Homeopathy"
+    },
+    {
+      "id": 12006,
+      "name": "MD (Homoeopathy) – Paediatrics",
+      "degree": "Doctor of Medicine in Homoeopathy",
+      "specialization": "Paediatrics",
+      "duration": "3 Years",
+      "eligibility": "Recognised BHMS degree and current admission requirements",
+      "entranceExam": "AIAPGET",
+      "category": "Homeopathy"
+    },
+    {
+      "id": 12007,
+      "name": "MD (Homoeopathy) – Repertory",
+      "degree": "Doctor of Medicine in Homoeopathy",
+      "specialization": "Repertory",
+      "duration": "3 Years",
+      "eligibility": "Recognised BHMS degree and current admission requirements",
+      "entranceExam": "AIAPGET",
+      "category": "Homeopathy"
+    }
+  ]
+}

@@ -1,0 +1,395 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Madras Veterinary College, Chennai",
+      "city": "Chennai",
+      "district": "Chennai",
+      "locality": "Vepery",
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": 1903,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.V.Sc. & A.H. (5.5 Year, incl. Internship), M.V.Sc. (Postgraduate), Ph.D. (Veterinary / Animal Sciences).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        801,
+        805,
+        806
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BVSC",
+          "name": "B.V.Sc. & A.H. (5.5 Year, incl. Internship)"
+        },
+        {
+          "code": "MVSC",
+          "name": "M.V.Sc. (Postgraduate)"
+        },
+        {
+          "code": "PHD",
+          "name": "Ph.D. (Veterinary / Animal Sciences)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 2,
+      "name": "Veterinary College and Research Institute, Namakkal",
+      "city": "Namakkal",
+      "district": "Namakkal",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.V.Sc. & A.H. (5.5 Year, incl. Internship), M.V.Sc. (Postgraduate), Ph.D. (Veterinary / Animal Sciences).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        801,
+        805,
+        806
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BVSC",
+          "name": "B.V.Sc. & A.H. (5.5 Year, incl. Internship)"
+        },
+        {
+          "code": "MVSC",
+          "name": "M.V.Sc. (Postgraduate)"
+        },
+        {
+          "code": "PHD",
+          "name": "Ph.D. (Veterinary / Animal Sciences)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 3,
+      "name": "Veterinary College and Research Institute, Orathanadu",
+      "city": "Orathanadu",
+      "district": "Thanjavur",
+      "locality": "Orathanadu",
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.V.Sc. & A.H. (5.5 Year, incl. Internship), M.V.Sc. (Postgraduate), Ph.D. (Veterinary / Animal Sciences).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        801,
+        805,
+        806
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BVSC",
+          "name": "B.V.Sc. & A.H. (5.5 Year, incl. Internship)"
+        },
+        {
+          "code": "MVSC",
+          "name": "M.V.Sc. (Postgraduate)"
+        },
+        {
+          "code": "PHD",
+          "name": "Ph.D. (Veterinary / Animal Sciences)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 4,
+      "name": "Veterinary College and Research Institute, Tirunelveli",
+      "city": "Tirunelveli",
+      "district": "Tirunelveli",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.V.Sc. & A.H. (5.5 Year, incl. Internship), M.V.Sc. (Postgraduate), Ph.D. (Veterinary / Animal Sciences).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        801,
+        805,
+        806
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BVSC",
+          "name": "B.V.Sc. & A.H. (5.5 Year, incl. Internship)"
+        },
+        {
+          "code": "MVSC",
+          "name": "M.V.Sc. (Postgraduate)"
+        },
+        {
+          "code": "PHD",
+          "name": "Ph.D. (Veterinary / Animal Sciences)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 5,
+      "name": "Veterinary College and Research Institute, Theni",
+      "city": "Theni",
+      "district": "Theni",
+      "locality": null,
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.V.Sc. & A.H. (5.5 Year, incl. Internship), M.V.Sc. (Postgraduate).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        801,
+        805
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BVSC",
+          "name": "B.V.Sc. & A.H. (5.5 Year, incl. Internship)"
+        },
+        {
+          "code": "MVSC",
+          "name": "M.V.Sc. (Postgraduate)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 6,
+      "name": "Veterinary College and Research Institute, Udumalpet",
+      "city": "Udumalpet",
+      "district": "Tiruppur",
+      "locality": "Udumalpet",
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.V.Sc. & A.H. (5.5 Year, incl. Internship), M.V.Sc. (Postgraduate).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        801,
+        805
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BVSC",
+          "name": "B.V.Sc. & A.H. (5.5 Year, incl. Internship)"
+        },
+        {
+          "code": "MVSC",
+          "name": "M.V.Sc. (Postgraduate)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 7,
+      "name": "College of Food and Dairy Technology, Koduvalli",
+      "city": "Chennai",
+      "district": "Tiruvallur",
+      "locality": "Koduvalli, Red Hills",
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.Tech. Food Technology (4 Year), B.Tech. Dairy Technology (4 Year).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        802,
+        803
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BTECH.FT",
+          "name": "B.Tech. Food Technology (4 Year)"
+        },
+        {
+          "code": "BTECH.DT",
+          "name": "B.Tech. Dairy Technology (4 Year)"
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": 8,
+      "name": "College of Poultry Production and Management, Hosur",
+      "city": "Hosur",
+      "district": "Krishnagiri",
+      "locality": "Hosur",
+      "state": "Tamil Nadu",
+      "category": "Veterinary",
+      "type": "Government",
+      "autonomyNote": null,
+      "affiliation": "Tamil Nadu Veterinary and Animal Sciences University",
+      "autonomous": false,
+      "established": null,
+      "rating": null,
+      "fee": null,
+      "about": "Government college of Tamil Nadu Veterinary and Animal Sciences University offering B.Tech. Poultry Technology (4 Year).",
+      "facilities": [
+        "Library",
+        "Veterinary Clinical Complex",
+        "Livestock Farm",
+        "Laboratories",
+        "Hostel",
+        "Sports Complex"
+      ],
+      "eligibility": "As per TANUVAS admission norms",
+      "courseIds": [
+        804
+      ],
+      "website": "https://www.tanuvas.ac.in/",
+      "locality2": null,
+      "branches": [
+        {
+          "code": "BTECH.PT",
+          "name": "B.Tech. Poultry Technology (4 Year)"
+        }
+      ],
+      "image": null
+    }
+  ],
+  "courses": [
+    {
+      "id": 801,
+      "name": "B.V.Sc. & A.H. (5.5 Year, incl. Internship)",
+      "category": "Veterinary"
+    },
+    {
+      "id": 802,
+      "name": "B.Tech. Food Technology (4 Year)",
+      "category": "Veterinary"
+    },
+    {
+      "id": 803,
+      "name": "B.Tech. Dairy Technology (4 Year)",
+      "category": "Veterinary"
+    },
+    {
+      "id": 804,
+      "name": "B.Tech. Poultry Technology (4 Year)",
+      "category": "Veterinary"
+    },
+    {
+      "id": 805,
+      "name": "M.V.Sc. (Postgraduate)",
+      "category": "Veterinary"
+    },
+    {
+      "id": 806,
+      "name": "Ph.D. (Veterinary / Animal Sciences)",
+      "category": "Veterinary"
+    }
+  ]
+}
