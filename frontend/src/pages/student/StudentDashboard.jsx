@@ -11,6 +11,10 @@ import lawData from "./law.json";
 import LoginView from "./login.jsx";
 import homeStudentImage from "../../assets/home student.png";
 import aboutStudentImage from "../../assets/about student.jpg";
+import agricultureData from "./agriculture.json";
+import dentalData from "./dental.json";
+import veterinaryData from "./veterinary.json";
+import homeopathyData from "./homeopathy.json";
 
 function InlineLogin({ users, onSuccess }) {
   const [email, setEmail] = useState("");
@@ -174,19 +178,18 @@ function Icon({ name, size = 20 }) {
 }
 
 /* =========================================================
-   NAVIGATION
+   NAVIGATION  (About sits next to Home)
 ========================================================= */
 
 const NAV = [
   { label: "Home", href: "#home", route: "/student/dashboard" },
+  { label: "About", href: "#about", route: "/student/about" },
   { label: "Colleges", href: "#colleges", route: "/student/colleges" },
   { label: "Courses", href: "#courses", route: "/student/courses" },
-  { label: "About", href: "#about", route: "/student/about" },
 ];
 
 /* =========================================================
    APPLY NOW  (applications are stored in localStorage)
-   Moved out of StudentDashboard.jsx. Logic is unchanged.
 ========================================================= */
 
 const APPLICATIONS_KEY = "scp_applications";
@@ -201,21 +204,18 @@ const APPLY_STREAMS = [
   "Other",
 ];
 
-// Each category lists the `category` values used in the existing college data
-// and which cutoff rule applies to it. Colleges are never hardcoded: a category
-// fills up automatically as soon as colleges with that category exist.
 const APPLY_CATEGORIES = [
   { id: "engineering", label: "Engineering", match: ["Engineering"], cutoff: "engineering" },
   { id: "arts", label: "Arts and Science", match: ["Arts"], cutoff: null },
   { id: "law", label: "Law", match: ["Law"], cutoff: null },
-  {
-    id: "health",
-    label: "Health and Medical Science",
-    match: ["Medical", "Nursing", "Allied", "Physiotherapy", "Pharmacy"],
+  {id: "health", label: "Health and Medical Science",match: ["Medical", "Nursing", "Allied", "Physiotherapy", "Pharmacy"],
     cutoff: "pcb",
   },
   { id: "agriculture", label: "Agriculture", match: ["Agriculture"], cutoff: "agri" },
   { id: "polytechnic", label: "Polytechnic", match: ["Polytechnic"], cutoff: null },
+  { id: "agriculture", label: "Agriculture", match: ["Agriculture"], cutoff: "agri",},
+  { id: "veterinary",  label: "Veterinary", match: ["Veterinary"], cutoff: "pcb",},
+  { id: "homeopathy",  label: "Homeopathy", match: ["Homeopathy"], cutoff: "pcb",},
 ];
 
 const APPLY_SUB_LABELS = { Allied: "Allied Health" };
@@ -231,8 +231,6 @@ const SUBJECT_FIELDS = {
   bioMaths: "Biology / Maths (higher mark)",
 };
 
-// Cutoff is shown only for Engineering, Health and Medical Science and
-// Agriculture. weights: how much each mark counts; max: highest possible value.
 const CUTOFF_RULES = {
   engineering: {
     max: 200,
@@ -268,7 +266,6 @@ const CUTOFF_RULES = {
   },
 };
 
-// the cutoff rule depends on the category and, for health, on the course
 const ruleKeyFor = (category, course) => {
   if (!category || !category.cutoff) return null;
 
@@ -322,7 +319,6 @@ const APPLY_FIELD_ORDER = [
   "cutoff",
 ];
 
-// fields whose change can alter the auto-calculated cutoff
 const CUTOFF_INPUTS = [
   "categoryId",
   "mark12",
@@ -373,7 +369,6 @@ const parseMark = (value) => {
   return Number.isNaN(number) || number < 0 || number > 100 ? null : number;
 };
 
-// returns the calculated cutoff, or null while any needed mark is missing/invalid
 const computeCutoff = (rule, form) => {
   if (!rule.weights) return null;
 
@@ -388,7 +383,6 @@ const computeCutoff = (rule, form) => {
   return Math.round(total * 100) / 100;
 };
 
-// also used by the Profile form in StudentDashboard.jsx
 const markError = (value, label) => {
   if (String(value).trim() === "") return `${label} mark is required.`;
   const number = Number(value);
@@ -453,7 +447,6 @@ const validateApplication = (form, rule, cutoffValue) => {
   return errors;
 };
 
-// also used by the Profile form in StudentDashboard.jsx
 function ApplyField({ id, label, error, full, children }) {
   return (
     <div
@@ -471,10 +464,6 @@ function ApplyField({ id, label, error, full, children }) {
     </div>
   );
 }
-
-/* =========================================================
-   STYLES  (card layout; reuses the existing .cc-apply-* rules)
-========================================================= */
 
 const APPLY_STYLE = `
 .cc-apply-modal.cc-ap-modal {
@@ -587,23 +576,6 @@ const APPLY_STYLE = `
 }
 `;
 
-/* =========================================================
-   COMPONENT
-
-   props
-   - college            college opened from a college page (or null)
-   - colleges           all loaded colleges
-   - courseIndex        course lookup built by the dashboard
-   - helpers            { getCategory, getCollegeName, getLocation,
-                          courseDetails, toText } from the dashboard
-   - user, profile      logged-in user + saved profile (used to pre-fill)
-   - userKey            key used to store/find this user's applications
-   - myApplications     this user's saved applications (duplicate check)
-   - onClose            close the form
-   - onSubmitted(list)  called with the full saved applications list
-   - onViewApplications go to "My applications" after success
-========================================================= */
-
 function ApplyNow({
   college,
   colleges,
@@ -621,8 +593,13 @@ function ApplyNow({
   // appears in two files (e.g. Medical and Allied) is merged into one entry
   // with the combined course list.
   const applyColleges = useMemo(() => {
-    const { getCategory, getCollegeName, getLocation, courseDetails, toText } =
-      helpers;
+    const {
+      getCategory,
+      getCollegeName,
+      getLocation,
+      courseDetails,
+      getCourseName,
+    } = helpers;
     const merged = new Map();
 
     colleges.forEach((item) => {
@@ -636,8 +613,10 @@ function ApplyNow({
       const place = getLocation(item);
       const key = applyKeyFor(category.id, name, place);
 
+      // FIX: read the course name with the same fallbacks used everywhere
+      // else (courseName / name / title / basicDetails.courseName)
       const names = courseDetails(item, courseIndex)
-        .map((course) => toText(course.courseName))
+        .map((course) => getCourseName(course))
         .filter(Boolean);
 
       const existing = merged.get(key);
@@ -666,13 +645,14 @@ function ApplyNow({
         const label = item.place ? `${item.name} — ${item.place}` : item.name;
         return {
           ...item,
-          label: item.courses.length ? label : `${label} (courses not listed)`,
+          label: item.courses.length
+            ? label
+            : `${label} (course details unavailable)`,
         };
       })
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [colleges, courseIndex, helpers]);
 
-  // college opened from a college page -> category + college pre-selected
   const [preset] = useState(() => {
     if (!college) return null;
 
@@ -734,7 +714,6 @@ function ApplyNow({
   const calculatedCutoff = cutoffRule
     ? computeCutoff(cutoffRule, applyForm)
     : null;
-  // shows the auto-calculated value unless the student typed their own
   const cutoffValue =
     applyForm.cutoff !== ""
       ? applyForm.cutoff
@@ -756,6 +735,7 @@ function ApplyNow({
       if (name === "categoryId") {
         return { ...prev, categoryId: value, collegeKey: "", course: "", cutoff: "" };
       }
+      // course list is derived from the selected college, so clear the old course
       if (name === "collegeKey") {
         return { ...prev, collegeKey: value, course: "" };
       }
@@ -1173,7 +1153,7 @@ function ApplyNow({
                         id="apply-course"
                         className="cc-apply-control"
                         value={applyForm.course}
-                        disabled={!applyCollege}
+                        disabled={!applyCollege || applyCollege.courses.length === 0}
                         aria-invalid={Boolean(applyErrors.course)}
                         onChange={(event) =>
                           updateApplyField("course", event.target.value)
@@ -1183,7 +1163,7 @@ function ApplyNow({
                           {!applyCollege
                             ? "Select a college first"
                             : applyCollege.courses.length === 0
-                              ? "No courses listed for this college"
+                              ? "Course details for this college are not available yet"
                               : "Select a course"}
                         </option>
                         {applyCollege?.courses.map((course) => (
@@ -1400,7 +1380,6 @@ const PROFILE_COLLEGE_TYPES = [
   "Pharmacy", "Law", "Agriculture", "Medical",
 ];
 
-// cutoff applies only to these types (value = max). Others hide the field.
 const PROFILE_CUTOFF_MAX = {
   Engineering: 200,
   Physiotherapy: 200,
@@ -1907,7 +1886,15 @@ const getCourses = (college) => {
   return [];
 };
 
-/* facilities can be an object ({hostel, placement...}) or an array of strings */
+/* one place that reads a course name, whatever field the data file uses */
+const getCourseName = (course) =>
+  toText(
+    course?.courseName ||
+      course?.name ||
+      course?.title ||
+      course?.basicDetails?.courseName,
+  );
+
 const getFacilities = (college) => {
   if (
     college?.facilities &&
@@ -1942,10 +1929,15 @@ const getAdmission = (college) => {
   };
 };
 
-// Course ids repeat across the data files (Pharmacy and Law both use 701-706),
-// so a course is looked up by its college's category first.
+// Course ids repeat across the data files (Pharmacy and Law both use 701-706,
+// Engineering and Arts overlap), so a course is looked up by the file the
+// college came from (_src) first, then by category, and only then by a plain
+// id that is unique across all files.
 const findCourse = (courseIndex, college, id) =>
-  courseIndex[`${getCategory(college)}:${id}`] || courseIndex[String(id)];
+  courseIndex[`${college?._src}:${id}`] ||
+  courseIndex[`${getCategory(college)}:${id}`] ||
+  courseIndex[String(id)] ||
+  undefined;
 
 const courseNamesFromOldData = (college, courseIndex) => {
   const ids = Array.isArray(college?.courseIds)
@@ -1960,12 +1952,7 @@ const courseNamesFromOldData = (college, courseIndex) => {
 
       if (!course) return "";
 
-      return toText(
-        course.name ||
-          course.title ||
-          course.courseName ||
-          course.basicDetails?.courseName,
-      );
+      return getCourseName(course);
     })
     .filter(Boolean);
 };
@@ -1974,16 +1961,7 @@ const courseNames = (college, courseIndex) => {
   const nestedCourses = getCourses(college);
 
   if (nestedCourses.length > 0) {
-    return nestedCourses
-      .map((course) =>
-        toText(
-          course.courseName ||
-            course.name ||
-            course.title ||
-            course.basicDetails?.courseName,
-        ),
-      )
-      .filter(Boolean);
+    return nestedCourses.map(getCourseName).filter(Boolean);
   }
 
   return courseNamesFromOldData(college, courseIndex);
@@ -2002,12 +1980,7 @@ const courseDetails = (college, courseIndex) => {
     .map((id) => findCourse(courseIndex, college, id))
     .filter(Boolean)
     .map((course) => ({
-      courseName: toText(
-        course.name ||
-          course.title ||
-          course.courseName ||
-          course.basicDetails?.courseName,
-      ),
+      courseName: getCourseName(course),
       degree: toText(course.degree) || "B.E / B.Tech",
       duration: toText(course.duration) || "4 Years",
       eligibility:
@@ -2019,12 +1992,13 @@ const courseDetails = (college, courseIndex) => {
     }));
 };
 
-// helpers handed to ApplyNow.jsx so it reads college data the same way
+// helpers handed to ApplyNow so it reads college data the same way
 const APPLY_HELPERS = {
   getCategory,
   getCollegeName,
   getLocation,
   courseDetails,
+  getCourseName,
   toText,
 };
 
@@ -3520,7 +3494,7 @@ export default function StudentDashboard() {
 
   const user = session;
 
-  // navigate between the Home page and the separate Colleges page
+  // navigate between pages and scroll to the matching anchor
   const handleNav = (event, item) => {
     event.preventDefault();
 
@@ -3542,15 +3516,6 @@ export default function StudentDashboard() {
     }
   };
 
-  const userInitials = user?.name
-    ? user.name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((word) => word[0])
-        .join("")
-        .toUpperCase()
-    : "U";
   const userFirstName = user?.name?.trim().split(/\s+/)[0] || "Student";
   const [colleges, setColleges] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -3572,58 +3537,48 @@ export default function StudentDashboard() {
 
   /* =======================================================
      LOAD DATA FROM JSON FILES (imported, no server)
+     Every college and course is tagged with the file it came
+     from (_src) so course ids that repeat across files can
+     never be mixed up between colleges.
   ======================================================= */
 
   useEffect(() => {
     setLoading(true);
     setError("");
 
-    // sources: engineering (db.json) + arts + healthcare + law
-    const engList = Array.isArray(dbData?.colleges) ? dbData.colleges : [];
-    const artsList = Array.isArray(artsData?.colleges) ? artsData.colleges : [];
-    const engCourses = Array.isArray(dbData?.courses) ? dbData.courses : [];
-    const artsCourses = Array.isArray(artsData?.courses)
-      ? artsData.courses
-      : [];
-    const medicalList = Array.isArray(medicalData?.colleges)
-      ? medicalData.colleges
-      : [];
-    const medicalCourses = Array.isArray(medicalData?.courses)
-      ? medicalData.courses
-      : [];
-    const nursingList = Array.isArray(nursingData?.colleges)
-      ? nursingData.colleges
-      : [];
-    const nursingCourses = Array.isArray(nursingData?.courses)
-      ? nursingData.courses
-      : [];
-    const alliedList = Array.isArray(alliedData?.colleges)
-      ? alliedData.colleges
-      : [];
-    const alliedCourses = Array.isArray(alliedData?.courses)
-      ? alliedData.courses
-      : [];
-    const physiotherapyList = Array.isArray(physiotherapyData?.colleges)
-      ? physiotherapyData.colleges
-      : [];
-    const physiotherapyCourses = Array.isArray(physiotherapyData?.courses)
-      ? physiotherapyData.courses
-      : [];
-    const pharmacyList = Array.isArray(pharmacyData?.colleges)
-      ? pharmacyData.colleges
-      : [];
-    const pharmacyCourses = Array.isArray(pharmacyData?.courses)
-      ? pharmacyData.courses
-      : [];
-    const lawList = Array.isArray(lawData?.colleges)
-      ? lawData.colleges
-      : [];
-    const lawCourses = Array.isArray(lawData?.courses)
-      ? lawData.courses
-      : [];
-    const links = Array.isArray(dbData?.collegeCourses)
-      ? dbData.collegeCourses
-      : [];
+    const listOf = (data, key) => (Array.isArray(data?.[key]) ? data[key] : []);
+    const tag = (list, src) => list.map((item) => ({ ...item, _src: src }));
+
+    const engList = tag(listOf(dbData, "colleges"), "eng");
+    const artsList = tag(listOf(artsData, "colleges"), "arts");
+    const medicalList = tag(listOf(medicalData, "colleges"), "medical");
+    const nursingList = tag(listOf(nursingData, "colleges"), "nursing");
+    const alliedList = tag(listOf(alliedData, "colleges"), "allied");
+    const physiotherapyList = tag(listOf(physiotherapyData, "colleges"),"physio",);
+    const pharmacyList = tag(listOf(pharmacyData, "colleges"), "pharmacy");
+    const lawList = tag(listOf(lawData, "colleges"), "law");
+    const dentalList = tag(listOf(dentalData, "colleges"),"dental");
+    const agricultureList = tag(listOf(agricultureData, "colleges"),"agriculture");
+    const veterinaryList = tag(listOf(veterinaryData, "colleges"),"veterinary");
+    const homeopathyList = tag( listOf(homeopathyData, "colleges"),"homeopathy");
+
+    const engCourses = tag(listOf(dbData, "courses"), "eng");
+    const artsCourses = tag(listOf(artsData, "courses"), "arts");
+    const medicalCourses = tag(listOf(medicalData, "courses"), "medical");
+    const nursingCourses = tag(listOf(nursingData, "courses"), "nursing");
+    const alliedCourses = tag(listOf(alliedData, "courses"), "allied");
+    const physiotherapyCourses = tag(
+      listOf(physiotherapyData, "courses"),
+      "physio",
+    );
+    const pharmacyCourses = tag(listOf(pharmacyData, "courses"), "pharmacy");
+    const lawCourses = tag(listOf(lawData, "courses"), "law");
+    const dentalCourses = tag(listOf(dentalData, "courses"),"dental");
+    const agricultureCourses = tag(listOf(agricultureData, "courses"),"agriculture");
+    const veterinaryCourses = tag(listOf(veterinaryData, "courses"),"veterinary");
+    const homeopathyCourses = tag(listOf(homeopathyData, "courses"),"homeopathy");
+
+    const links = listOf(dbData, "collegeCourses");
 
     // build course ids per college from the collegeCourses join table
     const byCollege = {};
@@ -3640,7 +3595,7 @@ export default function StudentDashboard() {
     });
 
     // The collegeCourses join table only maps engineering colleges, so it must
-    // not be applied to arts colleges (their ids overlap with engineering ids).
+    // not be applied to the other files (their ids overlap with engineering ids).
     const decorate = (college, withLinks) => ({
       ...college,
       courseIds: [
@@ -3651,7 +3606,7 @@ export default function StudentDashboard() {
       ],
     });
 
-    setColleges([
+    const allColleges = [
       ...engList.map((college) => decorate(college, true)),
       ...artsList.map((college) => decorate(college, false)),
       ...medicalList.map((college) => decorate(college, false)),
@@ -3660,7 +3615,17 @@ export default function StudentDashboard() {
       ...physiotherapyList.map((college) => decorate(college, false)),
       ...pharmacyList.map((college) => decorate(college, false)),
       ...lawList.map((college) => decorate(college, false)),
-    ]);
+      ...agricultureList.map((college) => decorate(college, false)),
+      ...dentalList.map((college) => decorate(college, false)),
+      ...veterinaryList.map((college) => decorate(college, false)),
+      ...homeopathyList.map((college) => decorate(college, false)),
+    ];
+
+     console.log("Agriculture colleges:", agricultureList.length);
+     console.log("Agriculture courses:", agricultureCourses.length);
+     console.log( "Agriculture college names:",agricultureList.map((college) => college.name)
+); 
+    setColleges(allColleges);
     setCourses([
       ...engCourses,
       ...artsCourses,
@@ -3670,6 +3635,10 @@ export default function StudentDashboard() {
       ...physiotherapyCourses,
       ...pharmacyCourses,
       ...lawCourses,
+      ...agricultureCourses,
+      ...dentalCourses,
+      ...veterinaryCourses,
+      ...homeopathyCourses,
     ]);
     setLoading(false);
   }, []);
@@ -3694,26 +3663,31 @@ export default function StudentDashboard() {
 
   /* =======================================================
      COURSE INDEX
+     `${_src}:${id}` and `${category}:${id}` are exact keys.
+     The plain `${id}` key is kept only when that id is unique
+     across all files (ambiguous ids are stored as null).
   ======================================================= */
 
   const courseIndex = useMemo(() => {
     const index = {};
 
     courses.forEach((course) => {
-      if (course?.id !== undefined) {
-        index[String(course.id)] = course;
+      if (course?.id === undefined) return;
 
-        if (course.category) {
-          index[`${course.category}:${course.id}`] = course;
-        }
-      }
+      const id = String(course.id);
+
+      if (course._src) index[`${course._src}:${id}`] = course;
+      if (course.category) index[`${course.category}:${id}`] = course;
+
+      if (id in index) index[id] = null;
+      else index[id] = course;
     });
 
     return index;
   }, [courses]);
 
   /* =======================================================
-     APPLY NOW  (the form itself lives in ApplyNow.jsx)
+     APPLY NOW  (the form itself is the ApplyNow component above)
      applyTarget === null          -> form closed
      applyTarget === { college }   -> form open
                                       (college is null when opened from navbar)
@@ -3726,7 +3700,6 @@ export default function StudentDashboard() {
 
   /* ---------- profile + course category state ---------- */
   const [profiles, setProfiles] = useState(readProfiles);
-  const [courseCat, setCourseCat] = useState("engineering");
 
   const profile = profiles[userKey];
   const profileDone = isProfileComplete(profile);
@@ -3820,7 +3793,8 @@ export default function StudentDashboard() {
     ].sort();
   }, [colleges]);
 
-  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Healthcare & Medical Sciences", "Law"];
+  const COLLEGE_CATEGORIES = ["Engineering", "Arts", "Healthcare & Medical Sciences", "Law","Agriculture","Veterinary",
+  "Homeopathy",];
 
   // subcategories shown under the "Healthcare & Medical Sciences" umbrella
   const HEALTH_SUBCATEGORIES = [
@@ -3829,6 +3803,7 @@ export default function StudentDashboard() {
     "Allied Health",
     "Physiotherapy",
     "Pharmacy",
+     "Dental",
   ];
 
   // maps a subcategory tab to the `category` value stored on the colleges
@@ -3838,6 +3813,7 @@ export default function StudentDashboard() {
     "Allied Health": "Allied",
     Physiotherapy: "Physiotherapy",
     Pharmacy: "Pharmacy",
+     Dental: "Dental",
   };
 
   const isHealthGroup = category === "Healthcare & Medical Sciences";
@@ -3862,6 +3838,9 @@ export default function StudentDashboard() {
     (categoryCounts.Nursing ?? 0) +
     (categoryCounts.Allied ?? 0) +
     (categoryCounts.Physiotherapy ?? 0) +
+    (categoryCounts.Veterinary ?? 0) +
+    (categoryCounts.Homeopathy ?? 0) +
+    (categoryCounts.Agriculture ?? 0) +
     (categoryCounts.Pharmacy ?? 0);
 
   /* =======================================================
@@ -4246,119 +4225,112 @@ export default function StudentDashboard() {
         </header>
 
         {/* =================================================
-            HERO + ABOUT  (Home page only)
+            HERO  (Home page only)
         ================================================= */}
 
         {view === "home" && (
-          <>
-        {/* =================================================
-            HERO
-        ================================================= */}
-
-        <section className="cc-hero">
-          <div className="cc-wrap cc-hero-grid">
-            <div>
-              <span className="cc-pill">
-                <Icon name="sparkle" size={15} />
-                Tamil Nadu Engineering Colleges
-              </span>
-
-              <h1>
-                Find the Right College for <em>Your Future</em>
-              </h1>
-
-              <p className="cc-hero-text">
-                Explore engineering colleges in Coimbatore, Erode and Salem
-                with courses, fees, eligibility, facilities and important
-                college details in one place.
-              </p>
-
-              <div className="cc-hero-actions">
-                <a
-                  href="#colleges"
-                  className="cc-btn cc-btn-primary cc-btn-lg"
-                  onClick={(event) =>
-                    handleNav(event, { href: "#colleges", route: "/student/colleges" })
-                  }
-                >
-                  Explore Colleges
-                  <Icon name="arrow" size={18} />
-                </a>
-
-                <a
-                  href="#colleges"
-                  className="cc-btn cc-btn-ghost cc-btn-lg"
-                  onClick={(event) =>
-                    handleNav(event, { href: "#colleges", route: "/student/colleges" })
-                  }
-                >
-                  Compare Colleges
-                </a>
-              </div>
-
-              <ul className="cc-points">
-                <li>
-                  <Icon name="check" size={16} />
-                  Courses & fees
-                </li>
-
-                <li>
-                  <Icon name="check" size={16} />
-                  College details
-                </li>
-
-                <li>
-                  <Icon name="check" size={16} />
-                  Facilities
-                </li>
-              </ul>
-            </div>
-
-            <div className="cc-hero-visual">
-              <div className="cc-hero-img">
-                <img
-                  src={homeStudentImage}
-                  alt="Students on a college campus"
-                />
-              </div>
-
-              <div className="cc-float cc-float-b">
-                <span className="cc-icon-circle">
-                  <Icon name="building" size={22} />
+          <section className="cc-hero">
+            <div className="cc-wrap cc-hero-grid">
+              <div>
+                <span className="cc-pill">
+                  <Icon name="sparkle" size={15} />
+                  Tamil Nadu Engineering Colleges
                 </span>
 
-                <div>
-                  <strong>{colleges.length || "10"}+</strong>
-                  <small>Engineering Colleges</small>
+                <h1>
+                  Find the Right College for <em>Your Future</em>
+                </h1>
+
+                <p className="cc-hero-text">
+                  Explore engineering colleges in Coimbatore, Erode and Salem
+                  with courses, fees, eligibility, facilities and important
+                  college details in one place.
+                </p>
+
+                <div className="cc-hero-actions">
+                  <a
+                    href="#colleges"
+                    className="cc-btn cc-btn-primary cc-btn-lg"
+                    onClick={(event) =>
+                      handleNav(event, { href: "#colleges", route: "/student/colleges" })
+                    }
+                  >
+                    Explore Colleges
+                    <Icon name="arrow" size={18} />
+                  </a>
+
+                  <a
+                    href="#colleges"
+                    className="cc-btn cc-btn-ghost cc-btn-lg"
+                    onClick={(event) =>
+                      handleNav(event, { href: "#colleges", route: "/student/colleges" })
+                    }
+                  >
+                    Compare Colleges
+                  </a>
                 </div>
+
+                <ul className="cc-points">
+                  <li>
+                    <Icon name="check" size={16} />
+                    Courses & fees
+                  </li>
+
+                  <li>
+                    <Icon name="check" size={16} />
+                    College details
+                  </li>
+
+                  <li>
+                    <Icon name="check" size={16} />
+                    Facilities
+                  </li>
+                </ul>
               </div>
 
-              <div className="cc-float cc-float-c">
-                <span className="cc-icon-circle">
-                  <Icon name="book" size={22} />
-                </span>
+              <div className="cc-hero-visual">
+                <div className="cc-hero-img">
+                  <img
+                    src={homeStudentImage}
+                    alt="Students on a college campus"
+                  />
+                </div>
 
-                <div>
-                  <strong>{courses.length || "8"}+</strong>
-                  <small>Courses Available</small>
+                <div className="cc-float cc-float-b">
+                  <span className="cc-icon-circle">
+                    <Icon name="building" size={22} />
+                  </span>
+
+                  <div>
+                    <strong>{colleges.length || "10"}+</strong>
+                    <small>Engineering Colleges</small>
+                  </div>
+                </div>
+
+                <div className="cc-float cc-float-c">
+                  <span className="cc-icon-circle">
+                    <Icon name="book" size={22} />
+                  </span>
+
+                  <div>
+                    <strong>{courses.length || "8"}+</strong>
+                    <small>Courses Available</small>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="cc-strip">
-            <div className="cc-wrap cc-strip-grid">
-              {stats.map((item) => (
-                <div key={item.label}>
-                  <strong>{item.value}</strong>
-                  <span>{item.label}</span>
-                </div>
-              ))}
+            <div className="cc-strip">
+              <div className="cc-wrap cc-strip-grid">
+                {stats.map((item) => (
+                  <div key={item.label}>
+                    <strong>{item.value}</strong>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-
-          </>
+          </section>
         )}
 
         {/* =================================================
@@ -4366,55 +4338,73 @@ export default function StudentDashboard() {
         ================================================= */}
 
         {view === "about" && (
-          <>
-        <section className="cc-section" id="about">
-          <div className="cc-wrap cc-about">
-            <div>
-              <span className="cc-eyebrow">About us</span>
+          <section className="cc-section" id="about">
+            <div className="cc-wrap">
+              <div className="cc-page-hero">
+                <span className="cc-eyebrow">About us</span>
+                <h2>Your path from school to the right college</h2>
+                <p>
+                  The Student–College Admission Platform brings colleges,
+                  courses, eligibility and applications into one simple place.
+                </p>
+              </div>
 
-              <h2>Everything you need to choose your college</h2>
+              <div className="cc-about">
+                <div>
+                  <h2>Our purpose</h2>
+                  <p className="cc-about-text">
+                    Choosing a college is confusing: details are scattered,
+                    cutoffs are hard to compare and applications are
+                    repetitive. We give every student one trusted place to
+                    explore, compare and apply, without running between
+                    websites.
+                  </p>
 
-              <p className="cc-about-text">
-                Students can explore colleges and view their basic details,
-                institution type, courses, admission information and
-                facilities.
-              </p>
+                  <ul className="cc-about-list">
+                    <li>
+                      <Icon name="check" size={18} />
+                      Search colleges by category, city and course
+                    </li>
+                    <li>
+                      <Icon name="check" size={18} />
+                      See fees, eligibility, facilities and placements
+                    </li>
+                    <li>
+                      <Icon name="check" size={18} />
+                      Auto-calculated cutoff marks for each stream
+                    </li>
+                    <li>
+                      <Icon name="check" size={18} />
+                      Apply in one form and track your status
+                    </li>
+                  </ul>
+                </div>
 
-              <p className="cc-about-text">
-                The college information is fetched from the database, making
-                it easier to search and compare colleges without manually
-                entering information into the frontend.
-              </p>
+                <div className="cc-about-img">
+                  <img src={aboutStudentImage} alt="Students on campus" />
+                </div>
+              </div>
 
-              <ul className="cc-about-list">
-                <li>
-                  <Icon name="check" size={18} />
-                  Basic college information
-                </li>
-
-                <li>
-                  <Icon name="check" size={18} />
-                  Course, eligibility and fee details
-                </li>
-
-                <li>
-                  <Icon name="check" size={18} />
-                  College information and facilities
-                </li>
-
-                <li>
-                  <Icon name="check" size={18} />
-                  Hostel, placement and campus facilities
-                </li>
-              </ul>
+              <div className="cc-cx-grid" style={{ marginTop: 40 }}>
+                {[
+                  ["🏫", "Explore", "Engineering, Arts & Science, Health, Law and more in one directory.", "linear-gradient(135deg,#dbeafe,#ede9fe)"],
+                  ["📚", "Compare courses", "Duration, eligibility, entrance exams and fees side by side.", "linear-gradient(135deg,#ccfbf1,#dbeafe)"],
+                  ["📝", "Apply easily", "Your profile pre-fills the form, so you can apply to several colleges quickly.", "linear-gradient(135deg,#fce7f3,#ede9fe)"],
+                  ["📊", "Track progress", "Pending, approved or rejected, all visible in My Applications.", "linear-gradient(135deg,#fef3c7,#fce7f3)"],
+                ].map(([emoji, title, text, grad]) => (
+                  <article
+                    className="cc-cx-card"
+                    key={title}
+                    style={{ background: grad }}
+                  >
+                    <span className="cc-cx-icon">{emoji}</span>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </article>
+                ))}
+              </div>
             </div>
-
-            <div className="cc-about-img">
-              <img src={aboutStudentImage} alt="College campus" />
-            </div>
-          </div>
-        </section>
-          </>
+          </section>
         )}
 
         {/* =================================================
@@ -4653,7 +4643,10 @@ export default function StudentDashboard() {
                     const names = courseNames(college, courseIndex);
 
                     return (
-                      <article className="cc-card" key={college.id}>
+                      <article
+                        className="cc-card"
+                        key={`${college._src}-${college.id}`}
+                      >
                         <div className="cc-card-media">
                           {image && (
                             <img
@@ -4788,7 +4781,7 @@ export default function StudentDashboard() {
         )}
 
         {/* =================================================
-            APPLY NOW  (component lives in ApplyNow.jsx)
+            APPLY NOW
         ================================================= */}
 
         {applyTarget && (
@@ -4821,8 +4814,6 @@ export default function StudentDashboard() {
             }}
           >
             <div className="cc-modal" role="dialog" aria-modal="true">
-              {/* CLOSE */}
-
               <button
                 type="button"
                 className="cc-modal-close"
@@ -4831,8 +4822,6 @@ export default function StudentDashboard() {
               >
                 <Icon name="close" size={18} />
               </button>
-
-              {/* IMAGE */}
 
               {selectedImage && (
                 <div className="cc-modal-hero">
@@ -4847,8 +4836,6 @@ export default function StudentDashboard() {
                   </div>
                 </div>
               )}
-
-              {/* CONTENT */}
 
               <div className="cc-modal-content">
                 {!selectedImage && <h2>{getCollegeName(selected)}</h2>}
@@ -4960,9 +4947,7 @@ export default function StudentDashboard() {
                       <div className="cc-course-list">
                         {selectedCourses.map((course, index) => {
                           const courseName =
-                            toText(
-                              course.courseName || course.name || course.title,
-                            ) || "Engineering Course";
+                            getCourseName(course) || "Engineering Course";
 
                           const degree =
                             toText(course.degree) || "B.E / B.Tech";
@@ -5044,7 +5029,6 @@ export default function StudentDashboard() {
 
                   <div className="cc-detail-section-content">
                     <div className="cc-facility-grid">
-                      {/* facilities stored as a list: ["Library", "Hostels", ...] */}
                       {selectedFacilityList.map((facility) => (
                         <div className="cc-facility" key={facility}>
                           <div className="cc-facility-icon">
@@ -5054,7 +5038,6 @@ export default function StudentDashboard() {
                         </div>
                       ))}
 
-                      {/* facilities stored as an object: {hostel, placement, ...} */}
                       {toText(selectedFacilities.hostel) && (
                         <div className="cc-facility">
                           <div className="cc-facility-icon">
@@ -6031,7 +6014,6 @@ const USER_STYLE = `
 
 /* =========================================================
    COURSES + MY APPLICATIONS + EXTRA VISUAL THEME
-   Integrated into StudentDashboard.jsx
 ========================================================= */
 
 const CATEGORY_META = {
@@ -6048,14 +6030,14 @@ const CATEGORY_META = {
 const courseMeta = (catId, name) => {
   const base = CATEGORY_META[catId] || CATEGORY_META.engineering;
   let { duration, eligibility } = base;
-  if (/^M\\.?Pharm|^MPT|^Master of|^LLM/i.test(name)) {
+  if (/^M\.?Pharm|^MPT|^Master of|^LLM/i.test(name)) {
     duration = /^LLM/i.test(name) ? "1–2 Years" : "2 Years";
     eligibility = "Relevant bachelor's degree";
-  } else if (/^Diploma|D\\.Pharm/i.test(name)) {
+  } else if (/^Diploma|D\.Pharm/i.test(name)) {
     duration = "2 Years";
     eligibility = "12th with Physics, Chemistry & Biology/Maths";
-  } else if (/Pharm\\.D/i.test(name)) duration = "6 Years";
-  else if (/^(BA|B\\.Com|B\\.Sc) LLB|BBA LLB/i.test(name)) { duration = "5 Years"; eligibility = "12th pass (any group)"; }
+  } else if (/Pharm\.D/i.test(name)) duration = "6 Years";
+  else if (/^(BA|B\.Com|B\.Sc) LLB|BBA LLB/i.test(name)) { duration = "5 Years"; eligibility = "12th pass (any group)"; }
   else if (/^LLB$/i.test(name)) { duration = "3 Years"; eligibility = "Any bachelor's degree"; }
   else if (/^(MBBS)/i.test(name)) { duration = "5.5 Years"; eligibility = "12th PCB with NEET-UG"; }
   else if (/^(BDS)/i.test(name)) { duration = "5 Years"; eligibility = "12th PCB with NEET-UG"; }
@@ -6063,9 +6045,9 @@ const courseMeta = (catId, name) => {
   else if (/Nursing/i.test(name)) { duration = "4 Years"; eligibility = "12th with Physics, Chemistry & Biology"; }
   else if (/^(BPT|Bachelor of Physio)/i.test(name)) duration = "4.5 Years";
   else if (catId === "arts") {
-    if (/^B\\.Sc|^BCA|^BBA|^B\\.Com|^BA|^BSW/i.test(name)) duration = "3 Years";
+    if (/^B\.Sc|^BCA|^BBA|^B\.Com|^BA|^BSW/i.test(name)) duration = "3 Years";
     if (/Computer|Information Tech|BCA|Statistics|Mathematics|Physics|Chemistry/i.test(name)) eligibility = "12th with Maths / Science group";
-    else if (/^B\\.Com|BBA|Economics/i.test(name)) eligibility = "12th pass (Commerce preferred)";
+    else if (/^B\.Com|BBA|Economics/i.test(name)) eligibility = "12th pass (Commerce preferred)";
   }
   return { ...base, duration, eligibility };
 };
