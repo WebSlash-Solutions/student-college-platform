@@ -2,8 +2,8 @@ import { useState } from "react";
 
 export const LOGIN_STYLE = `
 :root {
-  --cc-login-bg1: #4f46e5;
-  --cc-login-bg2: #7c3aed;
+  --cc-login-bg1: #0f766e;
+  --cc-login-bg2: #142033;
   --cc-login-ink: #111827;
   --cc-login-mut: #6b7280;
   --cc-login-line: #e5e7eb;
@@ -14,9 +14,13 @@ export const LOGIN_STYLE = `
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: #f1f2f6;
-  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(224, 138, 30, 0.38), transparent 28%),
+    radial-gradient(circle at 88% 86%, rgba(15, 118, 110, 0.32), transparent 34%),
+    #efe8d8;
+  font-family: Outfit, "Segoe UI", system-ui, sans-serif;
   padding: 24px;
+  overflow: hidden;
 }
 .cc-login-page *,
 .cc-login-page *::before,
@@ -30,21 +34,54 @@ export const LOGIN_STYLE = `
   max-width: 960px;
   min-height: 560px;
   background: var(--cc-login-card);
-  border-radius: 20px;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(17, 24, 39, 0.18);
+  box-shadow: 0 28px 70px rgba(20, 32, 51, 0.22);
+  animation: ccLoginIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .cc-login-brand {
-  background: linear-gradient(150deg, var(--cc-login-bg1), var(--cc-login-bg2));
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(155deg, #142033 0%, #0f766e 68%, #e08a1e 140%);
   color: var(--cc-login-brand-text);
   padding: 44px 40px;
   display: flex;
+  animation: ccBrandSlide 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.cc-login-brand::before,
+.cc-login-brand::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+.cc-login-brand::before {
+  width: 240px;
+  height: 240px;
+  right: -70px;
+  top: -60px;
+  animation: ccLoginBlob 7s ease-in-out infinite;
+}
+.cc-login-brand::after {
+  width: 160px;
+  height: 160px;
+  left: -40px;
+  bottom: -50px;
+  background: rgba(224, 138, 30, 0.45);
+  animation: ccLoginBlob 8s ease-in-out infinite reverse;
 }
 .cc-login-brand-inner {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 22px;
   width: 100%;
+}
+.cc-login-brand h1,
+.cc-login-card h2 {
+  font-family: Fraunces, Georgia, serif;
 }
 .cc-login-logo {
   display: inline-flex;
@@ -133,6 +170,7 @@ export const LOGIN_STYLE = `
   display: flex;
   flex-direction: column;
   justify-content: center;
+  animation: ccCardSlide 0.85s 0.08s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .cc-login-tabs {
   display: grid;
@@ -265,6 +303,30 @@ export const LOGIN_STYLE = `
   }
   .cc-login-card {
     padding: 36px 28px;
+  }
+}
+@keyframes ccLoginIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ccBrandSlide {
+  from { opacity: 0; transform: translateX(-36px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ccCardSlide {
+  from { opacity: 0; transform: translateX(36px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ccLoginBlob {
+  50% { transform: translate3d(16px, -18px, 0) scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-login-shell,
+  .cc-login-brand,
+  .cc-login-card,
+  .cc-login-brand::before,
+  .cc-login-brand::after {
+    animation: none !important;
   }
 }
 `;
