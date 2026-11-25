@@ -1,43 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-/* ============================================================================
-   COLLEGE DASHBOARD + STUDENT LEADS  (ONE FILE, TWO ROUTES)
-   App.jsx:  <Route path="/college/dashboard" element={<CollegeDashboard />} />
-             <Route path="/college/leads"     element={<CollegeDashboard />} />
-   (the same component shows the dashboard on /college/dashboard and the full leads page on /college/leads)
-   Glass bento layout · aurora background · lots of animations · fully responsive · LIVE data from backend
-   (auto-refresh every 15s + optional realtime stream, new-lead alerts, rolling number animations)
-
-   BACKEND CONNECTION  (change only the 3 lines below)
-   1) .env  ->  VITE_API_URL=http://localhost:5000
-   2) GET  {API}/api/college/dashboard          -> stats, leads, courses, activity of the LOGGED-IN college
-   3) POST {API}/api/college/students/:id/unlock -> unlock a student profile (₹100)  [backend must verify payment]
-   Auth: sends "Authorization: Bearer <token>" from the saved login session (+ cookies).
-   If the backend is not reachable, SAMPLE data is shown with a small "Sample data" tag,
-   and the page switches to real data automatically as soon as the API answers.
-
-   Expected JSON (extra / missing fields are fine, common alternate names are also read):
-   {
-     "college":   { "name": "...", "district": "...", "state": "...", "code": "...", "logo": "...", "verified": true },
-     "plan":      { "name": "Gold", "expiresAt": "2027-03-01" },
-     "stats":     { "totalInterested": 125, "newLeads": 23, "profilesPurchased": 18, "totalSpent": 1800 },
-     "listing":   { "profileViews": 1840, "searchAppearances": 5320, "profileCompletion": 78 },
-     "leads":     [ { "studentId": "STU10234", "name": "Keerthi", "course": "B.Tech CSE", "location": "Coimbatore",
-                      "percentage": 82, "status": "New", "unlocked": false } ],
-     "courses":   [ { "name": "B.Tech CSE", "leads": 42, "seats": 120 } ],
-     "activities":[ { "title": "New student lead", "text": "Keerthi showed interest", "time": "2 min ago" } ]
-   }
-   ============================================================================ */
-
 const API_BASE = (import.meta.env && import.meta.env.VITE_API_URL) || "http://localhost:5000";
 const DASHBOARD_PATH = "/api/college/dashboard";
 const UNLOCK_PATH = (id) => `/api/college/students/${encodeURIComponent(id)}/unlock`;
 
-/* LIVE UPDATES
-   - POLL_MS: the dashboard silently re-fetches {DASHBOARD_PATH} every N ms while the tab is open (works with any backend).
-   - STREAM_PATH: OPTIONAL realtime push (Server-Sent Events). If your backend exposes it, every event it sends
-     triggers an instant refresh. If it does not exist, nothing breaks - polling keeps the data live. */
 const POLL_MS = 15000;
 const STREAM_PATH = "/api/college/stream";
 /* OPTIONAL full list of leads for the Student Leads view (falls back to the "leads" inside the dashboard answer) */
@@ -206,9 +173,6 @@ function normalize(raw) {
 
 const EMPTY = normalize({});
 
-/* SAMPLE data, shown only while the backend is not reachable.
-   It is generated from the logged-in college's name, so every college sees its OWN different numbers
-   (once the backend answers, the real numbers of that college replace it). */
 function hashStr(t) {
   let h = 2166136261;
   for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); }
@@ -1574,7 +1538,6 @@ const CSS = `
 @keyframes cdbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @keyframes cdshim{to{background-position:-300% 0}}
 
-
 /* ---------- student leads view ---------- */
 .cl-hero{position:relative;overflow:hidden;padding:26px 32px;border-radius:28px;color:#fff;background:linear-gradient(120deg,#0e2f86,#1558d6 50%,#7c3aed);background-size:220% 220%;box-shadow:0 24px 60px rgba(21,70,180,.3);animation:cdrise .8s cubic-bezier(.2,.8,.2,1) both,cdhero 14s ease-in-out infinite}
 .cl-hero-in{position:relative;z-index:1;display:flex;flex-direction:column;gap:18px}
@@ -1659,4 +1622,3 @@ const CSS = `
   .cd-page *,.cd-page *:before,.cd-page *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
 }
 `;
-

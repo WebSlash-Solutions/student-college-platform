@@ -1,22 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-/* COLLEGE PAYMENT PAGE  (route: /college/payment?plan=gold&period=6m)
-   Design: full-height split screen.
-     left  = deep teal "total" panel (huge animated amount + order lines with dotted leaders)
-     right = cream checkout with accordion payment methods (radio rows that expand inline)
-   Mobile: panel becomes a compact header (details collapse), Pay button sticks to the bottom.
-   Receipt = thermal paper slip with torn edge.
-   Same logic as before: login guard, plan guard, UPI collect flow, card preview, net banking, receipt.
-   DEMO payment only - for real money create the order on your backend (Razorpay / PayU / Cashfree)
-   and activate the plan only after server-side signature verification. */
-
 const SESSION_KEY = "campusconnect_college_session";
 const AFTER_LOGIN_KEY = "campusconnect_after_login";
 
-/* LIVE college name from your backend (the logged-in college's own record).
-   Set VITE_API_URL in .env (e.g. http://localhost:5000) and change COLLEGE_ME_PATH to the route that
-   returns the logged-in college's profile. If the call fails, the saved session data is used instead. */
 const API_BASE = (import.meta.env && import.meta.env.VITE_API_URL) || "http://localhost:5000";
 const COLLEGE_ME_PATH = "/api/college/me";
 
