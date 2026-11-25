@@ -10,7 +10,10 @@ import studentcollege.platform.application.service.ApplicationService;
 
 @RestController
 @RequestMapping("/api/applications")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "http://localhost:5174"
+})
 public class ApplicationController {
 
     private final ApplicationService applicationService;
