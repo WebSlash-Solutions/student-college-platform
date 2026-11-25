@@ -2,23 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CollegeExplorer, INDIA_DISTRICTS, TOTAL_DISTRICTS } from "./CollegeProfile"; // college explorer + every district of India, state-wise
 
-/* COLLEGE SIDE — ONE FILE (route: /college/home)
-
-   Contains BOTH pages:
-   1. Public college website (no login): hero, district explorer, counters, how it works,
-      plans, pricing, benefits, about, contact
-   2. Subscription pricing view (LOGIN ONLY): Elite / Gold / Diamond with 1 Month, 6 Months, 1 Year
-      -> opens inside this same page when a logged-in college clicks "View Plans & Prices".
-      -> not logged in: the prices are never rendered and the college is sent to the login page.
-
-   NAV ORDER (the page sections scroll in this SAME order, one after another):
-   Start Here · Student Pool · College Radar · Boost Plans · How We Work · Just ₹100 · Why Us · Our Mission · Reach Us
-
-   NOTE: the login check here only controls what the screen shows. Real protection must be on the backend:
-   plans/prices API and payment API must require the college's JWT, and payment success must be verified by the backend. */
-
-/* Hero pictures (cut from the reference design) — embedded so no /public folder is needed.
-   Replace any string with "/students/your-photo.jpg" or another data URI to use your own picture. */
 const HERO_PICS = [
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwMDAgQDAwMEBAQFBgoGBgUFBgwICQcKDgwPDg4MDQ0PERYTDxAVEQ0NExoTFRcYGRkZDxIbHRsYHRYYGRj/2wBDAQQEBAYFBgsGBgsYEA0QGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBj/wAARCAC4ALgDASIAAhEBAxEB/8QAHQAAAAYDAQAAAAAAAAAAAAAAAAIEBQYHAQMICf/EADgQAAEDAwMCBAQFAwQCAwAAAAEAAgMEBREGEiEHMRMiQVEIFDJhFUJScYGRobEjM0NiGCQlY+H/xAAbAQABBQEBAAAAAAAAAAAAAAAFAgMEBgcAAf/EACoRAAEEAQQCAgICAgMAAAAAAAEAAgMEEQUSITEGEyJBFDJRYQcVI3GB/9oADAMBAAIRAxEAPwDt5FJWCUVzkSAQ0lZc7jlEJ4wEHORNy9SMrJztWGtLvJty73C2wU76iTAzhPMFJHTsxjJ90h8u1LbHlNUdEIxuqDx7I8tTtbhi2Vz/ADnB4THU1ojGG90qNpk5KZldsSuWsDDlxCQTXNrXZ3YP7JunnkfyTwkr5H7Whrt/8IgysPtQJLBPAS+WtfKCC/IKIJ8syDgjuPdQvVWv9MaRew324xwZ4xnlRDqL1v09ovp23UlLVx1k9S3/ANNjT6/cJ4RALxoc9Wzcbnb7dR/NXG4QUMAGTI94BH8KA3LrP0woZTE/U7HjODgLgjVfU7V2urlNX327Ts3OyIGOIDR6cKN+Mx5GXPkPuSlsbzlPfjZ7XoezrV0vqDsj1I1o+4W2o6r9OoaczSaqiDAM8eq8697PZzD9iiEEj/dkcz9JcndwwkmkMrrzXHxZWy2OfQ6FovmJxkfMu7fuqXf146q192Nxde4WuJ3Mb4fb7Kqxhg8jAB7Y5SmnZvkxIDhvLiD2TJGVMigawLvf4fetdb1Gsclv1AWC9UfDnDjcFesFaJSWl3IXm10b6jUHTzWlXeLhGXRuGAAe67a6f9RrTr2wfitocMZ5bnkJt0Acoc+5hyFbUNYY27md0oeaatZtkOJvQqL01zYSGSnBKdIZg5nB4/UFDfX28hKZPu4KLV0c9Icy+dvoQgnSmmEjNk3nZ7lBIExbwU9szyskrU48fdHJWk8v4SBwpDsYQBcTgrfT0xmfj0WIIHzy4anuKFkEI2jlNTSBvSVAwu5RoY2QQhoxlaKurZA0mRwBRK2sjoYDLKR+yhNxu0lbNgOIGUmvXdKcpdiw2MYCc7hczO4tj7JrLspK2R27A5Rw/lGY4dgQiSXeUdwytTmua8OAzkcre0gqF9UNbQ6D0DVXh2DKWEQg+6WBkpIauO/igtt2puoJqq24malkOY4mv+hULWXe5V1LFR19W+Slg/2w45AT/q7VFz1TfKi6XStfLJK8lsTjw0KLSBhj8Ms8gS5GnHCIQgALY2dpYSDy7stzZT6FNTmytJPYflQ+YcwYc14/cKOZdnZT7Yt3ITwJ9/BK2BzsbtwDUyCpA5DwP5RvHc52HSgD91wlaeSV6IiU9/MxM5b5nLfHMILbJPIT4ruwTPQyNkqBHCx0js+gyn28ad1NDb47lNb5W0rRk+XjC8FpjSASlitI79QksUjZCJJMOBHIXV/wgsqXRXVzd3y4+n2XKWnqB94vVPbqd2H1Dwzn0Xo90f6f0WgOn0FGwA1EzA57h90/g7twQ6ztczDjypg5pa7n8xSyjrnwPAz5fuiOjILs+nZadhH7J4jcCChpOCCFK6Oqin5jd5kFF4KiWGT/AEicoKDJVweFKZYJHKmbisMaS8NAyVrHmKdbbT5d4rhwoUjg1uUQa0vcAEtpIGxQgn6lsqJmQQOklcAwDIR3Fo8/oFDdR3Y1Evy0LvKO+FDghdO9TJ5WwMSG73GSvnc7PkacAJrDUfcARg+Qd1hWOKNsbcBV6R5kOUFkuIKwgRkpw8pAGFkzYIC5t+MGvqItCUYZkRldIOjyFTXxKaQl1J0cmkibl1K3dx3TYGOU7G/nC87nVhkAefqCwJiCN5y4/wBkiex8e5mDuY4tP8LDXFpcQcuPfPokGbA5RVsW7pOcR3TxxkZIkbud6d+y7SsnRzRmqOnNvq5bc2KqdGN2B9u65M6a6PumuNcUlloGONOyQPqZMcAA+66x6har1Xp200Ghen9qknq9gjdUtbwPTuqvq9ovc1rDhXDQqga1zntyo3dfha006rzT3BkYPJj3dlqofhb04ybdNcC5vp902UvTH4h62dlbUXKSNxcHOG7sF0XYbfc6PS9NS3iTdWMaA4+5QOxcmgHxkyrHWoU7LsmLBVf2HoxonTg+YZRxylvd7+ykt2slvvWjrhaKaGknaYjtjaRkYCPrmy3XUGjp7RYas01ZJwHhVDYOi3VXTd/p7jBqt0/hgumjL8hw9lGhm9rg6R+CptmNsDPXHHwueLdR19u6pNtVFG/5mKrGxgHLfMvUDTLpxoy1/NgioMLQ4H9lz30s6Y0db1ZuGtbxb2+LGcMjI4c71K6MbKAPpx6NA9FpVdjvS0g5WLakWtmcMdJY/GNpPIWpwBRGv8pDj5ghkqVtwUNyMZWQ1BYDkF6QQvQQVMaaNz5PDA7qRwRtihEY/Km22wgnxsdk5l4DM9iOVWJ3bjgKxQN2jcU0agufyNA5oPndwAoGZC7J9+Uvvte6uu7zuyyI4TZ2RyhBsj5+0Huze1/CyXYQBRe6CmY+lEz9LYHIwetKC7auylIeEludBBdrTV2uoAcyeMtwf2Wd+AsGRwa70kAyE1J8RlOM5cAvPnVvw96yk6n3GjtlOWUfiFzHY45KrzWXS/VOi5Nl6onuhIJbMOwXoRc6+rqrzIXvbF6bgOVDb3baPV1suWlLw5kr3MIglI5BwqTJrZbOQelq8PjIdWbI39iq5+FGy08HT6sr3sb83UkgyY5AH3XQEMQgk8SKKLxufO5uT/VV70d0VVdPdDy2Svfve6Rxa/7Z4VjslYdu4+X0Kr96wySbeFYdOrGCu1hHKoi4dYtXW3ry3TMlQ40Dn7SwK+CXSRslGS0tBwfuolJ0003Ua5bqioYH1rTlrVNC4BoLQAAMYTVmRsgAAS6jJY5HOcOEwVtTLQW6tuEURkfTxuLGjvnCqDoVra/ax1nqGju75i2J5DdxIwMq66Oajkq5279+QWvZjOQiWHSen7DNWV9no2wy1Jy4gL2INY05S5973t/hSXTzaeOlfBFiOUE/ynlp2/uovDHJHcqfwid7j5lKnADH7LQ9BumeAZHSyXyrTxBb/wCM8FDJWc4RUEfPaqg6wjbkFgBBdhcrTpo/CpmtSO+1oorPNKTg4w3+U4jlpx6KIazqcuhoweBy5Vesz2ygKyzu2RFRgHPH6jlG3LXgt5QBVn4bgBVwfZRxygsZQyu/tdj7WVnCLlAOXLzKyRytZGfM7uUcuRHDLeVzusYXAgHcfpRDUNnkbL85AMnvgKKso6aO4vu1QfDf2c4q1HR72bXDLfZMt40vR3WzTUAPhmXs4e6qGo+NCZ5niPK0PRPNXV4hBMMj+VFhISGkyeJGed4K3Me7cT3I7IlPZprJQR22Zxk2nl5W9kPGxnLyqRYgdXeY39haRVtssRCZp4KTPvbKW5R0T4iXSdinowVmAJKWRrXjuAkElCySpjqHxAyxnKnlo1nTRUjaW50DXFgxuwnIo2vxkqLanmjGYm5USo6COgdJUtpH7v1kJTSu3xFzm4yVJL5q2iuNrdRUdCyPd+YBRpr9kIYMLpgGu+Bym60kjmF0zdqeKCnic3eR/KXlIaFx+WCWZytN0aH11hgdrIPIbRluvweEMrOFhYyUXygG0DpHQWskhBcuVuD6gQq61JP42oJsdhhWLnyk/YqrLhN4l5qXH3QDTWbnko5qD9oAWnPHKKXIm/LVgP4Vh2oHu5WzKxk+ywHco2eF4Qve1jJRgcrGCsgLuF5lYJWQgQik4SeOyuI4W0DKMGgnce60CT25W2OYB2HA4/ZJdhpS24a7B6Ub1ox9PBBNCMnuUx0F0o6sCMyCJ49CpFqyQBkG4ZafQqr75Ry0lUKqlJwechZnr7B+U7+1tPiu52nsVg8bd7fT1HqtbnbjkgFV1T6nuVL5dxlH6SnCl1jLU10dO6kI3nGUFDXkgMVjbGWNLn9KZbuNzGAlKqOB88o3AgJZSWuPwYnyNI3jPdOUcMcbdjRgq2aZ4697hJMqBrnlzWNdBB2UI2bGCMDhbxlEA28Huj7gAr21nqYGjpZi+R0ji95ySsnJWCUPE9lgnKcA4SeftELigskZQXYSVbzvpcf+pVSVZ/8Akap3/Yq2zjBHu0qo7i0x3epZ/wBkD0j9nIzqnTUn3nGVkIrs9lgZ9VYCggWzIHqjtkbtwfMPRJnOIWvxcOb+UO7Li3heZOcJzbl3J5d6BCSekgGKmqigI58zlQ3WvrxS9PKf8Hs7hPd3jAAP0rknUPWPXF9mMtVepY9x+lpIwob34KIRVi4ZXo3Uaq01TOzNeKYEf9wm24a90hQW2SuqL1TthaM8PByvNuKfVFzPiS3Koex3OfEKWSU8xp/l7hdKiWE+niFcHEhOmqD2uodWfF3p62XOWhsFv+dwcb+wUQ/8wr1NL4dNpx0gd9LW88qirPZ7JNqmlpbgQKR7sb//ANXRNl0RpG0SQ1VJb45m4Ba48hOtryzNLm/Si2r1Wo9ol+1Z2jda3zXelKe8Xu3mhefpY72UglgbVxFjk2W2eKWmjjgY1oYPLE0YAT5EBkLItTdN+Q72hbxonpbTYYDwotWaanEhdC3KX6e01LFcmVVS3LQc7FKYncAYCVx7d42HDimIHmNwf/CnWnukjMafoKu2vDIo6yPeBjwnOxhKnsLGAhm7d+YKmtd6fmqZPGt1zkoqrGQ9p4J9FUdF121zoTUUmn9SMNYWHAc7jIWr0JXWK7JvorB9UqiC4+HPyC67eQDt3com4jy5yFU+lOummNQeHTVbxR1D++5WfR1VPXQ+LRytkb3y05RBjge0Mex27rCUfZvBRgVgNcW57EI2MJWcpOT0UMoIAoLl4rbJDTyqu1Czw9SztPryrNn+guHoVXOsGbLy2f8AUEA0o4lRnUTlgTOCC7KGcpM2Qho57o4lx2Vl28oHxhbtuSm+7VLbXZK65vGYoIXEn2OOEvbMMKIdVbi229FdQ1bXf8eNv8Jl7nNacJbAOMLzr1rfKzUGubreK2UyyPlcGknsAeMLOkNCX/WdyZHRUkkdPnzSuHClvSzppUa7vcldX7oLVFKXOkI+rnt911Jb7Xa7LbW221U7IIYxjeBy5Jo6aZ3ex/S81TX2U2eiP9lRepeltZp7SLZKGp8SWNvmaPVVazcd3ig+I3ggrr+4UnzUJD2bmuGOfVcwa8tBsOs5WtbiOQ5AU69VEbBt6Q/QdZdaJjl7TEYmHa0dzzn2KvLpRfnXawPtNU7MtP2z3wqMa8jk9wpx0ruYoeo8UJd/p1XHKYpWPVINqIa3VZPXcSOR0uiLbVTUtWQx2ceim1BcKeoYN52uUUfasTPqKZxOecJRDKI24flrkzrXjUN8b+ioHjvmV3R3bHcsU3Y7j6stWzxy0g7sNUWgrKljMtdkLNVXTyxhpJA+ypQ8HndJtJ+K04f5RoGHc5vyH0lV+rY6lwjYdxHOQqS616XZdtMQ6hpo81VJ/uYHOPurSkdkgR5c9CW2suFqq6CdoIqInZB98LQtP0tlSoIBzhZJqGvuv6j+d0CuRaGZz4Gybi1x+ktOCFcfSTqddLFqamttbVudRyna4vOcKmainfZ9R19qnyHRyO8MH2yt0VW6NzZWjaWOBBBQoN2uOVcmu9zOPtekNPPBU0rJ4HB8EjQ4ELD8diVS3SvXNRPpCmbUSbmRgA5KtuCtjq4RIwg8Z4Uv0EcoCLY3GM/SUlx+nPCC0k5bkFBKwpIOVcEo3wiQBQrV1KZaYPx2U1pXCShITLfKYSQGMj0VVpyeuZHbTN0aq49x9kTedxwck9wnCspvCncP7KPaiu0Ni03V3WdvlgbljPurcyQEZVbEZccJXVXKjttG6ouVdHRUreS555/oqn191C0brazTdP7JWmsrK9w8SQDAAHdc8a86gXzVt1lqqy4yMpGkhkLTgDClPRaxNioanUtTHuklOIZHdwmIwZZA0dKVba2lWMzu/pWzY7TQ2HT1PZLbC2OCEcEdyfXKcHsBASRkxzkO2uSphJCsrWCNoaOlnU8j5Hl5+1rLT6dlRnXW1hvytwjHA7lXu5wGeFWvWGjjqtD7hy5iZuMD4iAp2jyCCy0hc5xg7Gk+oTrY6n5LUdurckbJAP7pvgYfBw70W9mGywOA/wCVv+VVYjhwAWkzYdFj+l2zbnGa101T+uNpx/CUvhhe7L2hNWnKkTaToH+0TR/ZOe8O7q0MacYKy2XAe4BBzImNwxaSAey2ux6FEDQDlOP4aMJr/tE2NB7BYa9rJOc+y2loWqVvHI57r04BwEgEADC5e6z0H4Z1Q+caMNnULbO7KuH4hbU6S32+6RjlpwSqUik3hrsj6VV7rCyUhadoc2+uMq+ejd0dJZ6imJP7K+9JXZ7aj5N7uHdsrmforITWzx5zlXxQudT1MUzTgtdyjFRvsrhxVU1R/pvkD7VuMB+onkdggi0L21NBFUZ7jlBQHdo7CcsBVr22drHbSe6NdGeJAfcJjpKl2dwPYp7MvzEHi+hCqsjCx+5H2yb2bcqDXelJYZQOQqU663Btv6UVXPMnC6Gr6UOJBHBXLHxT1AoNOU9uGQJjn7IxHP8ABQWQYsAlclxwy3K4U1BEMuqHjIHsunrJbYrXp2jt0QxtYCce6pvpZpw3HUn4nI3McGMZCvoBokAA7BHtKrENL3far/lF32SCJnX2itcNwDhwErY87e6St9ARyVuLwGo2ASqcO+else8BvJ5UD6guEui6wY4AUsqpi1hIKr3WdeH6Xr2l/GOyanA9bgpNNpM7X44VHUUL6vdFTt5BWa6lno2wukeD/qN/ymmkuc1JK99O/kuIW2sq6irkpmSP7yt/yqE9+2Tj+VsJihNfce8LsnSc+dE0I/8ArH+E/Nf2TBpaExaSt7B6xN/wn0BXlg+IKxufmRx/tbgQQhngFERS8g5dwAvU252XLeXOLwSUNm5xAZ/dJKerhqLiIN3OcKaQaMqZNjhKcOGUOuarWqOAnOEY0/Q57g3QjKpnq9ZxcOl1Y4MBdFyuZLPaoquid40jWFnHdd/Xjpn+KWGrtk05xO3CpqH4SJIfFBvbwxzicAe6q9/XqUjstK0DQtBt14nCQKu+jlLFS3ypLJhIPsrwY8OGCeO4SjSHQGg0dI98NwkmkeOfKnS6aOraOB88DXlsfJ4RLSdeqPYIt2ED8h8duCYzsblSfR9xbU2l9ODiRnYFBQjTV6FBeMyHaDwUEVnqPL9zBwUMqWmtjDXnldAB3gzk5wnq3VG3yE8FNU8O4rZSSFuBnlqq0gDmq0RktcnipgDnbCODyql61dK6XqPoiSCMeHWwDLD74VxwPjqqYEfUEjmjPiYxnb2+6iRSEHBU143DIXEOkrKzTVLJZJnCOrhO1zXcFykb3AAOeP5VtdSej0WpK78fssny1Yzl7G8blS1XHcbRWmguLHBzTjzDCsUHkdeINhk4QGTxG3f3zQckJdvaJAM8FFfI3HBTaytieSHnGOy2GbLODlWeCWOVu+NypFqlYrPMcrSCEStkPh8dsKmNZ3J0kddTtPZW9VFxjcfQNKorUsu6puLx9wkXXbYshTtIi3S8qrYqhjal7pDjBwnaxxyXjV1DRQjOJAf7qMSAvmkyfzZVpdErKa3VM11e3LKf3VLrQ+6yGrQb8jYKzn/0uqrXIyG2wQdnMjaP7J0a4gKLwVQePFj/AGTjFcCB5ir2WfBZY/lxKeQ/PdJq6Qso3uPsk34m32SK5XESUhaPVJDeUhjeSVotnF+oZTnDX5d9wr5f1i0RbxFRto8uYwBx+6oS2P3XOID0BTDcZgbvUSFvY4Ve/wBVDqVxzJhnCulC++jVa5nZXSjut2jRjFFnC0T9d9JBvktvK5qMzWkYYOUQyNd9WB/CnDw3T2dtT48jtFv7K/ar4gLQx5FPaQR+yZ7h13oqy3VNL+Ghjpm4zhUxuH5dv9EVzWnJOCW/ZPN8YoQkFjekw7WrswI3dp1beRNJK8u8MOcSgk9HaKirkaRA4td7BBDb3lVWrKYQelPqeD3bUYmxjK7YkHCRvJjk3hBBV9nSnycJZRVhjk3/ANU9OEdRB4kffCCChzNA5CdicTwUlbG7OR39VF9a9NbRrGgfJGxsVa0ZbIBjJQQQ63E17MuRjTbUlaYOiOFzbfdH3Cx3J9uuMbWyg+Qg/UExOt9bSyl7Thp7goIIBT1a1Uk2xP4WjXNFp6pXEtmMFxH1wmq+6iorLbz+JtLWyAhpHuqK1VWBloqZx/znLf2QQWq0bktmnvkOSsY1DSq9C8I4BgKtRG4uaB+Y4/qulem9lFk0LG8gCSYZOEEE9ozA5+4of5G8tjDR0VN6afwQIx2Sw1TQMHlBBWw9gKjkfFYFWBkNdhJqmqDw1rjtjzwggmZDtOAnImAgEpxs43V8kn1Ojbwo3WPca+aTvyUEEH0cn8+X/wAR+0NtWMBIfEx5sYQE3OSMj9SCCuOBuyhzDkYR45oy7a12SpTpGzw3a6Nili8bnys7IIKt+VSOhovczgq0+MxNkvMa8ZC6g0F00oqCJtxucEZOPLHjOEEEFjsULS3JWg27sxkPy6X/2Q==",
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwMDAgQDAwMEBAQFBgoGBgUFBgwICQcKDgwPDg4MDQ0PERYTDxAVEQ0NExoTFRcYGRkZDxIbHRsYHRYYGRj/2wBDAQQEBAYFBgsGBgsYEA0QGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBj/wAARCAC4ALgDASIAAhEBAxEB/8QAHQAAAAYDAQAAAAAAAAAAAAAAAAMFBgcIAQIECf/EADgQAAEDAwMDAgQFAQgDAQAAAAEAAgMEBREGEiEHMUETUQgiMmEUI0JxgVIVFiQzQ5GhsRc0YsH/xAAcAQACAgMBAQAAAAAAAAAAAAAFBgMEAQIHAAj/xAAsEQABBAEEAgEDAwUBAAAAAAABAAIDBBEFEiExBhNBIiNRBzJhFBUkQnEz/9oADAMBAAIRAxEAPwC4pK0MgaeSiXzj9JyuZ8rnglvjumIMylZz8cLokqSRtZ3Qpqapr5RHE3Df1Fa0FDJX1DWsyG+XeyetFRR0lOGMAB8n3UFiwIxgdqavVdIcnpE261QUTAGjLvJXFdJB+ILQcYSxUVUNNA58pDQO5TGvN7/FVRjgbhv9SqV2vlfuKvWPXEzYEZUV8MTiMZek2etkldlpwuMuJJy/ethyEdZA1oQXe5GB73d1kgFgyD9h7rDS3GXdkx+pvUy3dPNLurZntfWyAiGH7rYArDRkpb1Tq3T2j7W+t1BdI6VjRkRZy538Kt2s/iynjnlotH2gEDgVTv8AvChDW2tLxq++SXK91ckpkOY4t3DB+yZsj8ggYaPYLYggK0yBpPKkiu6/9T7hUGWW+Qsdnhnp9kq6f+JLqHZaxstXWRXCHzGGYUNOwRksz/8APutQC3DWHa0qHcSrpgZjgKfbp8YOu3VzBTWOOKL2J7p/aJ+La2XOrig1VbvwrnHaZm84VRp3wzUr2T929iuG31Ro64se1ux3A8rwkA4WDUY8fT2vVGzXi0Xy1tuNmq46mnlGTtdkj+F3BzdpxwR7rzy6e9Tr/oG7x1VpqpJqLP51I52Q4fZXe0Tru1670jFeLZO17gPzmDuw+2FM0BDpoXx8FPGOskjIIPI8JUprlFK0NkO0pvZJwTwHditgTxgc+68+AOChZKQnrBPtaNpyxd7WRVcXozjv2KZlHcZKdzWuOWeU5aOobKGyskz9kLsVyz6grsEoccFJlztMtskL2AvgPc+yCerGR1VFtkYHN85QULL+Bhw5Vl9AuOWqPjIS7C6KOkkragRtBDfKJghdNI1rW5JKe9ptzaanaXNAeQrNmcRN47VWvCZnfwjrfQRUUDWNb8x8raurIqKEyyOAIHARlTUspad8kjgA3yo9vV1muFYWBxEY7fdDa1d1l+Sik07a7Nre1rd71PcKgiNxawHt7pNaSO/JWOHHHbCwMj7pkjjbGNoCX3yOkduJRo4B91hzu23+UWXHuVr6gAdzweyy5pWN/wAIutuEVvoZ62ZwEULC45+y8/urfUar1l1CqZROTQwPLWM8cK2fXrUbtOdIKyWOXZLK3aAPOV54Pnkc90xd8znFzh+6je8NV2vFkbilp9V6rjJnIf2+yL9Y7sd0kwzu2kHt4Qkrtj/TadziojKTwr3pHwlUyNzk8hZlBiaN5wDyc+Em0VUDWNfN9I7hLNotFfrXV0FrtkT5N7gHbewH7qvNYbG0kqzBA97xGByU7unXTau19VSPwY6aPjfjgrq170NvujqE1tIHVNL3c4c4VtOn+h6XSGjqW1wRj1mtBlPkpzVtppbhb5aGrjElNI0tIcM4SdLrMhm46T3D49C2vtd+4rzfo6l9M4Eg/LwQfCmbohr2bRnUWlaJy+13F210f6WlIPWXp1NoXVbqiKM/gKtxLHY4Cjy2XQ0smwnZ6cjXMd7cpvp2fcwOakfUKToXFj+16mxMZJCyaM7mStD2n91v6aavS6+DUHSW117n7niMNLv2CdrnDGUTDuEtPABwtdoBXRS176Woad3yDuFyudwiXdjys7A8Yd0tMkchSlaK+GrpGyRkEgctQUcWq7T22ra9riWDuEEDsaa8PO3pGq2oDYA5PLT9uBaJ3jsnM48DHAauekhbT0/ptH7pM1FdRb7XkOxNJw1vuqTyZ5cBWYWCvDuSDqa8unqTTU7vlHDsJuYI5J5KwHOdI57z+Y45d9lnjHJTFDD6WANQOWX2vJWeB/KAHKDTnugFOoVo7OUS4Y+U+F14Dh9lo+I7hkdu68XLAbkqrvxeXY02laG3Rv5lPIVL552RxgHOSFZP4u722r1tR2qJ+fT+of0qu1FYL7fptlktctZt7kN4VCzOI+SjtGAyN2jkpPbVv9PY3jPlGQNdtGANx7ucUZNa7hRVxorjRup6ndtEThjJVgumfw3VV7oqe8atnMFK8bmQju4KlNejhG9x4Retps1h2xjeQoHpqN9UGw0jJZ3OOHBjcq0HQGS1ae2W5+lpRXSn/wBp7TwpbsnT7p7oSzSVkNribDTtLpHyAFKujNX6Q1fTzy6cp4BJTuILgwApau6oLIcGD6fymbTtFdVlDpHfV+E8WjkZdl2Mk9sJl6/6gz6ShibRWx9wfLxlo+lOWpqTgSO4d7ptao1bp7S9kfddQxxGHIAicAT+6X4AN+Bkpqss+2XEgKMb5qi39VNKV2lr/aH0VyDC+me5vfA91Tq6RT26traCo4np5dg+4zhei9hk0vqq3svtupIXMfC4se1oBbwqAdQKOpb1NvRjpZpYvxQBe1hw3lNGlW9jizOAk/XKhMQlHJV/vh4Msfw/W10vJc3lSh6vCYnSKjFF0PssbOA6MEj34T3a04TxAMsBK5bNw8kozcSMLBGVuxizwO6kyOgowDjlEFiC6AB3xwgvbvytelLeMHOcDuVHWo6w3C9uDXflRcBPS+134CySyg/MRhqjYncwku5cclAtLhyTIUe1GfaAwLA+Xd91qXrV7vARe4Hj2R5oyeUE/aEdvA5K2a9oOSVyveAPmPdY9Qh+3A48+FktAWM5KUGOw7c1+zjuUj6m1Jb9MaWqL1cJmwwwscWBxwXlNHWnVvSuh6GSW410ck7PppmHJeVTzqr1lvfUS5u9V7qW2sP5dK08EKs8hW4oyTkhMzqFqGXWmv6u8TvIZUTbWg+BlWh6dWag0x0vpJrfDE6SRu5xLeQqaVVQXtMgOwtILfthWx6H6ztmp9DtstZOwVkQ24ccbkq+Qh5j+hdC8RMImIfhderulFt6i1Fv1BRSsp6qmkD5dowH4Kl2i/w9upYHO+SKMMDR7gYXLQ0cFDAIafbHGP07sZShExzCCzu7sPCR5LEzwGPPC6PDVijeXs7KTNUWKfUuiK+xRVPoy1Dfkcmf0Y6U33p++sfeKwSiRxLA1SlBHgguO8+fGF3RvaS6MF7iPPfCljleIzGBwqk9aISiVx5SZWRSSZOMuzx9lHHV7pnXdQtLx0ltrDDNGRlvupOu9Hcayiay0DbJnufKMhp56ekgjnk2y+Xe6zDujG5vaik9c2WO6TM6b6Qn0XoSCxy1Bmna3a9IN30/YI5rpbo7XDJUz/O95YCQpZdBuccO2lvO7+pRz1Kv9j0boy6XqqmiFxqWFkLA4EnhbwCaSYbSsymvBAWvHGE+um4YOnlPTxu3iIkceE8GNG1Qn8NuqHX3pxPHO7ErXlxb+6mgSEuLR3HddYrMeIWNd+FwbUXN/qH7eso0cIEA91oHZjB9+yzuKsEY5Cq56W2cBBa590FgDPK8QnVratLBTUgP1d00DIduErarnNRqJ4zlrAMJFxkKChEGQhT3JN0hWck9u60Lg9wHb3WdrscIwxA7gB44V04CqAEogYDnHPytGcnwFXXrP1yNrfJpfSUgfV8tkqWn6VJvWrVj9HdMpZaZ/p1M7S1hHc57qhtRVz1NXPO8ufLI7c4nnOfuonOyrteAHkrS819TW1j6y5VslTVuOXbjkJvVVQ58gA7LqqyWSvMj8F36fZJk0gAJJwqsnCJMA6RFXMY+GnkrNqvt1slyFZaqt9PIOflOMrhkcZH7jytHfLkn58+PZDp2CUEFXoC+J2YzgqR5Ot+vJoIIpqt+GPaS4HuArxdONQUusenFDc6eZri5gEuDy0gLzUYXYHzY9wrEfC3q+62/XNRYvWdJQOGfTJ4alrVtMjEW4Js0XVZ/cGynOVdeKFpG0jDWDg+6WNPXGitlXIyspg+J/dxHZN+kudJXMcYZhvB5b7I2SodtDX4SzG/Y7Lk42K/vbsJ7UhCr0gyP143AeSEzrvNR1l4NTR8Q+AkR/pbu5b9vdA1O1jjjYxoySeAApZLDXDDAqkWnCudz3EoaivMVl0jcrtO9rGwQu2Z8nC82dS6zveqNS1clxuEklOZnenETkAZU/wDxK9ZIp6QaLsFSHtdxNIw9lViECORjz8zwf90z6LS2NEju0pa9qG55jYeFaH4ctct03qNtDVy4pKn5Tk9j4V0IpRJGx+d4eNzXt7YXmTp+vdQ1rJI3kB2CCP0lW76OdYGvhh05qCfvxFO5O8bi5q57YgBJcrBNcW4A89/stg5bNja6Jj43BzHjIcOxWS0AZUm7KoYPysAoLJbghBZwvI66yCa9zP8AcBcu0Lapcfxjie/lF7lpCPtt/wCKSQ/UVuGhxx2W7Tt5RBcQsGUj5RyPKkLcrQPwof8AiI0netT2S3wWhpkcDgtHsoe6hdLrX0/6G09xfh9ykAMhPgq30kzXNy8Alv0kqsvxb6lhoNGWyygD16gkuHsonDaOVYgkc520KolRLnMr3fdJM8jnP+yzPUeo4jdhoAx90TuDuFQkfngI2yPjlanGchEyP5xlGvw0Lldku7Kq4fIU7Vs1+HjlTR8NM7R1hdFJ/qNIUMMjJcOw/dTR8MtBPVdZhK2MuZEDvcOQEGvOJjcHIzpH/uw/yrP3E3C0Xd9RTyuazcf+0pUmt6iOMMqI/VHkpwVlsirTIyWPI5CaVTpKuiqHGk+Zjj9Pskw/UTldbaYzhwSrceoNvttknuEkBfHE3c4KrvUL4mNQ36Ge1WBhpKbJa5w74U/6n0zU0nTO6z1EQyIyf+FQqpa51xqeWkCR3bjyjGlVo38kJO8lvyxO2x9IiWeapqZKmad0kkpy8uOTlGQZ5JPPhEBrnHDsceUbEQHcHlN8QAA/CQXvDj/1OO0VG5voyHBPZPSzXaenl9KSUxhpyyQd1GUVS5kzXNyMFOulrGywxkndt8IvDMAMKhPFjkq9XQLqPJqWyusNwk3T0wxG4nkhTQ9o3FvsqS/DZcZf/K2yN5LHDkeyuvLJmY48qcDnhB7LdpWpKCKLxtAzygpgFUJWtZltxkafCK3Lsvcfp36Zo44C4ViAAxtW0nD1sTlaFZIWQzKm4WhHKII3PaPGQqH/ABYXieu6wf2cXn06YDDfZX3MQDg4nyFRX4uNN1Fv6oNvwhd+HqwAH+FTuPAYr2njEuVXRzs4Znhnn3QDnvkDS3cT2A8rUjY4ANLiewHdxKkrp70y1HX3qC51Vqf+EZ8ztwwMJVtX2Vh9Zwm2tUdYdhgTVtOjdS3t+KSgkazP1EJYqekusIKyKCKldO6TtgdlZmlZDTt2UcTIWNAbw3uUp0dXPTXCOoy0YIzkZQ+zqj/UXR94TlX8Xh2j2HlQ/pf4VdRXKCOqvdZ6LXfp7YVlem3SLT3TK3mK2gT1k4/MnPOE56CR9ZbYpi8t4zgHulujlY8NaW48EJBp+QTXJnxzHGEWg0iGrzGMokxYeQ8bsdnBGxwtzyz+V2tpmhmM8eyG0M4AyiIPJVwSuJ6XBdLZS3Wx1FtqhiGdu138qrGvPhPG+orNNXHLiS/Z/wAq2L3HvnC46nDo+MktPv8AUq1jVn0YtzVBLRisn7oXn/P0A1VFTOezmdn1MymRddDansszoq+0y4b+sAq/WrbW+iuUV0pgWB/1jwkmWCnrYG/jqWKpY/ggtHCJab5JJMwOcopvEa07Mw8FUBY5wcWNGNnDmu4KUaGd0JLACSVOHVzo2XVxvGlKMk93xNUKG1XWlurLZPRzR1Ujg0NLSnnT9RjsbQDyue6rpE9NxEg4Csp8KNplrNbVN0LDsi/V4VyzITMT9yon+H7Qf9zOmkU1RHtqqxoc4EchSwGn0xxymiNI1l5e/lYBy4/ZBZIw4kDhBTqvhKWpWBl/ef6gElBOHV1PisbUjsm3kjuoKhzE0qWYfcKM7rIGAi92Fgv4yrG1V3OwUY5w28nCjLq9oSi6g6MqLZUtaJ2tJhk8gqRZZo2RbpD8pSRNIyqJLTkD79kM1S7DUrufIekT0+CWeVrGBVM6U/DfJTailumshuipn/4eI/r9lZF1pghtclDTUscFO1mG7RyUuiEu/wAwjA+kjwsGMbPnbuBGM5XzTqmt2L1zdnDQeAu7aTQiqwhuPq+VBjqQw1s8OMBrjge6NbDlhJ8FK98gEOpahuMcrjGCHbV0yof8ZhcOwrnuLTghShpZvracjeRwAllzPTblg5SVorH91YweSO6Xj35C5FqDzBbkLD8qUOPwtKed2zDjysvqdpwe6xhv7Il8G92crVmt2I24BysFrXHKy+o5ytmQ7gS7seyDKdodlxR4YSwe6is6hLZG1xW+RjhI+oKJtVp6dpblzOyYEP8AlbcfSpXlj9amlgI4c0qJpswV9RCT8wceEx+NO3tMZPSv0HbiWrojc010b9rTg+exSpPobSd4v9Leaq2RNmjwQQ0clN10g3tzyMqQLeS+gic4cY4Cs6ren0+Vk8RxgqDV6TLURjeE8aUtFPGxrQ2NgAjA8BdGUiUE74pAx7uD/wAJVbITx7rtnjGus1eqJG/uHa+etd0qTT7Ba7oo0nygtHPy08du6CaGgoHlPXUdJ69uc7HITEGSxwPdvClKth9RhicOCFHdwpzT3KSMjAJQzTZtzdhV2/AQ/eEmyOJaMHH3RPqgOcXPAaPJR74/qDh+ybWr6p1v0hVSNBY/HByi4IAKGE/7FKM1DNd5GClro9ufp3JUp9DXBjBtmYc//SqzDqW/08hmprtJCdxxz2StB1F1tEzi+yOx+6QNeoHUXFm7ARPTvK2ad03JVkH6PvLQdu12PG5c1Vp+70zfnpC4AeDlQMzqprZgBN2c73XWOsuuI25FwDwfBCUG+EQtcHFyY4/1OLh+xHalbWM1ZUtfTvb+7SkwOmewgQkY7pIvXVW911xMU8Ecjn/U4NwkK4a/raejdtgAce6cK2msZGGdhVH/AKh2ZH4axWI0Q9jtMNaBgpxEHCj3pHc6m5aMFTUDaXdlIIdvblq4J5JD6rsrW9ZK6/pNp9iuyWT5CxjnJKyMZ4QBBbnx7rIx7ILtwBlEyW5WQOVsCscocnssALGStmP2SBx/ZRjquIUeqJW4wJOQpJc1zm8eCmD1JgLJKa4N+kD5nI/49KWWw3PfCs1JAyXKbe5gw0988FSNZnh9liPfAUMQXkzbg7gE4aVIlguj2WmOPOcpm8sq4ibhXpvuDCesTz6u8pZEgMbXBN6OTdG1xPcJVo5N1OQe6n/TbVjXums7gOXNfOtO9lf3N+F2hxI58oIpjycfZBfRAG3hcYLs8qYHkSxtlacjymfqahLh+IjHPlLNmrfUZ6EjuT2R9xpRJE5pHylLEBMEqNzfejBBUduY1zG88+Uzeo7ANDVDgOSE/q2kdTVLuOM8KIOsOpoLfbWWzeA+T9KMSz4ZkFAbBDGkKEhFujBxjB5CxgjsukSMc35fIyi+DzjhAC3LiUqyTDJ4WgzjnytvQ+YDPC24PI7Lbc3nPBXsDPKwMkghIU9O43IvH8FN+/yfI2Fpy9zwErasujrYyL0x8z03tNwz6i1rRU7wXDflw9lvbe2vVfL1gJu0Sg+zPG0dEq1HTilNu0JQxY+toyFMNv0nLUULKj8QMEZwFGdnayjpoaeM/LGzH/Clfp5VsgtktTXzGVrj+WCVxrR9Kh1eeWWY9krvWpzv06GKNg6AXDJpW5sftZGXN8FFO0/d2cCmJ/hSZFd6Lk+o1ufHsupl2t5H+Yw/wi7vDqnIyUL/AL9YH+qipmn7x3NM7/Zd1HpmuFQ19VTn0/Kkr+1qADl7D/C0deaFnPqNI9sKSDw6pEckkqOTXbD+MJj3DTEMsQ/BU7hJjuo96laLvlboUxUdMXSx/MceynJ9/oxna5o/hEVN6opqaeJz2uDoXcY+yunx6s14mYMYWtfV52PGRlUKxtcI3M2yRna4fdSNZWuFDAPKYtzI/vtcYhjaZ3FoH7p/Wt7QynY08gDKE+SjdEAF0nTpDK3cU86dxbGCfASjb3PdJz2SQyXLQPBHCVqCZrHAFI+lTGrdZOPgobq1YWK8kR+QlcRu8ILqhxJFuYMhBfUFTUBPAyUHsL51s1TDM6MjopwUUzoHtkackFPCmmirKMcjcB2Ufeu6GQPHP2Srb7k+nka9ric9woLNcv5Halgn9fB6SjdbaJw75cEKEeofSao1pC+qpC4V8PLW+6sNBtuEIeO/lKFNRQRSF8cQD/6/dUX2tjCx3atmiywdxHC8+KnRGqbbVOo62mc2RpwcjCKksN7pzufTuLR9lejWOh6XUFKZ4I2NqQM5AxlQpdrDUWmodTV8O1wPy5HB/lKNrVLVZ5cG5amKh4LpWoR43kPVcZZZopCyeExuHbIRf4lzQXOHdSlrGxUE9A6ok9OGRo4x5USSNDZzFuztPCMaTqIvMy4YSL5P4x/ZJhGDkJma/qSainGe3hOfodbHVt7muMreI+xTJ145z7nEwfp4Kmvo5bW0Wi21GNrpO6o+ZXfRpxYD3wm/wCn7rQ465UuU7+DtH2UjafjMWm4WkEZ5Ua29pMgbnkkKWrfGYrbAwns3lK3hkRjrlx/K6R5I7Mob/CMHbOSFu1+39RWC8c4WhenDskpVzjko/wBYj9RWr5cjuUUHE8ZQa/cDg9llZI4yFq4+SSud8hiZJIScCN3/AEurIPcjCSb5UejQTNDsExux/soLDwxjifwp6jA+VoPaqtVTGXqBVFo/1T/2ntb6omsYzthR7FK061qS+XGZDz/KelK9wqR6Q3fdJ+rVZZGg/kLoWlajHI1zGH9vCkSml/JbveNvlKFHUevOynpWGWRxwCOU2LHZ7re6uOnpw9xccEBWG0RoOjsFuZNPGJZ3cknwUL07xWWd3secBVNY1eKs36eyk2h0xXUlrjnqGkl44CCk17GeiGvALfA9kF1em8V4WxD4XHLsXvmdJ+VEkgG/lddtp3GTc7lqCCapHEN4SwOX4Tmo6o07htHypzUs7Jow5nJ9kEEAtRjG75TDV+Ajycn6f4SJqTT1t1DbX0lfG1rHDDZQOWlBBDXxteMO6Rlsjo/rYcFU86s9Jeo2mK+Wvjqhd7IDlj920xD/APVEcIM8xZFL6krfrGPpQQXoAIGH1jCBauDceDM4lMjVdI+q1bBSMGZnuAA/qVltGaZr6DSlNTSQASFgIwUEEt6+wWmtbL0nzwuuyrl0feE67dNQUtyipnVBFSTy3Ck03O3Q00ZdVncB2wggsUP8aPZH0mTU67J3hz0IrhSTt3Rzl2fGO63JGMjsggi8Uhf2lzUKzIm4agXHt2WplHDnceBhBBXcDCHNcdiTrneqW2PbHVsLnv8AoA8pAuNzNfC+V52D03AN/hBBLesyuDgwdJo0SuxzHSkc4VcDbvV1NVBxywynP+6nTQfSi+ag9GolibSUIH17skhBBHBE17I9w+AlOnbkrPnMZ7cVYfTWjLRpqjEdHE2WUDBkKcLW+me/J8eyCCtBobgBUJrEkri55yuWtrY6GEyyO3Hw1BBBEYK7C3JQSxYeHYBX/9k=",
@@ -31,9 +14,6 @@ const HERO_CAMPUS =
 const SESSION_KEY = "campusconnect_college_session"; // same key used by Registeration.jsx
 const AFTER_LOGIN_KEY = "campusconnect_after_login"; // login page can read this and redirect back (value: "/college/home?view=plans")
 
-/* Is a college REALLY logged in?  Not just "some value exists": empty / "null" / "undefined" values and expired tokens do NOT count.
-   Works with a plain token string, a JSON object { token | accessToken | jwt, expiresAt | expires | exp }, or a JWT with an "exp" claim.
-   (This only decides what the screen shows. The real lock must still be on the backend: prices + payment APIs must check the JWT.) */
 const sessionGone = (x) => {
   if (!x) return false;
   const n = typeof x === "number" ? x : Number(x);
@@ -67,9 +47,6 @@ function readSession() {
   }
 }
 
-/* UI SCALE: every "px" value in the CSS below is multiplied by this number.
-   0.67 = the page looks at 100% browser zoom exactly like it looked at 67% zoom.
-   Change to 0.75 / 0.8 / 1 if you want it bigger. */
 const UI_SCALE = 0.67;
 
 const MENU = [
@@ -152,12 +129,10 @@ const PERIODS = [
   ["12m", "1 Year", 12, 20],
 ];
 const rupee = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
-/* Student leads you can unlock with the amount you pay (each lead = DL_BASE.price = ₹100). Change this one line if you want fixed lead quotas instead. */
+
 const leadsOf = (amount) => Math.floor(amount / DL_BASE.price);
 const nf = (n) => n.toLocaleString("en-IN");
 
-/* Pricing page: what each plan gives for each duration (SAMPLE content - edit the text freely).
-   Student leads and the "You save" line are calculated automatically from the price. */
 const PLAN_PERKS = {
   elite: {
     "1m": ["30 days of verified college listing", "Ideal to try CampusConnect"],
@@ -679,16 +654,8 @@ function SideRail({ active, show, onGo }) {
   );
 }
 
-/* ---------- LEAD DOWNLOADS (counter page between Home and Colleges) ----------
-   "Download" = a college pays Rs.100 to UNLOCK one student's full details (name, mobile, email) and save them.
-   Numbers below are SAMPLE values. Replace with your API values.  The demo rows use fake data only. */
 const DL_BASE = { downloads: 12450, students: 25430, leads: 18250, colleges: 325, price: 100 };
 
-/* ---- LIVE BACKEND for TOTAL STUDENT LEADS DOWNLOADED ----
-   API_BASE  : your backend URL (use "" if you use a dev proxy / same domain).
-   DL_STATS_URL : GET endpoint that returns the total downloaded count, e.g.  { "total": 12450 }
-   Also accepted: { totalDownloaded | downloads | count : 12450 } or the same inside { data: {...} }.
-   While loading / if the API fails, the old sample number is shown, so the design never breaks. */
 const API_BASE = "http://localhost:5000";
 const DL_STATS_URL = "/api/stats/downloads";
 const DL_REFRESH_MS = 30000; // re-fetch every 30 seconds so the counter stays live
@@ -738,14 +705,6 @@ function AnimatedNumber({ value, prefix = "", className = "" }) {
   return <span ref={ref} className={className}>{prefix}{shown.toLocaleString("en-IN")}</span>;
 }
 
-
-/* ================= JOURNEY PANELS (Explore more. Choose smarter.) =================
-   4 tall panels in one row. Click a panel (or let it auto-play) and it widens while the others fold into slim tabs.
-   Laptop / desktop (961px and up): the row. Tablet + phone (960px and below): panels stack and open like an accordion.
-   Motion: one entrance when the section scrolls in, drifting aurora, a light that follows the mouse on the open panel,
-   and a live mini-scene inside each panel (search results, compare, permission switches, activity chart).
-   Auto-play only runs while the section is on screen on laptop. Everything honours "reduce motion".
-   Everything is scoped with the "jp-" prefix and its own <style>, so no other section is touched. */
 const JP_ICONS = {
   discover: <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg>,
   compare: <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="4" width="7" height="16" rx="2" /><rect x="13.5" y="4" width="7" height="16" rx="2" /></svg>,
@@ -3160,7 +3119,6 @@ function DownloadsSection({ onRegister, onBrowse }) {
   );
 }
 
-/* ---------- "Please login" popup (shown instead of subscription prices when the college is not logged in) ---------- */
 function LoginGate({ onLogin, onRegister, onClose }) {
   const btn = useRef(null);
   useEffect(() => {
@@ -3248,7 +3206,6 @@ function Student({ skin, hair, shirt, bg, girl, glasses, strap }) {
   );
 }
 
-/* a = start angle of each student on the orbit ring (degrees, 0 = right, clockwise). The 4 circles then orbit round the college sphere. */
 const HX_STU = [
   { a: 232, skin: "#f2b48a", hair: "#16213e", shirt: "#2f7de1", bg: "#9fd0ff", strap: "#1a4fa0", tag: true },
   { a: 308, skin: "#f5c09a", hair: "#1b1b2f", shirt: "#ffb02e", bg: "#ffd9a0", girl: true, tag: true },
@@ -3256,11 +3213,6 @@ const HX_STU = [
   { a: 52, skin: "#e9a77c", hair: "#16213e", shirt: "#0f6a8a", bg: "#bfe8ff", glasses: true, strap: "#0a4660", tag: true },
 ];
 
-/* STUDENT PHOTOS for the hero circles (same order as HX_STU: top-left, top-right, bottom-left, bottom-right).
-   >>> Paste your ORIGINAL photos here (the ones you gave first). <<<
-   Each slot accepts either a file path ("/students/stu1.jpg"  — put the files in your /public/students folder)
-   or your old base64 string ("data:image/jpeg;base64,....").
-   If a slot is left "" (or the image fails to load) the cartoon student is shown instead. */
 const HX_PICS = HERO_PICS; // student photos + college sphere are embedded at the top of this file
 const HX_CAMPUS = HERO_CAMPUS;
 
@@ -3305,8 +3257,6 @@ const PC_DUST = [
   [60, 5, 4.6, 1.8], [72, 6, 5.4, 0.3], [84, 4, 4.9, 2.6], [92, 5, 5.8, 3.2],
 ];
 
-/* Boost Plans (home cards only): unique content based on the project spec.
-   PLANS above is NOT changed, so the login-only pricing page stays exactly as it was. */
 const PC_CONTENT = {
   elite: {
     tag: "Launch your admissions with verified leads",
@@ -3389,8 +3339,7 @@ function PlanIcon({ id }) {
     </svg>
   );
 }
-/* Which college is logged in?  Reads the profile from the saved login session (the same data Registeration.jsx saves).
-   Accepts a JSON object (also { user | profile | college } inside it) or a JWT payload. Anything missing is simply not shown. */
+
 const LOGOUT_ALSO_CLEAR = []; // add any other localStorage keys your login page saves (e.g. a separate token key) so Logout wipes them too
 function readCollege() {
   const none = { name: "Your College", email: "", mobile: "", id: "", place: "", logo: "", verified: false };
@@ -9555,13 +9504,7 @@ body {
     transform: none;
   }
 }
-/*================= HOME HERO + "HOW CAMPUSCONNECT WORKS" =================
-   On laptop / desktop both sit inside ONE screen (no scrolling to see "How CampusConnect Works").
-   Every size below is written as calc(N * var(--u)):  1u = 1px of a 1464px wide design.
-   --u = the SMALLER of "what fits the width" and "what fits the screen height", so it fits 1366x768 ... 1920x1080 and bigger.
-   --hx-h = height of the whole hero in u (raise it if you add more content to the hero).
-   Tablet / phone: one column, natural height.
-   (media queries use em and font floors use rem on purpose: the site's px-scaler would shrink px values)*/
+
 .hx {
   --hx-top: calc(var(--nav) + 46px);
   --hx-bottom: 30px;
@@ -10421,8 +10364,7 @@ body {
     transform: translateX(-50%);
   }
 }
-/*===================== HOME HERO v2 — layout like the reference design + extra animations =====================
-   Only .hx / .hm-* / .hx-* are touched, so no other page or section is affected.*/
+
 .hx {
   --hx-h: 716;
   --hx-top: calc(var(--nav) + 34px);
@@ -11691,7 +11633,7 @@ body {
     animation: none !important;
   }
 }
-/*===== BOOST PLANS v3: extra animations (scoped to .pc-sec / .pc-slot / .pc-card only; uses translate/scale/rotate so nothing clashes with existing transforms) =====*/
+
 /*floating sparkles in the background*/
 .pc-sparks {
   position: absolute;
@@ -11928,7 +11870,7 @@ body {
     animation: none !important;
   }
 }
-/*===== BOOST PLANS v4: straight cards, brand-colour buttons, new animations (scoped to .pc-sec / .pc-slot / .pc-card only) =====*/
+
 /*desktop: no slant - side cards sit straight and a little lower, Gold stays raised in the middle*/
 @media (min-width:62.51em) {
   .pc-slot.l .pc-card,.pc-slot.r .pc-card {
@@ -12064,8 +12006,7 @@ body {
     display: none;
   }
 }
-/*===== BOOST PLANS v5: signature animations, Gold showpiece, full responsive + touch support (scoped to .pc-sec / .pc-slot / .pc-card only) =====
-   Breakpoints use em (not scaled): laptop > 62.5em | tablet 41em-62.5em | phone < 41em. Tablet/phone sizes use rem so text stays readable.*/
+
 /*smoother hover + the card also animates its own transform for tilt*/
 .pc-sec .pc-card {
   will-change: translate,transform;
@@ -12911,8 +12852,6 @@ body {
 }
 `;
 
-/* scale every "px" in the CSS by UI_SCALE (0.67 = look of 67% browser zoom at 100% zoom).
-   %, vw, vh, rem, cqw are left unchanged so the layout stays responsive. */
 const styles = RAW_STYLES.replace(/(\d*\.?\d+)px/g, (_, n) => `${Math.round(parseFloat(n) * UI_SCALE * 100) / 100}px`);
 
 export default CollegeSite;

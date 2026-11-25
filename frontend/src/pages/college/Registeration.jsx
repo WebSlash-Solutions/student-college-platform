@@ -6,9 +6,6 @@ const COLLEGE_ACCOUNTS_KEY = "campusconnect_college_accounts";
 const COLLEGE_SAVED_KEY = "campusconnect_custom_colleges";
 const COLLEGE_LOGIN_KEY = "campusconnect_college_session";
 
-/* UI SCALE: every "px" and "rem" value in the CSS below is multiplied by this number.
-   0.67 = this page looks at 100% browser zoom exactly like it looked at 67% zoom.
-   Change to 0.75 / 0.8 / 1 if you want it bigger. (Same value as the home page.) */
 const UI_SCALE = 0.67;
 
 const hashPassword = async (password) => {
@@ -19,9 +16,6 @@ const hashPassword = async (password) => {
     .join("");
 };
 
-/* ========================= NAVBAR (same menu as the home page) =========================
-   Each item opens /college/home#<section-id>. For the page to scroll to that section, add the small
-   hash-scroll effect to CollegeHome.jsx (shown in the chat message). */
 const MENU = [
   ["home", "Start Here", "", "🏁"],
   ["downloads", "Student Pool", "", "🎯"],
@@ -49,7 +43,6 @@ function CCLogo() {
   );
 }
 
-/* ========================= INDIAN STATES ========================= */
 const indianStates = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh", "Chhattisgarh",
   "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir",
@@ -58,7 +51,6 @@ const indianStates = [
   "Uttar Pradesh", "Uttarakhand", "West Bengal",
 ];
 
-/* ========================= DISTRICTS ========================= */
 const districtsByState = {
   "Andaman and Nicobar Islands": ["Nicobar", "North and Middle Andaman", "South Andaman"],
   "Andhra Pradesh": ["Alluri Sitharama Raju", "Anakapalli", "Ananthapuramu", "Annamayya", "Bapatla", "Chittoor", "Dr. B. R. Ambedkar Konaseema", "East Godavari", "Eluru", "Guntur", "Kakinada", "Krishna", "Kurnool", "Nandyal", "NTR", "Palnadu", "Parvathipuram Manyam", "Prakasam", "Srikakulam", "Sri Potti Sriramulu Nellore", "Sri Sathya Sai", "Tirupati", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa"],
@@ -98,7 +90,6 @@ const districtsByState = {
   "West Bengal": ["Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Maldah", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"],
 };
 
-/* ========================= OPTIONS & HELPERS ========================= */
 const COLLEGE_TYPES = ["Government", "Private", "Autonomous", "Deemed University", "Government Aided", "Other"];
 const AFFILIATIONS = ["AICTE", "UGC", "Anna University", "University of Madras", "Bharathiar University", "Bharathidasan University", "Other University"];
 const ACCREDITATIONS = ["NAAC A++", "NAAC A+", "NAAC A", "NAAC B++", "NAAC B+", "NBA", "NIRF", "Not Accredited", "Other"];
@@ -118,7 +109,6 @@ const getInitials = (name) =>
     .join("")
     .toUpperCase() || "CC";
 
-/* Fields follow "10. College Registration" of the project document (+ password for login) */
 const emptyForm = {
   collegeName: "",
   officialEmail: "",
@@ -135,7 +125,6 @@ const emptyForm = {
   confirmPassword: "",
 };
 
-/* ========================= ICONS ========================= */
 function GraduationIcon({ size = 26 }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
@@ -164,7 +153,6 @@ function EyeIcon({ off }) {
   );
 }
 
-/* ========================= SMALL COMPONENTS ========================= */
 function Field({ id, label, required, full, hint, children }) {
   return (
     <div className={full ? "form-group full" : "form-group"}>
@@ -204,7 +192,6 @@ function Select({ id, name, value, onChange, disabled, placeholder, options }) {
   );
 }
 
-/* ========================= WIZARD CONFIG ========================= */
 const STEPS = [
   { title: "College details", sub: "Name, contact, type & affiliation", icon: "🏫", required: ["collegeName", "officialEmail", "mobile", "collegeType", "affiliation"] },
   { title: "Location & website", sub: "Address, state, district & website", icon: "📍", required: ["address", "state", "district"] },
@@ -212,7 +199,6 @@ const STEPS = [
 ];
 const LAST_STEP = STEPS.length - 1;
 
-/* ========================= COMPONENT ========================= */
 function Registeration() {
   const navigate = useNavigate();
   const noticeRef = useRef(null);
@@ -220,7 +206,7 @@ function Registeration() {
   const [showLogin, setShowLogin] = useState(() => new URLSearchParams(window.location.search).get("mode") === "login");
   const [formData, setFormData] = useState(emptyForm);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const [notice, setNotice] = useState(null); // { id, type: "error" | "success", text }
+  const [notice, setNotice] = useState(null);
   const [busy, setBusy] = useState(false);
   const [step, setStep] = useState(0);
   const [agree, setAgree] = useState(false);
@@ -259,10 +245,8 @@ function Registeration() {
     setFormData((prev) => ({ ...prev, [name]: value, ...(name === "state" ? { district: "" } : {}) }));
   };
 
-  // props shared by every registration input
   const bind = (name) => ({ id: name, name, value: formData[name], onChange: handleChange });
 
-  /* ---------- per-step checks ---------- */
   const checkStep = (index) => {
     const missing = STEPS[index].required.find((field) => !String(formData[field] || "").trim());
     if (missing) return "Please fill all the fields marked with *.";
@@ -295,7 +279,6 @@ function Registeration() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /* ---------- REGISTER ---------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (step < LAST_STEP) {
@@ -363,7 +346,6 @@ function Registeration() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /* ---------- LOGIN ---------- */
   const handleLogin = async (e) => {
     e.preventDefault();
     setNotice(null);
@@ -385,7 +367,6 @@ function Registeration() {
 
       let account = accounts.find((item) => item.email === email);
 
-      // A newly registered college is published only after its first successful login.
       if (!account && pending && pending.officialEmail === email) {
         if (pending.passwordHash !== passwordHash) {
           setBusy(false);
@@ -403,7 +384,6 @@ function Registeration() {
 
         localStorage.setItem(COLLEGE_ACCOUNTS_KEY, JSON.stringify([account, ...accounts]));
 
-        // Courses, fees, hostel, logo etc. are added later from "Edit profile".
         const newCollege = {
           id: `registered-${account.id}`,
           name: pending.collegeName,
@@ -464,7 +444,6 @@ function Registeration() {
 
     setBusy(false);
 
-    // come back to the plans page if the college was sent here from "View prices"
     let after = "";
     try {
       after = sessionStorage.getItem("campusconnect_after_login") || "";
@@ -472,7 +451,7 @@ function Registeration() {
     } catch {
       after = "";
     }
-    // default landing page after login = the college dashboard (profile page stays reachable from the dashboard)
+
     navigate(after || "/college/dashboard");
   };
 
@@ -490,7 +469,7 @@ function Registeration() {
       <style>{styles}</style>
 
       <div className="rg">
-        {/* ============ FLOATING PILL NAV (same as the home page) ============ */}
+        {}
         <header className={`rg-header ${scrolled ? "sc" : ""}`}>
           <div className="rg-pill">
             <button type="button" className="rg-brand2" onClick={() => goSection("home")} aria-label="Back to home">
@@ -522,7 +501,7 @@ function Registeration() {
           </div>
         </header>
 
-        {/* ============ FORM ============ */}
+        {}
         <main className="rg-main">
           {!showLogin ? (
             <div className="rg-card">
@@ -549,7 +528,7 @@ function Registeration() {
               </ol>
 
               <form onSubmit={handleSubmit} noValidate>
-                {/* STEP 1 — COLLEGE DETAILS */}
+                {}
                 {step === 0 && (
                   <div className="form-grid rg-pane" key="s0">
                     <Field id="collegeName" label="College name" required full>
@@ -582,7 +561,7 @@ function Registeration() {
                   </div>
                 )}
 
-                {/* STEP 2 — ADDRESS, STATE, DISTRICT, WEBSITE */}
+                {}
                 {step === 1 && (
                   <div className="form-grid rg-pane" key="s1">
                     <Field id="address" label="College address" required full>
@@ -603,7 +582,7 @@ function Registeration() {
                   </div>
                 )}
 
-                {/* STEP 3 — ACCOUNT */}
+                {}
                 {step === 2 && (
                   <div className="form-grid rg-pane" key="s2">
                     <Field id="password" label="Password" required>
@@ -642,7 +621,7 @@ function Registeration() {
               </form>
             </div>
           ) : (
-            /* LOGIN */
+
             <div className="rg-card login">
               <div className="login-logo"><GraduationIcon size={30} /></div>
               <h1>College login</h1>
@@ -681,9 +660,6 @@ function Registeration() {
   );
 }
 
-/* ========================= STYLES =========================
-   All CSS lives in RAW_STYLES. Every "px" and "rem" value in it is multiplied by UI_SCALE (see top of file),
-   so the page at 100% browser zoom looks like it did at 67%. %, vw, vh are left unchanged (layout stays responsive). */
 const RAW_STYLES = `
 @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 @property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
@@ -713,7 +689,6 @@ button, input, select, textarea { font-family: inherit; }
 @keyframes rgShake { 0%, 100% { transform: none; } 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
 @keyframes rgShine { to { background-position: 200% 0; } }
 
-/* ---------- FORM CARD ---------- */
 .rg-main { position: relative; overflow: hidden; padding: clamp(24px, 4vw, 64px); display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #f6f9ff, #e8effb); }
 .rg-main::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(36,87,245,.10) 1.4px, transparent 1.4px); background-size: 28px 28px; pointer-events: none; }
 .rg-main::after { content: ""; position: absolute; width: 420px; height: 420px; right: -160px; top: -160px; border-radius: 50%; background: radial-gradient(circle, rgba(109,61,240,.18), transparent 70%); pointer-events: none; animation: rgFloat 14s ease-in-out infinite; }
@@ -728,7 +703,6 @@ button, input, select, textarea { font-family: inherit; }
 .rg-card h1, .rg-card.login h1 { margin: 18px 0 6px; color: var(--ink); font: 800 clamp(2rem, 2.8vw, 2.8rem)/1.1 "Bricolage Grotesque", sans-serif; letter-spacing: -.02em; }
 .rg-lede, .login-sub { margin: 0; color: var(--muted); font-size: 1.05rem; }
 
-/* labelled stepper: equal columns, connector fills as you go */
 .rg-stepper { list-style: none; margin: 28px 0 32px; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
 .rg-stepper li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
 .rg-stepper li::before, .rg-stepper li::after { content: ""; position: absolute; top: 22px; right: 50%; width: 100%; height: 3px; border-radius: 3px; }
@@ -804,7 +778,6 @@ button, input, select, textarea { font-family: inherit; }
 .btn-back { min-height: 58px; background: #fff; border: 1.5px solid var(--line); color: var(--ink); font-weight: 700; font-size: 1.05rem; padding: 0 30px; border-radius: 16px; cursor: pointer; transition: border-color .2s, transform .2s; }
 .btn-back:hover { border-color: var(--blue); transform: translateX(-3px); }
 
-/* ---------- LOGIN ---------- */
 .rg-card.login { max-width: 540px; margin: auto; text-align: center; }
 .login-logo { width: 76px; height: 76px; margin: 6px auto 0; border-radius: 24px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--blue), var(--violet)); box-shadow: 0 18px 34px -14px rgba(36, 87, 245, .8); animation: rgBob 4s ease-in-out infinite; }
 .login-form { display: grid; gap: 20px; margin-top: 26px; text-align: left; }
@@ -831,7 +804,6 @@ button, input, select, textarea { font-family: inherit; }
   .rg *, .rg *::before, .rg *::after { animation: none !important; transition: none !important; }
 }
 
-/* ---------- FULL-WIDTH AUTH EXPERIENCE ---------- */
 .rg { display: block; min-height: 100vh; width: 100%; background: #eef3ff; }
 .rg-main {
   isolation: isolate; min-height: 100vh; width: 100%; padding: clamp(22px, 4vw, 64px);
@@ -869,7 +841,6 @@ button, input, select, textarea { font-family: inherit; }
   .rg-main::before, .rg-card, .rg-stepper li, .rg-kicker, .submit-button, .rg-review, .rg-agree, .login-trust { animation: none !important; }
 }
 
-/* ---------- POLISHED FULL-PAGE V2 ---------- */
 .rg-main {
   min-height: 100vh; padding: clamp(22px,4.5vw,72px); display: flex; align-items: center; justify-content: center;
   background:
@@ -898,7 +869,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 .form-group input:hover,.form-group select:hover { border-color: #a8bff7; background: #fff; }
 .form-group input:focus,.form-group select:focus,.password-wrap input:focus { outline: none; border-color: #4773ff; background: #fff; box-shadow: 0 0 0 4px rgba(71,115,255,.12),0 8px 22px rgba(71,115,255,.08); }
-/* dropdown arrow alignment: wrapper, select and arrow share the same full-width field */
+
 .select-wrapper { position: relative; display: block; width: 100%; min-width: 0; }
 .select-wrapper select { display: block; width: 100%; max-width: 100%; height: 48px; box-sizing: border-box; appearance: none; -webkit-appearance: none; -moz-appearance: none; padding: 0 44px 0 15px; margin: 0; line-height: normal; cursor: pointer; }
 .select-wrapper select::-ms-expand { display: none; }
@@ -929,7 +900,6 @@ button, input, select, textarea { font-family: inherit; }
   .rg-card button,.form-group input,.form-group select { transition: none !important; }
 }
 
-/* ---------- V3: stronger contrast, larger text, refreshed login/register ---------- */
 .rg-login-link { gap: 12px; padding: 6px 7px 6px 18px; background: #edf3ff; border: 1px solid #cfddf8; color: #34476b; font-size: 16px; font-weight: 700; box-shadow: 0 7px 20px rgba(40,75,150,.08); }
 .rg-login-link button {
   display: inline-flex; align-items: center; justify-content: center; min-height: 42px; min-width: 88px;
@@ -966,7 +936,6 @@ button, input, select, textarea { font-family: inherit; }
   .select-wrapper select { height: 49px; }
 }
 
-/* ---------- NAVBAR (copy of the home page pill nav) ---------- */
 @keyframes rgGrad { to { background-position: 300% 0; } }
 @keyframes rgMorph { 0%,100% { border-radius: 50% 50% 50% 16%; } 33% { border-radius: 42% 58% 40% 60% / 56% 42% 58% 44%; } 66% { border-radius: 52% 48% 60% 40% / 42% 60% 40% 58%; } }
 @keyframes rgNavIn { from { opacity: 0; transform: translateY(-16px) scale(.88); } }
@@ -1004,7 +973,6 @@ button, input, select, textarea { font-family: inherit; }
 .rg-solid:hover i { transform: translateX(7px); }
 .rg-burger { display: none; place-items: center; width: 50px; height: 50px; border: 0; background: #eaf2ff; color: var(--blue); border-radius: 50%; font-size: 22px; cursor: pointer; }
 
-/* the fixed nav sits above the form, so push the form down */
 .rg-main { padding-top: calc(var(--nav) + clamp(40px,5vw,70px)); }
 
 @media (max-width: 2000px) { .rg-header nav > button { padding: 10px 10px; font-size: 15px; } .rg-navcta { margin-left: 6px; } .rg-solid { min-height: 46px; padding: 0 18px; font-size: 15px; } .rg-brand2 small { display: none; } }
@@ -1031,9 +999,6 @@ button, input, select, textarea { font-family: inherit; }
 }
 `;
 
-/* scale every "px" and "rem" in the CSS by UI_SCALE (0.67 = look of 67% browser zoom at 100% zoom).
-   %, vw, vh are left unchanged so the layout stays responsive. Media-query widths are scaled too,
-   so the breakpoints match what you saw at 67% zoom. */
 const scale = (n) => Math.round(parseFloat(n) * UI_SCALE * 1000) / 1000;
 const styles = RAW_STYLES
   .replace(/(\d*\.?\d+)px/g, (_, n) => `${scale(n)}px`)
