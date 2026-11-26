@@ -36,6 +36,9 @@ public class SubscriptionPlanPeriod {
     @Column(nullable = false)
     private int months;
 
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
     @Column(nullable = false)
     private int discount;
 
@@ -85,6 +88,14 @@ public class SubscriptionPlanPeriod {
 
     public void setMonths(int months) {
         this.months = months;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public int getDiscount() {

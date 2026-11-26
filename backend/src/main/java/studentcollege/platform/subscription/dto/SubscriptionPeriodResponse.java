@@ -7,6 +7,7 @@ public class SubscriptionPeriodResponse {
     private String periodId;
     private String label;
     private int months;
+    private double price;
     private int discount;
     private List<String> features;
 
@@ -14,12 +15,14 @@ public class SubscriptionPeriodResponse {
             String periodId,
             String label,
             int months,
+            double price,
             int discount,
             List<String> features) {
 
         this.periodId = periodId;
         this.label = label;
         this.months = months;
+        this.price = price;
         this.discount = discount;
         this.features = features;
     }
@@ -34,6 +37,10 @@ public class SubscriptionPeriodResponse {
 
     public int getMonths() {
         return months;
+    }
+
+    public double getPrice() {
+        return price;
     }
 
     public int getDiscount() {
