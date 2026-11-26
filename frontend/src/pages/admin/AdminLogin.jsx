@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Change this to your college registration route
 const REGISTER_ROUTE = "/register";
 
 const CapIcon = ({ size = 30, color = "#111" }) => (
@@ -69,14 +68,12 @@ const PROVIDERS = {
 export default function AdminLogin() {
   const navigate = useNavigate();
 
-  // Always start with an empty login ID so the previous college is not prefilled.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
 
-  // Social account chooser (React-only, no redirect)
   const [provider, setProvider] = useState(null); // "google" | "github" | "facebook" | null
   const [socialStep, setSocialStep] = useState("list"); // "list" | "add"
   const [accounts, setAccounts] = useState([]);
@@ -143,7 +140,7 @@ export default function AdminLogin() {
       if (remember) localStorage.setItem("collegeRememberedId", email.trim());
       else localStorage.removeItem("collegeRememberedId");
     } catch {
-      /* ignore storage errors */
+
     }
 
     sessionStorage.setItem("collegeUser", JSON.stringify(collegeDetails));
@@ -235,7 +232,7 @@ export default function AdminLogin() {
     try {
       localStorage.setItem(`${provider}SavedAccounts`, JSON.stringify(updated));
     } catch {
-      /* ignore storage errors */
+
     }
     setSocialError("");
     loginWithAccount(mail);
@@ -281,7 +278,6 @@ export default function AdminLogin() {
           box-shadow: 0 24px 70px rgba(40, 60, 120, .16);
         }
 
-        /* LEFT: FORM */
         .cc-login-form-panel {
           display: flex;
           flex-direction: column;
@@ -517,7 +513,6 @@ export default function AdminLogin() {
           color: #9a9ca5;
         }
 
-        /* RIGHT: SPACE PANEL */
         .cc-login-visual {
           position: relative;
           display: flex;

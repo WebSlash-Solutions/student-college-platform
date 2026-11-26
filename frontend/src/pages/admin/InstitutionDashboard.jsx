@@ -1,21 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* ------------------------------------------------------------------ */
-/*  Settings                                                           */
-/* ------------------------------------------------------------------ */
-
-const PROFILE_PRICE = 100; // ₹ per student profile
-const LISTING_PRICE = 2000; // ₹ per month for Google top listing
+const PROFILE_PRICE = 100;
+const LISTING_PRICE = 2000;
 const LISTING_DAYS = 30;
-const GOOGLE_QUERY = "best college"; // what the Google mock-up shows being searched
+const GOOGLE_QUERY = "best college";
 const ROWS_COLLAPSED = 6;
 const DAY = 86400000;
-const DEMO_UNLOCKED = 2; // how many student leads are open by default; the rest stay locked until paid
+const DEMO_UNLOCKED = 2;
 const DONUT_COLORS = ["#1f4fd8", "#22b3e6", "#7c3aed", "#10b981", "#f59e0b", "#ec4899"];
 
-// Plans a college can choose. Replace with real plan data from your backend.
-// students = profiles included in the plan, days = plan validity
 const PLANS = {
   gold: { name: "Gold", students: 8, days: 90 },
   diamond: { name: "Diamond", students: 12, days: 180 },
@@ -23,8 +17,6 @@ const PLANS = {
 };
 const PLAN_KEYS = Object.keys(PLANS);
 
-// Reads the plan a college really chose from the login / API data.
-// Accepts different field names and values like "Elite", "ELITE PLAN", "gold".
 const firstValue = (obj, keys) => {
   for (const k of keys) {
     const v = k.split(".").reduce((o, part) => (o == null ? undefined : o[part]), obj);
@@ -38,10 +30,6 @@ const readPlanKey = (college) => {
   const text = String(typeof raw === "object" && raw ? raw.name || raw.title || "" : raw || "").toLowerCase();
   return PLAN_KEYS.find((k) => text.includes(k)) || null;
 };
-
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
 
 const hash = (str) => {
   let h = 2166136261;
@@ -86,11 +74,6 @@ const timeAgo = (ts) => {
   const d = Math.floor(h / 24);
   return `${d} day${d > 1 ? "s" : ""} ago`;
 };
-
-/* ------------------------------------------------------------------ */
-/*  College-specific demo data                                         */
-/*  Replace buildCollegeData() with your API call when backend is ready */
-/* ------------------------------------------------------------------ */
 
 const CATALOGS = {
   sns: [
@@ -251,8 +234,7 @@ const buildCollegeData = (college) => {
     };
   });
 
-  /* ---- plan chosen by this college (Diamond / Gold / Elite) ---- */
-  const randomPlan = pick(r, PLAN_KEYS); // demo fallback only, used when the college has no plan data
+  const randomPlan = pick(r, PLAN_KEYS);
   const planKey = readPlanKey(college) || randomPlan;
   const planCfg = PLANS[planKey];
   const wanted = Number(firstValue(college, ["studentsPurchased", "purchasedStudents", "students_purchased", "profilesPurchased", "subscription.students"]));
@@ -277,10 +259,6 @@ const buildCollegeData = (college) => {
   return { city, baseCourses, leads, activity, plan };
 };
 
-/* ------------------------------------------------------------------ */
-/*  Saved state (per college)                                          */
-/* ------------------------------------------------------------------ */
-
 const EMPTY_STORE = { purchased: {}, listing: null, courses: [], events: [], profile: {} };
 
 const loadStore = (key) => {
@@ -298,10 +276,6 @@ const loadStore = (key) => {
     return EMPTY_STORE;
   }
 };
-
-/* ------------------------------------------------------------------ */
-/*  UI pieces                                                          */
-/* ------------------------------------------------------------------ */
 
 const useCountUp = (target, duration = 900) => {
   const [value, setValue] = useState(0);
@@ -470,7 +444,6 @@ const Icon = ({ name, size = 18 }) => (
   </svg>
 );
 
-/* one shared clock, ticks on the exact second so every clock on the page shows the same time */
 const clockSubs = new Set();
 let clockTimer = null;
 const scheduleClock = () => {
@@ -590,8 +563,6 @@ const Meter = ({ label, value, text }) => (
   </div>
 );
 
-/* ---------------------------- Profile ------------------------------ */
-
 const ProfileModal = ({ lead, onClose }) => {
   const d = lead.details;
   const initials = lead.name
@@ -683,8 +654,6 @@ const ProfileModal = ({ lead, onClose }) => {
   );
 };
 
-/* ---------------------------- Add course --------------------------- */
-
 const AddCourseModal = ({ existing, onAdd, onClose }) => {
   const [name, setName] = useState("");
   const [seats, setSeats] = useState("60");
@@ -744,13 +713,11 @@ const AddCourseModal = ({ existing, onAdd, onClose }) => {
   );
 };
 
-/* ------------------------- Complete profile ------------------------ */
-
 const FACILITIES = ["Hostel", "Library", "Transport", "Wi-Fi campus", "Labs", "Sports", "Placement cell", "Canteen"];
 const PROFILE_ITEMS = ["about", "phone", "website", "address", "facilities"];
 const isFilled = (p, k) =>
   k === "facilities" ? Array.isArray(p.facilities) && p.facilities.length > 0 : String(p[k] || "").trim().length > 0;
-// base = what the profile already has; every extra item filled moves it closer to 100%
+
 const calcProfilePct = (base, p) =>
   Math.round(base + ((100 - base) * PROFILE_ITEMS.filter((k) => isFilled(p || {}, k)).length) / PROFILE_ITEMS.length);
 
@@ -824,8 +791,6 @@ const ProfileEditModal = ({ base, initial, onSave, onClose }) => {
   );
 };
 
-/* ---------------------------- Payment ------------------------------ */
-
 const BANKS = [
   "State Bank of India",
   "HDFC Bank",
@@ -848,7 +813,6 @@ const METHODS = [
   ["bank", "bank", "Net Banking", "All major banks"],
 ];
 
-/* Left panel of the Google top listing payment: shows the college that is paying */
 const ListingPromo = ({ collegeName, amount, days }) => (
   <>
     <div className="cd-promo-brand">
@@ -944,9 +908,8 @@ const formatExpiry = (v) => {
   return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
 };
 
-/* intro smoke: four coloured streams from the four corners meet in the centre and swirl into a round logo */
 const SMOKE = Array.from({ length: 16 }, (_, i) => {
-  const corner = i % 4; // 0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right
+  const corner = i % 4;
   const a = (i / 16) * Math.PI * 2;
   const wob = (i >> 2) * 4;
   const left = corner % 2 === 0;
@@ -966,7 +929,7 @@ const PROCESS_STEPS = ["Contacting your bank…", "Verifying payment securely…
 
 const PaymentModal = ({ title, subtitle, amount, summary, items, promo, receiptLabel, onPaid, onClose }) => {
   const [method, setMethod] = useState("upi");
-  const [phase, setPhase] = useState("form"); // form | processing | success
+  const [phase, setPhase] = useState("form");
   const [upi, setUpi] = useState("");
   const [showQr, setShowQr] = useState(false);
   const [selectedUpiApp, setSelectedUpiApp] = useState(UPI_APPS[0]);
@@ -1343,12 +1306,6 @@ const PaymentModal = ({ title, subtitle, amount, summary, items, promo, receiptL
   );
 };
 
-/* ------------------------------------------------------------------ */
-/*  Live data strip (same idea as the admin Settings page)             */
-/*  - tries your backend; falls back to demo numbers that tick up      */
-/*  - set VITE_API_URL in .env or edit API_BASE / liveEndpoints below  */
-/* ------------------------------------------------------------------ */
-
 const API_BASE = (import.meta.env?.VITE_API_URL || "http://localhost:5000/api").replace(/\/$/, "");
 const LIVE_REFRESH_MS = 30000;
 const liveEndpoints = (id) => ({
@@ -1382,7 +1339,7 @@ const liveFetch = async (path, signal) => {
       sessionStorage.getItem("token") ||
       localStorage.getItem("token");
   } catch {
-    /* storage unavailable */
+
   }
   const res = await fetch(`${API_BASE}${path}`, {
     signal,
@@ -1539,10 +1496,6 @@ const LiveStrip = ({ collegeId, demoNums, demoFeed }) => {
   );
 };
 
-/* ------------------------------------------------------------------ */
-/*  Page                                                               */
-/* ------------------------------------------------------------------ */
-
 export default function CollegeDashboard() {
   const navigate = useNavigate();
 
@@ -1561,16 +1514,16 @@ export default function CollegeDashboard() {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [addCourseOpen, setAddCourseOpen] = useState(false);
-  const [payment, setPayment] = useState(null); // { kind: 'unlock'|'listing', lead? }
+  const [payment, setPayment] = useState(null);
   const [profile, setProfile] = useState(null);
   const [introOn, setIntroOn] = useState(false);
-  const [filter, setFilter] = useState("all"); // all | New | Interested | Contacted | unlocked
-  const [gate, setGate] = useState(null); // locked lead waiting for "go to payment"
-  const [activeCourse, setActiveCourse] = useState(null); // course picked in Course demand
+  const [filter, setFilter] = useState("all");
+  const [gate, setGate] = useState(null);
+  const [activeCourse, setActiveCourse] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [selectedLead, setSelectedLead] = useState(null); // student shown in the spotlight
+  const [selectedLead, setSelectedLead] = useState(null);
   const [hoverCourse, setHoverCourse] = useState(null);
-  const [demandReady, setDemandReady] = useState(false); // donut draws in once
+  const [demandReady, setDemandReady] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setDemandReady(true), 150);
@@ -1580,7 +1533,6 @@ export default function CollegeDashboard() {
 
   useEffect(() => () => introTimers.current.forEach(clearTimeout), []);
 
-  /* Pay Now (listing): play the smoke intro first, open the payment modal as the intro fades out */
   const startListingPayment = () => {
     if (introOn) return;
     const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1599,7 +1551,7 @@ export default function CollegeDashboard() {
     try {
       localStorage.setItem(`ccDashboard:${collegeKey}`, JSON.stringify(store));
     } catch {
-      /* ignore storage errors */
+
     }
   }, [store, collegeKey]);
 
@@ -1622,13 +1574,12 @@ export default function CollegeDashboard() {
     year: "numeric",
   });
 
-  /* ---- derived numbers ---- */
   const totalStudents = data.leads.length;
   const newlyAdded = data.leads.filter((l) => l.status === "New").length;
   const plan = data.plan;
   const planIds = useMemo(() => new Set(plan.purchasedIds), [plan]);
-  const purchasedCount = plan.purchasedIds.length; // students bought through the plan
-  const totalAmount = purchasedCount * PROFILE_PRICE; // PROFILE_PRICE per student
+  const purchasedCount = plan.purchasedIds.length;
+  const totalAmount = purchasedCount * PROFILE_PRICE;
   const planExpired = plan.endsAt < Date.now();
   const planDaysLeft = planExpired ? 0 : Math.max(1, Math.ceil((plan.endsAt - Date.now()) / DAY));
   const planTotalDays = Math.max(1, Math.round((plan.endsAt - plan.startsAt) / DAY));
@@ -1657,7 +1608,6 @@ export default function CollegeDashboard() {
     }));
   }, [data, store.courses]);
 
-  /* leads: only DEMO_UNLOCKED are open, the rest are locked until the college pays */
   const demoUnlocked = new Set(data.leads.slice(1, 1 + DEMO_UNLOCKED).map((l) => l.id));
   const isUnlocked = (lead) => demoUnlocked.has(lead.id) || Boolean(store.purchased[lead.id]);
   const openLead = (lead) => (isUnlocked(lead) ? setProfile(lead) : setGate(lead));
@@ -1686,7 +1636,6 @@ export default function CollegeDashboard() {
     setSelectedLead(visibleLeads[(Math.max(spotIdx, 0) + dir + visibleLeads.length) % visibleLeads.length].id);
   };
 
-  /* bottom cards */
   const demandSorted = [...allCourses].sort((x, y) => y.leads - x.leads);
   const demandTotal = demandSorted.reduce((sum, c) => sum + c.leads, 0);
   const demandAnim = useCountUp(demandTotal);
@@ -1721,7 +1670,6 @@ export default function CollegeDashboard() {
     ...data.activity,
   ].slice(0, 5);
 
-  /* ---- actions ---- */
   const addEvent = (s, title, text) =>
     [{ title, text, ts: Date.now() }, ...s.events].slice(0, 20);
 
@@ -1792,7 +1740,6 @@ export default function CollegeDashboard() {
         .cd-shell.cd-lock { overflow: hidden; }
         .cd-shell button { font-family: inherit; }
 
-        /* animations */
         @keyframes cdUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
         @keyframes cdDown { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
         @keyframes cdGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -1805,7 +1752,6 @@ export default function CollegeDashboard() {
         @keyframes cdTick { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
         .cd-anim { opacity: 0; animation: cdUp .6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: var(--d, 0ms); }
 
-        /* top bar */
         .cd-topbar { position: sticky; top: 0; z-index: 5; height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(16px, 4vw, 48px); background: rgba(255,255,255,.88); backdrop-filter: blur(12px); border-bottom: 1px solid #e3ebf7; animation: cdDown .5s ease both; }
         .cd-brand { display: flex; align-items: center; gap: 9px; font-size: 18px; font-weight: 700; letter-spacing: -.3px; color: #12284a; }
         .cd-brand-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; color: #fff; background: linear-gradient(135deg, #1a5fc0, #2c8cf0); box-shadow: 0 6px 14px rgba(26,95,192,.28); }
@@ -1821,7 +1767,6 @@ export default function CollegeDashboard() {
         .cd-logout { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 14px; border: 1px solid #dfe8f5; border-radius: 10px; color: #334e70; background: #fff; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all .18s; }
         .cd-logout:hover { color: #c2362b; border-color: #f3c9c5; background: #fff6f5; }
 
-        /* content */
         .cd-content { max-width: 1280px; margin: 0 auto; padding: 26px clamp(16px, 4vw, 48px) 40px; }
 
         .cd-hero { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 28px 30px; border-radius: 20px; color: #fff; background: linear-gradient(110deg, #0f3f94 0%, #1566d2 55%, #2c93f2 100%); box-shadow: 0 16px 34px rgba(21,102,210,.25); }
@@ -1836,7 +1781,6 @@ export default function CollegeDashboard() {
         .cd-btn { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 11px; padding: 12px 18px; color: #0b5cc4; background: #fff; font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: transform .18s, box-shadow .18s; }
         .cd-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,.16); }
 
-        /* stats */
         .cd-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 18px 0; }
         .cd-stat { padding: 18px 20px; border: 1px solid #e3ebf7; border-radius: 16px; background: #fff; box-shadow: 0 8px 22px rgba(23,59,103,.06); transition: transform .25s, box-shadow .25s; }
         .cd-stat:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(23,59,103,.12); }
@@ -1850,7 +1794,6 @@ export default function CollegeDashboard() {
         .cd-stat strong { display: block; margin: 16px 0 3px; font-size: 30px; letter-spacing: -.8px; color: #14335a; }
         .cd-stat p { margin: 0; font-size: 12.5px; font-weight: 600; color: #647a93; }
 
-        /* cards */
         .cd-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, .9fr); gap: 16px; align-items: start; }
         .cd-card { overflow: hidden; border: 1px solid #e3ebf7; border-radius: 18px; background: #fff; box-shadow: 0 8px 24px rgba(23,59,103,.06); }
         .cd-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px; border-bottom: 1px solid #edf2f8; }
@@ -1883,7 +1826,6 @@ export default function CollegeDashboard() {
 
         .cd-side { display: grid; gap: 16px; }
 
-        /* Google listing card */
         .cd-listing { position: relative; overflow: hidden; padding: 22px; border-radius: 18px; color: #fff; background: linear-gradient(130deg, #0b4fb0, #1f8cf0); box-shadow: 0 14px 28px rgba(21,102,210,.25); }
         .cd-listing::after { content: ""; position: absolute; width: 160px; height: 160px; right: -50px; top: -60px; border-radius: 50%; background: rgba(255,255,255,.1); animation: cdFloat 8s ease-in-out infinite; }
         .cd-listing > * { position: relative; z-index: 1; }
@@ -1917,7 +1859,6 @@ export default function CollegeDashboard() {
 
         .cd-footer { padding: 26px 0 0; text-align: center; font-size: 11px; color: #8795a8; }
 
-        /* modal */
         .cd-overlay { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(13,30,58,.55); backdrop-filter: blur(4px); animation: cdFade .2s ease both; }
         .cd-modal { position: relative; width: 100%; max-width: 460px; max-height: calc(100vh - 40px); overflow: auto; padding: 26px 24px 22px; border-radius: 20px; background: #fff; box-shadow: 0 30px 70px rgba(10,25,55,.35); animation: cdPop .3s cubic-bezier(.2,.8,.2,1) both; color: #183453; }
         .cd-x { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 50%; color: #62768f; background: #f1f5fb; cursor: pointer; transition: background .15s; }
@@ -2008,8 +1949,6 @@ export default function CollegeDashboard() {
         .cd-receipt span { color: #7a8ba0; }
         .cd-receipt b { overflow-wrap: anywhere; text-align: right; }
 
-
-        /* method tiles + upi extras */
         .cd-methods-label { margin-top: 20px; font-size: 14px; }
         .cd-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .cd-methods button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 8px 13px; border: 1.5px solid #e4ebf5; border-radius: 14px; color: #1f6fe8; background: #fff; cursor: pointer; font-family: inherit; transition: all .18s; }
@@ -2046,7 +1985,6 @@ export default function CollegeDashboard() {
         .cd-pay-left { display: inline-flex; align-items: center; gap: 10px; flex: 1; justify-content: center; padding-left: 18px; }
         .cd-secure { display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        /* wide split modal (Google top listing) */
         .cd-modal.wide { max-width: 1000px; padding: 0; overflow: auto; }
         .cd-split { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr); }
         .cd-split-main { padding: 36px 30px 24px; min-width: 0; }
@@ -2077,7 +2015,7 @@ export default function CollegeDashboard() {
         .cd-gline { display: block; height: 5px; margin-top: 5px; border-radius: 4px; background: #d3deef; }
         .cd-gline.short { width: 62%; }
         .cd-gmock-arrow { position: absolute; right: -8px; bottom: -6px; width: 84px; height: 62px; opacity: .95; }
-        /* share-market arrow animation (only the arrow moves) */
+        
         .cd-gmock-arrow { overflow: visible; animation: cdArrowBob 2.4s ease-in-out infinite; }
         .cd-gmock-arrow path:nth-child(1) { stroke-dasharray: 120; animation: cdArrowLine 3.6s ease-in-out infinite; }
         .cd-gmock-arrow path:nth-child(2) { stroke-dasharray: 50; animation: cdArrowHead 3.6s ease-in-out infinite; }
@@ -2107,7 +2045,6 @@ export default function CollegeDashboard() {
           .cd-methods button small { font-size: 9.5px; }
         }
 
-        /* profile */
         .cd-profile-head { display: flex; align-items: center; gap: 14px; padding-right: 34px; }
         .cd-interest-card { display: flex; align-items: center; gap: 12px; padding: 13px; border: 1px solid #dce9f8; border-radius: 12px; background: #f5f9ff; }
         .cd-interest-icon { display: grid; place-items: center; flex: 0 0 38px; height: 38px; border-radius: 11px; background: #e0efff; color: #1265c2; }
@@ -2133,7 +2070,6 @@ export default function CollegeDashboard() {
         .cd-subjects b { color: #183453; }
         .cd-note { margin: -4px 0 0; font-size: 11px; color: #8a99ac; }
 
-        /* plan card */
         .cd-bought { margin-left: 8px; padding: 2px 8px; border-radius: 999px; font-style: normal; font-size: 10px; font-weight: 700; color: #0b8461; background: #e8faf3; }
         .cd-plan { position: relative; overflow: hidden; isolation: isolate; --pc: #e19a0f; --pbg: #fff4dc; --pgrad: linear-gradient(135deg, #f5b73a, #d98a05); margin-bottom: 18px; padding: 20px 22px; border: 1px solid #e3ebf7; border-top: 4px solid var(--pc); border-radius: 16px; background: #fff; box-shadow: 0 8px 22px rgba(23,59,103,.06); }
         .cd-plan.diamond { --pc: #0e9bc4; --pbg: #e3f6fc; --pgrad: linear-gradient(135deg, #3cc4ea, #0b7fb0); }
@@ -2202,7 +2138,6 @@ export default function CollegeDashboard() {
           .cd-stat strong { font-size: 24px; }
           .cd-badge { font-size: 9.5px; padding: 5px 7px; }
 
-          /* table becomes cards on phones */
           .cd-table { min-width: 0; }
           .cd-table thead { display: none; }
           .cd-table, .cd-table tbody, .cd-table tr, .cd-table td { display: block; width: 100%; }
@@ -2227,7 +2162,6 @@ export default function CollegeDashboard() {
           .cd-overlay, .cd-modal, .cd-tick, .cd-pane, .cdp-overlay, .cdp-card { animation: none !important; }
         }
 
-        /* ===== UI refresh (layout + look only) ===== */
         .cd-shell { background: radial-gradient(1100px 480px at 8% -8%, #dbe7ff 0%, transparent 60%), radial-gradient(900px 480px at 100% 35%, #e4e7ff 0%, transparent 60%), linear-gradient(160deg, #eef3ff 0%, #f6f8ff 50%, #e9efff 100%); }
         .cd-topbar { display: grid; grid-template-columns: auto minmax(180px, 520px) auto; justify-content: space-between; gap: 20px; width: calc(100% - 2 * clamp(16px, 4vw, 48px)); max-width: 1184px; height: 70px; margin: 14px auto 0; top: 14px; padding: 0 16px; border: 1px solid #e3ebf7; border-radius: 22px; background: rgba(255,255,255,.92); box-shadow: 0 10px 30px rgba(40,70,160,.08); }
         .cd-top-search { position: relative; display: block; width: 100%; }
@@ -2315,7 +2249,6 @@ export default function CollegeDashboard() {
           .cd-footer { justify-content: center; text-align: center; }
         }
 
-        /* ===== payment page refresh (look only, animations untouched) ===== */
         .cd-overlay { background: rgba(10,24,64,.55); backdrop-filter: blur(8px); }
         .cd-modal { padding: 28px 28px 24px; border: 1px solid rgba(255,255,255,.8); border-radius: 28px; background: linear-gradient(180deg, #fff, #f8faff); box-shadow: 0 40px 90px rgba(20,40,120,.38); }
         .cd-x { top: 16px; right: 16px; width: 34px; height: 34px; color: #4b5f86; background: #eef3ff; }
@@ -2356,7 +2289,6 @@ export default function CollegeDashboard() {
           .cd-pay-badge { width: 44px; height: 44px; }
         }
 
-        /* ===== live data strip ===== */
         .cl-wrap { display: grid; gap: 14px; margin: 20px 0 0; }
         .cl-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
         .cl-tile { position: relative; overflow: hidden; display: grid; gap: 2px; padding: 16px 18px; border: 1px solid #e6ecfb; border-radius: 18px; background: #fff; box-shadow: 0 8px 22px rgba(40,70,160,.06); opacity: 0; animation: cdUp .6s calc(.15s + var(--i) * 90ms) cubic-bezier(.2,.7,.2,1) forwards; transition: transform .25s, box-shadow .25s, border-color .25s; }
@@ -2399,7 +2331,6 @@ export default function CollegeDashboard() {
           .cl-track, .cl-live i { animation: none !important; }
         }
 
-        /* ===== payment modal: compact, fully visible, clean ===== */
         .cd-overlay { padding: 12px; }
         .cd-modal { max-width: 480px; max-height: calc(100vh - 24px); padding: 22px 24px 18px; border-radius: 24px; }
         .cd-modal.wide { max-width: 940px; padding: 0; overflow: hidden; border-radius: 26px; }
@@ -2448,7 +2379,6 @@ export default function CollegeDashboard() {
         .cd-primary.pay { height: 50px; margin-top: 16px; }
         .cd-secure { margin: 10px 0 0; padding: 0; background: none; font-size: 11px; }
 
-        /* order summary + trust row */
         .cd-order { padding: 4px 16px; border: 1px solid #dfe6ff; border-radius: 16px; background: linear-gradient(120deg, #f2f6ff, #f6f2ff); }
         .cd-order-title { padding: 10px 0 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #7a8ba8; }
         .cd-order-row { display: flex; justify-content: space-between; gap: 14px; padding: 6px 0; font-size: 12.5px; }
@@ -2461,7 +2391,6 @@ export default function CollegeDashboard() {
         .cd-trust span { display: inline-flex; align-items: center; gap: 5px; }
         .cd-trust svg { color: #12a07a; }
 
-        /* left promo panel */
         .cd-promo { padding: 22px 26px 20px; }
         .cd-promo-badge { margin-top: 18px; padding: 6px 12px; font-size: 11.5px; }
         .cd-promo-title { margin: 12px 0 6px; font-size: 28px; }
@@ -2473,7 +2402,6 @@ export default function CollegeDashboard() {
         .cd-promo-total strong { font-size: 28px; }
         .cd-promo-steps { margin-top: 12px; }
 
-        /* short screens: drop decorative bits so everything fits without scrolling */
         @media (max-height: 800px) {
           .cd-promo-desc, .cd-gmock-arrow, .cd-gresult.dim.faint, .cd-order-title { display: none; }
           .cd-promo-badge { margin-top: 12px; }
@@ -2494,7 +2422,6 @@ export default function CollegeDashboard() {
           .cd-qr-open { justify-self: center; }
         }
 
-        /* ===== student leads (cards) + bottom cards ===== */
         .cdl-card { padding: 22px 24px 18px; border: 1px solid #e6ecfb; border-radius: 24px; background: linear-gradient(135deg, #fff 0%, #f6f9ff 100%); box-shadow: 0 12px 34px rgba(40,70,160,.08); }
         .cdl-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
         .cdl-head h3 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.3px; color: #0f2a4d; }
@@ -2582,7 +2509,6 @@ export default function CollegeDashboard() {
         @media (prefers-reduced-motion: reduce) {
         }
 
-        /* ===== leads: wave bubbles + spotlight ===== */
         @keyframes cdwWave { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-8px); } 75% { transform: translateY(8px); } 50% { transform: translateY(0); } }
         @keyframes cdwPop { from { opacity: 0; transform: scale(.4) translateY(14px); } to { opacity: 1; transform: none; } }
         @keyframes cdwSea { to { transform: translateX(-50%); } }
@@ -2673,7 +2599,6 @@ export default function CollegeDashboard() {
           .cdw-bub, .cdw-bub-in, .cdw-sea, .cdw-spot, .cdw-unlock::after, .cdw-av::before { animation: none !important; }
         }
 
-        /* ===== course demand (same style as admin Lead Status) ===== */
         @keyframes cddPop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
         @keyframes cddSlide { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
         @keyframes cddGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -2711,7 +2636,6 @@ export default function CollegeDashboard() {
           .cdd-bar i { transform: none; }
         }
 
-        /* ===== complete profile form ===== */
         .cd-modal:has(.cdf-form) { max-width: 540px; }
         .cdf-progress { margin-top: 2px; padding: 12px 14px; border-radius: 14px; background: #eef5ff; }
         .cdf-progress-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #4d6586; }

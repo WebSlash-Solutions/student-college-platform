@@ -1,11 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-/* =========================================================
-   COLLEGE DATA
-   900 COLLEGES: ENGINEERING + ARTS & SCIENCE + MEDICAL + NURSING + ALLIED HEALTH + PHYSIOTHERAPY + AGRICULTURE + LAW
-========================================================= */
-
 const engineeringFacilities = [
   "Hostel",
   "Library",
@@ -187,8 +182,6 @@ const medicalCompanies = [
     status: "Active",
   },
 ];
-
-/* ---------- NURSING / ALLIED / PHYSIOTHERAPY / AGRICULTURE / LAW ---------- */
 
 const nursingFacilities = [
   "Hostel",
@@ -435,10 +428,6 @@ const lawCompanies = [
   },
 ];
 
-/* =========================================================
-   HELPER
-========================================================= */
-
 const categoryEligibility = {
   Medical: "Course-specific eligibility / NEET where applicable",
   Nursing:
@@ -512,15 +501,6 @@ function createCollege({
       "College information shown in this admin module. Production values can be updated by the administrator.",
   };
 }
-
-/* =========================================================
-   300 COLLEGES
-========================================================= */
-
-/* =========================================================
-   COURSE FEES
-   Demo values for UI display. Verify with each college before production.
-========================================================= */
 
 const engineeringCourseFees = {
   "Aerospace Engineering": "₹1,80,000 / year",
@@ -634,7 +614,6 @@ export function getCourseFee(college, course) {
 }
 
 export const collegesData = [
-  /* ================= ENGINEERING 10 ================= */
 
   createCollege({
     id: "ENG001",
@@ -956,8 +935,6 @@ export const collegesData = [
     companies: engineeringCompanies,
   }),
 
-  /* ================= ARTS & SCIENCE 10 ================= */
-
   createCollege({
     id: "ART001",
     short: "PKW",
@@ -1278,8 +1255,6 @@ export const collegesData = [
     companies: artsCompanies,
   }),
 
-  /* ================= MEDICAL 10 ================= */
-
   createCollege({
     id: "MED001",
     short: "MMC",
@@ -1529,8 +1504,6 @@ export const collegesData = [
     facilities: medicalFacilities,
     companies: medicalCompanies,
   }),
-
-  /* ================= EXTRA ENGINEERING (14) ================= */
 
   createCollege({
     id: "ENG011",
@@ -1980,8 +1953,6 @@ export const collegesData = [
     companies: engineeringCompanies,
   }),
 
-  /* ================= EXTRA ARTS & SCIENCE (13) ================= */
-
   createCollege({
     id: "ART011",
     short: "GRG",
@@ -2398,8 +2369,6 @@ export const collegesData = [
     companies: artsCompanies,
   }),
 
-  /* ================= EXTRA MEDICAL (13) ================= */
-
   createCollege({
     id: "MED011",
     short: "ESI",
@@ -2724,8 +2693,6 @@ export const collegesData = [
     facilities: medicalFacilities,
     companies: medicalCompanies,
   }),
-
-  /* ================= VELLORE / TIRUCHIRAPPALLI / MADURAI / SALEM (30 NEW) ================= */
 
   createCollege({
     id: "ENG025",
@@ -3460,7 +3427,6 @@ export const collegesData = [
     companies: medicalCompanies,
   }),
 
-
   createCollege({
     id: "MED030",
     short: "VMH",
@@ -3560,8 +3526,6 @@ export const collegesData = [
     facilities: medicalFacilities,
     companies: medicalCompanies,
   }),
-
-  /* ================= AGRICULTURE ================= */
 
   createCollege({
     id: "AGR001",
@@ -3757,8 +3721,6 @@ export const collegesData = [
     companies: agricultureCompanies,
   }),
 
-  /* ================= LAW ================= */
-
   createCollege({
     id: "LAW001",
     short: "SOEL",
@@ -3949,8 +3911,6 @@ export const collegesData = [
     companies: lawCompanies,
   }),
 
-  /* ================= NURSING ================= */
-
   createCollege({
     id: "NUR001",
     short: "GCN",
@@ -4135,8 +4095,6 @@ export const collegesData = [
     companies: nursingCompanies,
   }),
 
-  /* ================= ALLIED HEALTH ================= */
-
   createCollege({
     id: "AHS001",
     short: "SRAH",
@@ -4292,8 +4250,6 @@ export const collegesData = [
     facilities: alliedFacilities,
     companies: alliedCompanies,
   }),
-
-  /* ================= PHYSIOTHERAPY ================= */
 
   createCollege({
     id: "PHY001",
@@ -6093,7 +6049,6 @@ export const collegesData = [
     facilities: artsFacilities,
     companies: artsCompanies,
   }),
-  /* ================= 50 ADDITIONAL COLLEGES: 201-250 ================= */
 
   createCollege({
     id: "ENG056",
@@ -6818,7 +6773,6 @@ export const collegesData = [
     companies: artsCompanies,
   }),
 
-
   createCollege({
     id: "MED040",
     short: "GMC-DPI",
@@ -7265,7 +7219,6 @@ export const collegesData = [
     companies: lawCompanies,
   }),
 
-
   createCollege({
     id: "PHY014",
     short: "KMCH-PT",
@@ -7288,8 +7241,6 @@ export const collegesData = [
     facilities: physioFacilities,
     companies: physioCompanies,
   }),
-
-  /* ================= 50 ADDITIONAL COLLEGES: 251-300 ================= */
 
   createCollege({
     id: "ENG076",
@@ -8140,7 +8091,6 @@ export const collegesData = [
     facilities: lawFacilities,
     companies: lawCompanies,
   }),
-  /* ================= REPLACEMENT COLLEGES ================= */
 
   createCollege({
     id: "ENG091",
@@ -8251,9 +8201,6 @@ export const collegesData = [
     facilities: engineeringFacilities,
     companies: engineeringCompanies,
   }),
-
-
-  /* ================= ENGINEERING - ADDED LIST (251) ================= */
 
   createCollege({
     id: "ENG094",
@@ -14530,8 +14477,6 @@ export const collegesData = [
     companies: engineeringCompanies,
   }),
 
-  /* ================= ARTS & SCIENCE - ADDED LIST (198) ================= */
-
   createCollege({
     id: "ART073",
     short: "GASC",
@@ -20076,8 +20021,6 @@ export const collegesData = [
     companies: artsCompanies,
   }),
 
-  /* ================= ARTS & SCIENCE - ADDED LIST (52) ================= */
-
   createCollege({
     id: "ART271",
     short: "PC",
@@ -21534,8 +21477,6 @@ export const collegesData = [
     companies: artsCompanies,
   }),
 
-  /* ================= MEDICAL - ADDED (1) ================= */
-
   createCollege({
     id: "MED051",
     short: "GTMC",
@@ -21552,8 +21493,6 @@ export const collegesData = [
     facilities: medicalFacilities,
     companies: medicalCompanies,
   }),
-
-  /* ================= ENGINEERING - ADDED (9) ================= */
 
   createCollege({
     id: "ENG345",
@@ -21779,8 +21718,6 @@ export const collegesData = [
     facilities: engineeringFacilities,
     companies: engineeringCompanies,
   }),
-
-  /* ================= ENGINEERING - ADDED (50) ================= */
 
   createCollege({
     id: "ENG354",
@@ -23032,8 +22969,6 @@ export const collegesData = [
     companies: engineeringCompanies,
   }),
 
-  /* ================= ARTS & SCIENCE - ADDED (9) ================= */
-
   createCollege({
     id: "ART323",
     short: "AVASC",
@@ -23285,8 +23220,6 @@ export const collegesData = [
     facilities: artsFacilities,
     companies: artsCompanies,
   }),
-
-  /* ================= ARTS & SCIENCE - ADDED (10) ================= */
 
   createCollege({
     id: "ART332",
@@ -23568,8 +23501,6 @@ export const collegesData = [
     companies: artsCompanies,
   }),
 
-  /* ================= AGRICULTURE - ADDED (3) ================= */
-
   createCollege({
     id: "AGR018",
     short: "ACRIE",
@@ -23644,8 +23575,6 @@ export const collegesData = [
     facilities: agricultureFacilities,
     companies: agricultureCompanies,
   }),
-
-  /* ================= PHYSIOTHERAPY - ADDED (6) ================= */
 
   createCollege({
     id: "PHY018",
@@ -23796,8 +23725,6 @@ export const collegesData = [
     facilities: physioFacilities,
     companies: physioCompanies,
   }),
-
-  /* ================= NURSING - ADDED (7) ================= */
 
   createCollege({
     id: "NUR025",
@@ -23953,8 +23880,6 @@ export const collegesData = [
     companies: nursingCompanies,
   }),
 
-  /* ================= LAW - ADDED (5) ================= */
-
   createCollege({
     id: "LAW016",
     short: "VMLS",
@@ -24081,9 +24006,6 @@ export const collegesData = [
   }),
 
 ];
-/* =========================================================
-   ACCREDITATION / RECOGNITION
-========================================================= */
 
 const accreditationOverrides = {
   ENG052: "NAAC A+",
@@ -24148,15 +24070,10 @@ collegesData.forEach((college) => {
   }
 });
 
-/* =========================================================
-   ADMIN SIDEBAR
-========================================================= */
-
 function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Same logout as Admin page: clear session and go back to the admin login.
   const handleLogout = () => {
     sessionStorage.removeItem("adminLoggedIn");
     navigate("/admin/dashboard", { replace: true });
@@ -24232,14 +24149,9 @@ function AdminSidebar({ onCollegesClick, isOpen = false, onClose = () => {} }) {
   );
 }
 
-/* =========================================================
-   TOP BAR
-========================================================= */
-
 function TopBar({ search, onSearchChange, onMenuClick }) {
   const navigate = useNavigate();
 
-  // Same logout as Admin page: clear session and go back to the admin login.
   const handleLogout = () => {
     sessionStorage.removeItem("adminLoggedIn");
     navigate("/admin/dashboard", { replace: true });
@@ -24307,11 +24219,6 @@ function TopBar({ search, onSearchChange, onMenuClick }) {
     </header>
   );
 }
-
-/* =========================================================
-   OFFICIAL COLLEGE CONTACT / ABOUT DATA
-   These values are shown in the college detail page.
-========================================================= */
 
 const collegeContactData = {
   ENG095: {
@@ -26908,11 +26815,6 @@ Object.entries(collegeContactData).forEach(([id, details]) => {
   if (college) Object.assign(college, details);
 });
 
-/* =========================================================
-   COLLEGE LIST
-========================================================= */
-
-/* Animated number: counts up smoothly whenever the value changes */
 function CountUp({ value, duration = 900 }) {
   const [display, setDisplay] = useState(0);
   const previous = useRef(0);
@@ -27031,8 +26933,6 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
         </div>
       </div>
 
-      {/* CATEGORY TABS */}
-
       <div className="college-tabs">
         {[
           "All Colleges",
@@ -27055,8 +26955,6 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
           </button>
         ))}
       </div>
-
-      {/* FILTER */}
 
       <div className="college-filter">
         <div className="college-search">
@@ -27096,8 +26994,6 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
           Reset
         </button>
       </div>
-
-      {/* STATS */}
 
       <div className="college-stats">
         <div className="college-stat-card">
@@ -27141,8 +27037,6 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
         </div>
       </div>
 
-      {/* REGISTERED COLLEGES */}
-
       <div className="registered-heading">
         <div>
           <h3>REGISTERED COLLEGES</h3>
@@ -27173,10 +27067,6 @@ function CollegeList({ colleges, onSelect, search, setSearch }) {
     </div>
   );
 }
-
-/* =========================================================
-   COLLEGE CARD
-========================================================= */
 
 function CollegeCard({ college, onSelect, index = 0 }) {
   return (
@@ -27228,12 +27118,8 @@ function CollegeCard({ college, onSelect, index = 0 }) {
   );
 }
 
-/* =========================================================
-   COLLEGE DETAILS
-========================================================= */
-
 function CollegeDetails({ college, onBack, onUpdate }) {
-  // Sections fade / slide in as they scroll into view
+
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") return undefined;
     const nodes = document.querySelectorAll(
@@ -27333,8 +27219,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
         ← Back to Colleges
       </button>
 
-      {/* COLLEGE HEADER */}
-
       <div className="college-detail-header">
         <div className="detail-logo">{college.short}</div>
 
@@ -27387,10 +27271,7 @@ function CollegeDetails({ college, onBack, onUpdate }) {
         </div>
       </div>
 
-      {/* DETAILS BODY */}
-
       <div className="detail-layout">
-        {/* INTERNAL NAV */}
 
         <aside className="detail-side-nav">
           <p>COLLEGE DETAILS</p>
@@ -27407,10 +27288,7 @@ function CollegeDetails({ college, onBack, onUpdate }) {
           ))}
         </aside>
 
-        {/* CONTENT */}
-
         <div className="detail-content">
-          {/* OVERVIEW */}
 
           <section id="college-overview" className="detail-section">
             <SectionTitle title="COLLEGE INFORMATION" />
@@ -27437,8 +27315,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
             </div>
           </section>
 
-          {/* COURSES */}
-
           <section id="college-courses" className="detail-section">
             <SectionTitle title="COURSES OFFERED" />
 
@@ -27459,8 +27335,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
             </div>
           </section>
 
-          {/* FACILITIES */}
-
           <section id="college-facilities" className="detail-section">
             <SectionTitle title="FACILITIES" />
 
@@ -27480,8 +27354,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
               ))}
             </div>
           </section>
-
-          {/* PLACEMENT */}
 
           <section id="college-placement" className="detail-section">
             <SectionTitle title="PLACEMENT" />
@@ -27549,8 +27421,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
             </div>
           </section>
 
-          {/* ADMISSION */}
-
           <section id="college-admission" className="detail-section">
             <SectionTitle title="ADMISSION" />
 
@@ -27577,8 +27447,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
               </div>
             </div>
           </section>
-
-          {/* CONTACT */}
 
           <section id="college-contact" className="detail-section">
             <SectionTitle title="CONTACT & LOCATION" />
@@ -27646,8 +27514,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
               </a>
             )}
           </section>
-
-          {/* ADMIN ACTION */}
 
           <section className="admin-actions-section">
             <h3>ADMIN ACTIONS</h3>
@@ -27779,10 +27645,6 @@ function CollegeDetails({ college, onBack, onUpdate }) {
   );
 }
 
-/* =========================================================
-   SMALL COMPONENTS
-========================================================= */
-
 function SectionTitle({ title }) {
   return (
     <div className="section-title">
@@ -27809,10 +27671,6 @@ function FeeItem({ label, value }) {
   );
 }
 
-/* =========================================================
-   MAIN COMPONENT
-========================================================= */
-
 export default function CollegeManagement() {
   const [colleges, setColleges] = useState(collegesData);
   const [selectedId, setSelectedId] = useState(null);
@@ -27835,13 +27693,11 @@ export default function CollegeManagement() {
 
   const navigate = useNavigate();
 
-  // Typing in the top search bar always shows the college list results
   const handleSearchChange = (value) => {
     setSearch(value);
     setSelectedCollege(null);
   };
 
-  // Always start from the top of the scrolling area when switching views
   useEffect(() => {
     const area = document.querySelector(".student-layout-main");
     if (area) area.scrollTo({ top: 0 });
@@ -27896,12 +27752,8 @@ export default function CollegeManagement() {
   );
 }
 
-/* =========================================================
-   CSS
-========================================================= */
-
 const collegeStyles = String.raw`
-/* ===== SHARED LAYOUT (same as Student page) ===== */
+
 .student-layout,
 .student-layout * { box-sizing: border-box; }
 
@@ -28188,7 +28040,6 @@ const collegeStyles = String.raw`
   font-size: 9px;
 }
 
-/* ===== LOGOUT (same behaviour as Admin page) ===== */
 .student-layout-logout {
   width: 100%;
   height: 36px;
@@ -28272,11 +28123,6 @@ const collegeStyles = String.raw`
   .student-layout-search { padding: 0 10px; }
 }
 
-
-/* =========================================================
-   GLOBAL RESET
-========================================================= */
-
 * { box-sizing: border-box; }
 
 html, body, #root {
@@ -28302,7 +28148,6 @@ html { scroll-behavior: smooth; }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 
-/* content area inside the shared layout */
 .student-layout-content { padding: 24px 28px 40px; }
 
 .college-page,
@@ -28314,10 +28159,6 @@ button { cursor: pointer; }
   min-width: 0;
   color: #14325c;
 }
-
-/* =========================================================
-   HERO HEADING
-========================================================= */
 
 .college-page-heading {
   position: relative;
@@ -28381,10 +28222,6 @@ button { cursor: pointer; }
   color: #3b5578;
 }
 
-/* =========================================================
-   CATEGORY TABS
-========================================================= */
-
 .college-tabs {
   display: flex;
   gap: 8px;
@@ -28434,10 +28271,6 @@ button { cursor: pointer; }
 }
 
 .college-tabs button.active .tab-count { background: rgba(255,255,255,.24); color: #fff; }
-
-/* =========================================================
-   FILTER BAR
-========================================================= */
 
 .college-filter {
   display: grid;
@@ -28497,10 +28330,6 @@ button { cursor: pointer; }
 .reset-button { font-weight: 600; color: #4b6586; transition: background .15s; }
 .reset-button:hover { background: #eef4fd; }
 
-/* =========================================================
-   STAT CARDS
-========================================================= */
-
 .college-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -28559,11 +28388,6 @@ button { cursor: pointer; }
   font-weight: 800;
   line-height: 1.2;
 }
-
-/* =========================================================
-   COLLEGE STAT CARDS - SMOKE ON HOVER + SEA WAVE
-   (same effect as the Admin dashboard, in each card's own colour)
-========================================================= */
 
 .college-stat-card {
   position: relative;
@@ -28645,10 +28469,6 @@ button { cursor: pointer; }
   .college-stat-card:hover::after { animation: none; }
 }
 
-/* =========================================================
-   REGISTERED HEADING
-========================================================= */
-
 .registered-heading {
   display: flex;
   justify-content: space-between;
@@ -28680,10 +28500,6 @@ button { cursor: pointer; }
   font-size: 12px;
   font-weight: 700;
 }
-
-/* =========================================================
-   COLLEGE GRID + CARD
-========================================================= */
 
 .college-grid {
   width: 100%;
@@ -28811,10 +28627,6 @@ button { cursor: pointer; }
 .college-info-row + .view-details-button { margin-top: 10px; }
 .view-details-button:hover { filter: brightness(1.07); }
 
-/* =========================================================
-   EMPTY
-========================================================= */
-
 .empty-colleges {
   padding: 60px 20px;
   text-align: center;
@@ -28827,10 +28639,6 @@ button { cursor: pointer; }
 .empty-colleges div { font-size: 34px; margin-bottom: 8px; }
 .empty-colleges h3 { margin: 0; color: #28466b; font-size: 16px; }
 .empty-colleges p { margin: 6px 0 0; font-size: 13px; }
-
-/* =========================================================
-   DETAILS - HEADER
-========================================================= */
 
 .back-colleges {
   height: 34px;
@@ -28937,10 +28745,6 @@ button { cursor: pointer; }
 
 .detail-official-link:hover { background: #eaf3ff; }
 
-/* =========================================================
-   DETAILS - LAYOUT
-========================================================= */
-
 .detail-layout {
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr);
@@ -29029,10 +28833,6 @@ button { cursor: pointer; }
   background: linear-gradient(180deg, #2d7df0, #56ccf2);
 }
 
-/* =========================================================
-   DETAILS - INFO
-========================================================= */
-
 .info-table {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -29063,10 +28863,6 @@ button { cursor: pointer; }
 
 .description-box h4 { margin: 0 0 6px; color: #0f2a52; font-size: 13.5px; font-weight: 800; }
 .description-box p { margin: 0; color: #4b6586; font-size: 13px; line-height: 1.65; }
-
-/* =========================================================
-   DETAILS - COURSES / FEES
-========================================================= */
 
 .course-detail-grid {
   display: grid;
@@ -29128,10 +28924,6 @@ button { cursor: pointer; }
 .fee-item span { color: #7a8ca6; font-size: 12px; }
 .fee-item strong { color: #0f2a52; font-size: 12.5px; text-align: right; }
 
-/* =========================================================
-   DETAILS - FACILITIES
-========================================================= */
-
 .facility-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
@@ -29156,10 +28948,6 @@ button { cursor: pointer; }
 .facility-card:hover { transform: translateY(-2px); border-color: #b9d3f7; background: #eef5ff; }
 .facility-card span { font-size: 24px; }
 .facility-card strong { color: #28466b; font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
-
-/* =========================================================
-   DETAILS - PLACEMENT
-========================================================= */
 
 .placement-summary {
   display: grid;
@@ -29228,10 +29016,6 @@ button { cursor: pointer; }
   white-space: nowrap;
 }
 
-/* =========================================================
-   DETAILS - ADMISSION / CONTACT
-========================================================= */
-
 .admission-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 
 .admission-card {
@@ -29292,10 +29076,6 @@ button { cursor: pointer; }
 
 .visit-website-button:hover { filter: brightness(1.07); }
 
-/* =========================================================
-   ADMIN ACTIONS
-========================================================= */
-
 .admin-actions-section {
   padding: 18px 20px;
   background: #fff;
@@ -29348,10 +29128,6 @@ button { cursor: pointer; }
   font-weight: 700;
   overflow-wrap: anywhere;
 }
-
-/* =========================================================
-   EDIT MODAL
-========================================================= */
 
 .edit-overlay {
   position: fixed;
@@ -29450,20 +29226,12 @@ button { cursor: pointer; }
 .edit-modal-actions .cancel { background: #eef2f8; color: #4b6586; }
 .edit-modal-actions .save { background: linear-gradient(135deg, #2d7df0, #1d63d6); color: #fff; box-shadow: 0 6px 14px rgba(45,125,240,.22); }
 
-/* =========================================================
-   LAPTOP / SMALL DESKTOP
-========================================================= */
-
 @media (max-width: 1200px) {
   .college-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .college-filter { grid-template-columns: minmax(200px, 1fr) 170px 170px 90px; }
   .placement-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admission-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
-/* =========================================================
-   TABLET (sidebar becomes a drawer at 900px)
-========================================================= */
 
 @media (max-width: 900px) {
   .student-layout-content { padding: 18px 16px 36px; }
@@ -29498,10 +29266,6 @@ button { cursor: pointer; }
   .detail-section { scroll-margin-top: 74px; }
   .admission-grid { grid-template-columns: minmax(0, 1fr); }
 }
-
-/* =========================================================
-   MOBILE
-========================================================= */
 
 @media (max-width: 700px) {
   .student-layout-content { padding: 14px 12px 32px; }
@@ -29541,10 +29305,6 @@ button { cursor: pointer; }
   .edit-modal-head, .edit-modal-actions { padding-left: 14px; padding-right: 14px; }
 }
 
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
 @media (max-width: 480px) {
   .college-detail-header { flex-direction: column; }
   .placement-summary { grid-template-columns: minmax(0, 1fr); }
@@ -29557,12 +29317,6 @@ button { cursor: pointer; }
   .college-filter { grid-template-columns: minmax(0, 1fr); }
   .college-stats { grid-template-columns: minmax(0, 1fr); }
 }
-
-
-/* =========================================================
-   ✦ REDESIGN LAYER — clean theme + animations
-   (placed last so it refines everything above; content untouched)
-========================================================= */
 
 .student-layout {
   --ink: #1b2142;
@@ -29587,7 +29341,6 @@ button { cursor: pointer; }
     var(--bg);
 }
 
-/* ---------- keyframes ---------- */
 @keyframes cmFadeUp   { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes cmFadeIn   { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cmSlideR   { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
@@ -29601,14 +29354,11 @@ button { cursor: pointer; }
 @keyframes cmRowIn    { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
 @keyframes cmBlink    { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
 
-/* ---------- sidebar: original look kept ---------- */
 .student-layout-sidebar { font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif; }
 
-/* ---------- page entrance ---------- */
 .college-page,
 .college-details-page { animation: cmFadeUp .55s var(--ease) both; }
 
-/* ---------- hero heading ---------- */
 .college-page-heading {
   min-height: 110px;
   padding: 20px 26px;
@@ -29633,7 +29383,6 @@ button { cursor: pointer; }
 .college-page-heading p  { color: rgba(255,255,255,.82); font-size: 13.5px; }
 .college-page-heading > div { animation: cmFadeUp .7s var(--ease) .15s both; }
 
-/* ---------- category tabs ---------- */
 .college-tabs {
   padding: 6px;
   gap: 4px;
@@ -29663,7 +29412,6 @@ button { cursor: pointer; }
 .college-tabs button:hover .tab-count { background: #fff; color: var(--acc); }
 .college-tabs button.active .tab-count { background: rgba(255,255,255,.26); color: #fff; }
 
-/* ---------- filter bar ---------- */
 .college-filter {
   padding: 12px;
   background: #fff;
@@ -29694,7 +29442,6 @@ button { cursor: pointer; }
 .reset-button:hover { background: var(--acc); color: #fff; transform: translateY(-2px); }
 .reset-button:active { transform: scale(.95); }
 
-/* ---------- stat cards ---------- */
 .college-stats .college-stat-card {
   background: #fff;
   border: 1px solid var(--line);
@@ -29738,7 +29485,6 @@ button { cursor: pointer; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- registered heading ---------- */
 .registered-heading { animation: cmFadeUp .55s var(--ease) .45s both; }
 .registered-heading h3 { color: var(--ink); letter-spacing: 1px; }
 .registered-heading p  { color: var(--muted); }
@@ -29750,7 +29496,6 @@ button { cursor: pointer; }
   font-weight: 800;
 }
 
-/* ---------- college cards ---------- */
 .college-card {
   position: relative;
   overflow: hidden;
@@ -29841,7 +29586,6 @@ button { cursor: pointer; }
 .empty-colleges { animation: cmFadeUp .5s var(--ease) both; }
 .empty-colleges div { display: inline-block; animation: cmFloat 3.5s ease-in-out infinite; }
 
-/* ---------- back button ---------- */
 .back-colleges {
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -29853,7 +29597,6 @@ button { cursor: pointer; }
 }
 .back-colleges:hover { background: var(--acc-soft); color: var(--acc); transform: translateX(-5px); }
 
-/* ---------- detail header ---------- */
 .college-detail-header {
   position: relative;
   overflow: hidden;
@@ -29889,7 +29632,6 @@ button { cursor: pointer; }
 .detail-official-link { border-radius: 12px; border-color: var(--line); color: var(--acc); transition: background .25s, transform .25s var(--ease); }
 .detail-official-link:hover { background: var(--acc-soft); transform: translateY(-2px); }
 
-/* ---------- detail side nav ---------- */
 .detail-side-nav {
   background: #fff;
   border: 1px solid var(--line);
@@ -29913,7 +29655,6 @@ button { cursor: pointer; }
   transform: translateX(4px);
 }
 
-/* ---------- detail sections (scroll reveal) ---------- */
 .detail-section,
 .admin-actions-section {
   background: #fff;
@@ -30033,7 +29774,6 @@ button { cursor: pointer; }
 }
 .visit-website-button:hover { transform: translateY(-3px); box-shadow: 0 18px 32px rgba(91,94,244,.4); filter: none; }
 
-/* ---------- admin actions ---------- */
 .admin-actions-section h3 { color: var(--ink); }
 .admin-actions button {
   border-radius: 14px;
@@ -30047,7 +29787,6 @@ button { cursor: pointer; }
 .admin-actions .reject  { background: linear-gradient(135deg,#fb7185,#e11d48); box-shadow: 0 12px 24px rgba(225,29,72,.25); }
 .admin-notice { background: var(--acc-soft); color: var(--acc); border-radius: 12px; animation: cmSlideDown .45s var(--spring) both; }
 
-/* ---------- edit modal ---------- */
 .edit-overlay {
   background: rgba(14,18,48,.55);
   backdrop-filter: blur(6px);
@@ -30068,7 +29807,6 @@ button { cursor: pointer; }
 .edit-modal-actions .cancel { background: #f1f2fb; color: var(--ink-2); }
 .edit-modal-actions .save { background: var(--acc-grad); box-shadow: 0 10px 22px rgba(91,94,244,.3); }
 
-/* ---------- misc polish ---------- */
 .student-layout-main { scrollbar-width: thin; scrollbar-color: #c9cdf3 transparent; }
 .student-layout-main::-webkit-scrollbar { width: 8px; }
 .student-layout-main::-webkit-scrollbar-thumb { background: #c9cdf3; border-radius: 8px; }
@@ -30079,7 +29817,6 @@ button:focus-visible,
 a:focus-visible,
 select:focus-visible { outline: 3px solid rgba(91,94,244,.45); outline-offset: 2px; }
 
-/* respect users who prefer less motion */
 @media (prefers-reduced-motion: reduce) {
   .student-layout *,
   .student-layout *::before,
@@ -30098,5 +29835,4 @@ select:focus-visible { outline: 3px solid rgba(91,94,244,.45); outline-offset: 2
   .college-card:hover { transform: translateY(-4px); }
   .detail-side-nav button:hover, .detail-side-nav button.active { transform: none; }
 }
-
 `;

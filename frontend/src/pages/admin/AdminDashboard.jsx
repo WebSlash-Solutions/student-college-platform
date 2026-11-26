@@ -7,17 +7,11 @@ import ReportsAnalytics from "./Reportsanalytics";
 import Users from "./Users";
 import Settings from "./Settings";
 
-const adminStyles = String.raw`/* =========================================================
-   GLOBAL ADMIN
-========================================================= */
+const adminStyles = String.raw`
 
 * {
   box-sizing: border-box;
 }
-
-/* =========================================================
-   SUBTLE DASHBOARD ANIMATIONS
-========================================================= */
 
 @keyframes dashboardFadeUp {
   from {
@@ -240,19 +234,14 @@ const adminStyles = String.raw`/* ==============================================
 }
 .admin-app {
   width: 100vw;
-  height: 100vh;          /* min-height: 100vh ku badhula */
-  overflow: hidden;       /* add */
+  height: 100vh;          
+  overflow: hidden;       
   margin-left: calc(50% - 50vw);
   display: flex;
   background: #f4f7fb;
   color: #16243d;
   font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
 }
-
-
-/* =========================================================
-   ADMIN LOGIN
-========================================================= */
 
 .admin-login-page {
   position: fixed;
@@ -270,7 +259,6 @@ const adminStyles = String.raw`/* ==============================================
     linear-gradient(135deg, #f6f9ff 0%, #eef4fb 100%);
 }
 
-/* white card that holds everything */
 .login-shell {
   position: relative;
   width: 100%;
@@ -282,8 +270,6 @@ const adminStyles = String.raw`/* ==============================================
   background: #ffffff;
   box-shadow: 0 24px 60px rgba(25, 52, 92, 0.12);
 }
-
-/* ---------- left rail (logo + Sign In tab) ---------- */
 
 .login-rail {
   width: 150px;
@@ -338,8 +324,6 @@ const adminStyles = String.raw`/* ==============================================
   height: 52px;
 }
 
-/* ---------- middle image panel (sticks out top & bottom) ---------- */
-
 .login-visual {
   position: relative;
   z-index: 2;
@@ -384,8 +368,6 @@ const adminStyles = String.raw`/* ==============================================
 .login-brand-name span {
   color: #7db8ff;
 }
-
-/* ---------- right form ---------- */
 
 .login-form-area {
   flex: 1;
@@ -526,8 +508,6 @@ const adminStyles = String.raw`/* ==============================================
   font-size: 11px;
 }
 
-/* ---------- social sign in ---------- */
-
 .login-social-text {
   margin: 18px 0 12px;
   text-align: center;
@@ -584,13 +564,10 @@ const adminStyles = String.raw`/* ==============================================
   50%      { transform: scale(1.06); }
 }
 
-/* ---------- dashboard greeting (two colour) ---------- */
-
 .greeting-accent {
   color: #2478e5;
 }
 
-/* Morning: slides in, then a golden shimmer keeps sweeping across */
 @keyframes greetingSlideIn {
   from { opacity: 0; transform: translateX(-22px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -601,7 +578,6 @@ const adminStyles = String.raw`/* ==============================================
   100% { background-position: 200% 50%; }
 }
 
-/* Afternoon: pops up with a bounce, then the colour flows */
 @keyframes greetingBounceIn {
   0%   { opacity: 0; transform: translateY(18px) scale(0.9); }
   60%  { opacity: 1; transform: translateY(-5px) scale(1.04); }
@@ -613,7 +589,6 @@ const adminStyles = String.raw`/* ==============================================
   50%      { background-position: 100% 50%; }
 }
 
-/* Evening: fades in from blur, then glows softly like the night sky */
 @keyframes greetingBlurIn {
   from { opacity: 0; filter: blur(8px); letter-spacing: 3px; }
   to   { opacity: 1; filter: blur(0); letter-spacing: normal; }
@@ -661,8 +636,6 @@ const adminStyles = String.raw`/* ==============================================
     greetingGlow 2.8s ease-in-out 0.9s infinite;
 }
 
-/* ---------- responsive ---------- */
-
 @media (max-width: 860px) {
   .admin-login-page {
     padding: 20px 15px;
@@ -699,11 +672,6 @@ const adminStyles = String.raw`/* ==============================================
     padding: 28px 22px 30px;
   }
 }
-
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
 
 .admin-sidebar {
   width: 236px;
@@ -879,15 +847,11 @@ const adminStyles = String.raw`/* ==============================================
   background: rgba(255, 255, 255, 0.07);
 }
 
-
-/* =========================================================
-   MAIN AREA
-========================================================= */
 .admin-main {
   min-width: 0;
   flex: 1;
-  height: 100vh;          /* add */
-  overflow-y: auto;       /* add: scroll inga nadakkum */
+  height: 100vh;          
+  overflow-y: auto;       
 }
 
 .admin-topbar {
@@ -899,7 +863,6 @@ const adminStyles = String.raw`/* ==============================================
   background: #ffffff;
   border-bottom: 1px solid #e7ecf2;
 
-  /* add pannunga */
   position: sticky;
   top: 0;
   z-index: 100;
@@ -1008,11 +971,6 @@ const adminStyles = String.raw`/* ==============================================
   font-size: 16px;
 }
 
-
-/* =========================================================
-   CONTENT
-========================================================= */
-
 .admin-content {
   padding: 27px 30px 40px;
 }
@@ -1049,11 +1007,6 @@ const adminStyles = String.raw`/* ==============================================
 .calendar-icon {
   color: #6381a6;
 }
-
-
-/* =========================================================
-   STAT CARDS
-========================================================= */
 
 .stats-grid {
   display: grid;
@@ -1164,11 +1117,6 @@ const adminStyles = String.raw`/* ==============================================
   font-size: 9px;
 }
 
-
-/* =========================================================
-   COMMON CARD
-========================================================= */
-
 .dashboard-card {
   border: 1px solid #e5ebf2;
   border-radius: 12px;
@@ -1198,7 +1146,6 @@ const adminStyles = String.raw`/* ==============================================
   font-size: 9px;
 }
 
-/* Recent Leads and Activity text size */
 .recent-leads-card .card-header h2,
 .activity-card .card-header h2 {
   font-size: 17px;
@@ -1208,10 +1155,6 @@ const adminStyles = String.raw`/* ==============================================
 .activity-card .card-header p {
   font-size: 12px;
 }
-
-/* =========================================================
-   ANALYTICS
-========================================================= */
 
 .analytics-grid {
   display: grid;
@@ -1310,7 +1253,6 @@ const adminStyles = String.raw`/* ==============================================
   border-top: 1px dashed #e6ebf1;
 }
 
-/* hover interaction */
 .chart-hover-layer {
   position: absolute;
   inset: 8px 0 28px;
@@ -1427,7 +1369,6 @@ const adminStyles = String.raw`/* ==============================================
   font-size: 8px;
 }
 
-
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
@@ -1451,10 +1392,6 @@ const adminStyles = String.raw`/* ==============================================
 @media (max-width: 650px) {
   .chart-legend { padding: 0 12px 16px; gap: 10px 14px; font-size: 10px; }
 }
-
-/* =========================================================
-   LEAD STATUS
-========================================================= */
 
 .status-card {
   min-height: 330px;
@@ -1568,11 +1505,6 @@ const adminStyles = String.raw`/* ==============================================
 .status-color.rejected {
   background: #ef626c;
 }
-
-
-/* =========================================================
-   LOWER GRID
-========================================================= */
 
 .lower-grid {
   display: grid;
@@ -1692,11 +1624,6 @@ font-size: 14px;
   background: #ffecef;
 }
 
-
-/* =========================================================
-   ACTIVITY
-========================================================= */
-
 .activity-card {
   min-height: 0;
   height: max-content;
@@ -1779,11 +1706,6 @@ font-size: 14px;
   color: #9ba7b7;
  font-size: 11px;
 }
-
-
-/* =========================================================
-   QUICK ACTIONS
-========================================================= */
 
 .quick-actions-card {
   padding-bottom: 18px;
@@ -1870,10 +1792,6 @@ font-size: 14px;
   font-size: 12px;
 }
 
-/* =========================================================
-   PLACEHOLDER PAGES
-========================================================= */
-
 .admin-section-placeholder {
   min-height: calc(100vh - 130px);
   display: flex;
@@ -1912,12 +1830,6 @@ font-size: 14px;
   color: #2f80ed;
   font-size: 11px;
 }
-
-
-
-/* =========================================================
-   SEARCH RESULTS
-========================================================= */
 
 .search-clear {
   width: 22px;
@@ -2075,11 +1987,6 @@ font-size: 14px;
   line-height: 1.5;
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
 @media (max-width: 1250px) {
 
   .stats-grid {
@@ -2098,7 +2005,6 @@ font-size: 14px;
   }
 
 }
-
 
 @media (max-width: 900px) {
 
@@ -2160,7 +2066,6 @@ font-size: 14px;
 
 }
 
-
 @media (max-width: 650px) {
 
   .top-search-container {
@@ -2180,7 +2085,6 @@ font-size: 14px;
   .top-search input {
     display: none;
   }
-
 
   .search-results {
     position: fixed;
@@ -2242,11 +2146,6 @@ font-size: 14px;
   }
 
 }
-
-/* =========================================================
-   VIEW ALL + CHART MOBILE FIX
-   Added without changing the existing dashboard layout.
-========================================================= */
 
 .view-all-button {
   white-space: nowrap;
@@ -2363,7 +2262,6 @@ font-size: 14px;
   }
 }
 
-/* Mobile navigation toggle: keep the existing desktop layout unchanged. */
 .mobile-menu-toggle {
   display: none;
   border: 0;
@@ -2457,10 +2355,6 @@ font-size: 14px;
   }
 }
 
-/* =========================================================
-   STAT CARDS - SMOKE ON HOVER
-========================================================= */
-
 .stat-card {
   position: relative;
   overflow: hidden;
@@ -2487,7 +2381,6 @@ font-size: 14px;
   will-change: transform, opacity;
 }
 
-/* smoke colour per card (matches each icon colour) */
 .stat-card { --smoke: 120, 138, 168; }
 .stat-card-blue   { --smoke: 47, 128, 237; }
 .stat-card-green  { --smoke: 24, 183, 124; }
@@ -2532,10 +2425,6 @@ font-size: 14px;
   30%  { opacity: 0.75; }
   100% { opacity: 0;    transform: translateY(-55%) translateX(-8%) scale(1.45); }
 }
-
-/* =========================================================
-   LEAD STATUS - RADIAL BAR CHART
-========================================================= */
 
 .radial-chart {
   position: relative;
@@ -2596,10 +2485,6 @@ font-size: 14px;
   font-size: 9px;
 }
 
-/* =========================================================
-   QUICK ACTIONS - SEA WAVE UP & DOWN
-========================================================= */
-
 .quick-actions button {
   animation: seaWave 3s ease-in-out infinite;
 }
@@ -2616,10 +2501,6 @@ font-size: 14px;
   75%  { transform: translateY(7px); }
   100% { transform: translateY(0); }
 }
-
-/* =========================================================
-   LEAD STATUS - INTERACTIVE DONUT (same animation as Users > Plan Distribution)
-========================================================= */
 
 .ls-donut {
   position: relative;
@@ -2786,13 +2667,6 @@ font-size: 14px;
 }
 `;
 
-/* =========================================================
-   ADMIN LOGIN
-========================================================= */
-
-// Backend social-login base URL. Example: "http://localhost:5000/api/auth"
-// -> Google button goes to  <URL>/google, Facebook to <URL>/facebook, Apple to <URL>/apple
-// Leave it empty ("") to use the temporary frontend demo login.
 const SOCIAL_AUTH_URL = "";
 
 const SOCIAL_PROVIDERS = {
@@ -2816,8 +2690,6 @@ function AdminLogin({ onLogin }) {
       return;
     }
 
-    // Temporary frontend login
-    // Backend authentication can be connected later.
     if (email === "admin@studentcollege.com" && password === "Admin123") {
       setError("");
       onLogin();
@@ -2832,13 +2704,11 @@ function AdminLogin({ onLogin }) {
     setError("");
     setSocialLoading(provider);
 
-    // Real backend OAuth: redirect the browser to the provider route
     if (SOCIAL_AUTH_URL) {
       window.location.href = `${SOCIAL_AUTH_URL}/${provider}`;
       return;
     }
 
-    // Temporary frontend demo (same as the email/password demo login)
     setTimeout(() => {
       setSocialLoading("");
       onLogin();
@@ -2848,7 +2718,7 @@ function AdminLogin({ onLogin }) {
   return (
     <div className="admin-login-page">
       <div className="login-shell">
-        {/* LEFT RAIL */}
+        {}
         <div className="login-rail">
           <div className="login-logo-icon">🎓</div>
 
@@ -2871,7 +2741,7 @@ function AdminLogin({ onLogin }) {
           <div className="login-rail-spacer" />
         </div>
 
-        {/* MIDDLE IMAGE PANEL */}
+        {}
         <div className="login-visual">
           <h2>Welcome back</h2>
           <p>Please enter your credentials</p>
@@ -2881,7 +2751,7 @@ function AdminLogin({ onLogin }) {
           </div>
         </div>
 
-        {/* RIGHT FORM */}
+        {}
         <div className="login-form-area">
           <form onSubmit={handleSubmit}>
             <div className="login-field">
@@ -3011,10 +2881,6 @@ function AdminLogin({ onLogin }) {
   );
 }
 
-/* =========================================================
-   ADMIN SIDEBAR
-========================================================= */
-
 function AdminSidebar({ activePage, setActivePage, onLogout, navigate, isSidebarOpen, setIsSidebarOpen }) {
   const menuItems = [
     { name: "Dashboard", icon: "⌂" },
@@ -3099,10 +2965,6 @@ function AdminSidebar({ activePage, setActivePage, onLogout, navigate, isSidebar
     </aside>
   );
 }
-
-/* =========================================================
-   ADMIN SEARCH DATA
-========================================================= */
 
 const adminSearchData = [
   {
@@ -3239,10 +3101,6 @@ const adminSearchData = [
   },
 ];
 
-/* =========================================================
-   SEARCH RESULT
-========================================================= */
-
 function SearchResult({ item, onSelect }) {
   return (
     <button
@@ -3261,10 +3119,6 @@ function SearchResult({ item, onSelect }) {
     </button>
   );
 }
-
-/* =========================================================
-   TOP HEADER
-========================================================= */
 
 function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage, onToggleSidebar }) {
   const navigate = useNavigate();
@@ -3403,10 +3257,6 @@ function AdminTopbar({ onLogout, searchQuery, setSearchQuery, setActivePage, onT
   );
 }
 
-/* =========================================================
-   STAT CARD
-========================================================= */
-
 function StatCard({ icon, title, value, change, description, iconClass }) {
   return (
     <div className={`stat-card stat-card-${iconClass}`}>
@@ -3426,10 +3276,6 @@ function StatCard({ icon, title, value, change, description, iconClass }) {
   );
 }
 
-/* =========================================================
-   LEAD STATUS CARD (interactive donut - same animation as Plan Distribution)
-========================================================= */
-
 const LEAD_STATUS = [
   { key: "New", count: 6205, pct: 34, color: "#f3b436" },
   { key: "Purchased", count: 5110, pct: 28, color: "#2f80ed" },
@@ -3445,7 +3291,6 @@ function LeadStatusCard() {
   const [total, setTotal] = useState(0);
   const toggle = (key) => setSelected((cur) => (cur === key ? null : key));
 
-  /* donut draws in + total counts up once */
   useEffect(() => {
     const timer = setTimeout(() => setReady(true), 150);
     const start = performance.now();
@@ -3466,7 +3311,7 @@ function LeadStatusCard() {
   const active = LEAD_STATUS.find((l) => l.key === shown);
   const R = 52;
   const C = 2 * Math.PI * R;
-  const GAP = 6; /* gap between two rings */
+  const GAP = 6;
 
   let acc = 0;
   const segs = LEAD_STATUS.map((l) => {
@@ -3551,10 +3396,6 @@ function LeadStatusCard() {
   );
 }
 
-/* =========================================================
-   LIVE DATE & TIME (12-hour format, updates every second)
-========================================================= */
-
 function LiveDateTime() {
   const [now, setNow] = useState(() => new Date());
 
@@ -3568,7 +3409,6 @@ function LiveDateTime() {
   const month = now.toLocaleDateString("en-US", { month: "short" });
   const year = now.getFullYear();
 
-  // hour12: true -> after 12 PM it shows 1, 2, 3 ... instead of 13, 14, 15
   const time = now.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
@@ -3587,10 +3427,6 @@ function LiveDateTime() {
     </div>
   );
 }
-
-/* =========================================================
-   DASHBOARD HOME
-========================================================= */
 
 function DashboardHome() {
   const currentHour = new Date().getHours();
@@ -3615,14 +3451,9 @@ function DashboardHome() {
   const [showAllLeads, setShowAllLeads] = useState(false);
   const [showAllActivities, setShowAllActivities] = useState(false);
 
-  /* =========================================================
-     LEADS & APPLICATIONS CHART DATA
-  ========================================================= */
-
   const [chartPeriod, setChartPeriod] = useState("30D");
   const [hoverIndex, setHoverIndex] = useState(null);
 
-  // Keep graph dates current instead of leaving the old September demo dates.
   const today = new Date();
   const formatChartDate = (date) =>
     date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
@@ -3696,7 +3527,6 @@ function DashboardHome() {
       y: 255 - (Math.min(value, 1000) / 1000) * 245,
     }));
 
-    // smooth curve (Catmull-Rom -> cubic bezier)
     let linePath = `M${coords[0].x},${coords[0].y}`;
     for (let i = 0; i < coords.length - 1; i++) {
       const p0 = coords[i - 1] || coords[i];
@@ -3886,7 +3716,7 @@ function DashboardHome() {
 
   return (
     <div className="dashboard-home">
-      {/* PAGE HEADER */}
+      {}
 
       <div className="dashboard-heading">
         <div>
@@ -3907,7 +3737,7 @@ function DashboardHome() {
         <LiveDateTime />
       </div>
 
-      {/* STAT CARDS */}
+      {}
 
       <div className="stats-grid">
         <StatCard
@@ -3983,10 +3813,10 @@ function DashboardHome() {
         />
       </div>
 
-      {/* ANALYTICS ROW */}
+      {}
 
       <div className="analytics-grid">
-        {/* GRAPH */}
+        {}
 
         <div className="dashboard-card chart-card">
           <div className="card-header">
@@ -4144,15 +3974,15 @@ function DashboardHome() {
           </div>
         </div>
 
-        {/* LEAD STATUS */}
+        {}
 
         <LeadStatusCard />
       </div>
 
-      {/* LOWER CONTENT */}
+      {}
 
       <div className="lower-grid">
-        {/* RECENT ACTIVITY */}
+        {}
 
         <div className="dashboard-card activity-card">
           <div className="card-header">
@@ -4189,7 +4019,7 @@ function DashboardHome() {
           </div>
         </div>
 
-        {/* RECENT STUDENT LEADS */}
+        {}
 
         <div className="dashboard-card recent-leads-card">
           <div className="card-header">
@@ -4262,7 +4092,7 @@ function DashboardHome() {
         </div>
       </div>
 
-      {/* QUICK ACTIONS */}
+      {}
 
       <div className="dashboard-card quick-actions-card">
         <div className="card-header">
@@ -4310,10 +4140,6 @@ function DashboardHome() {
   );
 }
 
-/* =========================================================
-   PLACEHOLDER FOR OTHER ADMIN PAGES
-========================================================= */
-
 function AdminSection({ title }) {
   return (
     <div className="admin-section-placeholder">
@@ -4327,10 +4153,6 @@ function AdminSection({ title }) {
     </div>
   );
 }
-
-/* =========================================================
-   URL -> PAGE MAP
-========================================================= */
 
 const PATH_TO_PAGE = {
   "/admin": "Dashboard",
@@ -4347,9 +4169,6 @@ function getPageFromPath(pathname) {
   return PATH_TO_PAGE[clean] || null;
 }
 
-/* =========================================================
-   MAIN ADMIN DASHBOARD
-========================================================= */
 function AdminDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -4364,9 +4183,6 @@ function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // URL always decides the active page. location.key is included so that
-  // clicking a sidebar item for the SAME url (e.g. Courses -> Transactions
-  // while already on /admin/transactions) still re-syncs the page.
   useEffect(() => {
     const page = getPageFromPath(location.pathname);
     if (page) setActivePage(page);

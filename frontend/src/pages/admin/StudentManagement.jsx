@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* =========================================================
-   HELPERS
-========================================================= */
-
 const initials = (name = "") =>
   name
     .split(" ")
@@ -35,10 +31,6 @@ const getPageList = (current, total) => {
   if (current >= total - 2) return [1, "…b", total - 2, total - 1, total];
   return [1, "…a", current, "…b", total];
 };
-
-/* =========================================================
-   DATA
-========================================================= */
 
 const studentsData = [
   {
@@ -270,8 +262,6 @@ const addAcademicDetails = (student, index) => {
 };
 
 studentsData.forEach(addAcademicDetails);
-
-// Shared with StudentDashboard.jsx -> Apply Now.
 const APPLICATIONS_KEY = "scp_applications";
 const readSubmittedApplications = () => {
   try {
@@ -417,10 +407,6 @@ const EMPTY_FORM = {
   status: "Active",
 };
 
-/* =========================================================
-   SMALL COMPONENTS
-========================================================= */
-
 function Avatar({ student, size = "md" }) {
   return (
     <div
@@ -441,10 +427,6 @@ const statusClass = (status) =>
     Blocked: "pill-red",
     Rejected: "pill-red",
   })[status] || "";
-
-/* =========================================================
-   MAIN PAGE
-========================================================= */
 
 function StudentManagementContent({ topSearch = "" }) {
   const [students, setStudents] = useState(() =>
@@ -520,8 +502,6 @@ function StudentManagementContent({ topSearch = "" }) {
   const activeCount = students.filter((s) => s.status === "Active").length;
   const blockedCount = students.filter((s) => s.status === "Blocked").length;
   const newCount = students.filter((s) => s.status === "Pending").length;
-
-  // jump to top whenever a profile page opens / closes
   useEffect(() => {
     const area = document.querySelector(".student-layout-main, .admin-main");
     if (area) area.scrollTo({ top: 0, behavior: "smooth" });
@@ -557,8 +537,6 @@ function StudentManagementContent({ topSearch = "" }) {
       prev.map((s) => (s.id === student.id ? { ...s, status: next } : s)),
     );
   };
-
-  // Accept / Block a new request: moves it out of "New Requests"
   const decideRequest = (student, decision) => {
     const nextStatus = decision === "accept" ? "Active" : "Blocked";
     const appStatus = decision === "accept" ? "Accepted" : "Rejected";
@@ -984,7 +962,6 @@ function StudentManagementContent({ topSearch = "" }) {
 .sm-page .lead-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 14px; background: #fafcff; }
 .sm-page .lead-box label { display: block; font-size: 11px; color: #7a8ca6; margin-bottom: 3px; }
 .sm-page .lead-box strong { font-size: 12px; color: #0f2a52; }
-/* Personal details box */
 .sm-page .section-box.teal .section-title { background: #e0f5f1; }
 .sm-page .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; padding: 14px; background: #fafcff; }
 .sm-page .info-grid > div { min-width: 0; }
@@ -1000,7 +977,6 @@ function StudentManagementContent({ topSearch = "" }) {
 .sm-page .panel-btn.activate { background: linear-gradient(135deg,#22b573,#139a5c); box-shadow: 0 8px 18px rgba(19,154,92,.22); }
 .sm-page .panel-btn:hover { filter: brightness(1.06); }
 .sm-page .panel-actions.three { grid-template-columns: 1fr 1fr 1fr; }
-/* New / Accepted / Blocked sections */
 .sm-page .sm-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
 .sm-page .sm-tab {
           height: 38px; padding: 0 16px;
@@ -1052,12 +1028,10 @@ function StudentManagementContent({ topSearch = "" }) {
 @media (max-width: 1100px) {
 .sm-page .sm-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-
 }
 @media (max-width: 900px) {
 .sm-page .panel-body { grid-template-columns: minmax(0, 1fr); padding: 16px; }
 .sm-page .panel-head { padding: 12px 16px; }
-
 
 }
 @media (max-width: 700px) {
@@ -1092,18 +1066,14 @@ function StudentManagementContent({ topSearch = "" }) {
 .sm-page .modal-form { grid-template-columns: 1fr; }
 .sm-page .modal-box { padding: 16px; }
 
-
 }
 @media (max-width: 420px) {
 .sm-page .filter-select { flex-basis: 100%; }
 .sm-page .panel-actions, .sm-page .panel-actions.three { grid-template-columns: 1fr; }
 .sm-page .metric strong { font-size: 15px; }
 
-
 }
 
-
-/* ---------- sea-wave floating stat cards ---------- */
 @keyframes smWave {
   0%   { transform: translateY(0); }
   50%  { transform: translateY(-9px); }
@@ -1120,7 +1090,6 @@ function StudentManagementContent({ topSearch = "" }) {
 .sm-page .sm-stat-card:nth-child(4) { animation-delay: -2.7s; }
 .sm-page .sm-stat-card:hover { box-shadow: 0 14px 28px rgba(20,50,92,.14); }
 
-/* ---------- smoke on hover for the 4 stat cards ---------- */
 .sm-page .sm-stat-card { position: relative; overflow: hidden; }
 .sm-page .sm-stat-card .sm-stat-icon,
 .sm-page .sm-stat-card .stat-body { position: relative; z-index: 1; }
@@ -1168,7 +1137,6 @@ function StudentManagementContent({ topSearch = "" }) {
   100% { opacity: 0;   transform: translateY(-55%) translateX(-8%) scale(1.45); }
 }
 
-/* ---------- smoke puffs on button click ---------- */
 @keyframes smSmoke {
   0%   { opacity: .75; transform: translate(-50%, -50%) scale(.3); }
   100% { opacity: 0;   transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(var(--s)); }
@@ -1195,7 +1163,7 @@ function StudentManagementContent({ topSearch = "" }) {
         <div className="sm-content">
             {!selectedStudent && (
               <>
-            {/* ---------- HERO ---------- */}
+            {}
             <section className="hero">
               <div className="hero-icon">🎓</div>
               <div className="hero-text">
@@ -1205,7 +1173,7 @@ function StudentManagementContent({ topSearch = "" }) {
               <div className="hero-art">🏛️</div>
             </section>
 
-            {/* ---------- STATS ---------- */}
+            {}
             <section className="sm-stats-grid">
               <div className="sm-stat-card stat-blue">
                 <div className="sm-stat-icon">👥</div>
@@ -1252,7 +1220,7 @@ function StudentManagementContent({ topSearch = "" }) {
               </div>
             </section>
 
-            {/* ---------- FILTERS ---------- */}
+            {}
             <section className="filter-bar">
               <label className="filter-search">
                 <span>🔍</span>
@@ -1303,7 +1271,7 @@ function StudentManagementContent({ topSearch = "" }) {
               </button>
             </section>
 
-            {/* ---------- SECTIONS: New / Accepted / Blocked ---------- */}
+            {}
             <section className="sm-tabs">
               {[
                 ["new", "🆕 New Requests", newCount],
@@ -1325,7 +1293,7 @@ function StudentManagementContent({ topSearch = "" }) {
               </>
             )}
 
-            {/* ---------- LIST + FULL PROFILE PAGE ---------- */}
+            {}
             <section className="content-grid">
               {!selectedStudent && (
               <div>
@@ -1446,7 +1414,7 @@ function StudentManagementContent({ topSearch = "" }) {
               </div>
               )}
 
-              {/* ---------- FULL PROFILE PAGE ---------- */}
+              {}
               {selectedStudent && (
                 <>
                   <aside className="profile-panel">
@@ -1495,7 +1463,7 @@ function StudentManagementContent({ topSearch = "" }) {
                         </div>
                       </div>
 
-                      {/* Academic */}
+                      {}
                       <div className="section-box">
                         <div className="section-title">🎓 Academic Details</div>
                         <div className="metrics">
@@ -1564,7 +1532,7 @@ function StudentManagementContent({ topSearch = "" }) {
                         </details>
                       </div>
 
-                      {/* Applications */}
+                      {}
                       <div className="section-box purple">
                         <div className="section-title">
                           📋 Applications ({selectedStudent.applicationList.length})
@@ -1588,7 +1556,7 @@ function StudentManagementContent({ topSearch = "" }) {
                         </div>
                       </div>
 
-                      {/* Lead */}
+                      {}
                       <div className="section-box">
                         <div className="section-title">💼 Lead Information</div>
                         <div className="lead-box">
@@ -1607,7 +1575,7 @@ function StudentManagementContent({ topSearch = "" }) {
                         </div>
                       </div>
 
-                      {/* Personal Details (fills the empty space beside Lead Information) */}
+                      {}
                       <div className="section-box teal">
                         <div className="section-title">🪪 Personal Details</div>
                         <div className="info-grid">
@@ -1638,7 +1606,7 @@ function StudentManagementContent({ topSearch = "" }) {
                         </div>
                       </div>
 
-                      {/* Actions */}
+                      {}
                       <div
                         className={`panel-actions ${
                           selectedStudent.status === "Pending" ? "three" : ""
@@ -1680,7 +1648,7 @@ function StudentManagementContent({ topSearch = "" }) {
             </section>
         </div>
 
-      {/* ---------- ADD / EDIT MODAL ---------- */}
+      {}
       {modal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
@@ -1760,12 +1728,6 @@ function StudentManagementContent({ topSearch = "" }) {
     </>
   );
 }
-
-/* =========================================================
-   STUDENT PAGE - INDEPENDENT LAYOUT
-   Dimensions match the Admin sidebar and topbar, but this
-   markup and styling belong only to the Student page.
-========================================================= */
 
 const studentLayoutStyles = String.raw`
 .student-layout,
@@ -2054,7 +2016,6 @@ const studentLayoutStyles = String.raw`
   font-size: 9px;
 }
 
-/* ===== LOGOUT (same behaviour as Admin page) ===== */
 .student-layout-logout {
   width: 100%;
   height: 36px;
@@ -2143,14 +2104,10 @@ function StudentManagement({ embedded = false }) {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [topSearch, setTopSearch] = useState("");
-
-  // Same logout as Admin page: clear session and go back to the admin login.
   const handleLogout = () => {
     sessionStorage.removeItem("adminLoggedIn");
     navigate("/admin/dashboard", { replace: true });
   };
-
-  // Preserve the original content-only rendering when used inside AdminDashboard.
   if (embedded) return <StudentManagementContent />;
 
   const menuItems = [
