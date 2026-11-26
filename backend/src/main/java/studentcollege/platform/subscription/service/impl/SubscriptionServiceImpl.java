@@ -50,6 +50,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                                 period.getPeriodId(),
                                 period.getLabel(),
                                 period.getMonths(),
+                                period.getPrice().doubleValue(),
                                 period.getDiscount(),
                                 period.getFeatures()
                         ))
