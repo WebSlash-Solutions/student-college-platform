@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import studentcollege.platform.subscription.dto.SubscriptionPeriodResponse;
 import studentcollege.platform.subscription.dto.SubscriptionPlanResponse;
+import studentcollege.platform.subscription.dto.SubscriptionRequest;
 import studentcollege.platform.subscription.entity.SubscriptionPlan;
 import studentcollege.platform.subscription.entity.SubscriptionPlanPeriod;
 import studentcollege.platform.subscription.repository.SubscriptionPlanPeriodRepository;
@@ -28,13 +29,71 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public List<SubscriptionPlanResponse> getAllPlans() {
-
-        List<SubscriptionPlan> plans =
-                subscriptionPlanRepository.findByActiveTrue();
-
-        return plans.stream()
+        return subscriptionPlanRepository.findByActiveTrue()
+                .stream()
                 .map(this::buildPlanResponse)
                 .toList();
+    }
+
+    @Override
+    public SubscriptionPlanResponse createPlan(
+            SubscriptionRequest request) {
+
+        if (subscriptionPlanRepository.existsByPlanId(
+                request.getPlanId())) {
+            throw new RuntimeException("Plan ID already exists");
+        }
+
+        SubscriptionPlan plan = new SubscriptionPlan();
+
+        plan.setPlanId(request.getPlanId());
+        plan.setPlanName(request.getPlanName());
+        plan.setMonthlyPrice(request.getMonthlyPrice());
+        plan.setTagline(request.getTagline());
+        plan.setIcon(request.getIcon());
+        plan.setFeatures(request.getFeatures());
+        plan.setActive(request.isActive());
+
+        SubscriptionPlan savedPlan =
+                subscriptionPlanRepository.save(plan);
+
+        return buildPlanResponse(savedPlan);
+    }
+
+    @Override
+    public SubscriptionPlanResponse updatePlan(
+            String planId,
+            SubscriptionRequest request) {
+
+        SubscriptionPlan plan =
+                subscriptionPlanRepository.findByPlanId(planId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Plan not found"));
+
+        plan.setPlanName(request.getPlanName());
+        plan.setMonthlyPrice(request.getMonthlyPrice());
+        plan.setTagline(request.getTagline());
+        plan.setIcon(request.getIcon());
+        plan.setFeatures(request.getFeatures());
+        plan.setActive(request.isActive());
+
+        SubscriptionPlan updatedPlan =
+                subscriptionPlanRepository.save(plan);
+
+        return buildPlanResponse(updatedPlan);
+    }
+
+    @Override
+    public void deletePlan(String planId) {
+
+        SubscriptionPlan plan =
+                subscriptionPlanRepository.findByPlanId(planId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Plan not found"));
+
+        subscriptionPlanRepository.delete(plan);
     }
 
     private SubscriptionPlanResponse buildPlanResponse(
@@ -46,14 +105,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         List<SubscriptionPeriodResponse> periodResponses =
                 periods.stream()
-                        .map(period -> new SubscriptionPeriodResponse(
-                                period.getPeriodId(),
-                                period.getLabel(),
-                                period.getMonths(),
-                                period.getPrice().doubleValue(),
-                                period.getDiscount(),
-                                period.getFeatures()
-                        ))
+                        .map(period ->
+                                new SubscriptionPeriodResponse(
+                                        period.getPeriodId(),
+                                        period.getLabel(),
+                                        period.getMonths(),
+                                        period.getPrice().doubleValue(),
+                                        period.getDiscount(),
+                                        period.getFeatures()
+                                ))
                         .toList();
 
         return new SubscriptionPlanResponse(

@@ -1,4 +1,3 @@
-
 package studentcollege.platform.subscription.repository;
 
 import java.util.List;
@@ -16,6 +15,8 @@ public interface SubscriptionPlanRepository
     List<SubscriptionPlan> findByActiveTrue();
 
     Optional<SubscriptionPlan> findByPlanIdAndActiveTrue(String planId);
+
+    Optional<SubscriptionPlan> findByPlanId(String planId);
 
     boolean existsByPlanId(String planId);
 }

@@ -1,4 +1,3 @@
-
 package studentcollege.platform.config;
 
 import org.springframework.context.annotation.Bean;
@@ -14,6 +13,7 @@ public class SecurityConfig {
             throws Exception {
 
         http
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/subscriptions/**").permitAll()
                 .anyRequest().authenticated()
