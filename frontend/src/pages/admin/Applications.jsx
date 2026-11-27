@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-/* ───────────────────────── DATA ───────────────────────── */
-// ⚠️ Change these paths to match the routes in your App.jsx / router file
 const NAV = [
     { label: "Dashboard", icon: "⌂", path: "/admin/dashboard" },
     { label: "Students", icon: "♙", path: "/admin/students" },
@@ -13,14 +11,13 @@ const NAV = [
     { label: "Users", icon: "♧", path: "/admin/users" },
     { label: "Settings", icon: "⚙", path: "/admin/settings" },
 ];
-// Same logout as the Users page: clear the session, fade the page out and go to the login page
 const handleAdminLogout = () => {
     try {
         localStorage.clear();
         sessionStorage.clear();
     }
     catch {
-        /* storage not available - ignore */
+
     }
     document.querySelector(".dm-app")?.classList.add("is-leaving");
     setTimeout(() => window.location.replace("/login"), 350);
@@ -42,7 +39,7 @@ const TABS = [
 ];
 const fmtDate = (d) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 const fmtStamp = (d) => `${fmtDate(d)} ${d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`;
-/* ── Duplicate records (editable from the ⋮ menu) ── */
+
 const DUP_STUDENTS_SEED = [
     { kind: "student", group: "duplicate", name: "Priya S", id: "STU2025001", phone: "+91 98765 43210", email: "priya@gmail.com", aadhaar: "XXXX-XXXX-1234", city: "Chennai", match: "Phone + Email", status: "High Priority", prevStatus: "Under Review", date: "Oct 16, 2025", time: "10:24 AM", created: "Oct 10, 2025 09:15 AM", matched: "Oct 12, 2025 02:30 PM", modified: "Oct 16, 2025 10:24 AM", color: "#f9c5d1" },
     { kind: "student", group: "duplicate", name: "Rahul K", id: "STU2025098", phone: "+91 91234 56789", email: "rahul@gmail.com", aadhaar: "XXXX-XXXX-5678", city: "Coimbatore", match: "Email", status: "Under Review", prevStatus: "New", date: "Oct 15, 2025", time: "04:12 PM", created: "Oct 08, 2025 11:40 AM", matched: "Oct 11, 2025 01:05 PM", modified: "Oct 15, 2025 04:12 PM", color: "#c5d8f9" },
@@ -54,20 +51,16 @@ const DUP_COLLEGES_SEED = [
     { kind: "college", group: "duplicate", name: "Government Arts College", id: "COL2024008", reg: "REG56789", phone: "+91 94431 22222", email: "gac@tn.gov.in", site: "www.gac.edu.in", city: "Tiruppur", match: "Email", status: "Under Review", prevStatus: "New", date: "Oct 15, 2025", time: "03:21 PM", created: "Oct 03, 2025 01:20 PM", matched: "Oct 11, 2025 10:45 AM", modified: "Oct 15, 2025 03:21 PM" },
     { kind: "college", group: "duplicate", name: "Kumaraguru College", id: "COL2024015", reg: "REG90123", phone: "+91 93677 33333", email: "contact@kumaraguru.edu.in", site: "www.kumaraguru.edu.in", city: "Coimbatore", match: "Website", status: "Under Review", prevStatus: "New", date: "Oct 14, 2025", time: "01:18 PM", created: "Oct 01, 2025 09:30 AM", matched: "Oct 10, 2025 04:10 PM", modified: "Oct 14, 2025 01:18 PM" },
 ];
-/* ── Only these 4 districts are used in all sample data ── */
+
 const DISTRICTS = ["Coimbatore", "Erode", "Tiruppur", "Chennai"];
 const TYPES = ["Engineering College", "Arts & Science College", "Institute of Technology", "Polytechnic College", "Medical College"];
 const TYPE_SHORT = ["eng", "asc", "iot", "poly", "med"];
 const AVATARS = ["#f9c5d1", "#c5d8f9", "#f9d9c5", "#c5f9e0", "#e0d4fb"];
-// unique students (20 first names x 5 surnames = 100 unique names)
 const FIRST = ["Aarav", "Divya", "Karthik", "Meena", "Naveen", "Pooja", "Ramesh", "Sangeetha", "Vignesh", "Yamini", "Arun", "Bharathi", "Deepak", "Gayathri", "Harish", "Janani", "Lokesh", "Nithya", "Surya", "Kavya"];
 const LAST = ["Kumar", "Raj", "Devi", "Selvam", "Murugan"];
-// 20 more first names for the 100 added students (20 x 5 surnames = 100 more unique names)
 const EXTRA_FIRST = ["Aadhira", "Bala", "Charan", "Deepika", "Eswar", "Gokul", "Hariharan", "Indhu", "Jagan", "Kamali", "Logesh", "Madhan", "Nirmala", "Oviya", "Praveen", "Rohini", "Sudha", "Tharun", "Usha", "Varun"];
-// duplicate students (22 first names x 4 surname initials = 88 unique names)
 const DUP_FIRST = ["Aishwarya", "Balaji", "Chitra", "Dinesh", "Elango", "Fathima", "Gowtham", "Hema", "Ilango", "Jeeva", "Keerthi", "Lavanya", "Mohan", "Nandini", "Prakash", "Revathi", "Saravanan", "Thenmozhi", "Udhaya", "Vimal", "Yuvaraj", "Abinaya"];
 const DUP_LAST = ["Subramani", "Pillai", "Nair", "Iyer"];
-// colleges
 const COLLEGE_PREFIX = ["Sri Vidya", "Annai Teresa", "Bharathi", "Vivekananda", "Periyar", "Kamarajar", "Thiruvalluvar", "Gandhi", "Nehru", "Ambedkar", "Lakshmi", "Saraswathi", "Meenakshi", "Arul", "Selvam", "Nandha", "Vel", "Kalaivani", "Thamarai", "Pavai", "Mahalakshmi", "Valluvar", "Bharath", "Everest", "Sakthi"];
 const DUP_COLLEGE_PREFIX = ["Akshaya", "Bhavani", "Cauvery", "Dhanalakshmi", "Eswari", "Gnanam", "Hari", "Indira", "Jayam", "Kalaimagal", "Latha", "Muthu", "Navarasam", "Oviya", "Palani", "Rathna", "Sri Shakthi", "Tamilselvi", "Uma", "Vasantham", "Yazhini"];
 const mkPhone = (i, k) => {
@@ -80,7 +73,7 @@ const mkTime = (i) => {
     return `${String(h > 12 ? h - 12 : h).padStart(2, "0")}:${m} ${h >= 12 ? "PM" : "AM"}`;
 };
 const slugify = (s) => s.toLowerCase().replace(/[^a-z]/g, "");
-/* 200 unique students (100 original + 100 added) — college info is attached further below */
+
 const UNIQUE_STUDENTS_RAW = Array.from({ length: 200 }, (_, i) => {
     const first = i < 100 ? FIRST[i % 20] : EXTRA_FIRST[i % 20];
     const last = LAST[Math.floor(i / 20) % 5];
@@ -95,7 +88,7 @@ const UNIQUE_STUDENTS_RAW = Array.from({ length: 200 }, (_, i) => {
         date, time, created, matched: created, modified: `${date} ${time}`, color: AVATARS[i % AVATARS.length],
     };
 });
-/* 100 unique colleges */
+
 const UNIQUE_COLLEGES_RAW = Array.from({ length: 100 }, (_, i) => {
     const prefix = COLLEGE_PREFIX[i % 25];
     const t = Math.floor(i / 25) % 5;
@@ -111,7 +104,7 @@ const UNIQUE_COLLEGES_RAW = Array.from({ length: 100 }, (_, i) => {
         prevStatus: "New", date, time, created, matched: created, modified: `${date} ${time}`,
     };
 });
-/* Duplicate students: 4 hand-written + 82 generated = 86 (matches the "Duplicate Students" card) */
+
 const DUP_MATCH_S = ["Phone + Email", "Email", "Phone", "Name"];
 const DUP_STATUS = ["Under Review", "High Priority", "Confirmed Duplicate", "Under Review"];
 const DUP_STUDENTS_RAW = [
@@ -131,7 +124,7 @@ const DUP_STUDENTS_RAW = [
         };
     }),
 ];
-/* Duplicate colleges: 3 hand-written + 21 generated = 24 (matches the "Duplicate Colleges" card) */
+
 const DUP_MATCH_C = ["Phone + Email", "Email", "Phone", "Website"];
 const DUP_COLLEGES_RAW = [
     ...DUP_COLLEGES_SEED,
@@ -151,8 +144,7 @@ const DUP_COLLEGES_RAW = [
         };
     }),
 ];
-/* ── Coimbatore college directory: 200 real Coimbatore-district institutions, each under the type(s) it actually offers ──
-   (names/streams taken from public college listings; phone / e-mail / website are placeholders, student & search counts are sample numbers) */
+
 const COIM_DIRECTORY = {
     "Engineering College": [
         "SNS College of Technology", "SNS College of Engineering", "PSG College of Technology", "PSG Institute of Technology and Applied Research",
@@ -235,7 +227,7 @@ const COIM_DIRECTORY = {
     ],
 };
 const COIM_TYPES = Object.keys(COIM_DIRECTORY);
-/* mix the types (round-robin) so the table doesn't show one type after another */
+
 const COIM_LIST = (() => {
     const lists = COIM_TYPES.map((t) => COIM_DIRECTORY[t].map((name) => ({ name, type: t })));
     const out = [];
@@ -258,7 +250,7 @@ const COIMBATORE_RAW = COIM_LIST.map(({ name, type }, i) => {
         status: i % 13 === 6 ? "Under Review" : "Unique", prevStatus: "New", date, time, created, matched: created, modified: `${date} ${time}`,
     };
 });
-/* every college gets a type, a student count and a "searched by" count */
+
 const SEED_COLLEGE_TYPE = { COL2024001: "Engineering College", COL2024008: "Arts & Science College", COL2024015: "Engineering College" };
 const TYPE_SIZE = {
     "Engineering College": [1200, 4200], "Arts & Science College": [800, 3500], "Medical College": [600, 1500], "Dental College": [300, 650],
@@ -275,7 +267,7 @@ const withCollegeMeta = (list, offset) => list.map((c, i) => {
 const COIMBATORE_COLLEGES = withCollegeMeta(COIMBATORE_RAW, 1000);
 const DUP_COLLEGES = withCollegeMeta(DUP_COLLEGES_RAW, 500);
 const UNIQUE_COLLEGES = [...withCollegeMeta(UNIQUE_COLLEGES_RAW, 0), ...COIMBATORE_COLLEGES]; // 100 + 200 = 300
-/* every student gets the type of college they looked at + the colleges they viewed */
+
 const COLLEGES_BY_TYPE = {};
 COIMBATORE_COLLEGES.forEach((c) => { (COLLEGES_BY_TYPE[c.type] = COLLEGES_BY_TYPE[c.type] || []).push(c); });
 const withStudentMeta = (list, offset) => list.map((s, i) => {
@@ -302,7 +294,7 @@ const ACTIVITY = [
     { id: "a3", name: "Arul College", note: "Last seen: Oct 15, 2025 06:17 PM", active: false },
     { id: "a4", name: "Kumaraguru College", note: "Last updated: Oct 14, 2025 01:18 PM", active: true },
 ];
-/* Full activity list for the Activity Monitoring tab: the 4 originals + every student & college record */
+
 const ACTIVITY_META = { a1: ["student", "Chennai"], a2: ["college", "Coimbatore"], a3: ["college", "Erode"], a4: ["college", "Coimbatore"] };
 const ACTIVITY_ALL = (() => {
     const skip = new Set(["STU2025001", "COL2024001", "COL2024015"]); // already covered by the originals
@@ -317,7 +309,7 @@ const ACTIVITY_ALL = (() => {
     ];
 })();
 const SEARCH_EXAMPLES = ["STU2025001", "Kumaraguru", "Sri Vidya", "Erode", "98765"];
-/* ───────────────────────── HOOKS ───────────────────────── */
+
 function useCountUp(target, duration = 900) {
     const [val, setVal] = useState(0);
     const from = useRef(0); // animate from the previous number, not from 0 every time
@@ -338,7 +330,7 @@ function useCountUp(target, duration = 900) {
     }, [target, duration]);
     return val;
 }
-/* ───────────────────────── SMALL COMPONENTS ───────────────────────── */
+
 const Badge = ({ tone, children }) => <span className={`dm-badge dm-badge--${tone}`}>{children}</span>;
 function Switch({ checked, onChange, label }) {
     return (<button type="button" role="switch" aria-checked={checked} aria-label={label} className={`dm-switch ${checked ? "is-on" : ""}`} onClick={onChange}>
@@ -393,7 +385,7 @@ function StatCard({ stat, index }) {
       </div>
     </div>);
 }
-/* ── Generic responsive table (becomes cards on mobile) ── */
+
 function DataTable({ columns, rows, pageSize, resetKey, onView, onMenu, empty }) {
     const [page, setPage] = useState(1);
     const pages = pageSize ? Math.max(1, Math.ceil(rows.length / pageSize)) : 1;
@@ -497,7 +489,7 @@ const COLS = {
     ],
 };
 const PREVIEW = 5;
-/* Card with a table: optional "View All" expand, filter box, district filter, pagination */
+
 function RecordsPanel({ title, noun, columns, rows, onView, onMenu, headRight, collapsible }) {
     const [expanded, setExpanded] = useState(!collapsible);
     const [q, setQ] = useState("");
@@ -589,7 +581,7 @@ function Pager({ page, pages, total, pageSize, onPage }) {
       </div>
     </div>);
 }
-/* Activity Monitoring tab: summary boxes + searchable, filterable, paged list of every record */
+
 const ACT_PAGE = 10;
 function ActivityPanel({ items, onToggle, counts }) {
     const [q, setQ] = useState("");
@@ -699,7 +691,7 @@ function DetailModal({ rec, onClose, onCopy, onOpen }) {
       </div>
     </div>);
 }
-/* ───────────────────────── SMART ALERTS ───────────────────────── */
+
 const buildAlerts = (dupStudents, dupColleges) => {
     const all = [...dupStudents, ...dupColleges];
     const has = (r, word) => r.match.includes(word);
@@ -745,7 +737,7 @@ function SmartAlerts({ alerts, onView, onViewAll }) {
       </div>
     </section>);
 }
-/* ───────────────────────── REGISTERED COLLEGE LOGINS (Unlock) ───────────────────────── */
+
 const LOGIN_COLLEGES = [
     { id: "COL2025001", name: "SNS College of Technology", type: "Engineering College", city: "Coimbatore", userId: "sns.tech@campus", password: "Sns@2025#Ct" },
     { id: "COL2025002", name: "PSG College of Technology", type: "Engineering College", city: "Coimbatore", userId: "psg.tech@campus", password: "Psg@4821#Tc" },
@@ -774,7 +766,6 @@ function CollegeLogins({ onCopy, onToast }) {
             if (saved) {
                 const parsed = JSON.parse(saved);
                 if (Array.isArray(parsed)) {
-                    // Keep the existing demo logins while including newly created colleges.
                     const merged = [...parsed];
                     LOGIN_COLLEGES.forEach((college) => {
                         if (!merged.some((item) => item.id === college.id || item.userId === college.userId)) {
@@ -797,8 +788,6 @@ function CollegeLogins({ onCopy, onToast }) {
     const [now, setNow] = useState(Date.now());
     const total = list.length;
     const count = Object.keys(unlocked).length;
-
-    // Keep the same credentials available to AdminLogin after refresh/navigation.
     useEffect(() => {
         try {
             localStorage.setItem("registeredCollegeLogins", JSON.stringify(list));
@@ -806,7 +795,6 @@ function CollegeLogins({ onCopy, onToast }) {
             console.error("Unable to save college logins:", error);
         }
     }, [list]);
-    // tick every second only while something is unlocked; lock again when time is up
     useEffect(() => {
         if (count === 0)
             return undefined;
@@ -991,7 +979,7 @@ function AlertModal({ view, alerts, onClose, onPick, onOpenRecord }) {
       </div>
     </div>);
 }
-/* ───────────────────────── PAGE ───────────────────────── */
+
 export default function DuplicateManagement() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [tab, setTab] = useState("students");
@@ -1002,11 +990,9 @@ export default function DuplicateManagement() {
     const [uniqColleges, setUniqColleges] = useState(UNIQUE_COLLEGES);
     const [activity, setActivity] = useState(ACTIVITY_ALL);
     const [history, setHistory] = useState(TIMELINE);
-    // right-hand "Record Lookup" search
     const [query, setQuery] = useState("");
     const [results, setResults] = useState(null);
     const [selectedId, setSelectedId] = useState("STU2025001");
-    // top-bar search
     const [topQuery, setTopQuery] = useState("");
     const [topOpen, setTopOpen] = useState(false);
     const [modalId, setModalId] = useState(null);
@@ -1024,7 +1010,6 @@ export default function DuplicateManagement() {
     const alerts = useMemo(() => buildAlerts(dupStudents, dupColleges), [dupStudents, dupColleges]);
     const selected = selectedId ? allRecords.find((r) => r.id === selectedId) || null : null;
     const modalRec = modalId ? allRecords.find((r) => r.id === modalId) : null;
-    // card numbers always match the real lists
     const counts = {
         "Total Students": dupStudents.length + uniqStudents.length,
         "Total Colleges": dupColleges.length + uniqColleges.length,
@@ -1034,12 +1019,10 @@ export default function DuplicateManagement() {
         "Unique Colleges": uniqColleges.length,
     };
     const stats = STATS.map((s) => ({ ...s, value: counts[s.label] }));
-    // lock body scroll while drawer / modal is open
     useEffect(() => {
         document.body.style.overflow = menuOpen || modalId || alertView || confirmRec ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
     }, [menuOpen, modalId, alertView, confirmRec]);
-    // close top-bar suggestions when clicking elsewhere
     useEffect(() => {
         const h = (e) => {
             if (topRef.current && !topRef.current.contains(e.target))
@@ -1057,7 +1040,7 @@ export default function DuplicateManagement() {
     }, []);
     useEffect(() => () => clearTimeout(toastTimer.current), []);
     const closeMenu = useCallback(() => setMenu(null), []);
-    /* ── record helpers ── */
+
     const setters = {
         "student:duplicate": setDupStudents, "college:duplicate": setDupColleges,
         "student:unique": setUniqStudents, "college:unique": setUniqColleges,
@@ -1076,7 +1059,7 @@ export default function DuplicateManagement() {
         try {
             navigator.clipboard.writeText(id);
         }
-        catch (e) { /* ignore */ }
+        catch (e) {  }
         showToast(`Copied ${id}`);
     };
     const openView = (rec) => { setSelectedId(rec.id); setModalId(rec.id); };
@@ -1110,7 +1093,7 @@ export default function DuplicateManagement() {
             { icon: "🚫", label: "Not a duplicate", danger: true, run: () => removeRecord(rec) },
         ];
     };
-    /* ── search (used by both the top bar and the Record Lookup panel) ── */
+
     const findRecords = (term) => {
         const t = term.trim();
         if (!t)
@@ -1143,7 +1126,6 @@ export default function DuplicateManagement() {
         if (scroll)
             lookupRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
-    // Clear: wipes the typed text, results, recent match / details and the search history
     const clearSearch = () => {
         setQuery("");
         setTopQuery("");
@@ -1174,7 +1156,7 @@ export default function DuplicateManagement() {
         setTab("unique");
         setTimeout(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     };
-    /* ── activity ── */
+
     const toggleActivity = (id) => {
         const item = activity.find((a) => a.id === id);
         setActivity((list) => list.map((a) => (a.id === id ? { ...a, active: !a.active, note: `Status changed: ${fmtStamp(new Date())}` } : a)));
@@ -1220,7 +1202,7 @@ export default function DuplicateManagement() {
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} active="Applications"/>
 
       <div className="dm-main">
-        {/* Top bar */}
+        {}
         <header className="dm-topbar">
           <button className="dm-burger" aria-label="Open menu" onClick={() => setMenuOpen(true)}>☰</button>
 
@@ -1298,7 +1280,7 @@ export default function DuplicateManagement() {
             <SmartAlerts alerts={alerts} onView={setAlertView} onViewAll={() => setAlertView("all")}/>
           </div>
 
-          {/* Right column */}
+          {}
           <aside className="dm-right">
             <section className="dm-card dm-card--pad" style={{ "--i": 0 }} ref={lookupRef}>
               <h3>🔍 Record Lookup &amp; History</h3>
@@ -1371,26 +1353,26 @@ export default function DuplicateManagement() {
             </section>
           </aside>
 
-          {/* Full-width row: spans under both columns so there is no empty gap on the right */}
+          {}
           <div className="dm-fullrow">
             <CollegeLogins onCopy={copyId} onToast={showToast}/>
           </div>
         </div>
       </div>
 
-      {/* ⋮ action menu */}
+      {}
       {menu && (<>
           <div className="dm-menu-bg" onClick={closeMenu}/>
           <ActionMenu menu={menu} items={menuItems(menu.rec)} onClose={closeMenu}/>
         </>)}
 
-      {/* View details modal */}
+      {}
       {modalRec && <DetailModal rec={modalRec} onClose={() => setModalId(null)} onCopy={copyId} onOpen={(id) => { setSelectedId(id); setModalId(id); }}/>}
 
-      {/* Smart Alerts modal */}
+      {}
       {alertView && <AlertModal view={alertView} alerts={alerts} onClose={() => setAlertView(null)} onPick={setAlertView} onOpenRecord={(r) => { setAlertView(null); openView(r); }}/>}
 
-      {/* Confirm Duplicate popup */}
+      {}
       {confirmRec && <ConfirmModal rec={confirmRec.rec} status={confirmRec.status} onCancel={() => setConfirmRec(null)} onConfirm={() => { changeStatus(confirmRec.rec, confirmRec.status); setConfirmRec(null); }}/>}
 
       {toast && <div className="dm-toast" role="status">{toast}</div>}
@@ -1414,9 +1396,9 @@ function ActionMenu({ menu, items, onClose }) {
         </button>))}
     </div>);
 }
-/* ───────────────────────── STYLES ───────────────────────── */
+
 const CSS = `
-/*── Reset global (Vite index.css / App.css) styles that leak in ──*/
+
 #root {
   max-width: none !important;
   width: 100% !important;
@@ -1466,7 +1448,7 @@ body {
 .dm-app * {
   box-sizing: border-box;
 }
-/*:where keeps specificity at 0 so .dm-btn--* colours always win*/
+
 :where(.dm-app) button {
   font: inherit;
   cursor: pointer;
@@ -1504,7 +1486,7 @@ body {
   font-weight: 600;
   color: var(--blue);
 }
-/*── Sidebar (same size / font / colours as the Courses page sidebar) ──*/
+
 .dm-sidebar {
   position: fixed;
   inset: 0 auto 0 0;
@@ -1562,7 +1544,7 @@ body {
   text-align: center;
   width: 100%;
 }
-/*nav scrolls, but its scrollbar is pushed outside the (clipped) sidebar*/
+
 .dm-nav {
   display: flex;
   flex-direction: column;
@@ -1675,7 +1657,7 @@ body {
   opacity: 1;
   pointer-events: auto;
 }
-/*── Main layout ──*/
+
 .dm-main {
   flex: 1;
   margin-left: var(--sw);
@@ -1831,7 +1813,7 @@ body {
   gap: 20px;
   min-width: 0;
 }
-/*── Title ──*/
+
 .dm-title {
   display: flex;
   gap: 14px;
@@ -1856,7 +1838,7 @@ body {
   color: var(--blue);
   font-size: 13px;
 }
-/*── Stats ──*/
+
 .dm-stats {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
@@ -1878,7 +1860,7 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(20,33,61,.1);
 }
-/* smoke effect on hover (stat cards) */
+
 .dm-stat {
   position: relative;
   isolation: isolate;
@@ -2001,7 +1983,7 @@ body {
 .dm-stat--purple .dm-stat__icon {
   background: var(--purple);
 }
-/*── Tabs ──*/
+
 .dm-tabs {
   display: flex;
   gap: 6px;
@@ -2051,7 +2033,7 @@ body {
   animation: dm-fade .4s both;
   min-width: 0;
 }
-/*── Cards & tables ──*/
+
 .dm-card {
   background: var(--card);
   border: 1px solid var(--line);
@@ -2246,7 +2228,7 @@ body {
   border-color: var(--blue);
   color: #fff;
 }
-/*── Buttons & badges ──*/
+
 .dm-btn {
   padding: 9px 16px;
   border-radius: 8px;
@@ -2342,7 +2324,7 @@ body {
   color: var(--muted);
   font-size: 12px;
 }
-/*── Right column pieces ──*/
+
 .dm-hint {
   margin-top: 10px;
   padding: 10px 12px;
@@ -2566,7 +2548,7 @@ body {
   font-size: 22px;
   margin: 4px 0;
 }
-/*── Active / Inactive switch ──*/
+
 .dm-switch {
   position: relative;
   width: 44px;
@@ -2597,7 +2579,7 @@ body {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
-/*── ⋮ menu ──*/
+
 .dm-menu-bg {
   position: fixed;
   inset: 0;
@@ -2634,7 +2616,7 @@ body {
 .dm-menu .is-danger:hover {
   background: #fdeaec;
 }
-/*── Detail modal ──*/
+
 .dm-modal-bg {
   position: fixed;
   inset: 0;
@@ -2720,7 +2702,7 @@ body {
   max-width: calc(100vw - 32px);
   animation: dm-toast .25s both;
 }
-/*── Keyframes ──*/
+
 @keyframes dm-slide-in {
   from {
     opacity: 0;
@@ -2779,7 +2761,7 @@ body {
     transform: translate(-50%,0);
   }
 }
-/*── Responsive ──*/
+
 @media (max-width:1180px) {
   .dm-content {
     grid-template-columns: minmax(0,1fr);
@@ -2814,7 +2796,7 @@ body {
   }
 }
 @media (max-width:700px) {
-  /*tables turn into stacked cards*/
+  
   .dm-table {
     min-width: 0;
   }
@@ -2873,7 +2855,7 @@ body {
     padding: 4px 12px 14px;
     justify-content: center;
   }
-  /*modal becomes a bottom sheet*/
+  
   .dm-modal-bg {
     place-items: end center;
     padding: 0;
@@ -2950,7 +2932,7 @@ body {
     transition: none !important;
   }
 }
-/*── Activity tab, college stats, viewed colleges ──*/
+
 .dm-mini--lg {
   margin-bottom: 18px;
 }
@@ -3055,7 +3037,7 @@ body {
     grid-template-columns: 1fr;
   }
 }
-/*── Top-bar search suggestions ──*/
+
 .dm-topsearch {
   position: relative;
   flex: 1;
@@ -3121,7 +3103,7 @@ body {
 .dm-suggest__all:hover {
   background: #f3f8ff;
 }
-/*── Filters / expand ──*/
+
 .dm-select {
   padding: 10px 12px;
   border: 1px solid var(--line);
@@ -3173,7 +3155,7 @@ body {
     padding: 2px 14px 14px;
   }
 }
-/*── Smart Alerts ──*/
+
 .dm-alerts {
   container-type: inline-size;
   container-name: dmalerts;
@@ -3391,7 +3373,7 @@ body {
     width: 100%;
   }
 }
-/*── Confirm popup ──*/
+
 .dm-confirm {
   max-width: 400px;
 }
@@ -3440,7 +3422,7 @@ body {
   flex: 1;
   padding: 11px 16px;
 }
-/*── Registered college logins (Unlock) ──*/
+
 .dm-fullrow {
   grid-column: 1 / -1;
   min-width: 0;

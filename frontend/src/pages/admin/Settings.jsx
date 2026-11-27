@@ -1,15 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 
-/* =====================================================================
-   SETTINGS  -  single file (JSX + CSS)
-   Usage:  import Settings from "./Settings";   <Route path="/admin/settings" element={<Settings />} />
-   - Every row opens a panel; toggles work inline; cards collapse on header click
-   - Language (English / தமிழ்), date format, timezone, 12/24h and theme apply live
-   - Profile (top right) and sidebar Logout clear the session and go to /login
-   ===================================================================== */
-
-/* ---------- 1. ICONS ---------- */
 const P = {
   home: "M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6",
   users:
@@ -66,7 +57,6 @@ const Icon = ({ n, size = 20 }) => (
   </svg>
 );
 
-/* ---------- 2. DATA ---------- */
 const MENU = [
   ["Dashboard", "⌂", "/admin/dashboard"],
   ["Students", "♙", "/admin/students"],
@@ -79,7 +69,6 @@ const MENU = [
   ["Settings", "⚙", "/admin/settings"],
 ];
 
-/* row = [id, icon, title, subtitle] */
 const SEC = [
   {
     id: "profile",
@@ -296,7 +285,6 @@ const load = () => {
   }
 };
 
-/* ---------- 3. TAMIL (English text is the key; anything missing stays English) ---------- */
 const TA = {
   Dashboard: "டாஷ்போர்டு",
   Students: "மாணவர்கள்",
@@ -408,7 +396,6 @@ const TA = {
   Revoke: "நீக்கு",
 };
 
-/* ---------- 3b. HINDI ---------- */
 const HI = {
   Dashboard: "डैशबोर्ड",
   Students: "छात्र",
@@ -519,7 +506,6 @@ const HI = {
   Revoke: "रद्द करें",
 };
 
-/* ---------- 3c. TELUGU ---------- */
 const TE = {
   Dashboard: "డ్యాష్‌బోర్డ్",
   Students: "విద్యార్థులు",
@@ -631,7 +617,6 @@ const TE = {
   Revoke: "రద్దు చేయి",
 };
 
-/* ---------- 3d. 21 MORE LANGUAGES (menu + page title; remaining text stays English until you add more keys) ---------- */
 const NAV = [
   "Dashboard",
   "Students",
@@ -926,7 +911,6 @@ Object.assign(LOCALE, {
   ne: "ne-NP",
 });
 
-/* ---------- 4. CONTEXT + SMALL PARTS ---------- */
 const Ctx = createContext(null);
 const useS = () => useContext(Ctx);
 
@@ -1037,7 +1021,6 @@ function Modal({ title, onClose, children }) {
   );
 }
 
-/* ---------- 5. PANELS (what opens when a row is clicked) ---------- */
 function Panel({ id, close }) {
   const { t, s, set, fmt, toast } = useS();
   const [gone, setGone] = useState([]);
@@ -1396,7 +1379,6 @@ function Panel({ id, close }) {
   }
 }
 
-/* ---------- 6. ROW + CARD ---------- */
 function Row({ r, onOpen }) {
   const { t, s, set, fmt } = useS();
   const [id, icon, title, sub] = r;
@@ -1493,7 +1475,6 @@ function Card({ sec, rows, shut, toggle, onOpen, i }) {
   );
 }
 
-/* ---------- 7. LAYOUT ---------- */
 function logout() {
   let keep = null;
   try {
@@ -1502,7 +1483,7 @@ function logout() {
     sessionStorage.clear();
     if (keep) localStorage.setItem(KEY, keep);
   } catch {
-    /* storage unavailable */
+
   }
   document.querySelector(".um-app")?.classList.add("is-leaving");
   setTimeout(() => window.location.replace("/login"), 350);
@@ -1637,8 +1618,6 @@ function Topbar({ q, setQ, onMenu }) {
   );
 }
 
-/* ---------- 7b. SPOTLIGHT (animated control-center strip + LIVE backend data) ---------- */
-/* BACKEND: set VITE_API_URL in .env (e.g. http://localhost:5000/api) or edit API_BASE / EP below to match your server */
 const API_BASE = (
   import.meta.env?.VITE_API_URL || "http://localhost:5000/api"
 ).replace(/\/$/, "");
@@ -1651,7 +1630,7 @@ const EP = {
   activity: "/activity",
 };
 const REFRESH_MS = 30000;
-/* shown while the backend is not reachable; replaced by live numbers automatically once it connects */
+
 const DEMO = {
   students: 12480,
   colleges: 342,
@@ -1692,7 +1671,7 @@ async function api(path, signal) {
       sessionStorage.getItem("token") ||
       localStorage.getItem("token");
   } catch {
-    /* storage unavailable */
+
   }
   const res = await fetch(`${API_BASE}${path}`, {
     signal,
@@ -2384,7 +2363,6 @@ function Extras({ live, demo }) {
   );
 }
 
-/* ---------- 8. PAGE ---------- */
 export default function Settings() {
   const [s, setS] = useState(load);
   const [open, setOpen] = useState(null);
@@ -2398,7 +2376,7 @@ export default function Settings() {
     try {
       localStorage.setItem(KEY, JSON.stringify(s));
     } catch {
-      /* ignore */
+
     }
   }, [s]);
   useEffect(() => {
@@ -2519,7 +2497,6 @@ export default function Settings() {
   );
 }
 
-/* ---------- 9. CSS ---------- */
 const CSS = `
 .um-app  {
   --navy: #112746;
@@ -2643,7 +2620,7 @@ const CSS = `
     opacity:.25
   }
 }
-/* sidebar — exactly the same as the Users page */
+
 .um-sidebar  {
   position:sticky;
   top:0;
@@ -2820,7 +2797,7 @@ const CSS = `
 .um-overlay  {
   display:none
 }
-/* main + topbar (same as Users) */
+
 .um-main  {
   position:relative;
   flex:1;
@@ -3088,7 +3065,7 @@ const CSS = `
 .sc-drop small  {
   font-size:11px
 }
-/* cards */
+
 .t-blue  {
   --c: #3556f5
 }
@@ -3297,7 +3274,7 @@ const CSS = `
     width:0
   }
 }
-/* toggle */
+
 .sc-tg  {
   position:relative;
   width:40px;
@@ -3327,7 +3304,7 @@ const CSS = `
 .um-app[data-theme=dark] .sc-tg:not(.on)  {
   background:#334172
 }
-/* modal */
+
 .sc-ov  {
   position:fixed;
   inset:0;
@@ -3600,7 +3577,7 @@ const CSS = `
 .sc-toast svg  {
   color:#38e0a8
 }
-/* responsive */
+
 @media (max-width:1180px)  {
   .span2  {
     grid-column:span 3
@@ -3670,7 +3647,7 @@ const CSS = `
     transition:none!important
   }
 }
-/* keep the live ticker scrolling + status dots blinking even with reduced-motion */
+
 .um-app .sx-roll .sx-track  {
   animation-name:sxMarq!important;
   animation-duration:26s!important;
@@ -3682,7 +3659,7 @@ const CSS = `
   animation-duration:1.4s!important;
   animation-iteration-count:infinite!important
 }
-/* ===== SPOTLIGHT (additive - new elements only) ===== */
+
 .sx-wrap  {
   margin-bottom:18px;
   display:grid;
@@ -4119,7 +4096,7 @@ const CSS = `
     padding:8px 10px
   }
 }
-/* ===== LIVE feed controls + light/dark fixes (additive) ===== */
+
 .sx-live.off  {
   color:#64748b
 }
@@ -4196,7 +4173,7 @@ const CSS = `
     display:none
   }
 }
-/* ===== EXTRAS: checklist, pulse, quick actions + responsive (additive) ===== */
+
 .sx-live.demo  {
   color:#d97706
 }
@@ -4578,7 +4555,7 @@ const CSS = `
     gap:10px
   }
 }
-/* ===== FINAL POLISH: ring contrast, equal-height cards, extra animations (additive) ===== */
+
 .sx-ring,.sx-chips,.sx-kick,.sx-num  {
   user-select:none;
   -webkit-user-select: none
@@ -4729,7 +4706,7 @@ const CSS = `
     display:none
   }
 }
-/* ===== LANGUAGE DROPDOWN (additive) ===== */
+
 .sx-lang  {
   position:relative;
   min-width:0
@@ -4888,7 +4865,7 @@ const CSS = `
     stroke-dashoffset:0
   }
 }
-/* ===== 25-LANGUAGE PICKER (additive) ===== */
+
 .sx-menu  {
   width:300px;
   min-width:270px;
@@ -4960,7 +4937,7 @@ const CSS = `
   color:var(--mu);
   font-size:13px
 }
-/* ===== picker clean-up (additive) ===== */
+
 .sx-find input,.sx-find input:focus,.sx-find input:focus-visible  {
   outline:none!important;
   box-shadow:none!important;

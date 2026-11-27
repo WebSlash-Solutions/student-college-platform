@@ -2,10 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { collegesData, getCourseFee } from "./CollegeManagement";
 
-/* =========================================================
-   CONSTANTS + HELPERS
-========================================================= */
-
 const categories = [
   "Engineering",
   "Arts & Science",
@@ -38,13 +34,6 @@ const clean = (value) =>
     .trim()
     .replace(/\s+/g, " ");
 
-/*
-  CollegeManagement.jsx stores courses in two ways:
-  1) an array            -> courses: ["B.Com", "BBA", ...]
-  2) a fee object        -> courses: engineeringCourseFees  (course name = key)
-  Both are supported here, so EVERY college shows exactly the courses that are
-  listed for it in CollegeManagement.jsx (no extra / duplicate names).
-*/
 const getSourceCourses = (college) => {
   const raw = Array.isArray(college?.courses)
     ? college.courses
@@ -107,9 +96,6 @@ const durationFor = (name, category) => {
   if (category === "Engineering") return "4 Years";
   return "Course specific";
 };
-
-// Stable demo seat numbers (same college + course always gives the same value).
-// 0 means "No seats available". Real data in college.courseSeats always wins.
 const hashStr = (str) => {
   let h = 2166136261;
   for (let i = 0; i < str.length; i += 1) {
@@ -158,10 +144,6 @@ const emptyDraft = {
   verified: "Pending",
 };
 
-/* =========================================================
-   SAVE CHANGES (kept after refresh + pushed into college data)
-========================================================= */
-
 const STORE_KEY = "cm_course_changes_v1";
 
 const loadStore = () => {
@@ -177,13 +159,9 @@ const saveStore = (data) => {
   try {
     window.localStorage.setItem(STORE_KEY, JSON.stringify(data));
   } catch {
-    /* storage full / blocked - UI still works for this session */
+
   }
 };
-
-// Writes every admin edit back into the college objects themselves
-// (college.courseSeats / courseEligibility / courseOverrides), so any other
-// page that reads collegesData sees the NEW value (134 -> 150) too.
 const applyEditsToSource = (list, edits) => {
   Object.entries(edits || {}).forEach(([key, ov]) => {
     const i = key.indexOf(":");
@@ -204,15 +182,9 @@ const applyEditsToSource = (list, edits) => {
       };
   });
 };
-
-// apply saved edits as soon as this module loads (works after page refresh)
 if (typeof window !== "undefined" && Array.isArray(collegesData)) {
   applyEditsToSource(collegesData, loadStore().courseEdits);
 }
-
-/* =========================================================
-   ADMIN SIDEBAR (same menu as Students / Colleges pages)
-========================================================= */
 
 const handleAdminLogout = () => {
   sessionStorage.clear();
@@ -288,7 +260,7 @@ function CourseSidebar({ isOpen = false, onClose = () => {} }) {
 }
 
 const SHELL_CSS = `
-/* ---------- page shell: sidebar + content ---------- */
+
 html,
 body {
   margin: 0;
@@ -396,7 +368,6 @@ body {
   display: none;
 }
 
-
 .cmx-menu-title {
   margin: 0 0 10px;
   width: 100%;
@@ -407,7 +378,6 @@ body {
   letter-spacing: 1px;
   box-sizing: border-box;
 }
-
 
 .cmx-item {
   display: flex;
@@ -640,8 +610,6 @@ body {
   }
 }
 `;
-
-// Page layout for /admin/courses: sidebar on the left + course page on the right.
 function StandaloneShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -673,31 +641,20 @@ function StandaloneShell({ children }) {
   );
 }
 
-/* =========================================================
-   COMPONENT
-========================================================= */
-
 export default function CourseManagement() {
   const navigate = useNavigate();
   const routeLocation = useLocation();
   const onCoursesRoute = routeLocation.pathname.startsWith("/admin/courses");
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
-
-  // Opened from inside the Dashboard? Go to the real /admin/courses page,
-  // so Dashboard / Students / Colleges all show the same sidebar.
   useEffect(() => {
     if (!onCoursesRoute) navigate("/admin/courses", { replace: true });
   }, [onCoursesRoute, navigate]);
   const colleges = Array.isArray(collegesData) ? collegesData : [];
-
-  // college side
   const [query, setQuery] = useState("");
   const [district, setDistrict] = useState("All districts");
   const [category, setCategory] = useState("All categories");
   const [collegePage, setCollegePage] = useState(1);
   const [selectedId, setSelectedId] = useState("");
-
-  // course side
   const [courseQuery, setCourseQuery] = useState("");
   const [level, setLevel] = useState("All");
   const [courseStatus, setCourseStatus] = useState("All");
@@ -711,16 +668,12 @@ export default function CourseManagement() {
   const [feeMax, setFeeMax] = useState("");
   const [seatFilter, setSeatFilter] = useState("All");
   const [courseHistory, setCourseHistory] = useState([]);
-
-  // local (UI) changes made by the admin
   const [saved] = useState(loadStore);
   const [extraCourses, setExtraCourses] = useState(saved.extraCourses || {});
   const [courseEdits, setCourseEdits] = useState(saved.courseEdits || {});
   const [deletedKeys, setDeletedKeys] = useState(saved.deletedKeys || []);
   const [hiddenKeys, setHiddenKeys] = useState(saved.hiddenKeys || []);
   const [verifiedKeys, setVerifiedKeys] = useState(saved.verifiedKeys || []);
-
-  // every change is saved + written into the college data
   useEffect(() => {
     saveStore({
       extraCourses,
@@ -738,14 +691,10 @@ export default function CourseManagement() {
     verifiedKeys,
     colleges,
   ]);
-
-  // popups
   const [modal, setModal] = useState(null); // {type, action?}
   const [draft, setDraft] = useState(emptyDraft);
   const [pickKey, setPickKey] = useState("");
   const [notice, setNotice] = useState("");
-
-  /* ---------- colleges ---------- */
 
   const districts = useMemo(
     () => [
@@ -777,11 +726,7 @@ export default function CourseManagement() {
     (safeCollegePage - 1) * COLLEGE_PAGE_SIZE,
     safeCollegePage * COLLEGE_PAGE_SIZE,
   );
-
-  // no college is selected until the admin clicks one
   const selectedCollege = colleges.find((c) => c.id === selectedId) || null;
-
-  /* ---------- courses of the selected college ---------- */
 
   const courses = useMemo(() => {
     if (!selectedCollege) return [];
@@ -792,10 +737,6 @@ export default function CourseManagement() {
         ...(extraCourses[cid] || []),
       ]),
     ].filter((srcName) => !deletedKeys.includes(`${cid}:${srcName}`));
-
-    // Distribute default Pending courses across colleges and course names.
-    // A stable hash keeps the sample data consistent across renders while
-    // allowing some colleges to have no Pending courses and others to have 1–2.
     let collegeHash = 0;
     for (const char of String(cid))
       collegeHash = (collegeHash * 31 + char.charCodeAt(0)) >>> 0;
@@ -963,8 +904,6 @@ export default function CourseManagement() {
     return `conic-gradient(${stops})`;
   })();
 
-  /* ---------- handlers ---------- */
-
   const resetCourseView = () => {
     setPage(1);
     setCourseQuery("");
@@ -1124,9 +1063,6 @@ export default function CourseManagement() {
       `${course.name} marked as verified. Confirm fee, seats and eligibility with the college.`,
     );
   };
-
-  // Admin can change the selected course between Pending and Active.
-  // Save the status in the existing local store so it remains after refresh.
   const changeCourseStatus = (status) => {
     if (!selectedCourse) {
       setNotice("Select a course first, then choose Pending or Active.");
@@ -1157,8 +1093,6 @@ export default function CourseManagement() {
     else if (action === "verify") verifyCourse(course);
     else if (action === "delete") setModal({ type: "delete" });
   };
-
-  // used by ALL 5 admin-control buttons (+ lifecycle buttons)
   const runAction = (action) => {
     if (!selectedCollege) {
       setNotice("Select a college first.");
@@ -1180,7 +1114,6 @@ export default function CourseManagement() {
       setNotice("This college has no courses. Add a course first.");
       return;
     }
-    // Edit always shows the college's course list first, then opens the edit form
     if (selectedCourse && action !== "edit") {
       openAction(action, selectedCourse);
       return;
@@ -1248,8 +1181,6 @@ export default function CourseManagement() {
       setNotice("Eligibility cannot be empty.");
       return;
     }
-
-    // only the fields the admin actually changed are saved
     const base = draftFrom(selectedCourse);
     const next = { ...(courseEdits[selectedCourse.key] || {}) };
     const labels = {
@@ -1404,8 +1335,6 @@ export default function CourseManagement() {
     </div>
   );
 
-  /* ---------- render ---------- */
-
   if (!onCoursesRoute) return null;
 
   return (
@@ -1433,7 +1362,6 @@ export default function CourseManagement() {
   font-family: inherit;
 }
 
-/* top-right admin profile */
 .cm-heading-right { display:flex; align-items:center; justify-content:flex-end; gap:16px; margin-left:auto; min-width:0; }
 .cm-admin-notification { position:relative; display:grid; place-items:center; width:30px; height:34px; flex-shrink:0; color:#194781; font-size:18px; line-height:1; }
 .cm-admin-notification::after { content:""; position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:50%; background:#f04452; border:1px solid #fff; }
@@ -1448,7 +1376,6 @@ export default function CourseManagement() {
 .cm-admin-dropdown button { width:100%; padding:10px 12px; border:0; border-radius:6px; background:transparent; color:#d14343; text-align:left; font:inherit; font-size:12px; cursor:pointer; }
 .cm-admin-dropdown button:hover { background:#fff0f0; }
 
-/* heading */
 .cm-heading {
   display: flex;
   align-items: center;
@@ -1508,7 +1435,6 @@ export default function CourseManagement() {
   text-decoration: underline;
 }
 
-/* layout */
 .cm-layout {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr) 280px;
@@ -1574,7 +1500,6 @@ export default function CourseManagement() {
   color: #287be8;
 }
 
-/* notice */
 .cm-notice {
   position: sticky;
   top: 8px;
@@ -1602,7 +1527,6 @@ export default function CourseManagement() {
   line-height: 1;
 }
 
-/* college panel */
 .cm-college-panel {
   padding-bottom: 12px;
 }
@@ -1837,7 +1761,6 @@ export default function CourseManagement() {
   font-size: 10px;
 }
 
-/* overview panel */
 .cm-overview-panel {
   padding-bottom: 14px;
 }
@@ -2254,7 +2177,6 @@ export default function CourseManagement() {
   cursor: not-allowed;
 }
 
-/* right column */
 .cm-right-column {
   display: flex;
   flex-direction: column;
@@ -2477,7 +2399,6 @@ export default function CourseManagement() {
   font-size: 18px;
 }
 
-/* Requested course bulk tools, advanced filters, summary and history */
 .cm-bulk-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 12px 9px;padding:8px 10px;border:1px solid #e2ebf8;border-radius:8px;background:#fbfdff;color:#31547f;font-size:11px}
 .cm-bulk-toolbar button,.cm-history-heading button{border:1px solid #dce7f7;background:#fff;color:#315b9d;border-radius:6px;padding:7px 9px;font-size:11px;font-weight:700;cursor:pointer}
 .cm-select-all{display:flex;align-items:center;gap:6px;font-weight:700}.cm-bulk-count{margin-right:auto;color:#6b83a4}.cm-bulk-toolbar .cm-clear-bulk{color:#6c7f98}
@@ -2487,7 +2408,6 @@ export default function CourseManagement() {
 .cm-history-panel{margin-top:14px;padding-bottom:12px}.cm-history-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 14px}.cm-history-heading h3{margin:0}.cm-history-heading button:disabled{opacity:.45;cursor:not-allowed}.cm-history-table-wrap,.cm-compare-wrap{overflow-x:auto;margin:10px 12px;border:1px solid #e5edf7;border-radius:7px}.cm-history-table,.cm-compare-table{width:100%;border-collapse:collapse;font-size:11px}.cm-history-table th,.cm-history-table td,.cm-compare-table th,.cm-compare-table td{padding:9px 10px;text-align:left;border-bottom:1px solid #edf2f9;white-space:nowrap}.cm-history-table th,.cm-compare-table th{background:#f6f9fe;color:#647d9f}.cm-history-empty{padding:4px 14px;color:#8194ae;font-size:11px}
 .cm-table input[type="checkbox"],.cm-bulk-toolbar input[type="checkbox"]{accent-color:#3b70ed;cursor:pointer}
 
-/* lifecycle + admin control */
 .cm-lifecycle,
 .cm-admin-controls {
   margin-top: 14px;
@@ -2713,7 +2633,6 @@ export default function CourseManagement() {
   font-weight: 700;
 }
 
-/* modal */
 .cm-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -2857,7 +2776,6 @@ export default function CourseManagement() {
   cursor: not-allowed;
 }
 
-/* Course View modal: styled to match the requested reference and stay responsive */
 .cm-modal.course-view {
   width: min(580px, 100%);
   padding: 24px 24px 20px;
@@ -3061,7 +2979,6 @@ export default function CourseManagement() {
   color: #287be8;
 }
 
-
 .cm-status-control {
   display: flex;
   align-items: center;
@@ -3082,7 +2999,6 @@ export default function CourseManagement() {
 .cm-status-control-actions .cm-set-pending { color: #a76600; background: #fff2d2; border: 1px solid #f4d58b; }
 .cm-status-control-actions .cm-set-active { color: #087d60; background: #dcf8ee; border: 1px solid #a8e8d3; }
 
-/* ---------- responsive ---------- */
 @media (max-width: 1280px) {
   .cm-layout {
     grid-template-columns: 250px minmax(0, 1fr);
@@ -3183,7 +3099,6 @@ export default function CourseManagement() {
   .cm-status-control-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cm-status-control-actions button { width: 100%; }
 
-
   .cm-course-search {
     width: 100%;
     flex: 1 1 100%;
@@ -3220,7 +3135,6 @@ export default function CourseManagement() {
     margin-left: 0;
   }
 
-  /* table -> cards on phones */
   .cm-layout > *,
   .cm-panel {
     min-width: 0;
@@ -3333,7 +3247,7 @@ export default function CourseManagement() {
 }
 `}</style>
 
-        {/* ===== HEADING ===== */}
+        {}
         <section className="cm-heading">
           <div className="cm-heading-left">
             <div className="cm-heading-icon">▥</div>
@@ -3371,7 +3285,7 @@ export default function CourseManagement() {
         )}
 
         <div className="cm-layout">
-          {/* ===== 01 SELECT COLLEGE ===== */}
+          {}
           <section className="cm-panel cm-college-panel">
             <h3>
               <span>♜</span> 01. Select College
@@ -3486,7 +3400,7 @@ export default function CourseManagement() {
             ))}
           </section>
 
-          {/* ===== 02 COURSE OVERVIEW ===== */}
+          {}
           <section className="cm-panel cm-overview-panel">
             <h3>
               <span>▥</span> 02. Course Overview
@@ -3967,7 +3881,7 @@ export default function CourseManagement() {
             )}
           </section>
 
-          {/* ===== 03 INSIGHTS ===== */}
+          {}
           <aside className="cm-right-column">
             <section className="cm-panel cm-insights">
               <h3>
@@ -4181,7 +4095,7 @@ export default function CourseManagement() {
           </aside>
         </div>
 
-        {/* ===== LIFECYCLE ===== */}
+        {}
         <section className="cm-panel cm-lifecycle">
           <h3>⚙ Course Lifecycle</h3>
           <div className="cm-lifecycle-steps">
@@ -4195,7 +4109,7 @@ export default function CourseManagement() {
           </div>
         </section>
 
-        {/* ===== ADMIN CONTROL ===== */}
+        {}
         <section className="cm-panel cm-admin-controls">
           <div className="cm-admin-head">
             <h3>⚙ Admin Control</h3>
@@ -4293,7 +4207,7 @@ export default function CourseManagement() {
           )}
         </section>
 
-        {/* ===== MODALS ===== */}
+        {}
         {modal && (
           <div className="cm-modal-backdrop" onClick={closeModal}>
             <div

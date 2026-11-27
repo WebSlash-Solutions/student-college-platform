@@ -51,7 +51,11 @@ const studentsData = [
     purchasedBy: "ABC Engineering College",
     leadPrice: "₹100",
     applicationList: [
-      { college: "ABC Engineering College", course: "B.Tech CSE", status: "Accepted" },
+      {
+        college: "ABC Engineering College",
+        course: "B.Tech CSE",
+        status: "Accepted",
+      },
       { college: "PSG College", course: "B.Tech CSE", status: "Pending" },
     ],
   },
@@ -73,8 +77,16 @@ const studentsData = [
     purchasedBy: "PSG College",
     leadPrice: "₹100",
     applicationList: [
-      { college: "PSG College", course: "B.Tech Mechanical", status: "Pending" },
-      { college: "City College", course: "B.Tech Mechanical", status: "Rejected" },
+      {
+        college: "PSG College",
+        course: "B.Tech Mechanical",
+        status: "Pending",
+      },
+      {
+        college: "City College",
+        course: "B.Tech Mechanical",
+        status: "Rejected",
+      },
     ],
   },
   {
@@ -138,7 +150,11 @@ const studentsData = [
     purchasedBy: "Medical College",
     leadPrice: "₹100",
     applicationList: [
-      { college: "Medical College", course: "B.Sc Nursing", status: "Rejected" },
+      {
+        college: "Medical College",
+        course: "B.Sc Nursing",
+        status: "Rejected",
+      },
     ],
   },
   {
@@ -167,18 +183,43 @@ const studentsData = [
 const extraStudents = Array.from({ length: 44 }, (_, index) => {
   const number = 10922 - index;
   const names = [
-    "Karthik S", "Priya V", "Mohamed A", "Divya K", "Harish R", "Nithya P",
-    "Santhosh M", "Swetha R", "Dinesh K", "Pavithra S", "Lokesh B",
+    "Karthik S",
+    "Priya V",
+    "Mohamed A",
+    "Divya K",
+    "Harish R",
+    "Nithya P",
+    "Santhosh M",
+    "Swetha R",
+    "Dinesh K",
+    "Pavithra S",
+    "Lokesh B",
   ];
   const colleges = [
-    "ABC Engineering College", "PSG College", "City College", "Kongu College",
-    "St. Joseph's College", "Medical College", "XYZ Institute of Technology",
+    "ABC Engineering College",
+    "PSG College",
+    "City College",
+    "Kongu College",
+    "St. Joseph's College",
+    "Medical College",
+    "XYZ Institute of Technology",
   ];
   const coursesList = [
-    "B.Tech CSE", "B.Tech Mechanical", "BCA", "B.Com", "B.Sc Nursing",
-    "B.Tech IT", "BBA",
+    "B.Tech CSE",
+    "B.Tech Mechanical",
+    "BCA",
+    "B.Com",
+    "B.Sc Nursing",
+    "B.Tech IT",
+    "BBA",
   ];
-  const femaleNames = ["Priya V", "Divya K", "Nithya P", "Swetha R", "Pavithra S"];
+  const femaleNames = [
+    "Priya V",
+    "Divya K",
+    "Nithya P",
+    "Swetha R",
+    "Pavithra S",
+  ];
   const name = names[index % names.length];
   const college = colleges[index % colleges.length];
   const course = coursesList[index % coursesList.length];
@@ -194,7 +235,9 @@ const extraStudents = Array.from({ length: 44 }, (_, index) => {
     status: blocked ? "Blocked" : "Active",
     registered: `${27 - (index % 20)} Sep 2026`,
     dob: `${String((index % 27) + 1).padStart(2, "0")} ${
-      ["January", "February", "March", "April", "May", "June", "July"][index % 7]
+      ["January", "February", "March", "April", "May", "June", "July"][
+        index % 7
+      ]
     } 2005`,
     gender: femaleNames.includes(name) ? "Female" : "Male",
     address: `${index + 10}, Main Road`,
@@ -206,7 +249,12 @@ const extraStudents = Array.from({ length: 44 }, (_, index) => {
       {
         college,
         course,
-        status: index % 3 === 0 ? "Accepted" : index % 3 === 1 ? "Pending" : "Rejected",
+        status:
+          index % 3 === 0
+            ? "Accepted"
+            : index % 3 === 1
+              ? "Pending"
+              : "Rejected",
       },
     ],
   };
@@ -252,8 +300,12 @@ const addAcademicDetails = (student, index) => {
   twelfth.Percentage = (twelfth.Total / relevantSubjects.length).toFixed(2);
   twelfth.Subjects = relevantSubjects;
 
-  const cutoff = ["B.Tech CSE", "B.Tech IT", "B.Tech Mechanical"].includes(student.course)
-    ? ((twelfth.Mathematics + twelfth.Physics + twelfth.Chemistry) / 2).toFixed(2)
+  const cutoff = ["B.Tech CSE", "B.Tech IT", "B.Tech Mechanical"].includes(
+    student.course,
+  )
+    ? ((twelfth.Mathematics + twelfth.Physics + twelfth.Chemistry) / 2).toFixed(
+        2,
+      )
     : ((twelfth.Mathematics + twelfth.English) / 2).toFixed(2);
 
   student.tenthMarks = tenth;
@@ -263,6 +315,7 @@ const addAcademicDetails = (student, index) => {
 
 studentsData.forEach(addAcademicDetails);
 const APPLICATIONS_KEY = "scp_applications";
+const APPLICATION_API = "http://localhost:8080/api/applications";
 const readSubmittedApplications = () => {
   try {
     const saved = JSON.parse(localStorage.getItem(APPLICATIONS_KEY) || "[]");
@@ -270,6 +323,138 @@ const readSubmittedApplications = () => {
   } catch {
     return [];
   }
+};
+
+const mapBackendApplicationToStudent = (application) => {
+  const applicationId = String(application?.id ?? "");
+  const subjectMarks = {};
+
+  if (application?.maths != null)
+    subjectMarks.Mathematics = Number(application.maths);
+  if (application?.physics != null)
+    subjectMarks.Physics = Number(application.physics);
+  if (application?.chemistry != null)
+    subjectMarks.Chemistry = Number(application.chemistry);
+  if (application?.biology != null)
+    subjectMarks.Biology = Number(application.biology);
+  if (application?.bioMaths != null)
+    subjectMarks.BioMaths = Number(application.bioMaths);
+
+  return {
+    id: `APP-${applicationId}`,
+    applicationId,
+    name: application.name || "—",
+    email: application.email || "—",
+    phone: application.phone
+      ? String(application.phone).startsWith("+91")
+        ? application.phone
+        : `+91 ${application.phone}`
+      : "—",
+    college: application.collegeName || "—",
+    course: application.courseName || "—",
+    applications: 1,
+    status: "Pending",
+    registered: new Date().toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+    dob: application.dob || "—",
+    gender: application.gender || "—",
+    address: "—",
+    city: application.city || "—",
+    leadStatus: "New",
+    purchasedBy: "—",
+    leadPrice: "₹100",
+    applicationList: [
+      {
+        college: application.collegeName || "—",
+        course: application.courseName || "—",
+        status: "Submitted",
+        applicationId,
+        appliedOn: application.appliedOn || "",
+      },
+    ],
+    tenthMarks: {
+      Percentage: application.tenthMarks ?? "—",
+      Total:
+        application.tenthMarks != null
+          ? Number(application.tenthMarks) * 5
+          : "—",
+    },
+    twelfthMarks: {
+      Percentage: application.twelfthMarks ?? "—",
+      Total:
+        application.twelfthMarks != null
+          ? Number(application.twelfthMarks) * 5
+          : "—",
+      ...subjectMarks,
+      Subjects: Object.keys(subjectMarks),
+    },
+    cutoff: application.cutoff ?? "—",
+    stream: application.stream || "—",
+  };
+};
+
+const mergeBackendApplications = (currentStudents, applications) => {
+  let nextStudents = [...currentStudents];
+
+  applications.forEach((application) => {
+    if (!application || application.id == null || !application.email) return;
+
+    const applicationId = String(application.id);
+    const email = String(application.email).trim().toLowerCase();
+    const existingIndex = nextStudents.findIndex(
+      (student) =>
+        String(student.applicationId || "") === applicationId ||
+        String(student.email || "")
+          .trim()
+          .toLowerCase() === email,
+    );
+
+    if (existingIndex >= 0) {
+      const existing = nextStudents[existingIndex];
+      const existingApplications = existing.applicationList || [];
+
+      if (
+        existingApplications.some(
+          (item) => String(item.applicationId || "") === applicationId,
+        )
+      ) {
+        return;
+      }
+
+      nextStudents[existingIndex] = {
+        ...existing,
+        applicationId,
+        name: application.name || existing.name,
+        phone: application.phone || existing.phone,
+        email: application.email || existing.email,
+        dob: application.dob || existing.dob,
+        gender: application.gender || existing.gender,
+        college: application.collegeName || existing.college,
+        course: application.courseName || existing.course,
+        city: application.city || existing.city,
+        status: "Pending",
+        applications: (Number(existing.applications) || 0) + 1,
+        applicationList: [
+          ...existingApplications,
+          {
+            college: application.collegeName || "—",
+            course: application.courseName || "—",
+            status: "Submitted",
+            applicationId,
+          },
+        ],
+        cutoff: application.cutoff ?? existing.cutoff,
+      };
+      return;
+    }
+
+    nextStudents.unshift(mapBackendApplicationToStudent(application));
+  });
+
+  return nextStudents;
 };
 
 const mergeSubmittedApplications = (currentStudents, submittedApplications) => {
@@ -281,7 +466,10 @@ const mergeSubmittedApplications = (currentStudents, submittedApplications) => {
     const email = String(application.email).trim().toLowerCase();
     const applicationId = String(application.id || "");
     const existingIndex = nextStudents.findIndex(
-      (student) => String(student.email || "").trim().toLowerCase() === email,
+      (student) =>
+        String(student.email || "")
+          .trim()
+          .toLowerCase() === email,
     );
 
     const applicationItem = {
@@ -296,7 +484,9 @@ const mergeSubmittedApplications = (currentStudents, submittedApplications) => {
       const existingApplications = existing.applicationList || [];
       if (
         applicationId &&
-        existingApplications.some((item) => String(item.applicationId || "") === applicationId)
+        existingApplications.some(
+          (item) => String(item.applicationId || "") === applicationId,
+        )
       ) {
         return;
       }
@@ -304,11 +494,14 @@ const mergeSubmittedApplications = (currentStudents, submittedApplications) => {
       nextStudents[existingIndex] = {
         ...existing,
         name: application.studentName || existing.name,
-        phone: application.mobile ? `+91 ${application.mobile}` : existing.phone,
+        phone: application.mobile
+          ? `+91 ${application.mobile}`
+          : existing.phone,
         college: application.collegeName || existing.college,
         course: application.courseName || existing.course,
         city: application.city || existing.city,
-        applications: (Number(existing.applications) || existingApplications.length) + 1,
+        applications:
+          (Number(existing.applications) || existingApplications.length) + 1,
         applicationList: [
           ...existingApplications,
           { ...applicationItem, applicationId },
@@ -372,7 +565,10 @@ const mergeSubmittedApplications = (currentStudents, submittedApplications) => {
     const mark10 = Number(application.mark10 || 0);
     const mark12 = Number(application.mark12 || 0);
     const submittedSubjects = Object.fromEntries(
-      Object.entries(application.subjects || {}).map(([key, value]) => [key, Number(value)]),
+      Object.entries(application.subjects || {}).map(([key, value]) => [
+        key,
+        Number(value),
+      ]),
     );
     newStudent.tenthMarks = {
       Tamil: "—",
@@ -441,9 +637,7 @@ function StudentManagementContent({ topSearch = "" }) {
         ? event.detail
         : readSubmittedApplications();
 
-      setStudents((current) =>
-        mergeSubmittedApplications(current, submitted),
-      );
+      setStudents((current) => mergeSubmittedApplications(current, submitted));
     };
 
     window.addEventListener("scp:applications-updated", syncApplications);
@@ -452,6 +646,37 @@ function StudentManagementContent({ topSearch = "" }) {
     return () => {
       window.removeEventListener("scp:applications-updated", syncApplications);
       window.removeEventListener("storage", syncApplications);
+    };
+  }, []);
+
+  // Load new admission applications directly from the shared Spring Boot database.
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadNewApplications = async () => {
+      try {
+        const response = await fetch(`${APPLICATION_API}/status/NEW`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to load applications: ${response.status}`);
+        }
+
+        const applications = await response.json();
+
+        if (!cancelled && Array.isArray(applications)) {
+          setStudents((current) =>
+            mergeBackendApplications(current, applications),
+          );
+        }
+      } catch (error) {
+        console.error("Unable to load new applications from backend:", error);
+      }
+    };
+
+    loadNewApplications();
+
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -478,27 +703,55 @@ function StudentManagementContent({ topSearch = "" }) {
     const q = search.trim().toLowerCase();
     const matchesSearch =
       !q ||
-      [s.name, s.id, s.email, s.phone, s.college, s.course, s.status, s.city, s.leadStatus]
+      [
+        s.name,
+        s.id,
+        s.email,
+        s.phone,
+        s.college,
+        s.course,
+        s.status,
+        s.city,
+        s.leadStatus,
+      ]
         .filter(Boolean)
         .some((v) => v.toLowerCase().includes(q));
-    const matchesCollege = collegeFilter === "All Colleges" || s.college === collegeFilter;
-    const matchesCourse = courseFilter === "All Courses" || s.course === courseFilter;
-    const matchesStatus = statusFilter === "All Status" || s.status === statusFilter;
+    const matchesCollege =
+      collegeFilter === "All Colleges" || s.college === collegeFilter;
+    const matchesCourse =
+      courseFilter === "All Courses" || s.course === courseFilter;
+    const matchesStatus =
+      statusFilter === "All Status" || s.status === statusFilter;
     const matchesTab =
       tab === "new"
         ? s.status === "Pending"
         : tab === "blocked"
           ? s.status === "Blocked"
           : s.status === "Active";
-    return matchesSearch && matchesCollege && matchesCourse && matchesStatus && matchesTab;
+    return (
+      matchesSearch &&
+      matchesCollege &&
+      matchesCourse &&
+      matchesStatus &&
+      matchesTab
+    );
   });
 
-  const totalPages = Math.max(1, Math.ceil(filteredStudents.length / studentsPerPage));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredStudents.length / studentsPerPage),
+  );
   const safePage = Math.min(currentPage, totalPages);
   const startIndex = (safePage - 1) * studentsPerPage;
-  const currentStudents = filteredStudents.slice(startIndex, startIndex + studentsPerPage);
+  const currentStudents = filteredStudents.slice(
+    startIndex,
+    startIndex + studentsPerPage,
+  );
 
-  const totalApplications = students.reduce((sum, s) => sum + s.applications, 0);
+  const totalApplications = students.reduce(
+    (sum, s) => sum + s.applications,
+    0,
+  );
   const activeCount = students.filter((s) => s.status === "Active").length;
   const blockedCount = students.filter((s) => s.status === "Blocked").length;
   const newCount = students.filter((s) => s.status === "Pending").length;
@@ -537,22 +790,66 @@ function StudentManagementContent({ topSearch = "" }) {
       prev.map((s) => (s.id === student.id ? { ...s, status: next } : s)),
     );
   };
-  const decideRequest = (student, decision) => {
-    const nextStatus = decision === "accept" ? "Active" : "Blocked";
-    const appStatus = decision === "accept" ? "Accepted" : "Rejected";
-    setStudents((prev) =>
-      prev.map((s) =>
-        s.id === student.id
-          ? {
-              ...s,
-              status: nextStatus,
-              applicationList: (s.applicationList || []).map((a) =>
-                a.status === "Submitted" ? { ...a, status: appStatus } : a,
-              ),
-            }
-          : s,
-      ),
-    );
+  const decideRequest = async (student, decision) => {
+    const applicationId = student.applicationId;
+
+    if (!applicationId) {
+      // Keep the existing local/demo student behaviour for older localStorage entries.
+      const nextStatus = decision === "accept" ? "Active" : "Blocked";
+      const appStatus = decision === "accept" ? "Accepted" : "Rejected";
+
+      setStudents((prev) =>
+        prev.map((s) =>
+          s.id === student.id
+            ? {
+                ...s,
+                status: nextStatus,
+                applicationList: (s.applicationList || []).map((a) =>
+                  a.status === "Submitted" ? { ...a, status: appStatus } : a,
+                ),
+              }
+            : s,
+        ),
+      );
+      return;
+    }
+
+    const backendStatus = decision === "accept" ? "APPROVED" : "REJECTED";
+    const nextStudentStatus = decision === "accept" ? "Active" : "Blocked";
+    const nextApplicationStatus =
+      decision === "accept" ? "Accepted" : "Rejected";
+
+    try {
+      const response = await fetch(
+        `${APPLICATION_API}/${applicationId}/status?status=${backendStatus}`,
+        { method: "PUT" },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to update application: ${response.status}`);
+      }
+
+      setStudents((prev) =>
+        prev.map((s) =>
+          s.id === student.id
+            ? {
+                ...s,
+                status: nextStudentStatus,
+                applicationList: (s.applicationList || []).map((a) =>
+                  String(a.applicationId || "") === String(applicationId)
+                    ? { ...a, status: nextApplicationStatus }
+                    : a,
+                ),
+              }
+            : s,
+        ),
+      );
+    } catch (error) {
+      console.error("Unable to update application status:", error);
+      window.alert(
+        "Could not update the application. Please make sure the backend is running.",
+      );
+    }
   };
 
   const openEdit = (student) => {
@@ -614,13 +911,16 @@ function StudentManagementContent({ topSearch = "" }) {
     const rect = btn.getBoundingClientRect();
     const cs = window.getComputedStyle(btn);
     const rgbOf = (str) => {
-      const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/.exec(str || "");
+      const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/.exec(
+        str || "",
+      );
       if (!m || (m[4] !== undefined && parseFloat(m[4]) === 0)) return null;
       return [Number(m[1]), Number(m[2]), Number(m[3])];
     };
     const isLight = (c) => c && c[0] > 235 && c[1] > 235 && c[2] > 235;
     let color = rgbOf(cs.backgroundColor) || rgbOf(cs.backgroundImage);
-    if (!color || isLight(color)) color = rgbOf(cs.borderTopColor) || rgbOf(cs.color);
+    if (!color || isLight(color))
+      color = rgbOf(cs.borderTopColor) || rgbOf(cs.color);
     if (!color || isLight(color)) color = [45, 125, 240];
     const colorVar = color.join(",");
     const x = e.clientX || rect.left + rect.width / 2;
@@ -1161,143 +1461,155 @@ function StudentManagementContent({ topSearch = "" }) {
 
       <div className="sm-page" onClick={handleSmoke}>
         <div className="sm-content">
-            {!selectedStudent && (
-              <>
-            {}
-            <section className="hero">
-              <div className="hero-icon">🎓</div>
-              <div className="hero-text">
-                <h1>Student Management</h1>
-                <p>Manage student records and academic profiles</p>
-              </div>
-              <div className="hero-art">🏛️</div>
-            </section>
+          {!selectedStudent && (
+            <>
+              {}
+              <section className="hero">
+                <div className="hero-icon">🎓</div>
+                <div className="hero-text">
+                  <h1>Student Management</h1>
+                  <p>Manage student records and academic profiles</p>
+                </div>
+                <div className="hero-art">🏛️</div>
+              </section>
 
-            {}
-            <section className="sm-stats-grid">
-              <div className="sm-stat-card stat-blue">
-                <div className="sm-stat-icon">👥</div>
-                <div className="stat-body">
-                  <div className="stat-title">Total Students</div>
-                  <div className="stat-row">
-                    <span className="stat-number">{students.length}</span>
-                    <span className="stat-trend">↑ +12%</span>
+              {}
+              <section className="sm-stats-grid">
+                <div className="sm-stat-card stat-blue">
+                  <div className="sm-stat-icon">👥</div>
+                  <div className="stat-body">
+                    <div className="stat-title">Total Students</div>
+                    <div className="stat-row">
+                      <span className="stat-number">{students.length}</span>
+                      <span className="stat-trend">↑ +12%</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="sm-stat-card stat-green">
-                <div className="sm-stat-icon">✔</div>
-                <div className="stat-body">
-                  <div className="stat-title">Active Students</div>
-                  <div className="stat-row">
-                    <span className="stat-number">{activeCount}</span>
-                    <span className="stat-trend">↑ +8%</span>
+                <div className="sm-stat-card stat-green">
+                  <div className="sm-stat-icon">✔</div>
+                  <div className="stat-body">
+                    <div className="stat-title">Active Students</div>
+                    <div className="stat-row">
+                      <span className="stat-number">{activeCount}</span>
+                      <span className="stat-trend">↑ +8%</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="sm-stat-card stat-purple">
-                <div className="sm-stat-icon">📄</div>
-                <div className="stat-body">
-                  <div className="stat-title">Applications</div>
-                  <div className="stat-row">
-                    <span className="stat-number">{totalApplications}</span>
-                    <span className="stat-trend">↑ +15%</span>
+                <div className="sm-stat-card stat-purple">
+                  <div className="sm-stat-icon">📄</div>
+                  <div className="stat-body">
+                    <div className="stat-title">Applications</div>
+                    <div className="stat-row">
+                      <span className="stat-number">{totalApplications}</span>
+                      <span className="stat-trend">↑ +15%</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="sm-stat-card stat-red">
-                <div className="sm-stat-icon">🚫</div>
-                <div className="stat-body">
-                  <div className="stat-title">Blocked Students</div>
-                  <div className="stat-row">
-                    <span className="stat-number">{blockedCount}</span>
-                    <span className="stat-trend">↓ -2%</span>
+                <div className="sm-stat-card stat-red">
+                  <div className="sm-stat-icon">🚫</div>
+                  <div className="stat-body">
+                    <div className="stat-title">Blocked Students</div>
+                    <div className="stat-row">
+                      <span className="stat-number">{blockedCount}</span>
+                      <span className="stat-trend">↓ -2%</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {}
-            <section className="filter-bar">
-              <label className="filter-search">
-                <span>🔍</span>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => updateFilter(setSearch)(e.target.value)}
-                  placeholder="Search students by name, email..."
-                />
-              </label>
+              {}
+              <section className="filter-bar">
+                <label className="filter-search">
+                  <span>🔍</span>
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => updateFilter(setSearch)(e.target.value)}
+                    placeholder="Search students by name, email..."
+                  />
+                </label>
 
-              <select
-                className="filter-select"
-                value={collegeFilter}
-                onChange={(e) => updateFilter(setCollegeFilter)(e.target.value)}
-              >
-                {colleges.map((c) => (
-                  <option key={c}>{c}</option>
-                ))}
-              </select>
-
-              <select
-                className="filter-select"
-                value={courseFilter}
-                onChange={(e) => updateFilter(setCourseFilter)(e.target.value)}
-              >
-                {courses.map((c) => (
-                  <option key={c}>{c}</option>
-                ))}
-              </select>
-
-              <select
-                className="filter-select"
-                value={statusFilter}
-                onChange={(e) => updateFilter(setStatusFilter)(e.target.value)}
-              >
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Blocked</option>
-              </select>
-
-              <button className="reset-btn" title="Reset filters" onClick={resetFilters}>
-                ⟳
-              </button>
-
-              <button className="add-btn" onClick={openAdd}>
-                👤＋ Add Student
-              </button>
-            </section>
-
-            {}
-            <section className="sm-tabs">
-              {[
-                ["new", "🆕 New Requests", newCount],
-                ["accepted", "✔ Accepted", activeCount],
-                ["blocked", "🚫 Blocked", blockedCount],
-              ].map(([key, label, count]) => (
-                <button
-                  key={key}
-                  className={`sm-tab ${tab === key ? "active" : ""} sm-tab-${key}`}
-                  onClick={() => {
-                    setTab(key);
-                    setCurrentPage(1);
-                  }}
+                <select
+                  className="filter-select"
+                  value={collegeFilter}
+                  onChange={(e) =>
+                    updateFilter(setCollegeFilter)(e.target.value)
+                  }
                 >
-                  {label} <span className="sm-tab-count">{count}</span>
-                </button>
-              ))}
-            </section>
-              </>
-            )}
+                  {colleges.map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+                </select>
 
-            {}
-            <section className="content-grid">
-              {!selectedStudent && (
+                <select
+                  className="filter-select"
+                  value={courseFilter}
+                  onChange={(e) =>
+                    updateFilter(setCourseFilter)(e.target.value)
+                  }
+                >
+                  {courses.map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+                </select>
+
+                <select
+                  className="filter-select"
+                  value={statusFilter}
+                  onChange={(e) =>
+                    updateFilter(setStatusFilter)(e.target.value)
+                  }
+                >
+                  <option>All Status</option>
+                  <option>Active</option>
+                  <option>Blocked</option>
+                </select>
+
+                <button
+                  className="reset-btn"
+                  title="Reset filters"
+                  onClick={resetFilters}
+                >
+                  ⟳
+                </button>
+
+                <button className="add-btn" onClick={openAdd}>
+                  👤＋ Add Student
+                </button>
+              </section>
+
+              {}
+              <section className="sm-tabs">
+                {[
+                  ["new", "🆕 New Requests", newCount],
+                  ["accepted", "✔ Accepted", activeCount],
+                  ["blocked", "🚫 Blocked", blockedCount],
+                ].map(([key, label, count]) => (
+                  <button
+                    key={key}
+                    className={`sm-tab ${tab === key ? "active" : ""} sm-tab-${key}`}
+                    onClick={() => {
+                      setTab(key);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    {label} <span className="sm-tab-count">{count}</span>
+                  </button>
+                ))}
+              </section>
+            </>
+          )}
+
+          {}
+          <section className="content-grid">
+            {!selectedStudent && (
               <div>
-                <p className="list-count">{filteredStudents.length} students found</p>
+                <p className="list-count">
+                  {filteredStudents.length} students found
+                </p>
 
                 {currentStudents.length > 0 ? (
                   <div className="student-list">
@@ -1323,13 +1635,17 @@ function StudentManagementContent({ topSearch = "" }) {
                         </div>
 
                         <div className="sc-right">
-                          <span className={`pill ${statusClass(student.status)}`}>
+                          <span
+                            className={`pill ${statusClass(student.status)}`}
+                          >
                             ● {student.status}
                           </span>
 
                           <div className="sc-apps">
                             📄 {student.applications}{" "}
-                            {student.applications === 1 ? "Application" : "Applications"}
+                            {student.applications === 1
+                              ? "Application"
+                              : "Applications"}
                           </div>
 
                           {student.status === "Pending" && (
@@ -1412,318 +1728,365 @@ function StudentManagementContent({ topSearch = "" }) {
                   </div>
                 )}
               </div>
-              )}
+            )}
 
-              {}
-              {selectedStudent && (
-                <>
-                  <aside className="profile-panel">
-                    <div className="panel-head">
-                      <button
-                        className="back-button"
-                        onClick={() => setSelectedId(null)}
-                      >
-                        ← Back to Students
-                      </button>
-                      <div className="panel-head-id">
-                        Student ID: <strong>{selectedStudent.id}</strong>
+            {}
+            {selectedStudent && (
+              <>
+                <aside className="profile-panel">
+                  <div className="panel-head">
+                    <button
+                      className="back-button"
+                      onClick={() => setSelectedId(null)}
+                    >
+                      ← Back to Students
+                    </button>
+                    <div className="panel-head-id">
+                      Student ID: <strong>{selectedStudent.id}</strong>
+                    </div>
+                  </div>
+
+                  <div className="panel-body">
+                    <div className="panel-profile">
+                      <Avatar student={selectedStudent} size="lg" />
+
+                      <div className="panel-profile-info">
+                        <div className="panel-name-row">
+                          <h3 className="panel-name">
+                            {selectedStudent.name}
+                            <span className="verified">✓</span>
+                          </h3>
+                          <span
+                            className={`pill ${statusClass(selectedStudent.status)}`}
+                          >
+                            ● {selectedStudent.status}
+                          </span>
+                        </div>
+                        <div className="panel-id">{selectedStudent.id}</div>
+
+                        <div className="panel-contact">
+                          <div>
+                            <span className="ci">✉</span>
+                            {selectedStudent.email}
+                          </div>
+                          <div>
+                            <span className="ci">☎</span>
+                            {selectedStudent.phone}
+                          </div>
+                          <div>
+                            <span className="ci">📍</span>
+                            {selectedStudent.address}, {selectedStudent.city}
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="panel-body">
-                      <div className="panel-profile">
-                        <Avatar student={selectedStudent} size="lg" />
-
-                        <div className="panel-profile-info">
-                          <div className="panel-name-row">
-                            <h3 className="panel-name">
-                              {selectedStudent.name}
-                              <span className="verified">✓</span>
-                            </h3>
-                            <span className={`pill ${statusClass(selectedStudent.status)}`}>
-                              ● {selectedStudent.status}
-                            </span>
-                          </div>
-                          <div className="panel-id">{selectedStudent.id}</div>
-
-                          <div className="panel-contact">
-                            <div>
-                              <span className="ci">✉</span>
-                              {selectedStudent.email}
-                            </div>
-                            <div>
-                              <span className="ci">☎</span>
-                              {selectedStudent.phone}
-                            </div>
-                            <div>
-                              <span className="ci">📍</span>
-                              {selectedStudent.address}, {selectedStudent.city}
-                            </div>
-                          </div>
+                    {}
+                    <div className="section-box">
+                      <div className="section-title">🎓 Academic Details</div>
+                      <div className="metrics">
+                        <div className="metric">
+                          <label>10th Percentage</label>
+                          <strong>
+                            {Math.round(selectedStudent.tenthMarks?.Percentage)}
+                            %
+                          </strong>
+                        </div>
+                        <div className="metric">
+                          <label>12th Percentage</label>
+                          <strong>
+                            {Math.round(
+                              selectedStudent.twelfthMarks?.Percentage,
+                            )}
+                            %
+                          </strong>
+                        </div>
+                        <div className="metric">
+                          <label>Cutoff Score</label>
+                          <strong>{selectedStudent.cutoff}</strong>
                         </div>
                       </div>
 
-                      {}
-                      <div className="section-box">
-                        <div className="section-title">🎓 Academic Details</div>
-                        <div className="metrics">
-                          <div className="metric">
-                            <label>10th Percentage</label>
-                            <strong>{Math.round(selectedStudent.tenthMarks?.Percentage)}%</strong>
-                          </div>
-                          <div className="metric">
-                            <label>12th Percentage</label>
-                            <strong>{Math.round(selectedStudent.twelfthMarks?.Percentage)}%</strong>
-                          </div>
-                          <div className="metric">
-                            <label>Cutoff Score</label>
-                            <strong>{selectedStudent.cutoff}</strong>
-                          </div>
-                        </div>
+                      <details className="marks-details">
+                        <summary>View full marks ▾</summary>
 
-                        <details className="marks-details">
-                          <summary>View full marks ▾</summary>
-
-                          <table className="marks-table">
-                            <caption>10th Standard</caption>
-                            <tbody>
-                              {[
-                                ["Tamil", "Tamil"],
-                                ["English", "English"],
-                                ["Mathematics", "Mathematics"],
-                                ["Science", "Science"],
-                                ["Social Science", "SocialScience"],
-                              ].map(([label, key]) => (
-                                <tr key={key}>
-                                  <th>{label}</th>
-                                  <td>{selectedStudent.tenthMarks?.[key]}</td>
-                                </tr>
-                              ))}
-                              <tr>
-                                <th>Total</th>
-                                <td>
-                                  {selectedStudent.tenthMarks?.Total} /{" "}
-                                  {selectedStudent.tenthMarks?.Percentage}%
-                                </td>
+                        <table className="marks-table">
+                          <caption>10th Standard</caption>
+                          <tbody>
+                            {[
+                              ["Tamil", "Tamil"],
+                              ["English", "English"],
+                              ["Mathematics", "Mathematics"],
+                              ["Science", "Science"],
+                              ["Social Science", "SocialScience"],
+                            ].map(([label, key]) => (
+                              <tr key={key}>
+                                <th>{label}</th>
+                                <td>{selectedStudent.tenthMarks?.[key]}</td>
                               </tr>
-                            </tbody>
-                          </table>
+                            ))}
+                            <tr>
+                              <th>Total</th>
+                              <td>
+                                {selectedStudent.tenthMarks?.Total} /{" "}
+                                {selectedStudent.tenthMarks?.Percentage}%
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
 
-                          <table className="marks-table">
-                            <caption>12th Standard</caption>
-                            <tbody>
-                              {(selectedStudent.twelfthMarks?.Subjects || []).map((subject) => (
+                        <table className="marks-table">
+                          <caption>12th Standard</caption>
+                          <tbody>
+                            {(selectedStudent.twelfthMarks?.Subjects || []).map(
+                              (subject) => (
                                 <tr key={subject}>
                                   <th>
-                                    {subject === "ComputerScience" ? "Computer Science" : subject}
+                                    {subject === "ComputerScience"
+                                      ? "Computer Science"
+                                      : subject}
                                   </th>
-                                  <td>{selectedStudent.twelfthMarks?.[subject]}</td>
+                                  <td>
+                                    {selectedStudent.twelfthMarks?.[subject]}
+                                  </td>
                                 </tr>
-                              ))}
-                              <tr>
-                                <th>Total</th>
-                                <td>
-                                  {selectedStudent.twelfthMarks?.Total} /{" "}
-                                  {selectedStudent.twelfthMarks?.Percentage}%
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </details>
-                      </div>
+                              ),
+                            )}
+                            <tr>
+                              <th>Total</th>
+                              <td>
+                                {selectedStudent.twelfthMarks?.Total} /{" "}
+                                {selectedStudent.twelfthMarks?.Percentage}%
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </details>
+                    </div>
 
-                      {}
-                      <div className="section-box purple">
-                        <div className="section-title">
-                          📋 Applications ({selectedStudent.applicationList.length})
-                        </div>
-                        <div className="app-list">
-                          {selectedStudent.applicationList.length === 0 ? (
-                            <div className="app-empty">No applications yet.</div>
-                          ) : (
-                            selectedStudent.applicationList.map((app, i) => (
-                              <div className="app-row" key={i}>
-                                <div className="app-name">
-                                  {app.college}
-                                  <small>{app.course}</small>
-                                </div>
-                                <span className={`pill ${statusClass(app.status)}`}>
-                                  {app.status}
-                                </span>
-                              </div>
-                            ))
-                          )}
-                        </div>
+                    {}
+                    <div className="section-box purple">
+                      <div className="section-title">
+                        📋 Applications (
+                        {selectedStudent.applicationList.length})
                       </div>
-
-                      {}
-                      <div className="section-box">
-                        <div className="section-title">💼 Lead Information</div>
-                        <div className="lead-box">
-                          <div>
-                            <label>Lead Status</label>
-                            <strong>{selectedStudent.leadStatus}</strong>
-                          </div>
-                          <div>
-                            <label>Purchased By</label>
-                            <strong>{selectedStudent.purchasedBy}</strong>
-                          </div>
-                          <div>
-                            <label>Lead Price</label>
-                            <strong>{selectedStudent.leadPrice}</strong>
-                          </div>
-                        </div>
-                      </div>
-
-                      {}
-                      <div className="section-box teal">
-                        <div className="section-title">🪪 Personal Details</div>
-                        <div className="info-grid">
-                          <div>
-                            <label>Date of Birth</label>
-                            <strong>{selectedStudent.dob || "—"}</strong>
-                          </div>
-                          <div>
-                            <label>Gender</label>
-                            <strong>{selectedStudent.gender || "—"}</strong>
-                          </div>
-                          <div>
-                            <label>Registered On</label>
-                            <strong>{selectedStudent.registered || "—"}</strong>
-                          </div>
-                          <div>
-                            <label>City</label>
-                            <strong>{selectedStudent.city || "—"}</strong>
-                          </div>
-                          <div>
-                            <label>Preferred College</label>
-                            <strong>{selectedStudent.college || "—"}</strong>
-                          </div>
-                          <div>
-                            <label>Preferred Course</label>
-                            <strong>{selectedStudent.course || "—"}</strong>
-                          </div>
-                        </div>
-                      </div>
-
-                      {}
-                      <div
-                        className={`panel-actions ${
-                          selectedStudent.status === "Pending" ? "three" : ""
-                        }`}
-                      >
-                        <button className="panel-btn edit" onClick={() => openEdit(selectedStudent)}>
-                          ✏ Edit Details
-                        </button>
-                        {selectedStudent.status === "Pending" ? (
-                          <>
-                            <button
-                              className="panel-btn activate"
-                              onClick={() => decideRequest(selectedStudent, "accept")}
-                            >
-                              ✔ Accept Student
-                            </button>
-                            <button
-                              className="panel-btn block"
-                              onClick={() => decideRequest(selectedStudent, "block")}
-                            >
-                              ⊘ Block Student
-                            </button>
-                          </>
+                      <div className="app-list">
+                        {selectedStudent.applicationList.length === 0 ? (
+                          <div className="app-empty">No applications yet.</div>
                         ) : (
-                          <button
-                            className={`panel-btn ${
-                              selectedStudent.status === "Blocked" ? "activate" : "block"
-                            }`}
-                            onClick={() => toggleBlock(selectedStudent)}
-                          >
-                            {selectedStudent.status === "Blocked" ? "✔ Activate Student" : "⊘ Block Student"}
-                          </button>
+                          selectedStudent.applicationList.map((app, i) => (
+                            <div className="app-row" key={i}>
+                              <div className="app-name">
+                                {app.college}
+                                <small>{app.course}</small>
+                              </div>
+                              <span
+                                className={`pill ${statusClass(app.status)}`}
+                              >
+                                {app.status}
+                              </span>
+                            </div>
+                          ))
                         )}
                       </div>
                     </div>
-                  </aside>
-                </>
-              )}
-            </section>
+
+                    {}
+                    <div className="section-box">
+                      <div className="section-title">💼 Lead Information</div>
+                      <div className="lead-box">
+                        <div>
+                          <label>Lead Status</label>
+                          <strong>{selectedStudent.leadStatus}</strong>
+                        </div>
+                        <div>
+                          <label>Purchased By</label>
+                          <strong>{selectedStudent.purchasedBy}</strong>
+                        </div>
+                        <div>
+                          <label>Lead Price</label>
+                          <strong>{selectedStudent.leadPrice}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {}
+                    <div className="section-box teal">
+                      <div className="section-title">🪪 Personal Details</div>
+                      <div className="info-grid">
+                        <div>
+                          <label>Date of Birth</label>
+                          <strong>{selectedStudent.dob || "—"}</strong>
+                        </div>
+                        <div>
+                          <label>Gender</label>
+                          <strong>{selectedStudent.gender || "—"}</strong>
+                        </div>
+                        <div>
+                          <label>Registered On</label>
+                          <strong>{selectedStudent.registered || "—"}</strong>
+                        </div>
+                        <div>
+                          <label>City</label>
+                          <strong>{selectedStudent.city || "—"}</strong>
+                        </div>
+                        <div>
+                          <label>Preferred College</label>
+                          <strong>{selectedStudent.college || "—"}</strong>
+                        </div>
+                        <div>
+                          <label>Preferred Course</label>
+                          <strong>{selectedStudent.course || "—"}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {}
+                    <div
+                      className={`panel-actions ${
+                        selectedStudent.status === "Pending" ? "three" : ""
+                      }`}
+                    >
+                      <button
+                        className="panel-btn edit"
+                        onClick={() => openEdit(selectedStudent)}
+                      >
+                        ✏ Edit Details
+                      </button>
+                      {selectedStudent.status === "Pending" ? (
+                        <>
+                          <button
+                            className="panel-btn activate"
+                            onClick={() =>
+                              decideRequest(selectedStudent, "accept")
+                            }
+                          >
+                            ✔ Accept Student
+                          </button>
+                          <button
+                            className="panel-btn block"
+                            onClick={() =>
+                              decideRequest(selectedStudent, "block")
+                            }
+                          >
+                            ⊘ Block Student
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          className={`panel-btn ${
+                            selectedStudent.status === "Blocked"
+                              ? "activate"
+                              : "block"
+                          }`}
+                          onClick={() => toggleBlock(selectedStudent)}
+                        >
+                          {selectedStudent.status === "Blocked"
+                            ? "✔ Activate Student"
+                            : "⊘ Block Student"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </aside>
+              </>
+            )}
+          </section>
         </div>
 
-      {}
-      {modal && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div>
-                <h3>{modal.mode === "add" ? "Add Student" : "Edit Student"}</h3>
-                <p>
-                  {modal.mode === "add"
-                    ? "Create a new student account"
-                    : "Update student account information"}
-                </p>
+        {}
+        {modal && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <div>
+                  <h3>
+                    {modal.mode === "add" ? "Add Student" : "Edit Student"}
+                  </h3>
+                  <p>
+                    {modal.mode === "add"
+                      ? "Create a new student account"
+                      : "Update student account information"}
+                  </p>
+                </div>
+                <button
+                  className="panel-close"
+                  onClick={closeModal}
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
               </div>
-              <button className="panel-close" onClick={closeModal} aria-label="Close">
-                ✕
-              </button>
-            </div>
 
-            <div className="modal-form">
-              {[
-                ["name", "Name"],
-                ["email", "Email"],
-                ["phone", "Phone"],
-                ["city", "City"],
-                ["college", "College"],
-                ["course", "Course"],
-              ].map(([key, label]) => (
-                <div className="modal-field" key={key}>
-                  <label>{label}</label>
+              <div className="modal-form">
+                {[
+                  ["name", "Name"],
+                  ["email", "Email"],
+                  ["phone", "Phone"],
+                  ["city", "City"],
+                  ["college", "College"],
+                  ["course", "Course"],
+                ].map(([key, label]) => (
+                  <div className="modal-field" key={key}>
+                    <label>{label}</label>
+                    <input
+                      value={modal.form[key] || ""}
+                      onChange={(e) =>
+                        setModal({
+                          ...modal,
+                          form: { ...modal.form, [key]: e.target.value },
+                        })
+                      }
+                    />
+                  </div>
+                ))}
+
+                <div className="modal-field full">
+                  <label>Address</label>
                   <input
-                    value={modal.form[key] || ""}
+                    value={modal.form.address || ""}
                     onChange={(e) =>
-                      setModal({ ...modal, form: { ...modal.form, [key]: e.target.value } })
+                      setModal({
+                        ...modal,
+                        form: { ...modal.form, address: e.target.value },
+                      })
                     }
                   />
                 </div>
-              ))}
 
-              <div className="modal-field full">
-                <label>Address</label>
-                <input
-                  value={modal.form.address || ""}
-                  onChange={(e) =>
-                    setModal({ ...modal, form: { ...modal.form, address: e.target.value } })
-                  }
-                />
+                <div className="modal-field full">
+                  <label>Status</label>
+                  <select
+                    value={modal.form.status}
+                    onChange={(e) =>
+                      setModal({
+                        ...modal,
+                        form: { ...modal.form, status: e.target.value },
+                      })
+                    }
+                  >
+                    {modal.form.status === "Pending" && (
+                      <option>Pending</option>
+                    )}
+                    <option>Active</option>
+                    <option>Blocked</option>
+                  </select>
+                </div>
               </div>
 
-              <div className="modal-field full">
-                <label>Status</label>
-                <select
-                  value={modal.form.status}
-                  onChange={(e) =>
-                    setModal({ ...modal, form: { ...modal.form, status: e.target.value } })
-                  }
-                >
-                  {modal.form.status === "Pending" && <option>Pending</option>}
-                  <option>Active</option>
-                  <option>Blocked</option>
-                </select>
+              {formError && <div className="form-error">{formError}</div>}
+
+              <div className="modal-actions">
+                <button className="modal-cancel" onClick={closeModal}>
+                  Cancel
+                </button>
+                <button className="modal-save" onClick={saveModal}>
+                  {modal.mode === "add" ? "Add Student" : "Save Changes"}
+                </button>
               </div>
-            </div>
-
-            {formError && <div className="form-error">{formError}</div>}
-
-            <div className="modal-actions">
-              <button className="modal-cancel" onClick={closeModal}>
-                Cancel
-              </button>
-              <button className="modal-save" onClick={saveModal}>
-                {modal.mode === "add" ? "Add Student" : "Save Changes"}
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </>
   );
@@ -2135,11 +2498,15 @@ function StudentManagement({ embedded = false }) {
           />
         )}
 
-        <aside className={`student-layout-sidebar ${sidebarOpen ? "is-open" : ""}`}>
+        <aside
+          className={`student-layout-sidebar ${sidebarOpen ? "is-open" : ""}`}
+        >
           <div className="student-layout-brand">
             <div className="student-layout-brand-icon">🎓</div>
             <div>
-              <h1>Student<span>College</span></h1>
+              <h1>
+                Student<span>College</span>
+              </h1>
               <p>Admission Platform</p>
             </div>
           </div>
