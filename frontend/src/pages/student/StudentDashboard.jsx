@@ -100,6 +100,14 @@ const APPLY_CATEGORIES = [
 
 const APPLY_SUB_LABELS = { Allied: "Allied Health" };
 
+const APPLY_GENDERS = ["Male", "Female", "Transgender"];
+
+const todayISO = () => {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+
 const applyKeyFor = (categoryId, name, place) =>
   `${categoryId}|${name}|${place}`.toLowerCase();
 
@@ -170,6 +178,9 @@ const EMPTY_APPLY_FORM = {
   studentName: "",
   mobile: "",
   email: "",
+  dob: "",
+  gender: "",
+  location: "",
   mark12: "",
   mark10: "",
   stream: "",
@@ -185,6 +196,9 @@ const APPLY_FIELD_ORDER = [
   "studentName",
   "mobile",
   "email",
+  "dob",
+  "gender",
+  "location",
   "categoryId",
   "stream",
   "collegeKey",
@@ -299,6 +313,32 @@ const validateApplication = (form, rule, cutoffValue) => {
     errors.email = "Email address is required.";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     errors.email = "Enter a valid email address.";
+  }
+
+  if (!form.dob) {
+    errors.dob = "Date of birth is required.";
+  } else {
+    const dobDate = new Date(`${form.dob}T00:00:00`);
+    if (
+      Number.isNaN(dobDate.getTime()) ||
+      form.dob > todayISO() ||
+      dobDate.getFullYear() < 1950
+    ) {
+      errors.dob = "Enter a valid date of birth.";
+    }
+  }
+
+  if (!form.gender) {
+    errors.gender = "Please select your gender.";
+  } else if (!APPLY_GENDERS.includes(form.gender)) {
+    errors.gender = "Please select a valid gender.";
+  }
+
+  const locationText = form.location.trim();
+  if (!locationText) {
+    errors.location = "Location is required.";
+  } else if (locationText.length < 2) {
+    errors.location = "Enter a valid location.";
   }
 
   const e12 = markError(form.mark12, "12th");
@@ -720,7 +760,7 @@ function ApplyNow({
     });
   };
 
-  const submitApplication = (event) => {
+  const submitApplication = async (event) => {
     event.preventDefault();
     if (submitting) return;
 
@@ -752,70 +792,78 @@ function ApplyNow({
       return;
     }
 
-    const subjects = {};
-    (cutoffRule ? cutoffRule.fields : []).forEach((key) => {
-      subjects[key] = Number(applyForm[key]);
-    });
-
-    const record = {
-      id: Date.now(),
-      userKey,
-      categoryLabel: applyCategory.label,
-      collegeName: applyCollege.name,
-      city: applyCollege.place,
-      courseName: applyForm.course,
-      studentName: applyForm.studentName.trim(),
-      mobile: applyForm.mobile,
-      email: applyForm.email.trim(),
-      mark12: Number(applyForm.mark12),
-      mark10: Number(applyForm.mark10),
-      stream: applyForm.stream,
-      subjects,
-      cutoff: cutoffRule ? Number(cutoffValue) : null,
-      cutoffMax: cutoffRule ? cutoffRule.max : null,
-      status: "Pending",
-      appliedOn: new Date().toISOString(),
-    };
-
     setApplyErrors({});
     setSubmitting(true);
 
-    // short delay so the loading state is visible
-    window.setTimeout(() => {
-      const existing = readApplications();
+    const applicationData = {
+      name: applyForm.studentName.trim(),
+      phone: applyForm.mobile,
+      email: applyForm.email.trim(),
+      dob: applyForm.dob,
+      gender: applyForm.gender,
+      location: applyForm.location.trim(),
+      tenthMarks: Number(applyForm.mark10),
+      twelfthMarks: Number(applyForm.mark12),
+      stream: applyForm.stream,
+      maths: applyForm.maths === "" ? null : Number(applyForm.maths),
+      physics: applyForm.physics === "" ? null : Number(applyForm.physics),
+      chemistry: applyForm.chemistry === "" ? null : Number(applyForm.chemistry),
+      biology: applyForm.biology === "" ? null : Number(applyForm.biology),
+      bioMaths: applyForm.bioMaths === "" ? null : Number(applyForm.bioMaths),
+      cutoff: cutoffValue === "" || cutoffValue == null ? null : Number(cutoffValue),
+      collegeName: applyCollege?.name || "",
+      city: applyCollege?.place || "",
+      courseName: applyForm.course,
+      status: "NEW",
+    };
 
-      // re-check against the freshest stored data (another tab may have applied)
-      const duplicate = existing.some(
-        (item) =>
-          item.userKey === userKey &&
-          item.collegeName === record.collegeName &&
-          item.city === record.city &&
-          item.courseName === record.courseName,
-      );
+    try {
+      const response = await fetch("http://localhost:8080/api/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(applicationData),
+      });
 
-      if (duplicate) {
-        setSubmitting(false);
-        setApplyErrors({ course: "You have already applied for this course here." });
-        return;
+      if (!response.ok) {
+        throw new Error("Application submission failed");
       }
 
+      const savedApplication = await response.json();
+
+      const record = {
+        ...applicationData,
+        id: savedApplication.id,
+        userKey,
+        categoryLabel: applyCategory.label,
+        appliedOn: new Date().toISOString(),
+        status: savedApplication.status || "NEW",
+      };
+
+      // Keep the existing UI/application history in sync without using
+      // localStorage as the database. MySQL is now the source of truth.
+      const existing = readApplications();
       const next = [record, ...existing];
 
       try {
         localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(next));
       } catch {
-        setSubmitting(false);
-        setApplyErrors({
-          form: "Could not save your application. Please enable browser storage and try again.",
-        });
-        return;
+        // Ignore browser-storage errors because the application is already
+        // successfully saved in MySQL.
       }
 
       onSubmitted(next);
       setSubmittedApp(record);
-      setSubmitting(false);
       setApplySubmitted(true);
-    }, 800);
+    } catch (error) {
+      console.error("Application submission error:", error);
+      setApplyErrors({
+        form: "Could not submit your application. Please make sure the backend is running and try again.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   /* ---------- progress through the three sections ---------- */
@@ -827,7 +875,11 @@ function ApplyNow({
     nameValue.length >= 2 &&
     /^[A-Za-z][A-Za-z .'-]*$/.test(nameValue) &&
     /^[6-9]\d{9}$/.test(applyForm.mobile) &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(applyForm.email.trim());
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(applyForm.email.trim()) &&
+    Boolean(applyForm.dob) &&
+    applyForm.dob <= todayISO() &&
+    APPLY_GENDERS.includes(applyForm.gender) &&
+    applyForm.location.trim().length >= 2;
 
   const academicDone =
     Boolean(applyForm.stream) &&
@@ -1099,6 +1151,49 @@ function ApplyNow({
                           type: "email",
                           autoComplete: "email",
                           placeholder: "you@example.com",
+                        },
+                      })}
+
+                      {textField("dob", "Date of Birth", {
+                        icon: "calendar",
+                        input: {
+                          type: "date",
+                          max: todayISO(),
+                          min: "1950-01-01",
+                          autoComplete: "bday",
+                        },
+                      })}
+
+                      <ApplyField
+                        id="apply-gender"
+                        label="Gender"
+                        error={applyErrors.gender}
+                        icon="user"
+                      >
+                        <select
+                          id="apply-gender"
+                          className="cc-apply-control"
+                          value={applyForm.gender}
+                          aria-invalid={Boolean(applyErrors.gender)}
+                          onChange={(event) =>
+                            updateApplyField("gender", event.target.value)
+                          }
+                        >
+                          <option value="">Select gender</option>
+                          {APPLY_GENDERS.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </ApplyField>
+
+                      {textField("location", "Location", {
+                        icon: "pin",
+                        input: {
+                          type: "text",
+                          autoComplete: "address-level2",
+                          placeholder: "Enter your city / town",
                         },
                       })}
                     </div>
