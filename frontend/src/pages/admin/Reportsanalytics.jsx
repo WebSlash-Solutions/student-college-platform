@@ -1,16 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 
-/* =====================================================================
-   REPORTS & ANALYTICS  -  single file (JSX + CSS)
-   Usage:  import ReportsAnalytics from "./ReportsAnalytics";
-           <ReportsAnalytics />
-   No external libraries needed.
-   ===================================================================== */
-
-/* ---------------------------------------------------------------------
-   1. DATA
-   --------------------------------------------------------------------- */
 const MENU = [
   { label: "Dashboard", icon: "⌂", path: "/admin/dashboard" },
   { label: "Students", icon: "♙", path: "/admin/students" },
@@ -84,7 +74,6 @@ const FUNNEL = [
   { label: "Purchased", value: 612, pct: "14.9%", width: 52, color: "orange" },
 ];
 
-/* Lead Drop-off Analysis: worked out from the funnel stages above */
 const DROP_COLORS = ["#6c5ce7", "#2d8cff", "#ffb02e"];
 const DROPOFF = FUNNEL.slice(1).map((f, i) => {
   const prev = FUNNEL[i];
@@ -99,7 +88,6 @@ const DROPOFF = FUNNEL.slice(1).map((f, i) => {
 });
 const DROP_WORST = DROPOFF.reduce((a, b) => (b.pct > a.pct ? b : a));
 
-/* Key Metrics shown at the bottom of the Lead Drop-off card */
 const KEY_METRICS = [
   { label: "Total Leads", value: "4,120", icon: "👥", tone: "violet" },
   { label: "Interested Leads", value: "3,149", icon: "♥", tone: "green" },
@@ -199,7 +187,6 @@ const COURSE_DEMAND = [
   { name: "B.Sc Nursing", value: 1, color: "#b57edc" },
 ];
 
-/* bubble layouts: card = small chart (viewBox 200 x 190), big = modal chart (viewBox 260 x 240) */
 const DISTRICTS = [
   {
     name: "Coimbatore",
@@ -565,9 +552,6 @@ const INSIGHTS = [
   },
 ];
 
-/* ---------------------------------------------------------------------
-   EXPORT HELPERS  (PDF = browser print dialog, Excel = .xls download)
-   --------------------------------------------------------------------- */
 const esc = (v) =>
   String(v ?? "")
     .replace(/&/g, "&amp;")
@@ -584,7 +568,6 @@ const today = () =>
 const num = (n, d = 0) =>
   n.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d });
 
-/* every block that can go into a report */
 const REPORT_SECTIONS = [
   {
     key: "overview",
@@ -713,10 +696,9 @@ function printPdf(title, bodyHtml) {
     frame.contentWindow.focus();
     frame.contentWindow.print();
   }, 300);
-  setTimeout(() => frame.remove(), 120000); /* safety clean-up */
+  setTimeout(() => frame.remove(), 120000);
 }
 
-/* keys = which sections to include, format = "pdf" | "excel" */
 function exportReport(keys, format) {
   const picked = REPORT_SECTIONS.filter((x) => keys.includes(x.key));
   if (!picked.length) return;
@@ -757,13 +739,12 @@ function exportReport(keys, format) {
   );
 }
 
-/* smoke hover effect: remembers where the cursor is (CSS draws the smoke) */
 function glow(e) {
   const el = e.currentTarget;
   const r = el.getBoundingClientRect();
   el.style.setProperty("--mx", `${e.clientX - r.left}px`);
   el.style.setProperty("--my", `${e.clientY - r.top}px`);
-  /* touch / pen: :hover is unreliable, so switch it on with a class */
+
   if (e.pointerType && e.pointerType !== "mouse") {
     el.classList.add("is-glowing");
     clearTimeout(el._glowTimer);
@@ -772,10 +753,6 @@ function glow(e) {
 }
 const glowProps = { onPointerMove: glow, onPointerEnter: glow, onPointerDown: glow };
 
-/* ---------------------------------------------------------------------
-   2. SMALL HELPERS / HOOKS
-   --------------------------------------------------------------------- */
-/* animated count-up number */
 function useCountUp(target, decimals = 0, duration = 1400) {
   const [val, setVal] = useState(0);
 
@@ -800,7 +777,6 @@ function useCountUp(target, decimals = 0, duration = 1400) {
   });
 }
 
-/* flips to true shortly after mount - used to trigger CSS transitions */
 function useReady(delay = 150) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -810,9 +786,6 @@ function useReady(delay = 150) {
   return ready;
 }
 
-/* ---------------------------------------------------------------------
-   3. REUSABLE COMPONENTS
-   --------------------------------------------------------------------- */
 function Card({
   title,
   sub,
@@ -840,12 +813,8 @@ function Card({
   );
 }
 
-/* ---------------------------------------------------------------------
-   4. SECTIONS
-   --------------------------------------------------------------------- */
 const LOGIN_PATH = "/login";
 
-/* clears the session, fades the page out and goes to the login page */
 function useLogout() {
   return () => {
     try {
@@ -857,7 +826,7 @@ function useLogout() {
           document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
       });
     } catch {
-      /* storage not available - ignore */
+
     }
     document.querySelector(".ra-app")?.classList.add("is-leaving");
     setTimeout(() => window.location.replace(LOGIN_PATH), 350);
@@ -964,7 +933,6 @@ function Topbar({ onMenu }) {
   );
 }
 
-/* "Export Report" button: opens a small PDF / Excel menu */
 function DownloadMenu({ onPick, children }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -1126,7 +1094,6 @@ function DropNum({ value, decimals = 0 }) {
   return <>{shown}</>;
 }
 
-/* Lead Drop-off Analysis: animated bars (same motion as Lead Status) + highest drop-off tip */
 function LeadDropoffCard() {
   const ready = useReady();
   return (
@@ -1307,7 +1274,7 @@ function RevenueCard() {
 }
 
 const LEAD_TOTAL = STATS[0].value;
-/* turns the % values into lead counts (last one takes the remainder so the sum is exact) */
+
 const LEAD_ROWS = (() => {
   let left = LEAD_TOTAL;
   return LEAD_STATUS.map((l, i) => {
@@ -1320,11 +1287,9 @@ const LEAD_ROWS = (() => {
   });
 })();
 
-/* values for the two graph boxes at the bottom of Lead Status Distribution */
 const LEAD_TOP = LEAD_ROWS.reduce((a, b) => (b.value > a.value ? b : a));
 const LEAD_PURCHASED = LEAD_ROWS[LEAD_ROWS.length - 1];
 
-/* Lead Status Distribution: interactive donut + status rows + detail popup */
 function LeadStatusCard() {
   const ready = useReady();
   const [hover, setHover] = useState(null);
@@ -1573,14 +1538,12 @@ function CourseDemandCard() {
   );
 }
 
-/* Tamil Nadu district map with blinking location pins */
 const TN_OUTLINE =
   "M190 16 L165 10 L149 23 L136 21 L109 37 L90 41 L77 46 L66 64 L75 82 L77 93 L55 95 L46 109 L19 109 L23 127 L32 149 L50 163 L55 185 L59 208 L55 230 L59 248 L66 258 L86 244 L93 228 L109 212 L131 203 L145 203 L127 176 L138 158 L156 156 L169 158 L169 136 L169 118 L167 93 L169 73 L178 50 L188 33 Z";
 
 const TN_LINES =
   "M136 21 L128 52 L141 74 L125 96 L137 118 L118 136 M90 41 L96 66 L84 82 L93 97 L75 111 L56 122 M149 23 L158 60 L150 88 L167 93 M118 136 L100 150 L91 175 L109 190 L109 212 M91 175 L72 190 L59 208 M93 97 L110 112 L118 136 M66 64 L84 82 M55 95 L73 111";
 
-/* x, y = pin tip on the map; lx / ly / anchor = label placement on the big map */
 const PIN_POS = {
   Coimbatore: { x: 39, y: 127, lx: -9, ly: 3, anchor: "end" },
   Chennai: { x: 184, y: 34, lx: -9, ly: 3, anchor: "end" },
@@ -1592,7 +1555,7 @@ const PIN_POS = {
   Vellore: { x: 137, y: 40, lx: -9, ly: 3, anchor: "end" },
   Thanjavur: { x: 137, y: 136, lx: 9, ly: 3, anchor: "start" },
   Tiruppur: { x: 56, y: 122, lx: 8, ly: 14, anchor: "start" },
-  /* remaining districts: smaller pins, name shows on hover / tap */
+
   Tiruvallur: { x: 168, y: 31 },
   Chengalpattu: { x: 171, y: 51 },
   Kancheepuram: { x: 159, y: 45 },
@@ -1725,7 +1688,7 @@ function DistrictCard({ onViewAll }) {
 }
 
 const TXN_TOTAL = STATS[5].value;
-/* turns the % values into transaction counts (last one takes the remainder so the sum is exact) */
+
 const TXN_ROWS = (() => {
   let left = TXN_TOTAL;
   return TXN_HEALTH.map((t, i) => {
@@ -1738,7 +1701,6 @@ const TXN_ROWS = (() => {
   });
 })();
 
-/* Transaction Health: same interactive donut + status rows + detail popup as Lead Status */
 function TransactionCard() {
   const ready = useReady();
   const [hover, setHover] = useState(null);
@@ -1874,7 +1836,7 @@ function BoardValue({ value }) {
 
 function LeaderboardCard() {
   const ready = useReady();
-  /* 0-5 = that rank blinks (1s each), 6 = smoke runs over the list, then back to 0 */
+
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     let i = 0;
@@ -1991,7 +1953,6 @@ function DownloadBar({ onExport, onCustom }) {
   );
 }
 
-/* pick the sections + format, then download */
 function CustomReportModal({ onClose, onExport }) {
   const [picked, setPicked] = useState(ALL_SECTION_KEYS);
   const [format, setFormat] = useState("pdf");
@@ -2089,7 +2050,6 @@ function CustomReportModal({ onClose, onExport }) {
   );
 }
 
-/* medium-size popup opened by "View all" */
 function DistrictModal({ onClose }) {
   const ready = useReady(250);
 
@@ -2179,9 +2139,6 @@ function DistrictModal({ onClose }) {
   );
 }
 
-/* ---------------------------------------------------------------------
-   5. PAGE
-   --------------------------------------------------------------------- */
 export default function ReportsAnalytics({ embedded = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showDistricts, setShowDistricts] = useState(false);
@@ -2194,7 +2151,6 @@ export default function ReportsAnalytics({ embedded = false }) {
     return () => clearTimeout(t);
   }, [toast]);
 
-  /* Lead Status small boxes line up with the Revenue Breakdown small boxes next to them */
   useEffect(() => {
     const root = document.querySelector(".ra-app");
     if (!root) return undefined;
@@ -2203,7 +2159,7 @@ export default function ReportsAnalytics({ embedded = false }) {
     const align = () => {
       const rev = [...root.querySelectorAll(".ra-rev-stats:not(.ra-ld-tiles)")];
       const ld = [...root.querySelectorAll(".ra-ld-tiles")];
-      /* reset everything this function sets, so it can re-measure from scratch */
+
       [...rev, ...ld].forEach((el) => {
         el.style.marginTop = "";
         [...el.children].forEach((c) => {
@@ -2213,16 +2169,16 @@ export default function ReportsAnalytics({ embedded = false }) {
       if (!ld.length || rev.length < ld.length) return;
       const revCard = rev[0].closest(".ra-card");
       const ldCard = ld[0].closest(".ra-card");
-      /* only when the two cards sit side by side (3-column layout) */
+
       if (!revCard || !ldCard || Math.abs(revCard.offsetTop - ldCard.offsetTop) > 2) return;
-      /* 1) every pair of boxes gets the same height (long labels wrap on one side only) */
+
       ld.forEach((el, i) => {
         const h = Math.max(rev[i].offsetHeight, el.offsetHeight);
         [...rev[i].children, ...el.children].forEach((c) => {
           c.style.minHeight = `${h}px`;
         });
       });
-      /* 2) same top line: push down whichever card's box sits higher */
+
       ld.forEach((el, i) => {
         const want = rev[i].getBoundingClientRect().top - revCard.getBoundingClientRect().top;
         const have = el.getBoundingClientRect().top - ldCard.getBoundingClientRect().top;
@@ -2327,11 +2283,8 @@ export default function ReportsAnalytics({ embedded = false }) {
   );
 }
 
-/* ---------------------------------------------------------------------
-   6. CSS  (injected through the <style> tag above)
-   --------------------------------------------------------------------- */
 const CSS = `
-/* ===== base ===== */ .ra-app {
+ .ra-app {
   --navy: #0f2447;
   --navy-2: #16315f;
   --nav-blue: #2563eb;
@@ -2384,7 +2337,7 @@ const CSS = `
 .ra-app small {
   color: var(--muted);
 }
-/* ===== keyframes ===== */ @keyframes raFadeUp {
+ @keyframes raFadeUp {
   from {
     opacity: 0;
     transform: translateY(18px);
@@ -2523,7 +2476,7 @@ const CSS = `
     transform: rotate(-12deg);
   }
 }
-/* ===== sidebar (same as the Applications page sidebar) ===== */ .ra-sidebar {
+ .ra-sidebar {
   position: sticky;
   top: 0;
   width: 236px;
@@ -2535,7 +2488,7 @@ const CSS = `
   padding: 0;
   background: #112746;
   color: #fff;
-  line-height: 25.6px; /* same inherited line-height as the Transactions sidebar */
+  line-height: 25.6px; 
   overflow: hidden;
   z-index: 60;
   transition: transform .35s cubic-bezier(.4,0,.2,1);
@@ -2712,7 +2665,7 @@ const CSS = `
   opacity: 0;
   pointer-events: none;
 }
-/* embedded: rendered inside AdminDashboard (it already has sidebar + topbar) */ .ra-app.ra-embedded {
+ .ra-app.ra-embedded {
   position: relative;
   inset: auto;
   z-index: auto;
@@ -2727,7 +2680,7 @@ const CSS = `
   padding: 0;
   max-width: none;
 }
-/* ===== main ===== */ .ra-main {
+ .ra-main {
   position: relative;
   flex: 1;
   min-width: 0;
@@ -2740,7 +2693,7 @@ const CSS = `
   max-width: 1500px;
   margin: 0 auto;
 }
-/* ===== topbar (same look as the Transactions page) ===== */ .ra-topbar {
+ .ra-topbar {
   position: sticky;
   top: 0;
   z-index: 30;
@@ -2837,7 +2790,7 @@ const CSS = `
   color: #7186a6;
   font-size: 11px;
 }
-/* ===== smoke hover effect on the 6 stat cards ===== */ .ra-stat {
+ .ra-stat {
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -2906,7 +2859,7 @@ const CSS = `
     transform: scale(1) translate(-8px, 5px);
   }
 }
-/* ===== download menu + toast + custom report ===== */ .ra-header {
+ .ra-header {
   position: relative;
   z-index: 20;
 }
@@ -3094,7 +3047,7 @@ const CSS = `
   cursor: not-allowed;
   transform: none;
 }
-/* ===== header ===== */ .ra-header {
+ .ra-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3174,7 +3127,7 @@ const CSS = `
 .ra-btn.light:hover {
   box-shadow: 0 8px 18px rgba(30,40,90,.1);
 }
-/* ===== stat cards ===== */ .ra-stats {
+ .ra-stats {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 16px;
@@ -3218,7 +3171,7 @@ const CSS = `
 .ra-stat small b {
   color: var(--green);
 }
-/* ===== colored badges ===== */ .ra-badge {
+ .ra-badge {
   width: 42px;
   height: 42px;
   display: inline-grid;
@@ -3263,7 +3216,7 @@ const CSS = `
   color: #e0489a;
   background: #ffe2f1;
 }
-/* ===== rows + cards ===== */ .ra-row {
+ .ra-row {
   display: grid;
   gap: 16px;
   margin-bottom: 20px;
@@ -3317,7 +3270,7 @@ const CSS = `
   color: #f59300;
   background: #fff0d6;
 }
-/* ===== funnel ===== */ .ra-funnel-card {
+ .ra-funnel-card {
   align-self: start;
 }
 .ra-funnel {
@@ -3392,7 +3345,7 @@ const CSS = `
 .ra-funnel-val small {
   font-size: 11px;
 }
-/* ===== lead drop-off ===== */ .ra-col {
+ .ra-col {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -3521,7 +3474,7 @@ const CSS = `
 .ra-do-tip small {
   font-size: 11.5px;
 }
-/* ===== fill: Revenue + Lead Status stretch to the height of the tall left column ===== */
+
 .ra-fill {
   display: flex;
   flex-direction: column;
@@ -3554,7 +3507,7 @@ const CSS = `
 .ra-ld-tiles small {
   line-height: 1.3;
 }
-/* ===== key metrics (inside Lead Drop-off card) ===== */
+
 .ra-km {
   container-type: inline-size;
   margin-top: 12px;
@@ -3604,7 +3557,7 @@ const CSS = `
   color: var(--text);
   white-space: nowrap;
 }
-/* narrow card: fall back to 3 x 2 */
+
 @container (max-width: 400px) {
   .ra-km-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3615,7 +3568,7 @@ const CSS = `
     padding-left: 2px;
   }
 }
-/* ===== revenue ===== */ .ra-revenue {
+ .ra-revenue {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -3667,7 +3620,7 @@ const CSS = `
 .ra-revenue-amt.violet small {
   color: #6c5ce7;
 }
-/* ===== revenue summary (fills empty space) ===== */
+
 .ra-rev-summary {
   margin-top: 16px;
   padding-top: 16px;
@@ -3761,7 +3714,7 @@ const CSS = `
 .ra-rev-stats b {
   font-size: 15px;
 }
-/* ===== donut + legend ===== */ .ra-split {
+ .ra-split {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -3831,7 +3784,7 @@ const CSS = `
   font-weight: 600;
   color: var(--muted);
 }
-/* ===== lead status (interactive donut) ===== */ @keyframes raPopIn {
+ @keyframes raPopIn {
   from {
     opacity: 0;
     transform: scale(.94);
@@ -4027,7 +3980,7 @@ const CSS = `
   font-size: 17px;
   color: var(--c);
 }
-/* ===== colleges table ===== */ .ra-table-wrap {
+ .ra-table-wrap {
   overflow-x: auto;
   margin: 0 -4px;
   padding: 0 4px;
@@ -4082,7 +4035,7 @@ const CSS = `
   font-style: normal;
   margin-left: 6px;
 }
-/* ===== bars ===== */ .ra-bars {
+ .ra-bars {
   display: flex;
   flex-direction: column;
   gap: 17px;
@@ -4148,7 +4101,7 @@ const CSS = `
   border-radius: 99px;
   transition: width 1.1s cubic-bezier(.2,.8,.2,1);
 }
-/* ===== district + map ===== */ .ra-district {
+ .ra-district {
   display: grid;
   grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
   align-items: center;
@@ -4289,7 +4242,7 @@ const CSS = `
 .ra-viewall:hover {
   transform: translateX(4px);
 }
-/* ===== leaderboard ===== */ .ra-board {
+ .ra-board {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -4365,7 +4318,7 @@ const CSS = `
   font-size: 11px;
   color: var(--muted);
 }
-/* ===== insights ===== */ .ra-card.plain-icon .ra-card-icon {
+ .ra-card.plain-icon .ra-card-icon {
   background: none;
   font-size: 18px;
 }
@@ -4416,7 +4369,7 @@ const CSS = `
   transform: translateX(4px);
   color: var(--primary);
 }
-/* ===== leaderboard + insights animation ===== */
+
 .ra-board li {
   animation: raSlide .6s backwards;
 }
@@ -4451,7 +4404,7 @@ const CSS = `
   position: relative;
   isolation: isolate;
 }
-/* order (driven by LeaderboardCard): blink 1 -> 6, then smoke over the list, then blink 1 again */
+
 .ra-rank-no.blink::after {
   animation: raRankOnce 1s ease-out;
 }
@@ -4569,7 +4522,7 @@ const CSS = `
 .ra-card.plain-icon .ra-card-icon {
   animation: raFloat 3s ease-in-out infinite;
 }
-/* tablet / small laptop (2 columns): Quick Insights spans the full row as a neat 2 x 2 grid */
+
 @media (min-width: 761px) and (max-width: 1180px) {
   .ra-wide-md {
     grid-column: 1 / -1;
@@ -4582,7 +4535,7 @@ const CSS = `
     grid-column: 1 / -1;
   }
 }
-/* ===== download bar ===== */ .ra-download {
+ .ra-download {
   display: flex;
   align-items: center;
   gap: 18px;
@@ -4621,7 +4574,7 @@ const CSS = `
   gap: 12px;
   flex-wrap: wrap;
 }
-/* ===== modal (View all) ===== */ .ra-modal-back {
+ .ra-modal-back {
   overscroll-behavior: contain;
   position: fixed;
   inset: 0;
@@ -4767,7 +4720,7 @@ const CSS = `
   font-weight: 600;
   color: var(--green);
 }
-/* ===== View all popup: map stays fixed, only the district list scrolls ===== */
+
 .ra-modal-body {
   flex: 1;
   min-height: 0;
@@ -4794,7 +4747,7 @@ const CSS = `
     height: 240px;
   }
 }
-/* very short screens (phone in landscape): fall back to scrolling the whole popup body */
+
 @media (max-height: 560px) {
   .ra-modal-body {
     overflow-y: auto;
@@ -4804,13 +4757,13 @@ const CSS = `
     overflow: visible;
   }
 }
-/* popup open: freeze the endless animations behind it so the popup scrolls smoothly */
+
 .ra-app.ra-paused .ra-main *,
 .ra-app.ra-paused .ra-main *::before,
 .ra-app.ra-paused .ra-main *::after {
   animation-play-state: paused !important;
 }
-/* ===== responsive ===== */ @media (max-width: 1180px) {
+ @media (max-width: 1180px) {
   .ra-stats {
     grid-template-columns: repeat(3, 1fr);
   }

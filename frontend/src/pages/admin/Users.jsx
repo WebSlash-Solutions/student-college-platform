@@ -1,17 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
-/* =====================================================================
-   USERS (User Management)  -  single file (JSX + CSS)
-   Usage:  import Users from "./Users";
-           <Users />
-   Same sidebar / topbar / card sizes as the Reports & Analytics page.
-   No external libraries needed.
-   ===================================================================== */
-
-/* ---------------------------------------------------------------------
-   1. DATA
-   --------------------------------------------------------------------- */
 const MENU = [
   { label: "Dashboard", icon: "⌂", path: "/admin/dashboard" },
   { label: "Students", icon: "♙", path: "/admin/students" },
@@ -81,7 +70,6 @@ const STATS = [
   },
 ];
 
-/* limit = student profiles allowed, price = plan payment, months = how long one plan lasts */
 const PLAN_INFO = {
   Elite: { limit: 50, price: 3500, months: 3, color: "#2d8cff" },
   Gold: { limit: 100, price: 5000, months: 6, color: "#ffb02e" },
@@ -138,12 +126,8 @@ const DISTRICTS = [
   "Vellore",
 ];
 
-/* ---------------------------------------------------------------------
-   2. SMALL HELPERS / HOOKS
-   --------------------------------------------------------------------- */
 const money = (n) => `₹${n.toLocaleString("en-IN")}`;
 
-/* ----- dates (all shown as DD-MM-YYYY) ----- */
 const DAY = 86400000;
 const p2 = (n) => String(n).padStart(2, "0");
 const fmt = (d) =>
@@ -169,7 +153,6 @@ const addMonths = (d, n) => {
 };
 const spanDays = (t) => Math.max(1, Math.round((t.end - t.start) / DAY));
 
-/* how long is left on a plan period -> label + colour tone */
 const planState = (t) => {
   const days = Math.round((t.end - now()) / DAY);
   if (days < 0)
@@ -186,8 +169,6 @@ const planState = (t) => {
   return { tone: "ok", label: `${days} days left` };
 };
 
-/* plans = [[planName, "DD-MM-YYYY activated"], ...] oldest first, the last one is the current plan.
-   A plan ends when its time is over, or earlier if the college moved to another plan. */
 const buildTimeline = (plans) =>
   plans.map(([plan, from], i) => {
     const start = parseDate(from);
@@ -463,13 +444,12 @@ const SEED = [
   ),
 ];
 
-/* cursor / touch position for the smoke glow on the stat cards */
 function glow(e) {
   const el = e.currentTarget;
   const r = el.getBoundingClientRect();
   el.style.setProperty("--mx", `${e.clientX - r.left}px`);
   el.style.setProperty("--my", `${e.clientY - r.top}px`);
-  /* touch / pen: :hover is unreliable, so switch it on with a class */
+
   if (e.pointerType && e.pointerType !== "mouse") {
     el.classList.add("is-glowing");
     clearTimeout(el._glowTimer);
@@ -482,7 +462,6 @@ const glowProps = {
   onPointerDown: glow,
 };
 
-/* animated count-up number */
 function useCountUp(target, duration = 1400) {
   const [val, setVal] = useState(0);
 
@@ -503,7 +482,6 @@ function useCountUp(target, duration = 1400) {
   return Math.round(val).toLocaleString("en-IN");
 }
 
-/* flips to true shortly after mount - used to trigger CSS transitions */
 function useReady(delay = 150) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -517,23 +495,19 @@ function CountNum({ value }) {
   return <>{useCountUp(value, 1000)}</>;
 }
 
-/* clears the session, fades the page out and goes to the login page */
 function useLogout() {
   return () => {
     try {
       localStorage.clear();
       sessionStorage.clear();
     } catch {
-      /* storage not available - ignore */
+
     }
     document.querySelector(".um-app")?.classList.add("is-leaving");
     setTimeout(() => window.location.replace("/login"), 350);
   };
 }
 
-/* ---------------------------------------------------------------------
-   3. LAYOUT  (sidebar + topbar - same as the Reports page)
-   --------------------------------------------------------------------- */
 function Sidebar({ open, onClose }) {
   const logout = useLogout();
 
@@ -675,10 +649,6 @@ function Card({ title, sub, delay = 0, className = "", children, action }) {
   );
 }
 
-/* ---------------------------------------------------------------------
-   4. SECTIONS
-   --------------------------------------------------------------------- */
-/* 6 stat cards on top - smoke glow follows the cursor / finger */
 function StatCard({ stat, index }) {
   const value = useCountUp(stat.value);
   return (
@@ -711,7 +681,7 @@ function StatCard({ stat, index }) {
 
 function PurchasesCard({ rows }) {
   const ready = useReady();
-  /* top 5 colleges by student profiles used - taken from the College Accounts table */
+
   const PURCHASES = [...rows]
     .sort((a, b) => b.used - a.used)
     .slice(0, 5)
@@ -748,7 +718,6 @@ function PurchasesCard({ rows }) {
   );
 }
 
-/* Plan Distribution: same interactive donut as Lead Status, with gaps between the rings */
 function PlanCard({ plans, total }) {
   const ready = useReady();
   const [hover, setHover] = useState(null);
@@ -760,7 +729,7 @@ function PlanCard({ plans, total }) {
   const active = plans.find((p) => p.key === shown);
   const R = 52;
   const C = 2 * Math.PI * R;
-  const GAP = 7; /* gap between two rings */
+  const GAP = 7;
 
   let acc = 0;
   const segs = plans.map((p) => {
@@ -873,12 +842,10 @@ function ActivityCard({ items }) {
 
 const PAGE_SIZE = 10;
 
-/* College Accounts table (turns into cards on mobile) */
 function CollegeTable({ rows, filters, onView, onAdd }) {
   const { query, setQuery, status, setStatus, plan, setPlan, dirty, reset } =
     filters;
 
-  /* 10 colleges per page - back to page 1 whenever search / filters change */
   const [page, setPage] = useState(1);
   useEffect(() => {
     setPage(1);
@@ -1052,10 +1019,6 @@ function CollegeTable({ rows, filters, onView, onAdd }) {
   );
 }
 
-/* ---------------------------------------------------------------------
-   5. POPUPS  (View college / Add college)
-   --------------------------------------------------------------------- */
-/* closes on Esc, locks the page scroll while open */
 function useModal(onClose) {
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose();
@@ -1082,7 +1045,6 @@ function ViewModal({ college, onClose, onToggle }) {
     ),
   );
 
-  /* earlier plans, newest first - "early" = college moved to another plan before this one ran out */
   const previous = timeline
     .slice(0, -1)
     .map((t, i) => ({
@@ -1135,7 +1097,7 @@ function ViewModal({ college, onClose, onToggle }) {
             ))}
           </div>
 
-          {/* current plan: name, when it started, when it ends */}
+          {}
           <div
             className={`um-current ${state.tone}`}
             style={{ "--c": PLAN_INFO[current.plan].color }}
@@ -1175,7 +1137,7 @@ function ViewModal({ college, onClose, onToggle }) {
             </div>
           </div>
 
-          {/* previous plans: coloured bar + timeline */}
+          {}
           <div className="um-block">
             <div className="um-block-head">
               <b>Previous Plans</b>
@@ -1350,9 +1312,6 @@ function AddModal({ onClose, onSave }) {
   );
 }
 
-/* ---------------------------------------------------------------------
-   6. PAGE
-   --------------------------------------------------------------------- */
 export default function Users({ embedded = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [rows, setRows] = useState(SEED);
@@ -1378,7 +1337,6 @@ export default function Users({ embedded = false }) {
       ),
     );
 
-  /* activate / deactivate from the View popup */
   const toggleStatus = (id) => {
     const target = rows.find((r) => r.id === id);
     if (!target) return;
@@ -1422,7 +1380,6 @@ export default function Users({ embedded = false }) {
     setShowAdd(false);
   };
 
-  /* new colleges also move the stat card + donut numbers */
   const added = rows.filter((r) => r.added);
   const stats = STATS.map((s) =>
     s.key === "colleges" ? { ...s, value: s.value + added.length } : s,
@@ -1436,7 +1393,6 @@ export default function Users({ embedded = false }) {
     if (added.length) p.pct = Math.round((p.count / totalColleges) * 100);
   });
 
-  /* Reset button: clears search + both filters */
   const dirty = query !== "" || status !== "All Status" || plan !== "All Plans";
   const reset = () => {
     setQuery("");
@@ -1537,11 +1493,8 @@ export default function Users({ embedded = false }) {
   );
 }
 
-/* ---------------------------------------------------------------------
-   7. CSS  (injected through the <style> tag above)
-   --------------------------------------------------------------------- */
 const CSS = `
-/* ===== base ===== */
+
 .um-app {
   --navy: #0f2447;
   --primary: #5b4ff0;
@@ -1618,7 +1571,6 @@ const CSS = `
   max-width: none;
 }
 
-/* ===== keyframes ===== */
 @keyframes umFadeUp {
   from {
     opacity: 0;
@@ -1735,7 +1687,6 @@ const CSS = `
   }
 }
 
-/* ===== sidebar (same size as the Reports page) ===== */
 .um-sidebar {
   position: sticky;
   top: 0;
@@ -1929,7 +1880,6 @@ const CSS = `
   display: none;
 }
 
-/* ===== main + topbar (same size as the Reports page) ===== */
 .um-main {
   position: relative;
   flex: 1;
@@ -2057,7 +2007,6 @@ const CSS = `
   font-size: 11px;
 }
 
-/* search box (topbar + table) */
 .um-search {
   display: flex;
   align-items: center;
@@ -2102,7 +2051,6 @@ const CSS = `
   outline: 0;
 }
 
-/* ===== page header ===== */
 .um-header {
   display: flex;
   align-items: center;
@@ -2125,7 +2073,6 @@ const CSS = `
   color: var(--muted);
 }
 
-/* ===== buttons ===== */
 .um-btn {
   height: 40px;
   padding: 0 18px;
@@ -2168,7 +2115,6 @@ const CSS = `
   box-shadow: 0 8px 18px rgba(255, 92, 92, .28);
 }
 
-/* ===== stat cards + smoke glow ===== */
 .um-stats {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -2301,7 +2247,6 @@ const CSS = `
   animation-direction: alternate-reverse;
 }
 
-/* ===== colored badges ===== */
 .um-badge {
   display: inline-grid;
   place-items: center;
@@ -2350,7 +2295,6 @@ const CSS = `
   background: #d9f6ee;
 }
 
-/* ===== rows + cards ===== */
 .um-row {
   display: grid;
   gap: 16px;
@@ -2402,7 +2346,6 @@ const CSS = `
   color: var(--muted);
 }
 
-/* ===== purchases bars ===== */
 .um-bars {
   display: flex;
   flex-direction: column;
@@ -2448,7 +2391,6 @@ const CSS = `
   animation: umBarGrow 1s cubic-bezier(.2, .8, .2, 1) both;
 }
 
-/* ===== plan distribution (interactive donut, same animation as Lead Status) ===== */
 .um-plan {
   display: flex;
   flex-direction: column;
@@ -2605,7 +2547,6 @@ const CSS = `
   animation: umBarGrow 1s cubic-bezier(.2, .8, .2, 1) both;
 }
 
-/* ===== recent activity ===== */
 .um-activity {
   display: flex;
   flex-direction: column;
@@ -2629,7 +2570,6 @@ const CSS = `
   font-size: 11.5px;
 }
 
-/* ===== recent activity: icons blink one by one, then 2 smokes mix and fill the card (10s loop) ===== */
 .um-act {
   position: relative;
   overflow: hidden;
@@ -2658,13 +2598,11 @@ const CSS = `
   pointer-events: none;
 }
 
-/* smoke 1: from top-left corner */
 .um-act::before {
   background: radial-gradient(circle, rgba(255, 64, 129, .65) 0%, rgba(255, 64, 129, .25) 50%, transparent 72%);
   animation: umSmokeA 10s ease-in-out infinite;
 }
 
-/* smoke 2: from bottom-right corner */
 .um-act::after {
   background: radial-gradient(circle, rgba(0, 198, 255, .65) 0%, rgba(0, 198, 255, .25) 50%, transparent 72%);
   animation: umSmokeB 10s ease-in-out infinite;
@@ -2729,7 +2667,6 @@ const CSS = `
   }
 }
 
-/* ===== college accounts table ===== */
 .um-tools {
   display: flex;
   align-items: center;
@@ -2887,7 +2824,6 @@ const CSS = `
   cursor: not-allowed;
 }
 
-/* ===== popups ===== */
 .um-modal-back {
   position: fixed;
   inset: 0;
@@ -3242,12 +3178,10 @@ const CSS = `
   animation: umToast .3s ease both;
 }
 
-/* popup open: freeze the endless animations behind it */
 .um-app.um-paused .um-main *, .um-app.um-paused .um-main *::before, .um-app.um-paused .um-main *::after {
   animation-play-state: paused !important;
 }
 
-/* ===== responsive ===== */
 @media (max-width: 1300px) and (min-width: 761px) {
   .um-col-email {
     display: none;
@@ -3342,7 +3276,7 @@ const CSS = `
     justify-content: center;
     text-align: center;
   }
-  /* table -> one card per college */
+
   .um-table-wrap {
     overflow: visible;
   }

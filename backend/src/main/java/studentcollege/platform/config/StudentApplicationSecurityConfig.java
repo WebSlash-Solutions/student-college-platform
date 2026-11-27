@@ -1,4 +1,3 @@
-
 package studentcollege.platform.config;
 
 import org.springframework.context.annotation.Bean;
@@ -16,7 +15,14 @@ public class StudentApplicationSecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+
+                // Student APIs
                 .requestMatchers("/api/students/**").permitAll()
+
+                // Application APIs
+                .requestMatchers("/api/applications/**").permitAll()
+
+                // Other APIs
                 .anyRequest().authenticated()
             );
 

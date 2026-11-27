@@ -1,23 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-/* ------------------------------------------------------------------ */
-/* STYLES (CSS is kept inside this same file)                          */
-/* ------------------------------------------------------------------ */
-/*
-  Responsive strategy
-  - The page content uses a CSS *container query* (container name: tx), so the
-    layout reacts to the space it really has. It looks right both full-page
-    (own sidebar) and embedded inside AdminDashboard (sidebar already there).
-  - Content width      layout
-      < 520px          phone: 1 column, transaction cards
-      520 - 839px      big phone / small tablet: 2-column stats + filters
-      840 - 1239px     laptop: full table, 4 stat cards, plans row under table
-      >= 1240px        desktop: table + plans sidebar side by side
-*/
-
 const CSS = `
-/* ---------- 1. Tokens & resets ---------- */
+
 .app {
   --navy: #0f2447;
   --navy-2: #16315f;
@@ -54,7 +39,6 @@ const CSS = `
 .app *::before,
 .app *::after { box-sizing: border-box; }
 
-/* neutralise global styles (Vite index.css etc.) at the lowest specificity */
 :where(.app) h1,
 :where(.app) h2,
 :where(.app) h3,
@@ -76,7 +60,6 @@ const CSS = `
 .muted { color: var(--muted); font-size: 12.5px; }
 .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12.5px; }
 
-/* ---------- 2. Sidebar (standalone mode only) - identical to the Applications page sidebar ---------- */
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
@@ -85,7 +68,7 @@ const CSS = `
   width: var(--side-w);
   background: #112746;
   color: #fff;
-  line-height: 25.6px; /* same inherited line-height as the Applications sidebar */
+  line-height: 25.6px; 
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -140,7 +123,7 @@ const CSS = `
   text-align: center;
   text-transform: uppercase;
 }
-/* nav scrolls, but its scrollbar is pushed outside the (clipped) sidebar */
+
 .nav {
   display: flex;
   flex-direction: column;
@@ -204,7 +187,6 @@ const CSS = `
 .logout:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
 @keyframes txSlideIn { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
 
-/* ---------- 3. Top bar & page shell ---------- */
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
 .topbar {
@@ -296,8 +278,6 @@ const CSS = `
   padding: 18px 14px 48px;
 }
 
-/* ---------- 4. Layout (container-query driven) ---------- */
-/* default = single column; wrappers dissolve so blocks can be re-ordered */
 .tx-layout { display: flex; flex-direction: column; gap: 18px; }
 .tx-main,
 .tx-side { display: contents; }
@@ -313,7 +293,6 @@ const CSS = `
 .page-head h1 { font-size: 22px; line-height: 1.25; letter-spacing: -0.01em; }
 .page-head p { margin-top: 6px; color: var(--muted); }
 
-/* ---------- 5. Stat cards ---------- */
 .tx-stats { display: grid; grid-template-columns: 1fr; gap: 12px; }
 .tx-stat {
   position: relative;
@@ -349,9 +328,6 @@ const CSS = `
 .stat-value { font-size: 23px; line-height: 1.15; letter-spacing: -0.01em; }
 .stat-note { color: var(--muted); font-size: 12px; }
 
-/* Sea-wave animation for the 4 stat cards: they roll in one after another
-   like a wave, then keep gently rising and falling. Uses the separate
-   "translate" property for the bobbing so the hover lift still works. */
 .tx-stats .tx-stat {
   animation:
     statWaveIn 1.1s cubic-bezier(0.22, 0.9, 0.3, 1) calc(var(--i, 0) * 0.14s) backwards,
@@ -365,7 +341,6 @@ const CSS = `
 .trend.up { color: var(--green); }
 .trend.down { color: var(--red); }
 
-/* ---------- 6. Panels & filters ---------- */
 .panel {
   min-width: 0;
   padding: 16px;
@@ -461,7 +436,6 @@ const CSS = `
 }
 .chip.active .chip-count { background: rgba(255, 255, 255, 0.25); }
 
-/* ---------- 7. Buttons, badges, plans ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -517,7 +491,6 @@ const CSS = `
 .plan-gold { background: #fff0d1; color: #b87a00; }
 .plan-diamond { background: #f0e6ff; color: #7b3fd0; }
 
-/* ---------- 8. Transactions table (laptop+) ---------- */
 .table-wrap { display: none; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
 .table { width: 100%; border-collapse: collapse; min-width: 860px; font-size: 13px; }
 .table th {
@@ -541,7 +514,6 @@ const CSS = `
 
 .empty { padding: 30px 10px; text-align: center; color: var(--muted); }
 
-/* ---------- 9. Mobile transaction cards ---------- */
 .tx-cards { display: flex; flex-direction: column; gap: 12px; }
 .tx-card {
   padding: 14px;
@@ -564,7 +536,6 @@ const CSS = `
 }
 .tx-card-mid strong { font-size: 18px; }
 
-/* ---------- 10. Pagination ---------- */
 .pager { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 16px; }
 .pager-btns { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; }
 .pager-btns button {
@@ -581,7 +552,6 @@ const CSS = `
 .pager-btns button:disabled { opacity: 0.4; cursor: not-allowed; }
 .pager-gap { padding: 0 4px; color: var(--muted); }
 
-/* ---------- 11. Subscription plans + rules ---------- */
 .plans-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
 .plan-card {
   position: relative;
@@ -648,11 +618,6 @@ const CSS = `
 .plan-card:hover .plan-cta { background: rgba(var(--pc-rgb), 0.1); }
 .plan-card.selected .plan-cta { border-style: solid; background: rgb(var(--pc-rgb)); color: #fff; }
 
-/* Subscription Plans animation:
-   - cards rise in one after another (cascade)
-   - plan icons float and send out a soft pulse ring in the plan colour
-   - the "Recommended" badge glows
-   - the button line shines across when the card is hovered / selected */
 .plans-grid .plan-card {
   animation: planRise 0.8s cubic-bezier(0.22, 0.9, 0.3, 1) calc(var(--i, 0) * 0.16s) backwards;
 }
@@ -743,7 +708,6 @@ const CSS = `
   font-weight: 700;
 }
 
-/* ---------- 12. Bottom row: recent subscriptions / usage / quick actions ---------- */
 .tx-bottom { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
 .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
 .sub-table { width: 100%; min-width: 700px; border-collapse: collapse; font-size: 13px; }
@@ -832,8 +796,6 @@ const CSS = `
 .uo-split-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .uo-split-legend s { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
 
-/* Monthly Revenue card: smoke is ALWAYS drifting. When the mouse moves over the card
-   the smoke follows it and its colour changes (JS sets --mx / --my / --sh, see revSmoke()). */
 @property --sh { syntax: "<number>"; inherits: true; initial-value: 200; }
 .uo-rev {
   --sh: 200;
@@ -850,7 +812,7 @@ const CSS = `
   border-radius: 50%;
   pointer-events: none;
   filter: blur(18px);
-  mix-blend-mode: screen; /* adds light on the dark navy card = brighter smoke */
+  mix-blend-mode: screen; 
 }
 .uo-rev::before {
   width: 180px;
@@ -873,7 +835,7 @@ const CSS = `
   animation: uoSmokeB 8s ease-in-out infinite alternate;
 }
 
-.quick-panel { align-self: stretch; } /* full column width, same as Recent Admin Activity */
+.quick-panel { align-self: stretch; } 
 .quick-panel .panel-head { margin-bottom: 12px; }
 .quick-list { display: flex; flex-direction: column; gap: 8px; }
 .qa {
@@ -918,10 +880,6 @@ const CSS = `
 .qa-green { --smoke-rgb: 22, 160, 91; }
 .qa-green .qa-ico { background: var(--green-soft); color: var(--green); }
 
-/* Quick Actions animation:
-   - buttons slide in from the left one after another
-   - icons give out a soft pulse ring and a little wiggle
-   - the arrow keeps nudging to the right */
 .quick-list > .qa,
 .quick-list > .dl {
   animation: qaSlideIn 0.7s cubic-bezier(0.22, 0.9, 0.3, 1) calc(var(--i, 0) * 0.13s) backwards;
@@ -939,14 +897,12 @@ const CSS = `
 .quick-list .qa-arrow { animation: qaArrowNudge 1.6s ease-in-out calc(var(--i, 0) * 0.2s) infinite; }
 .quick-list > .dl .qa-arrow { --i: 3; }
 
-/* logout: the whole page fades out just before we go to the login page */
 .app { transition: opacity 0.35s ease; }
 .app.is-leaving { opacity: 0; pointer-events: none; }
 .top-profile { border-radius: 10px; transition: background 0.2s; }
 .top-profile:hover { background: #eef3fb; }
 .top-profile:hover .top-profile__chev { color: #e0384a; }
 
-/* ---------- 13. Details modal ---------- */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -986,9 +942,6 @@ const CSS = `
 .modal-foot { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 18px; border-top: 1px solid var(--line); }
 .modal-foot .btn { flex: 1; }
 
-/* ---------- 13b. Smoke hover effect ---------- */
-/* JS (smoke()) writes the cursor position into --mx / --my.
-   Two soft blurred blobs follow the cursor with different lag = "smoke trail". */
 .smoke { position: relative; isolation: isolate; overflow: hidden; --smoke-rgb: 37, 99, 235; }
 .smoke::before,
 .smoke::after {
@@ -1017,7 +970,7 @@ const CSS = `
   background: radial-gradient(circle, rgba(var(--smoke-rgb), 0.3) 0%, rgba(var(--smoke-rgb), 0.1) 50%, transparent 72%);
   transition: left 0.95s ease-out, top 0.95s ease-out, opacity 0.5s, transform 0.7s;
 }
-/* .is-smoking is added by JS for touch / pen / device-emulation (Inspect mode), where :hover is unreliable */
+
 .smoke:hover::before,
 .smoke:hover::after,
 .smoke.is-smoking::before,
@@ -1028,13 +981,11 @@ const CSS = `
 .st-green { --smoke-rgb: 22, 160, 91; }
 .st-orange { --smoke-rgb: 232, 137, 12; }
 .st-red { --smoke-rgb: 224, 56, 74; }
-/* Subscription Plans: each plan card smokes in its own colour
-   (.smoke above would otherwise override the plan colour with blue) */
+
 .plan-card-elite.smoke { --smoke-rgb: 59, 130, 246; }
 .plan-card-gold.smoke { --smoke-rgb: 245, 170, 30; }
 .plan-card-diamond.smoke { --smoke-rgb: 139, 92, 246; }
 
-/* ---------- 13c. Download menu (PDF / Excel) ---------- */
 .dl { position: relative; display: inline-flex; }
 .dl.block { display: flex; width: 100%; }
 .dl.block > button { width: 100%; }
@@ -1073,7 +1024,6 @@ const CSS = `
 .modal-foot .dl { flex: 1; }
 .modal-foot .dl > button { width: 100%; }
 
-/* ---------- 14. Animations ---------- */
 @keyframes smokeDrift {
   0% { transform: scale(0.95) translate(0, 0); }
   50% { transform: scale(1.12) translate(10px, -6px); }
@@ -1151,7 +1101,6 @@ const CSS = `
   .app *, .app *::before, .app *::after { animation: none !important; transition: none !important; }
 }
 
-/* ---------- 9. Upcoming Renewals / Payment Alerts / Top Colleges / Admin Activity ---------- */
 .tx-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .side-extra { order: 8; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; min-width: 0; }
 .renew-panel, .alerts-panel, .top-panel, .act-panel { animation: rowIn 0.55s ease both; }
@@ -1184,7 +1133,6 @@ const CSS = `
 .soft-list.is-scroll { max-height: 330px; overflow-y: auto; padding-right: 4px; }
 .empty-note { padding: 16px; border-radius: 10px; background: #f6f9fd; color: var(--muted); font-size: 12.5px; text-align: center; }
 
-/* --- Upcoming renewals --- */
 .renew-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .renew-tile {
   display: flex;
@@ -1233,7 +1181,6 @@ const CSS = `
 .renew-name strong, .al-info strong { display: block; font-size: 13px; line-height: 1.3; overflow-wrap: anywhere; }
 .renew-panel .btn-toggle { margin-top: 12px; }
 
-/* --- Payment alerts --- */
 .al-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
 .al-tile {
   display: flex;
@@ -1297,7 +1244,6 @@ button.al-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(
 .btn-bulk:disabled { opacity: 0.75; cursor: default; }
 .spin { width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, 0.45); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
 
-/* --- Recent admin activity --- */
 .act-list { gap: 10px; }
 .act-list > li { animation: rowIn 0.45s ease calc(var(--i, 0) * 70ms) both; }
 .act-item {
@@ -1329,7 +1275,6 @@ button.al-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(
 .act-arrow { color: var(--muted); font-size: 18px; transition: transform 0.2s; }
 .act-item:hover .act-arrow { transform: translateX(3px); }
 
-/* --- Top paying colleges --- */
 .top-panel { container: tp / inline-size; }
 .tc-head { display: none; }
 .tc-row {
@@ -1365,7 +1310,6 @@ button.al-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(
   .tc-txn { display: block; }
 }
 
-/* --- toast --- */
 .toast {
   position: fixed;
   left: 50%;
@@ -1387,7 +1331,6 @@ button.al-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(
 @keyframes bulkShine { 0%, 60% { left: -40%; } 100% { left: 130%; } }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ---------- 10. Create Subscription (custom plan) ---------- */
 .modal-form { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .fld { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; }
 .fld-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -1423,7 +1366,6 @@ button.plan-cta { width: 100%; background: transparent; }
 button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
 @media (max-width: 420px) { .fld-row { grid-template-columns: 1fr; } }
 
-/* ---------- 11. Quick Actions (card design) ---------- */
 .qk-panel { container: qk / inline-size; padding: 14px; background: linear-gradient(180deg, #ffffff, #f8faff); }
 .qk-head {
   position: relative;
@@ -1534,7 +1476,6 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
   .qk-text strong { font-size: 16px; }
 }
 
-/* ---------- 12. Download Reports modal ---------- */
 .modal.modal-wide { max-width: 860px; }
 .rp-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .rp-stat { padding: 12px 14px; border-radius: 12px; background: var(--blue-soft); animation: rowIn 0.4s ease calc(var(--i, 0) * 70ms) both; }
@@ -1597,9 +1538,6 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
 }
 .plans-panel .panel-head > div:first-child { flex: 1 1 150px; min-width: 0; }
 
-/* ============================================================
-   RESPONSIVE - viewport based (shell: sidebar, topbar, modal)
-   ============================================================ */
 @media (max-width: 380px) {
   .page-head h1 { font-size: 20px; }
 }
@@ -1632,9 +1570,6 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
   .content { padding: 26px 28px 56px; }
 }
 
-/* ============================================================
-   RESPONSIVE - container based (page content)
-   ============================================================ */
 @container tx (min-width: 520px) {
   .tx-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
@@ -1666,7 +1601,6 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
   .col-no { display: table-cell; }
 }
 
-/* desktop: table on the left, plans sidebar on the right */
 @container tx (min-width: 1240px) {
   .tx-layout {
     display: grid;
@@ -1694,8 +1628,6 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
   .side-extra { grid-template-columns: minmax(0, 1fr); }
 }
 
-
-/* ---------- Reference dashboard layout: compact laptop / desktop ---------- */
 @container tx (min-width: 840px) and (max-width: 1239px) {
   .tx-layout {
     display: grid;
@@ -1772,7 +1704,6 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
   .content { padding: 14px 12px 36px; }
 }
 
-/* ---------- Readable desktop sizing (leave Quick Actions, Upcoming Renewals and Payment Alerts unchanged) ---------- */
 @container tx (min-width: 840px) {
   .content { padding: 20px 18px 42px; }
   .tx-layout { gap: 18px; }
@@ -1841,16 +1772,10 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
   .table { min-width: 850px; }
 }
 
-/* ============================================================
-   MODES
-   ============================================================ */
-/* embedded: rendered inside AdminDashboard (it already has sidebar + topbar) */
 .app.app-embedded { display: block; min-height: 0; background: transparent; }
 .app.app-embedded .main { margin-left: 0; }
 .app.app-embedded .content { padding: 0; }
 
-/* standalone: pinned to the whole browser window, so a parent such as
-   #root { max-width; padding; text-align: center } can never squeeze it */
 .app:not(.app-embedded) {
   position: fixed;
   inset: 0;
@@ -1862,13 +1787,7 @@ button.plan-cta:hover { background: rgba(var(--pc-rgb), 0.1); }
 }
 `;
 
-/* ------------------------------------------------------------------ */
-/* 1. DATA                                                             */
-/* ------------------------------------------------------------------ */
-
-// [college name, type, district]
 const COLLEGE_LIST = [
-  // Coimbatore (1-20)
   ["PSG College of Technology", "Engineering", "Coimbatore"],
   ["Coimbatore Institute of Technology (CIT)", "Engineering", "Coimbatore"],
   ["Government College of Technology (GCT)", "Engineering", "Coimbatore"],
@@ -1905,7 +1824,6 @@ const COLLEGE_LIST = [
     "Engineering / Multidisciplinary",
     "Coimbatore",
   ],
-  // Chennai (21-32)
   [
     "Indian Institute of Technology Madras (IIT Madras)",
     "Engineering",
@@ -1930,7 +1848,6 @@ const COLLEGE_LIST = [
     "Chennai",
   ],
   ["Tamil Nadu Dr. Ambedkar Law University", "Law", "Chennai"],
-  // Erode (33-40)
   ["Government College of Engineering, Erode", "Engineering", "Erode"],
   ["Institute of Road and Transport Technology (IRTT)", "Engineering", "Erode"],
   ["Erode Arts and Science College", "Arts & Science", "Erode"],
@@ -1941,7 +1858,6 @@ const COLLEGE_LIST = [
   ["Nandha College of Nursing", "Nursing", "Erode"],
 ];
 
-// District STD codes. Phone numbers below are SAMPLE numbers - replace with real ones.
 const STD_CODE = { Coimbatore: "0422", Chennai: "044", Erode: "0424" };
 
 const PLANS = {
@@ -2022,7 +1938,6 @@ const REFUND_REASONS = [
   "Plan changed - amount returned",
 ];
 
-// Build 40 transactions (one per college) with predictable demo values
 const TRANSACTIONS = COLLEGE_LIST.map(([college, type, district], i) => {
   const plan = PLAN_NAMES[i % 3];
   const student = STUDENTS[i % STUDENTS.length];
@@ -2049,7 +1964,6 @@ const TRANSACTIONS = COLLEGE_LIST.map(([college, type, district], i) => {
     };
   }
 
-  // Why a transaction is Pending / Failed / Refunded
   let statusInfo = null;
   if (status === "Failed") {
     const [reason, code] = FAIL_REASONS[i % FAIL_REASONS.length];
@@ -2082,10 +1996,6 @@ const TRANSACTIONS = COLLEGE_LIST.map(([college, type, district], i) => {
     statusInfo,
   };
 });
-
-/* ------------------------------------------------------------------ */
-/* 2. HELPERS                                                          */
-/* ------------------------------------------------------------------ */
 
 const PAGE_SIZE = 6;
 const rupee = (n) => "₹" + n.toLocaleString("en-IN");
@@ -2132,7 +2042,6 @@ const PLAN_RULES = [
 ];
 const RULES_PREVIEW = 4;
 
-// Page numbers with "…" gaps, e.g. 1 2 3 … 10
 function pageList(total, current) {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const keep = new Set([1, total, current - 1, current, current + 1]);
@@ -2144,13 +2053,6 @@ function pageList(total, current) {
   });
   return out;
 }
-
-/* ------------------------------------------------------------------ */
-/* 2a. DOWNLOADS  (PDF + Excel, no extra libraries needed)             */
-/* ------------------------------------------------------------------ */
-// PDF   -> opens the browser print dialog with a clean layout: choose "Save as PDF".
-// Excel -> downloads an .xls file that opens directly in Microsoft Excel.
-//          (If you want a real .xlsx later, run `npm i xlsx` and swap saveExcel().)
 
 const EXPORT_HEAD = [
   "Transaction ID",
@@ -2257,7 +2159,6 @@ function printPdf(title, bodyHtml) {
   setTimeout(() => frame.remove(), 120000); // safety clean-up
 }
 
-// All / filtered transactions -> PDF or Excel
 function exportTransactions(list, format) {
   const name = `transactions-${stamp()}`;
   if (format === "excel") {
@@ -2289,7 +2190,6 @@ function exportTransactions(list, format) {
   );
 }
 
-// One transaction receipt -> PDF or Excel
 function receiptSections(tx) {
   return [
     [
@@ -2364,12 +2264,6 @@ function exportReceipt(tx, format) {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* 2b. SUBSCRIPTIONS (derived from successful payments)                */
-/* ------------------------------------------------------------------ */
-// NOTE: "profiles used" is demo data. Replace it with the real value from
-// your API when the backend is ready.
-
 const AS_OF = new Date(Math.max(...TRANSACTIONS.map((t) => t.date.getTime())));
 
 const SUBSCRIPTIONS = TRANSACTIONS.filter((t) => t.status === "Success")
@@ -2407,7 +2301,6 @@ const USAGE = PLAN_NAMES.map((plan) => {
 const USAGE_USED = USAGE.reduce((n, u) => n + u.used, 0);
 const USAGE_TOTAL = USAGE.reduce((n, u) => n + u.total, 0);
 
-// Successful revenue split per plan (used in the usage overview card)
 const REV_BY_PLAN = PLAN_NAMES.map((plan) => ({
   plan,
   amount: TRANSACTIONS.filter((t) => t.status === "Success" && t.plan === plan).reduce(
@@ -2416,7 +2309,6 @@ const REV_BY_PLAN = PLAN_NAMES.map((plan) => ({
   ),
 }));
 
-// How many transactions per status chip (All / Success / ...)
 const STATUS_COUNT = Object.fromEntries(
   STATUS_FILTERS.map((s) => [
     s,
@@ -2424,18 +2316,11 @@ const STATUS_COUNT = Object.fromEntries(
   ]),
 );
 
-/* ------------------------------------------------------------------ */
-/* 2c. RENEWALS / PAYMENT ALERTS / TOP COLLEGES / ADMIN ACTIVITY       */
-/* ------------------------------------------------------------------ */
-// NOTE: all of this is derived from the demo data above. Swap these
-// constants for real API data when the backend is ready.
-
 const DAY_MS = 24 * 60 * 60 * 1000;
 const daysFromNow = (d) => Math.ceil((d - AS_OF) / DAY_MS);
 const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
 const pad2 = (n) => String(n).padStart(2, "0");
 
-// Upcoming renewals
 const RENEW_ACTIVE = SUBSCRIPTIONS.filter((s) => s.status === "Active").sort((a, b) => a.end - b.end);
 const RENEW_SOON = RENEW_ACTIVE.filter((s) => daysFromNow(s.end) <= 7);
 const RENEW_EXPIRED = SUBSCRIPTIONS.filter((s) => s.status === "Expired").sort((a, b) => b.end - a.end);
@@ -2450,7 +2335,6 @@ const renewLabel = (s) => {
 const renewChip = (s) =>
   s.status === "Expired" ? ["Expired", "expired"] : daysFromNow(s.end) <= 3 ? ["Soon", "soon"] : ["Upcoming", "upcoming"];
 
-// Payment alerts
 const sumAmt = (list) => list.reduce((n, t) => n + t.amount, 0);
 const PENDING_TX = TRANSACTIONS.filter((t) => t.status === "Pending")
   .map((t) => ({ tx: t, due: new Date(t.date.getTime() + 7 * DAY_MS) }))
@@ -2463,7 +2347,6 @@ const dueLabel = (due) => {
   return n < 0 ? "Overdue" : n === 0 ? "Due today" : `Due in ${plural(n, "day")}`;
 };
 
-// Recent admin activity
 const ACT_SRC = [
   ["↺", "green", "Refund approved", REFUNDED_TX[0], (t) => `${t.id} - ${t.college}`, 15],
   ["＋", "blue", "Subscription created", SUBSCRIPTIONS[1]?.tx, (t) => t.college, 165],
@@ -2485,7 +2368,6 @@ const ACTIVITY = ACT_SRC.filter((r) => r[3]).map(([icon, tone, title, tx, fn, mi
 }));
 const ACT_PREVIEW = 4;
 
-// Top paying colleges (successful payments only)
 const TOP_COLLEGES = (() => {
   const map = new Map();
   TRANSACTIONS.filter((t) => t.status === "Success").forEach((t) => {
@@ -2503,16 +2385,8 @@ const TOP_MAX = TOP_COLLEGES[0]?.revenue || 1;
 const TOP_PREVIEW = 5;
 const TOP_LIMIT = 10;
 
-/* ------------------------------------------------------------------ */
-/* 3. SMALL COMPONENTS                                                 */
-/* ------------------------------------------------------------------ */
-
-// Where the login page lives in your router. Change this to your real login URL
-// (the address you see in the browser when the login page is open, e.g. "/" or "/admin/login").
 const LOGIN_PATH = "/login";
 
-// Logout: wipe EVERYTHING that says "this admin is logged in", fade the page out,
-// then do a full reload on the login page so no saved login state can send us back to the dashboard.
 function useLogout() {
   return () => {
     try {
@@ -2523,7 +2397,7 @@ function useLogout() {
         if (name) document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
       });
     } catch {
-      /* storage not available - ignore */
+
     }
     document.querySelector(".app")?.classList.add("is-leaving");
     setTimeout(() => window.location.replace(LOGIN_PATH), 350);
@@ -2535,7 +2409,6 @@ function Sidebar({ open, onClose }) {
   const { pathname } = useLocation();
   const logout = useLogout();
 
-  // Go to the page, then close the mobile menu
   const goTo = (path) => {
     navigate(path);
     onClose();
@@ -2656,13 +2529,11 @@ function PageButtons({ total, current, onChange }) {
   );
 }
 
-// Smoke hover effect: remember where the cursor is inside the element (CSS does the rest)
 function smoke(e) {
   const el = e.currentTarget;
   const r = el.getBoundingClientRect();
   el.style.setProperty("--mx", `${e.clientX - r.left}px`);
   el.style.setProperty("--my", `${e.clientY - r.top}px`);
-  // mouse: CSS :hover does the job. touch / pen / Inspect-mode emulation: switch the smoke on with a class
   if (e.pointerType && e.pointerType !== "mouse") {
     el.classList.add("is-smoking");
     clearTimeout(el._smokeTimer);
@@ -2671,7 +2542,6 @@ function smoke(e) {
 }
 const smokeProps = { onPointerMove: smoke, onPointerEnter: smoke, onPointerDown: smoke };
 
-// Monthly Revenue smoke: smoke follows the cursor and its colour (hue) changes with the cursor position
 function revSmoke(e) {
   const el = e.currentTarget;
   const r = el.getBoundingClientRect();
@@ -2695,7 +2565,6 @@ const revSmokeProps = {
   onPointerCancel: revSmokeReset,
 };
 
-// Button that opens a small "Download as PDF / Excel" menu
 function DownloadMenu({
   onPick,
   children,
@@ -2766,7 +2635,6 @@ function DownloadMenu({
   );
 }
 
-// Subscription Usage Overview: interactive donut + plan bars + revenue split
 function UsageOverview({ revenue, planSel, planHover }) {
   const [hover, setHover] = useState(null);
   const [selected, setSelected] = useState(null); // tapped / clicked plan (works on touch & Inspect mode)
@@ -2786,11 +2654,9 @@ function UsageOverview({ revenue, planSel, planHover }) {
     return seg;
   });
   const active = USAGE.find((u) => u.plan === shown);
-  // once the usage popup is open (click), it follows whichever plan the mouse is on
   const picked = selected ? USAGE.find((u) => u.plan === (hover || planHover || selected)) : null;
   const revTotal = REV_BY_PLAN.reduce((s, r) => s + r.amount, 0) || 1;
 
-  // bring the usage popup into view when a colour is tapped (phones / Inspect mode)
   useEffect(() => {
     if (selected && popRef.current) {
       popRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -2938,7 +2804,6 @@ function UsageOverview({ revenue, planSel, planHover }) {
 }
 
 function DetailsModal({ tx, onClose }) {
-  // Close on Escape key and lock page scroll while open
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
@@ -3046,19 +2911,11 @@ function DetailsModal({ tx, onClose }) {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* 4. PAGE                                                             */
-/* ------------------------------------------------------------------ */
-
-// embedded=true  -> only the page content (use inside your existing admin layout)
-// embedded=false -> full page with its own sidebar + top bar
-/* ---------- Download Reports: paid colleges + the students they bought ---------- */
 const FIRST_NAMES = ["Arun", "Divya", "Karthik", "Meena", "Suresh", "Priya", "Vignesh", "Anitha", "Hari", "Nandhini", "Ravi", "Kavya", "Mohan", "Sandhya"];
 const LAST_NAMES = ["Kumar", "Bharathi", "Raja", "Lakshmi", "Babu", "Dharshini", "Waran", "Selvam", "Prasad", "Devi", "Murugan", "Priya"];
 const COURSES = ["B.E. CSE", "B.Tech IT", "B.E. ECE", "B.E. Mechanical", "MBA", "B.Sc Computer Science", "B.Com", "B.E. EEE"];
 const slug = (v) => String(v).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
 
-// Students whose details a college bought (demo data - replace with your API)
 function reportStudents(sub) {
   return Array.from({ length: sub.used }, (_, k) => {
     const n = sub.tx.no * 7 + k;
@@ -3076,7 +2933,6 @@ function reportStudents(sub) {
 const STUDENT_HEAD = ["#", "Student ID", "Student name", "Phone", "Course interest", "Purchased on"];
 const studentCells = (st) => [st.no, st.id, st.name, st.phone, st.course, `${fmtDate(st.date)} ${fmtTime(st.date)}`];
 
-// One college: payment details + purchased students -> Excel or PDF
 function exportCollegeReport(sub, format) {
   const tx = sub.tx;
   const students = reportStudents(sub);
@@ -3112,7 +2968,6 @@ function exportCollegeReport(sub, format) {
   );
 }
 
-// All paid colleges (current filter) -> Excel or PDF
 function exportAllReports(list, format) {
   const name = `paid-colleges-report-${stamp()}`;
   const head = ["College", "District", "Plan", "Amount (INR)", "Paid on", "Valid till", "Students purchased", "Profile limit", "Status"];
@@ -3334,7 +3189,6 @@ const PLAN_SWATCHES = [
   ["Orange", "234, 120, 40"],
 ];
 
-// Create Subscription: lets the admin add a brand-new plan next to Elite / Gold / Diamond
 function CreatePlanModal({ taken, onClose, onCreate }) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -3509,7 +3363,6 @@ export default function TransactionsPage({ embedded = false }) {
   const [reportsOpen, setReportsOpen] = useState(false);
   const [customPlans, setCustomPlans] = useState([]); // plans created from Quick Actions
 
-  // Filtering + sorting
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return TRANSACTIONS.filter((t) => {
@@ -3529,13 +3382,11 @@ export default function TransactionsPage({ embedded = false }) {
     }).sort((a, b) => (newestFirst ? b.date - a.date : a.date - b.date));
   }, [search, status, method, district, planSel, newestFirst]);
 
-  // Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const startIndex = (safePage - 1) * PAGE_SIZE;
   const rows = filtered.slice(startIndex, startIndex + PAGE_SIZE);
 
-  // Stats (always from all data)
   const stats = useMemo(() => {
     const ok = TRANSACTIONS.filter((t) => t.status === "Success");
     const refunded = TRANSACTIONS.filter((t) => t.status === "Refunded");
@@ -3567,16 +3418,13 @@ export default function TransactionsPage({ embedded = false }) {
       .getElementById("tx-table")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  // Click a subscription plan: highlight it + filter the table by that plan (click again to clear)
   const togglePlan = (p) => {
     setPlanSel((cur) => (cur === p ? null : p));
     setPage(1);
-    // on phones / tablets the plans sit below the table, so bring the table into view
     const layout = document.querySelector(".tx-layout");
     if (layout && getComputedStyle(layout).display !== "grid") scrollToTable();
   };
 
-  // Auto-hide the small toast message
   useEffect(() => {
     if (!toast) return undefined;
     const id = setTimeout(() => setToast(null), 2600);
@@ -3585,7 +3433,6 @@ export default function TransactionsPage({ embedded = false }) {
 
   const notify = (msg) => setToast({ msg, k: Date.now() });
 
-  // Reminders (demo). Replace the body with your real API call.
   const sendReminder = (tx) => {
     if (sentIds.includes(tx.id)) return;
     setSentIds((s) => [...s, tx.id]);
@@ -3605,7 +3452,6 @@ export default function TransactionsPage({ embedded = false }) {
       notify(`Reminders sent to ${plural(targets.length, "college")}`);
     }, 900);
   };
-  // Demo only: replace with your real "create plan" API call
   const createPlan = (plan) => {
     setCustomPlans((list) => [...list, plan]);
     setCreateOpen(false);
@@ -3619,7 +3465,6 @@ export default function TransactionsPage({ embedded = false }) {
     setCustomPlans((list) => list.filter((c) => c.name !== name));
     notify(`${name} plan removed`);
   };
-  // Audit Logs: open the full admin activity list
   const openAudit = () => {
     setActAll(true);
     notify("Showing the full admin activity log");
@@ -3666,7 +3511,7 @@ export default function TransactionsPage({ embedded = false }) {
       )}
 
       <div className="main">
-        {/* Top bar */}
+        {}
         {!embedded && (
           <header className="topbar">
             <button
@@ -3702,7 +3547,7 @@ export default function TransactionsPage({ embedded = false }) {
 
         <main className="content">
           <div className="tx-layout">
-            {/* ================= MAIN COLUMN ================= */}
+            {}
             <div className="tx-main">
               <div className="page-head">
                 <h1>Transactions &amp; Subscription Management</h1>
@@ -3712,7 +3557,7 @@ export default function TransactionsPage({ embedded = false }) {
                 </p>
               </div>
 
-              {/* Stat cards */}
+              {}
               <div className="tx-stats">
                 <StatCard
                   icon="₹"
@@ -3748,7 +3593,7 @@ export default function TransactionsPage({ embedded = false }) {
                 />
               </div>
 
-              {/* Filters */}
+              {}
               <section className="panel filters-panel">
                 <div className="filters">
                   <div className="search-wrap">
@@ -3815,7 +3660,7 @@ export default function TransactionsPage({ embedded = false }) {
                 </div>
               </section>
 
-              {/* Transactions table */}
+              {}
               <section className="panel table-panel" id="tx-table">
                 <div className="panel-head">
                   <h2>All Transactions</h2>
@@ -3849,7 +3694,7 @@ export default function TransactionsPage({ embedded = false }) {
                   </p>
                 ) : (
                   <>
-                    {/* Laptop / desktop table */}
+                    {}
                     <div className="table-wrap">
                       <table className="table">
                         <thead>
@@ -3937,7 +3782,7 @@ export default function TransactionsPage({ embedded = false }) {
                       </table>
                     </div>
 
-                    {/* Mobile cards */}
+                    {}
                     <div className="tx-cards">
                       {rows.map((t, i) => (
                         <article
@@ -3982,7 +3827,7 @@ export default function TransactionsPage({ embedded = false }) {
                   </>
                 )}
 
-                {/* Pagination */}
+                {}
                 <div className="pager">
                   <span className="muted">
                     Showing {filtered.length ? startIndex + 1 : 0}–
@@ -3997,7 +3842,7 @@ export default function TransactionsPage({ embedded = false }) {
                 </div>
               </section>
 
-              {/* Recent subscriptions / usage / quick actions */}
+              {}
               <div className="tx-bottom">
                 <section className="panel subs-panel">
                   <div className="panel-head">
@@ -4209,11 +4054,10 @@ export default function TransactionsPage({ embedded = false }) {
                 </section>
                 </div>
 
-
               </div>
             </div>
 
-            {/* ================= SIDE COLUMN ================= */}
+            {}
             <aside className="tx-side">
               <section className="panel plans-panel">
                 <div className="panel-head">
