@@ -16,5 +16,7 @@ public interface SubscriptionPlanRepository
 
     Optional<SubscriptionPlan> findByPlanIdAndActiveTrue(String planId);
 
+    Optional<SubscriptionPlan> findByPlanId(String planId);
+
     boolean existsByPlanId(String planId);
 }
